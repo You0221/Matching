@@ -2,12 +2,12 @@ import json
 import os
 import hashlib
 from typing import List, Dict, Set, Tuple, Optional
-from pathlib import Path
 import difflib
 import re
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from diff_matcher import DiffBasedLocationMatcher
+from diff_matcher import DifflibMatcher
+from Warning_group import WarningGrouper
 class Matcher:
 
     def __init__(self, matching_threshold: int = 3, context_lines: int = 3,
@@ -16,7 +16,7 @@ class Matcher:
         self.CONTEXT_LINES = context_lines  # 片段匹配上下文行数
         self.SNIPPET_SIMILARITY = snippet_similarity  # 片段相似度阈值
         self.HASH_SIZE = hash_size  # 哈希匹配的token大小
-        self.diff_matcher = DiffBasedLocationMatcher(epsilon=3)
+        self.diff_matcher = DifflibMatcher(epsilon=3)
 
 
     def load_warnings(self, json_file_path: str) -> List[Dict]:
@@ -55,7 +55,7 @@ class Matcher:
 
     def extract_relative_path(self, full_path: str) -> str:
         version_patterns = [
-            "ansible-2.19.0b1",  # 最具体的先匹配
+            "ansible-2.19.0b1",
             "ansible-2.20.0rc2",
             "ansible-2.19.0",
             "ansible-2.18.1",
@@ -73,7 +73,6 @@ class Matcher:
 
     def is_same_file(self, path1: str, path2: str) -> bool:
         """判断是否为相同文件"""
-        # 提取相对路径
         rel1 = self.extract_relative_path(path1)
         rel2 = self.extract_relative_path(path2)
 
@@ -81,7 +80,7 @@ class Matcher:
         if rel1 == rel2:
             return True
 
-        # 规范化路径（统一分隔符，转为小写）
+        # 规范化路径
         norm1 = rel1.replace('\\', '/').lower()
         norm2 = rel2.replace('\\', '/').lower()
 
@@ -100,12 +99,15 @@ class Matcher:
         file1 = self.extract_relative_path(alarm1['filename'])
         file2 = self.extract_relative_path(alarm2['filename'])
 
+        #判断是否是相同文件
         if not self.is_same_file(file1, file2):
             return False
 
+        #判断是否是同类型警告
         if alarm1.get('test_id', '') != alarm2.get('test_id', ''):
             return False
 
+        #判断是否相同行
         return alarm1.get('line_number', 0) == alarm2.get('line_number', 0)
 
     def find_exactly_matching_alarm(self, parent_alarm: Dict, child_alarms: List[Dict]) -> List[Dict]:
@@ -113,99 +115,33 @@ class Matcher:
         return [child for child in child_alarms if self.exact_matching(parent_alarm, child)]
 
     # 位置匹配算法（基于diff映射）
-    def _get_diff_matches(self, old_lines: List[str], new_lines: List[str]) -> List[Tuple[int, int]]:
-        """获取diff匹配的行对,使用difflib.SequenceMatcher找到完全相同的行,只返回完全匹配的行对"""
-        matcher = difflib.SequenceMatcher(None, old_lines, new_lines)
-        matches = []
-
-        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-            if tag == 'equal':
-                for offset in range(i2 - i1):
-                    old_line = i1 + offset + 1
-                    new_line = j1 + offset + 1
-                    matches.append((old_line, new_line))
-
-        return matches
-
-    def _find_closest_match(self, paline_number: int,
-                            matches: List[Tuple[int, int]]) -> Optional[Tuple[int, int]]:
-        """查找给定行号最近的匹配行"""
-        if not matches:
-            return None
-
-        closest_distance = float('inf')
-        closest_match = None
-
-        for old_line, new_line in matches:
-            distance = abs(old_line - paline_number)
-            if distance < closest_distance:
-                closest_distance = distance
-                closest_match = (old_line, new_line)
-
-        return closest_match
-
-    def location_based_matching_with_opcodes(self, parent_alarm: Dict, child_alarm: Dict,
+    def location_matching(self, parent_alarm: Dict, child_alarm: Dict,
                                              opcodes: List[Dict]) -> bool:
         """
-        使用预计算opcodes的位置匹配算法
+        使用行范围划分后的的位置匹配算法
         """
-        # 1. 检查是否为同一文件
+        #检查是否为同一文件
         file1 = self.extract_relative_path(parent_alarm['filename'])
         file2 = self.extract_relative_path(child_alarm['filename'])
 
         if not self.is_same_file(file1, file2):
             return False
 
-        # 2. 检查警告类型是否相同
+        #检查警告类型是否相同
         if parent_alarm.get('test_id', '') != child_alarm.get('test_id', ''):
             return False
 
-        # 3. 使用opcodes进行位置匹配
+        #使用opcodes进行位置匹配
         parent_line = parent_alarm.get('line_number', 0)
         child_line = child_alarm.get('line_number', 0)
 
         return self.diff_matcher.location_based_match(parent_line, child_line, opcodes)
 
-    def location_based_matching_score_with_opcodes(self, parent_alarm: Dict, child_alarm: Dict,
+    def location_matching_score(self, parent_alarm: Dict, child_alarm: Dict,
                                                    opcodes: List[Dict]) -> int:
-        """
-        基于预计算opcodes的位置匹配评分
-        """
-        return 2 if self.location_based_matching_with_opcodes(parent_alarm, child_alarm, opcodes) else 0
+        return 2 if self.location_matching(parent_alarm, child_alarm, opcodes) else 0
 
     # 基于代码片段的匹配算法
-    def get_code_snippet(self, content: str, line_number: int) -> Optional[str]:
-        """获取代码片段 - 基于警告行及其上下文"""
-        if not content:
-            return None
-
-        lines = content.split('\n')
-        total_lines = len(lines)
-
-        if line_number < 1 or line_number > total_lines:
-            return None
-
-        start_line = max(1, line_number - self.CONTEXT_LINES)
-        end_line = min(total_lines, line_number + self.CONTEXT_LINES)
-
-        snippet_lines = lines[start_line - 1:end_line]
-
-        # 移除共同缩进
-        min_indent = float('inf')
-        for line in snippet_lines:
-            if line.strip():
-                indent = len(line) - len(line.lstrip())
-                min_indent = min(min_indent, indent)
-
-        normalized_lines = []
-        for line in snippet_lines:
-            if line.strip() and min_indent != float('inf') and len(line) >= min_indent:
-                normalized_lines.append(line[min_indent:])
-            else:
-                normalized_lines.append(line)
-
-        return '\n'.join(normalized_lines)
-
     def get_code_line(self, content: str, line_number: int) -> Optional[str]:
         """获取指定行号的代码行"""
         if not content:
@@ -223,27 +159,25 @@ class Matcher:
         if not code:
             return ""
 
-        # 1. 移除单行注释（保持原逻辑）
+        # 1. 移除单行注释
         code = re.sub(r'#.*$', '', code, flags=re.MULTILINE)
 
-        # 2. 额外添加：移除多行注释（三引号注释）
-        # 先尝试移除'''注释
+        # 2.移除多行注释
         code = re.sub(r"'''[\s\S]*?'''", '', code)
-        # 再尝试移除"""注释
         code = re.sub(r'"""[\s\S]*?"""', '', code)
 
-        # 3. 处理每行（保持原逻辑但更清晰）
+        # 3. 处理每行
         lines = code.split('\n')
         normalized_lines = []
 
         for line in lines:
             trimmed_line = line.strip()
-            if trimmed_line:  # 只保留非空行
+            if trimmed_line:
                 # 移除行内多余空格（多个空格变为一个）
                 trimmed_line = re.sub(r'\s+', ' ', trimmed_line)
                 normalized_lines.append(trimmed_line)
 
-        # 4. 返回类型与原方法相同：字符串（用换行符连接的非空行）
+        # 4. 返回字符串
         return '\n'.join(normalized_lines)
 
     def calculate_similarity(self, snippet1: str, snippet2: str) -> float:
@@ -260,7 +194,7 @@ class Matcher:
         matcher = difflib.SequenceMatcher(None, norm1, norm2)
         return matcher.ratio()
 
-    def get_multi_line_violation_snippet(self, alarm: Dict, content: str) -> Optional[str]:
+    def get_line_alarm_snippet(self, alarm: Dict, content: str) -> Optional[str]:
         """从源代码中提取多行违规代码片段"""
         if not content:
             return None
@@ -270,8 +204,8 @@ class Matcher:
             return None
 
         lines = content.split('\n')
-        start_line = min(line_range) - 1  # 转换为0-based索引
-        end_line = max(line_range)  # line_range中的最大行号
+        start_line = min(line_range) - 1
+        end_line = max(line_range)
 
         if start_line < 0 or end_line > len(lines):
             return None
@@ -279,24 +213,9 @@ class Matcher:
         # 提取多行代码
         snippet_lines = lines[start_line:end_line]
 
-        # 如果是第一行有列偏移，需要特殊处理
-        col_offset = alarm.get('col_offset', 0)
-        end_col_offset = alarm.get('end_col_offset', 0)
-
-        if col_offset > 0 or end_col_offset > 0:
-            # 对于多行情况，列偏移通常只适用于第一行
-            if snippet_lines:
-                if col_offset < len(snippet_lines[0]) and end_col_offset <= len(snippet_lines[0]):
-                    # 只提取第一行的部分
-                    snippet_lines[0] = snippet_lines[0][col_offset:end_col_offset]
-                else:
-                    # 如果列偏移超出第一行范围，可能需要提取多行
-                    # 简化：返回整行
-                    pass
-
         return '\n'.join(snippet_lines)
 
-    def snippet_based_matching(self, parent_alarm: Dict, child_alarm: Dict,
+    def snippet_matching(self, parent_alarm: Dict, child_alarm: Dict,
                                parent_content: str, child_content: str) -> bool:
         """基于代码片段的匹配算法"""
         # 1. 检查违规类型是否相同
@@ -311,15 +230,14 @@ class Matcher:
             return False
 
         # 3. 提取代码片段
-
         if parent_alarm.get('line_range', []):
-            parent_snippet = self.get_multi_line_violation_snippet(parent_alarm, parent_content)
+            parent_snippet = self.get_line_alarm_snippet(parent_alarm, parent_content)
         else:
             line_no = parent_alarm.get('line_number', 0)
             parent_snippet = self.get_code_line(parent_content, line_no)
 
         if child_alarm.get('line_range', []):
-            child_snippet = self.get_multi_line_violation_snippet(child_alarm, child_content)
+            child_snippet = self.get_line_alarm_snippet(child_alarm, child_content)
         else:
             line_no = child_alarm.get('line_number', 0)
             child_snippet = self.get_code_line(child_content, line_no)
@@ -330,21 +248,22 @@ class Matcher:
         # 4. 比较片段
         if parent_snippet.strip() == child_snippet.strip():
             return True
-        else:
+        else:#相似度比较（可选）
             if self.calculate_similarity(parent_snippet, child_snippet) >= self.SNIPPET_SIMILARITY:
                 return True
+        return False
 
-    def snippet_based_matching_score(self, parent_alarm: Dict, child_alarm: Dict,
+    def snippet_matching_score(self, parent_alarm: Dict, child_alarm: Dict,
                                      parent_content: str, child_content: str) -> int:
         """基于代码片段的匹配算法"""
-        return 1 if self.snippet_based_matching(parent_alarm, child_alarm, parent_content, child_content) else 0
+        return 1 if self.snippet_matching(parent_alarm, child_alarm, parent_content, child_content) else 0
 
     # 基于哈希的匹配算法
     def _split_into_tokens(self, text: str) -> List[str]:
-        """改进的token分割"""
+        """token分割"""
         if not text:
             return []
-        #无法得知是否可靠
+        # 无法得知是否可靠
         # 移除字符串字面量
         #text = re.sub(r'"[^"]*"', '"STRING"', text)
         #text = re.sub(r"'[^']*'", "'STRING'", text)
@@ -352,10 +271,10 @@ class Matcher:
         # 移除数字字面量
         #text = re.sub(r'\b\d+\b', 'NUMBER', text)
 
-        # 分割token：包括Python关键字、标识符、运算符
+        # 分割token
         tokens = []
 
-        # 使用更精细的正则表达式
+        # 使用正则表达式
         pattern = r'''
             \b(?:def|class|if|else|elif|for|while|try|except|finally|with|import|from|as|
                 return|yield|pass|break|continue|assert|raise|global|nonlocal|
@@ -400,7 +319,39 @@ class Matcher:
         else:
             return None
 
-    def hash_based_matching(self, parent_alarm: Dict, child_alarm: Dict,
+    def get_code_snippet(self, content: str, line_number: int) -> Optional[str]:
+        """获取代码上下文"""
+        if not content:
+            return None
+
+        lines = content.split('\n')
+        total_lines = len(lines)
+
+        if line_number < 1 or line_number > total_lines:
+            return None
+
+        start_line = max(1, line_number - self.CONTEXT_LINES)
+        end_line = min(total_lines, line_number + self.CONTEXT_LINES)
+
+        snippet_lines = lines[start_line - 1:end_line]
+
+        # 移除共同缩进
+        min_indent = float('inf')
+        for line in snippet_lines:
+            if line.strip():
+                indent = len(line) - len(line.lstrip())
+                min_indent = min(min_indent, indent)
+
+        normalized_lines = []
+        for line in snippet_lines:
+            if line.strip() and min_indent != float('inf') and len(line) >= min_indent:
+                normalized_lines.append(line[min_indent:])
+            else:
+                normalized_lines.append(line)
+
+        return '\n'.join(normalized_lines)
+
+    def hash_matching(self, parent_alarm: Dict, child_alarm: Dict,
                             parent_content: str, child_content: str) -> bool:
         """基于哈希的匹配算法"""
         if parent_alarm.get('test_id', '') != child_alarm.get('test_id', ''):
@@ -430,20 +381,11 @@ class Matcher:
 
         return False
 
-    def find_hash_based_matching_alarms(self, parent_alarm: Dict, child_alarms: List[Dict],
-                                        parent_content: str, child_content: str) -> List[Dict]:
-        """查找基于哈希匹配的警告"""
-        if not parent_content or not child_content:
-            return []
-
-        return [child for child in child_alarms
-                if self.hash_based_matching(parent_alarm, child, parent_content, child_content)]
-
-    def hungarian_matching_with_opcodes(self, parent_alarms: List[Dict], child_alarms: List[Dict],
+    def hungarian_matching(self, parent_alarms: List[Dict], child_alarms: List[Dict],
                                         parent_content: str, child_content: str,
                                         opcodes: List[Dict]) -> List[Tuple[Dict, Dict, int]]:
         """
-        使用预计算opcodes的匈牙利匹配算法
+        匈牙利匹配算法
         """
         if not parent_alarms or not child_alarms:
             return []
@@ -454,7 +396,7 @@ class Matcher:
         # 初始化为-1（表示不匹配）
         score_matrix = np.full((n_parent, n_child), -1, dtype=int)
 
-        # 预先提取路径和test_id，提高效率
+        # 预先提取路径和test_id
         parent_files = [self.extract_relative_path(pa['filename']) for pa in parent_alarms]
         child_files = [self.extract_relative_path(ca['filename']) for ca in child_alarms]
         parent_test_ids = [pa.get('test_id', '') for pa in parent_alarms]
@@ -471,17 +413,16 @@ class Matcher:
                 if parent_test_ids[i] != child_test_ids[j]:
                     continue
 
-                # 计算位置匹配分数（使用预计算的opcodes）
-                location_score = self.location_based_matching_score_with_opcodes(
+                # 计算位置匹配分数
+                location_score = self.location_matching_score(
                     parent_alarms[i], child_alarms[j], opcodes
                 )
 
                 # 计算片段匹配分数
-                snippet_score = self.snippet_based_matching_score(
+                snippet_score = self.snippet_matching_score(
                     parent_alarms[i], child_alarms[j], parent_content, child_content
                 )
 
-                # 总分数（0-3）
                 total_score = location_score + snippet_score
 
                 if total_score > 0:
@@ -506,14 +447,6 @@ class Matcher:
     def is_file_changed(self, parent_file_path: str, child_file_path: str) -> bool:
         """
         检查文件是否被修改
-
-        Args:
-            parent_file_path: 父版本文件路径
-            child_file_path: 子版本文件路径
-
-        Returns:
-            True: 文件被修改了
-            False: 文件未被修改
         """
         # 检查文件是否存在
         if not os.path.exists(parent_file_path) or not os.path.exists(child_file_path):
@@ -527,27 +460,25 @@ class Matcher:
             with open(child_file_path, 'r', encoding='utf-8') as f:
                 child_content = f.read()
 
-            # 如果内容完全相同，文件未修改
+            # 内容完全相同，文件未修改
             if parent_content == child_content:
                 return False
 
-            # 内容不同，文件被修改了
             return True
 
         except Exception as e:
-            print(f"检查文件修改状态时出错 {parent_file_path} -> {child_file_path}: {e}")
-            return True  # 出错时保守地认为文件已修改
+            print(f"检查文件修改状态出错 {parent_file_path} -> {child_file_path}: {e}")
+            return True
 
     def match_warnings_between_versions(self, parent_warnings: List[Dict],
                                         child_warnings: List[Dict],
                                         parent_source_dir: str,
                                         child_source_dir: str) -> Dict[str, List[Dict]]:
         """匹配两个版本间的警告"""
-        from Warning_group import WarningGrouper
+
 
         print(f"\n开始匹配: 父版本有 {len(parent_warnings)} 个警告, 子版本有 {len(child_warnings)} 个警告")
 
-        # 保持原有的结果结构
         parent_alarms = parent_warnings.copy()
         child_alarms = child_warnings.copy()
 
@@ -570,13 +501,13 @@ class Matcher:
             'match_stats': match_type_counts
         }
 
-        # 步骤1：按文件路径分组
-        print("步骤1：按文件路径分组...")
+        # 按文件路径分组
+        print("按文件路径分组...")
         file_groups = WarningGrouper.group_warnings(parent_alarms, child_alarms)
         print(f"  共创建了 {len(file_groups)} 个文件组")
 
-        # 步骤2：遍历每个文件匹配组
-        print("\n步骤2：处理每个文件组...")
+        # 遍历每个文件匹配组
+        print("\n处理文件组...")
         for file_key, group in file_groups.items():
             parent_warnings_in_file = group['parent']
             child_warnings_in_file = group['child']
@@ -595,7 +526,7 @@ class Matcher:
                 child_exists = os.path.exists(child_file_path)
 
                 if not parent_exists or not child_exists:
-                    print(f"    警告: 文件不存在，跳过匹配")
+                    print(f"    文件不存在，跳过")
                     continue
 
                 # 判断当前文件是否为未修改文件
@@ -606,12 +537,11 @@ class Matcher:
                 child_content = self.get_file_content(child_file_path)
 
                 if not parent_content or not child_content:
-                    print(f"    警告: 无法读取文件内容，跳过匹配")
+                    print(f"    警告: 无法读取文件内容，跳过")
                     continue
 
                 if not is_changed:  # 文件未修改
-                    print(f"    文件未修改，执行精确匹配")
-                    # 未修改文件：执行精确匹配
+                    print(f"    文件未修改，进行精确匹配")
                     for pa in parent_warnings_in_file:
                         parent_idx = parent_alarms.index(pa)
                         if parent_idx in parent_tracked_indices:
@@ -635,15 +565,14 @@ class Matcher:
                                     match_type_counts['exact'] += 1
                                     break
                 else:  # 文件已修改
-                    print(f"    文件已修改，执行匈牙利匹配")
-                    # 关键优化：在文件组级别只计算一次diff操作码
+                    print(f"    文件已修改，进行匈牙利匹配")
+                    # 在文件组级别只计算一次diff操作码
                     parent_lines = parent_content.split('\n')
                     child_lines = child_content.split('\n')
                     opcodes = self.diff_matcher._get_diff_opcodes(parent_lines, child_lines)
-                    print(f"    已计算diff操作码，共{len(opcodes)}个操作码")
 
                     # 执行匈牙利匹配，传入预计算的opcodes
-                    hungarian_matches = self.hungarian_matching_with_opcodes(
+                    hungarian_matches = self.hungarian_matching(
                         parent_warnings_in_file, child_warnings_in_file,
                         parent_content, child_content, opcodes
                     )
@@ -693,14 +622,12 @@ class Matcher:
                     results, match_type_counts, parent_alarms
                 )
 
-        # 步骤3：收集所有未匹配的父警告作为true_positives
-        print("\n步骤3：收集未匹配的父警告...")
+        #收集所有未匹配的父警告作为true_positives
         for parent_idx, parent in enumerate(parent_alarms):
             if parent_idx not in parent_tracked_indices:
                 results['true_positives'].append(parent)
 
-        # 步骤4：收集所有未匹配的子警告作为新出现的警告
-        print("步骤4：计算新增警告...")
+        #收集所有未匹配的子警告作为新出现的警告
         for child_idx, child in enumerate(child_alarms):
             if child_idx not in child_tracked_indices:
                 results['new_origins'].append(child)
@@ -709,8 +636,6 @@ class Matcher:
               f"仅片段={match_type_counts['snippet']},位置与片段均匹配={match_type_counts['location_and_snippet']} "
               f"哈希={match_type_counts['hash']}")
         print(f"  匹配对: {len(results['false_positives'])}")
-        print(f"  移除警告: {len(results['true_positives'])}")
-        print(f"  新增警告: {len(results['new_origins'])}")
 
         return results
 
@@ -730,7 +655,7 @@ class Matcher:
         if not parent_content:
             return
 
-        # 尝试在所有子警告中进行哈希匹配
+        # 在所有子警告中进行哈希匹配
         for child_warning in child_alarms:
             child_idx = child_alarms.index(child_warning)
             if child_idx in child_tracked_indices:
@@ -746,7 +671,7 @@ class Matcher:
                 continue
 
             # 检查哈希匹配
-            if self.hash_based_matching(parent_warning, child_warning, parent_content, child_content):
+            if self.hash_matching(parent_warning, child_warning, parent_content, child_content):
                 parent_idx = parent_alarms.index(parent_warning)
 
                 parent_tracked_indices.add(parent_idx)

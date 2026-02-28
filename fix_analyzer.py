@@ -1,15 +1,16 @@
 import ast
 import os
-from typing import Dict, List, Tuple, Optional, Set, Any
+from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
+import subprocess
 import re
 
 
 class FixStatus(Enum):
-    FIXED = "fixed"  # 警告被修复
-    NON_FIX = "non_fix"  # 警告因代码删除而消失
-    UNKNOWN = "unknown"  # 状态未知
+    FIXED = "fixed"
+    NON_FIX = "non_fix"
+    UNKNOWN = "unknown"
 
 
 @dataclass
@@ -50,9 +51,7 @@ class ASTFixAnalyzer:
             print(f"解析文件 {file_path} 时出错: {e}")
             return None
 
-    def _extract_context_from_ast(self, tree: ast.AST, line_number: int) -> CodeContext:
-
-        context = CodeContext()
+    def _extract_context(self, tree: ast.AST, line_number: int) -> CodeContext:
 
         class Visitor(ast.NodeVisitor):
             def __init__(self, target_line):
@@ -147,18 +146,16 @@ class ASTFixAnalyzer:
         """
         定位警告的上下文（类、方法、字段）line2
         """
-        # 检查缓存
         cache_key = f"{file_path}:{line_number}"
         if cache_key in self.context_cache:
-            return self.context_cache[cache_key]
+            return self.context_cache[cache_key].get(line_number, CodeContext())
 
         tree = self._parse_file(file_path)
         if not tree:
             return CodeContext()
 
-        context = self._extract_context_from_ast(tree, line_number)
+        context = self._extract_context(tree, line_number)
 
-        # 缓存结果
         if cache_key not in self.context_cache:
             self.context_cache[cache_key] = {}
         self.context_cache[cache_key][line_number] = context
@@ -254,7 +251,7 @@ class ASTFixAnalyzer:
 
     def get_repair_scope(self, warning: Dict, context: CodeContext) -> Tuple[int, int]:
         """
-        /获取修复范围
+        获取修复范围
         """
         start_line = warning.get('line_number', -1)
         end_line = warning.get('line_number', -1)
@@ -265,17 +262,15 @@ class ASTFixAnalyzer:
             start_line = min(line_range)
             end_line = max(line_range)
 
-        # /如果是单行警告，范围从警告行到方法结束
+        # 如果是单行警告，范围从警告行到方法结束
         if start_line == end_line and context.end_line > 0:
             return (start_line, context.end_line)
 
-        # 否则返回方法范围
+        # 返回方法范围
         if context.start_line > 0 and context.end_line > 0:
             return (context.start_line, context.end_line)
 
         return (start_line, end_line)
-
-    # 在 fix_analyzer.py 的 analyze_diff_changes 方法中
 
     def analyze_diff_changes(self, old_file_path: str, new_file_path: str) -> List[DiffChange]:
         """
@@ -283,13 +278,12 @@ class ASTFixAnalyzer:
         """
         changes = []
 
-        # 1. 确定 Git 仓库位置（你截图中的仓库）
+        # 1. 确定 Git 仓库位置（里面存放了多个版本的提交记录）
         git_repo_dir = r"D:\大创参考文献阅读\匹配代码\ansible\ansible-2.17.1rc1"
 
-        # 2. 获取相对路径（相对于 ansible 根目录）
-        # 例如: "ansible-2.17.1rc1/lib/ansible/module_utils/basic.py"
-        old_rel_path = self._extract_relative_to_ansible_root(old_file_path)
-        new_rel_path = self._extract_relative_to_ansible_root(new_file_path)
+        # 2. 获取相对路径
+        old_rel_path = self.extract_relative_path(old_file_path).replace('\\', '/')
+        new_rel_path = self.extract_relative_path(new_file_path).replace('\\', '/')
 
         if not old_rel_path or not new_rel_path:
             return changes  # 如果无法获取相对路径，返回空列表
@@ -299,7 +293,7 @@ class ASTFixAnalyzer:
         new_commit = self._find_commit_for_file(new_file_path)
 
         if not old_commit or not new_commit:
-            return changes  # 如果无法找到提交哈希，返回空列表
+            return changes
 
         try:
             # 4. 执行 Git Diff 命令
@@ -309,15 +303,12 @@ class ASTFixAnalyzer:
                 f"{old_commit}:{old_rel_path}",
                 f"{new_commit}:{new_rel_path}"
             ]
-
-            import subprocess
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True,
                 encoding='utf-8'
             )
-
             if result.returncode == 0:
                 # 5. 解析 Git Diff 输出
                 changes = self._parse_git_diff_output(result.stdout)
@@ -327,23 +318,28 @@ class ASTFixAnalyzer:
 
         return changes
 
-    def _extract_relative_to_ansible_root(self, file_path: str) -> Optional[str]:
-        """
-        从完整路径中提取相对于 ansible 根目录的相对路径
-        """
-        try:
-            # 查找 "ansible\" 后的路径部分
-            parts = file_path.split("ansible\\")
-            if len(parts) > 1:
-                return parts[1]
-        except:
-            pass
-        return None
+    def extract_relative_path(self, full_path: str) -> str:
+        """从完整路径中提取相对路径"""
+        version_patterns = [
+            "ansible-2.19.0b1",
+            "ansible-2.20.0rc2",
+            "ansible-2.19.0",
+            "ansible-2.18.1",
+            "ansible-2.17.4rc1",
+            "ansible-2.17.1rc1",
+        ]
+
+        for pattern in version_patterns:
+            if pattern in full_path:
+                idx = full_path.index(pattern) + len(pattern)
+                relative_path = full_path[idx:].lstrip('\\/')
+                return relative_path
+
+        return os.path.basename(full_path)
 
     def _find_commit_for_file(self, file_path: str) -> Optional[str]:
         """
         根据文件路径确定对应的 Git 提交哈希
-        从你的截图中可以看到对应关系：
         2.17.1rc1 → 0eb97f3
         2.17.4rc1 → 8a93c14
         2.18.1 → 6093506
@@ -351,13 +347,13 @@ class ASTFixAnalyzer:
         2.19.0b1 → d3a2200
         2.20.0rc2 → 199abb5
         """
-        version_map = {
-            "2.17.1rc1": "0eb97f3",
-            "2.17.4rc1": "8a93c14",
-            "2.18.1": "6093506",
-            "2.19.0": "857253d",
+        version_map = {#调整顺序避免有包括冲突
             "2.19.0b1": "d3a2200",
-            "2.20.0rc2": "199abb5"
+            "2.19.0": "857253d",
+            "2.20.0rc2": "199abb5",
+            "2.18.1": "6093506",
+            "2.17.4rc1": "8a93c14",
+            "2.17.1rc1": "0eb97f3",
         }
 
         for version, commit in version_map.items():
@@ -368,15 +364,8 @@ class ASTFixAnalyzer:
     def _parse_git_diff_output(self, diff_output: str) -> List[DiffChange]:
         """
         解析 Git Diff 的统一格式输出
-        格式示例:
-        @@ -10,5 +10,7 @@
-          line 1
-        -deleted line
-        +added line 1
-        +added line 2
         """
         changes = []
-
         if not diff_output:
             return changes
 
@@ -395,9 +384,7 @@ class ASTFixAnalyzer:
                     continue
 
                 old_start = int(match.group(1))
-                old_length = int(match.group(2)) if match.group(2) else 1
                 new_start = int(match.group(3))
-                new_length = int(match.group(4)) if match.group(4) else 1
 
                 # 记录当前行号
                 current_old_line = old_start
@@ -441,7 +428,6 @@ class ASTFixAnalyzer:
 
     def is_all_deletions(self, changes: List[DiffChange], scope_start: int, scope_end: int) -> bool:
         """
-        /检查范围内是否只有删除操作
         判断范围内是否只有代码删除
         """
         if not changes:
@@ -553,7 +539,7 @@ class ASTFixAnalyzer:
                 return FixStatus.NON_FIX, "调整后的修复范围内没有代码更改"
 
         # l29 默认标记为修复
-        return FixStatus.FIXED, "代码被修改"
+        return FixStatus.FIXED, "默认，代码被修改"
 
 
 class ClassExistsVisitor(ast.NodeVisitor):

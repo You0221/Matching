@@ -4,14 +4,14 @@ from typing import List, Dict, Tuple, Optional
 from 匹配算法 import Matcher
 from fix_analyzer import ASTFixAnalyzer, FixStatus
 
-class EnhancedMatcher(Matcher):
+class FixMatcher(Matcher):
 
     def __init__(self, matching_threshold: int = 3, context_lines: int = 3,
                  snippet_similarity: float = 0.9, hash_size: int = 20):
         super().__init__(matching_threshold, context_lines, snippet_similarity, hash_size)
         self.fix_analyzer = ASTFixAnalyzer()
 
-    def analyze_fix_status(self, parent_warning: Dict, child_version_name: str,
+    def analyze_fix_status(self, parent_warning: Dict,
                            parent_source_dir: str, child_source_dir: str) -> Tuple[FixStatus, str, Optional[str]]:
         """
         分析警告的修复状态
@@ -34,7 +34,7 @@ class EnhancedMatcher(Matcher):
         try:
             diff_changes = self.fix_analyzer.analyze_diff_changes(parent_file_path, child_file_path)
 
-            # 使用修复分析器
+            # 使用修复分析
             status, reason = self.fix_analyzer.classify_removed_warning(
                 parent_warning, parent_file_path, child_file_path, diff_changes
             )
@@ -67,8 +67,7 @@ class EnhancedMatcher(Matcher):
         for parent_warning in match_result['true_positives']:
             # 分析修复状态
             status, reason, child_file_path = self.analyze_fix_status(
-                parent_warning, child_version_name,
-                parent_source_dir, child_source_dir
+                parent_warning, parent_source_dir, child_source_dir
             )
 
             # 添加修复状态信息到警告对象
@@ -108,8 +107,8 @@ class EnhancedMatcher(Matcher):
 
         return match_result
 
-    def run_matching_with_fix_analysis(self, version_files: List[str],
-                                       source_base_dir: str, output_dir: str):
+    def run_matching(self, version_files: List[str],
+                    source_base_dir: str, output_dir: str):
         """
         运行带有修复分析的匹配算法
         """
@@ -118,9 +117,7 @@ class EnhancedMatcher(Matcher):
         for file_path in version_files:
             warnings = self.load_warnings(file_path)
             version_name = os.path.basename(file_path).replace('bandit_', '').replace('.json', '')
-
             source_dir = os.path.join(source_base_dir, version_name)
-
             versions.append({
                 'name': version_name,
                 'file': file_path,
@@ -129,7 +126,7 @@ class EnhancedMatcher(Matcher):
                 'source_dir': source_dir
             })
 
-        all_warnings_tracking = {}
+        warnings_tracking = {}
         global_match_stats = {
             'exact': 0,
             'location': 0,
@@ -150,8 +147,8 @@ class EnhancedMatcher(Matcher):
         for i, version in enumerate(versions):
             for warning in version['warnings']:
                 warning_id = warning['unique_id']
-                if warning_id not in all_warnings_tracking:
-                    all_warnings_tracking[warning_id] = {
+                if warning_id not in warnings_tracking:
+                    warnings_tracking[warning_id] = {
                         'warning': warning,
                         'origin_version': version['name'],
                         'appearance_history': [version['name']],  # 记录出现在哪些版本
@@ -162,7 +159,7 @@ class EnhancedMatcher(Matcher):
                         'fix_version': None
                     }
 
-        # 主匹配循环 - 最小改动
+        # 主匹配循环
         for i in range(len(versions) - 1):
             version_key = versions[i]['name']
             parent_warnings = versions[i]['warnings']
@@ -175,7 +172,7 @@ class EnhancedMatcher(Matcher):
             for warning in parent_warnings:
                 warning_id = warning['unique_id']
                 # 如果已经消失了，就不再参与匹配
-                if all_warnings_tracking[warning_id]['disappeared_version'] is not None:
+                if warnings_tracking[warning_id]['disappeared_version'] is not None:
                     warning_disappeared[warning_id] = True
                 else:
                     warning_disappeared[warning_id] = False
@@ -198,7 +195,7 @@ class EnhancedMatcher(Matcher):
 
                 print(f"  与 {child_version_name} 匹配并分析修复状态...")
 
-                # 使用增强的匹配方法
+                # 使用匹配方法
                 match_result = self.match_warnings_between_versions_with_fix_analysis(
                     active_parent_warnings,
                     child_warnings,
@@ -225,11 +222,11 @@ class EnhancedMatcher(Matcher):
                     warning_id = parent_warning['unique_id']
 
                     # 记录出现在这个版本
-                    if child_version_name not in all_warnings_tracking[warning_id]['appearance_history']:
-                        all_warnings_tracking[warning_id]['appearance_history'].append(child_version_name)
+                    if child_version_name not in warnings_tracking[warning_id]['appearance_history']:
+                        warnings_tracking[warning_id]['appearance_history'].append(child_version_name)
 
                     # 记录匹配历史
-                    all_warnings_tracking[warning_id]['match_history'].append({
+                    warnings_tracking[warning_id]['match_history'].append({
                         'parent_version': version_key,
                         'child_version': child_version_name,
                         'match_type': false_positive['match_type'],
@@ -240,34 +237,34 @@ class EnhancedMatcher(Matcher):
                 # 处理已修复的警告 - 这些警告在子版本中消失了
                 for fixed_warning in match_result.get('fixed_warnings', []):
                     warning_id = fixed_warning['unique_id']
-                    all_warnings_tracking[warning_id]['fix_status'] = 'fixed'
-                    all_warnings_tracking[warning_id]['fix_reason'] = fixed_warning.get('fix_reason', '')
-                    all_warnings_tracking[warning_id]['disappeared_version'] = child_version_name
-                    all_warnings_tracking[warning_id]['fix_version'] = child_version_name
+                    warnings_tracking[warning_id]['fix_status'] = 'fixed'
+                    warnings_tracking[warning_id]['fix_reason'] = fixed_warning.get('fix_reason', '')
+                    warnings_tracking[warning_id]['disappeared_version'] = child_version_name
+                    warnings_tracking[warning_id]['fix_version'] = child_version_name
                     warning_disappeared[warning_id] = True  # 标记为消失，不再参与后续匹配
 
-                    all_warnings_tracking[warning_id]['match_history'].append({
+                    warnings_tracking[warning_id]['match_history'].append({
                         'parent_version': version_key,
                         'child_version': child_version_name,
                         'match_type': 'none',
-                        'status': 'true_positive_fixed',
+                        'status': 'fixed',
                         'matched_child_warning': None,
                         'fix_reason': fixed_warning.get('fix_reason', '')
                     })
 
-                # 处理未修复的警告 - 这些警告因代码删除而消失
+                # 处理未修复的警告
                 for non_fix_warning in match_result.get('non_fix_warnings', []):
                     warning_id = non_fix_warning['unique_id']
-                    all_warnings_tracking[warning_id]['fix_status'] = 'non_fix'
-                    all_warnings_tracking[warning_id]['fix_reason'] = non_fix_warning.get('fix_reason', '')
-                    all_warnings_tracking[warning_id]['disappeared_version'] = child_version_name
+                    warnings_tracking[warning_id]['fix_status'] = 'non_fix'
+                    warnings_tracking[warning_id]['fix_reason'] = non_fix_warning.get('fix_reason', '')
+                    warnings_tracking[warning_id]['disappeared_version'] = child_version_name
                     warning_disappeared[warning_id] = True  # 标记为消失，不再参与后续匹配
 
-                    all_warnings_tracking[warning_id]['match_history'].append({
+                    warnings_tracking[warning_id]['match_history'].append({
                         'parent_version': version_key,
                         'child_version': child_version_name,
                         'match_type': 'none',
-                        'status': 'true_positive_non_fix',
+                        'status': 'non_fix',
                         'matched_child_warning': None,
                         'fix_reason': non_fix_warning.get('fix_reason', '')
                     })
@@ -275,47 +272,38 @@ class EnhancedMatcher(Matcher):
                 # 处理状态未知的警告
                 for unknown_warning in match_result.get('unknown_status_warnings', []):
                     warning_id = unknown_warning['unique_id']
-                    all_warnings_tracking[warning_id]['fix_status'] = 'unknown'
-                    all_warnings_tracking[warning_id]['fix_reason'] = unknown_warning.get('fix_reason', '')
-                    all_warnings_tracking[warning_id]['disappeared_version'] = child_version_name
+                    warnings_tracking[warning_id]['fix_status'] = 'unknown'
+                    warnings_tracking[warning_id]['fix_reason'] = unknown_warning.get('fix_reason', '')
+                    warnings_tracking[warning_id]['disappeared_version'] = child_version_name
                     warning_disappeared[warning_id] = True  # 标记为消失，不再参与后续匹配
 
-                    all_warnings_tracking[warning_id]['match_history'].append({
+                    warnings_tracking[warning_id]['match_history'].append({
                         'parent_version': version_key,
                         'child_version': child_version_name,
                         'match_type': 'none',
-                        'status': 'true_positive_unknown',
+                        'status': 'unknown',
                         'matched_child_warning': None,
                         'fix_reason': unknown_warning.get('fix_reason', '')
                     })
 
-            # 处理在所有后续版本中都匹配上了的警告（一直存在的警告）
-            for warning in parent_warnings:
-                warning_id = warning['unique_id']
-                if not warning_disappeared[warning_id]:
-                    # 这些警告在所有后续版本中都存在，标记为非修复
-                    all_warnings_tracking[warning_id]['fix_status'] = 'non_fix'
-                    all_warnings_tracking[warning_id]['fix_reason'] = '警告在所有后续版本中都存在'
-                    all_warnings_tracking[warning_id]['match_history'].append({
-                        'parent_version': version_key,
-                        'child_version': '所有后续版本',
-                        'match_type': 'none',
-                        'status': 'true_positive_non_fix',
-                        'matched_child_warning': None,
-                        'fix_reason': '警告在所有后续版本中都存在'
-                    })
+        for warning_id, tracking in warnings_tracking.items():
+            if tracking.get('disappeared_version') is not None:
+                tracking['status'] = 'true_positive'
+            else:
+                tracking['status'] = 'false_positive'
+            tracking['true_positive_version'] = tracking.get('disappeared_version')
 
         # 生成最终结果
-        final_results = self.generate_enhanced_results(all_warnings_tracking, versions)
+        final_results = self.generate_results(warnings_tracking, versions)
         final_results['global_match_statistics'] = global_match_stats
         final_results['global_fix_statistics'] = global_fix_stats
 
         # 保存结果
-        self.save_enhanced_results(final_results, output_dir, versions)
+        self.save_results(final_results, output_dir, versions)
 
         return final_results, versions
 
-    def generate_enhanced_results(self, all_warnings_tracking: Dict, versions: List[Dict]):
+    def generate_results(self, all_warnings_tracking: Dict, versions: List[Dict]):
         """生成匹配结果"""
         warnings_by_origin = {}
 
@@ -340,7 +328,7 @@ class EnhancedMatcher(Matcher):
                 'final_status': tracking['status'],
                 'fix_status': tracking.get('fix_status', 'unknown'),
                 'fix_reason': tracking.get('fix_reason', ''),
-                'true_positive_version': tracking['true_positive_version'],
+                'true_positive_version': tracking.get('true_positive_version'),
                 'fix_version': tracking.get('fix_version'),
                 'match_history': tracking['match_history']
             })
@@ -404,7 +392,7 @@ class EnhancedMatcher(Matcher):
 
         fix_rate = true_positives_by_fix['fixed'] / total_true_positives if total_true_positives > 0 else 0
 
-        final_results = {
+        results = {
             'all_warnings': all_warnings_tracking,
             'warnings_by_origin': warnings_by_origin,
             'version_statistics': version_stats,
@@ -418,9 +406,9 @@ class EnhancedMatcher(Matcher):
             }
         }
 
-        return final_results
+        return results
 
-    def save_enhanced_results(self, final_results: Dict, output_dir: str, versions: List[Dict]):
+    def save_results(self, final_results: Dict, output_dir: str, versions: List[Dict]):
         """保存匹配结果"""
         os.makedirs(output_dir, exist_ok=True)
 
@@ -444,15 +432,15 @@ class EnhancedMatcher(Matcher):
                 }
 
                 safe_filename = version_name.replace(' ', '_').replace('.', '_')
-                output_file = os.path.join(output_dir, f'{safe_filename}_enhanced_summary.json')
+                output_file = os.path.join(output_dir, f'{safe_filename}_summary.json')
 
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(version_result, f, indent=2, ensure_ascii=False)
 
         # 生成详细的文本报告
-        self.generate_enhanced_report(final_results, output_dir, versions)
+        self.generate_report(final_results, output_dir, versions)
 
-    def generate_enhanced_report(self, final_results: Dict, output_dir: str, versions: List[Dict]):
+    def generate_report(self, final_results: Dict, output_dir: str, versions: List[Dict]):
         """详细文本报告"""
         report_file = os.path.join(output_dir, "detailed_report.txt")
 
@@ -584,9 +572,9 @@ def main():
         os.path.join(base_path, "bandit_ansible-2.17.1rc1.json"),
         os.path.join(base_path, "bandit_ansible-2.17.4rc1.json"),
         os.path.join(base_path, "bandit_ansible-2.18.1.json"),
-        os.path.join(base_path, "bandit_ansible-2.19.0.json"),
-        os.path.join(base_path, "bandit_ansible-2.19.0b1.json"),
-        os.path.join(base_path, "bandit_ansible-2.20.0rc2.json")
+        #os.path.join(base_path, "bandit_ansible-2.19.0.json"),
+        #os.path.join(base_path, "bandit_ansible-2.19.0b1.json"),
+        #os.path.join(base_path, "bandit_ansible-2.20.0rc2.json")
     ]
 
     source_base_dir = os.path.join(base_path, "ansible")
@@ -598,16 +586,16 @@ def main():
     if not os.path.exists(source_base_dir):
         print(f"警告: 源代码基础目录不存在: {source_base_dir}")
 
-    # 初始化增强匹配器
-    enhanced_matcher = EnhancedMatcher(
+    # 初始化匹配器
+    enhanced_matcher = FixMatcher(
         matching_threshold=3,
         context_lines=3,
         snippet_similarity=0.9,
         hash_size=20
     )
 
-    output_dir = os.path.join(base_path, "enhanced_results")
-    results, versions = enhanced_matcher.run_matching_with_fix_analysis(
+    output_dir = os.path.join(base_path, "results")
+    results, versions = enhanced_matcher.run_matching(
         version_files, source_base_dir, output_dir
     )
 
