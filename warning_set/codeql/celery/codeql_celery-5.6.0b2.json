@@ -1,0 +1,6597 @@
+[
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/missing-equals",
+    "rule_name": "py/missing-equals",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/amqp.py",
+    "line": 41,
+    "message": "The class 'Queues' does not override ['__eq__'](1), but adds the new attribute [aliases](2).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [default_exchange](3).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [default_routing_key](4).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [create_missing](5).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [create_missing_queue_type](6).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [create_missing_queue_exchange_type](7).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [autoexchange](8).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [max_priority](9).\nThe class 'Queues' does not override ['__eq__'](1), but adds the new attribute [_consume_from](10).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2bde907e30ccdcda:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 20,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 5
+            }
+          },
+          "message": {
+            "text": "'__eq__'"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 70,
+              "startColumn": 9,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "aliases"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 71,
+              "startColumn": 9,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "default_exchange"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 72,
+              "startColumn": 9,
+              "endColumn": 33
+            }
+          },
+          "message": {
+            "text": "default_routing_key"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 73,
+              "startColumn": 9,
+              "endColumn": 28
+            }
+          },
+          "message": {
+            "text": "create_missing"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 74,
+              "startColumn": 9,
+              "endColumn": 39
+            }
+          },
+          "message": {
+            "text": "create_missing_queue_type"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 75,
+              "startColumn": 9,
+              "endColumn": 48
+            }
+          },
+          "message": {
+            "text": "create_missing_queue_exchange_type"
+          }
+        },
+        {
+          "id": 8,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 76,
+              "startColumn": 9,
+              "endColumn": 26
+            }
+          },
+          "message": {
+            "text": "autoexchange"
+          }
+        },
+        {
+          "id": 9,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 77,
+              "startColumn": 9,
+              "endColumn": 26
+            }
+          },
+          "message": {
+            "text": "max_priority"
+          }
+        },
+        {
+          "id": 10,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/amqp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 4
+            },
+            "region": {
+              "startLine": 175,
+              "startColumn": 13,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "_consume_from"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/missing-equals",
+    "rule_name": "py/missing-equals",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 232,
+    "message": "The class 'Signature' does not override ['__eq__'](1), but adds the new attribute [_app](2).\nThe class 'Signature' does not override ['__eq__'](1), but adds the new attribute [_type](3).\nThe class 'Signature' does not override ['__eq__'](1), but adds the new attribute [immutable](4).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "702f32b44165ca70:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 5
+            }
+          },
+          "message": {
+            "text": "'__eq__'"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/canvas.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 6
+            },
+            "region": {
+              "startLine": 325,
+              "startColumn": 9,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "_app"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/canvas.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 6
+            },
+            "region": {
+              "startLine": 336,
+              "startColumn": 17,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "_type"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/canvas.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 6
+            },
+            "region": {
+              "startLine": 551,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "immutable"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/missing-equals",
+    "rule_name": "py/missing-equals",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/functional.py",
+    "line": 193,
+    "message": "The class '_regen' does not override ['__eq__'](1), but adds the new attribute [__it](2).\nThe class '_regen' does not override ['__eq__'](1), but adds the new attribute [__consumed](3).\nThe class '_regen' does not override ['__eq__'](1), but adds the new attribute [__done](4).\nThe class '_regen' does not override ['__eq__'](1), but adds the new attribute [__consumed](5).\nThe class '_regen' does not override ['__eq__'](1), but adds the new attribute [__it](6).\nThe class '_regen' does not override ['__eq__'](1), but adds the new attribute [__done](7).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9c2c9bd062afd8d7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 30,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 5
+            }
+          },
+          "message": {
+            "text": "'__eq__'"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 200,
+              "startColumn": 9,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "__it"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 201,
+              "startColumn": 9,
+              "endColumn": 24
+            }
+          },
+          "message": {
+            "text": "__consumed"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 202,
+              "startColumn": 9,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "__done"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 208,
+              "startColumn": 9,
+              "endColumn": 24
+            }
+          },
+          "message": {
+            "text": "__consumed"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 209,
+              "startColumn": 9,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "__it"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/functional.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 229,
+              "startColumn": 21,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "__done"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/missing-equals",
+    "rule_name": "py/missing-equals",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 986,
+    "message": "The class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [_result](2).\nThe class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [_state](3).\nThe class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [_traceback](4).\nThe class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [_name](5).\nThe class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [on_ready](6).\nThe class 'EagerResult' does not override ['__eq__'](1), but adds the new attribute [_state](7).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fe928805c5c40c8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 398,
+              "startColumn": 5,
+              "endColumn": 29
+            }
+          },
+          "message": {
+            "text": "'__eq__'"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 993,
+              "startColumn": 9,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "_result"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 994,
+              "startColumn": 9,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "_state"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 995,
+              "startColumn": 9,
+              "endColumn": 24
+            }
+          },
+          "message": {
+            "text": "_traceback"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 996,
+              "startColumn": 9,
+              "endColumn": 19
+            }
+          },
+          "message": {
+            "text": "_name"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 997,
+              "startColumn": 9,
+              "endColumn": 22
+            }
+          },
+          "message": {
+            "text": "on_ready"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/result.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            },
+            "region": {
+              "startLine": 1037,
+              "startColumn": 9,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "_state"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/beat.py",
+    "line": 265,
+    "message": "This call to [Scheduler.setup_schedule](1) in an initialization method is overridden by [PersistentScheduler.setup_schedule](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5136d627ef92f9e9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 34,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/beat.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 13
+            },
+            "region": {
+              "startLine": 422,
+              "startColumn": 5,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "Scheduler.setup_schedule"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/beat.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 13
+            },
+            "region": {
+              "startLine": 530,
+              "startColumn": 5,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "PersistentScheduler.setup_schedule"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/graph.py",
+    "line": 259,
+    "message": "This call to [GraphFormatter.label](1) in an initialization method is overridden by [StepFormatter.label](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3b5ac03e92dbea3:1",
+        "primaryLocationStartColumnFingerprint": "49"
+      },
+      "startColumn": 58,
+      "endColumn": 79,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/graph.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 14
+            },
+            "region": {
+              "startLine": 280,
+              "startColumn": 5,
+              "endColumn": 26
+            }
+          },
+          "message": {
+            "text": "GraphFormatter.label"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/bootsteps.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 15
+            },
+            "region": {
+              "startLine": 50,
+              "startColumn": 5,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "StepFormatter.label"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/worker.py",
+    "line": 95,
+    "message": "This call to [WorkController.on_before_init](1) in an initialization method is overridden by [Worker.on_before_init](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7e006e8d4483290:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 38,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/worker/worker.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 144,
+              "startColumn": 5,
+              "endColumn": 40
+            }
+          },
+          "message": {
+            "text": "WorkController.on_before_init"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/apps/worker.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 18
+            },
+            "region": {
+              "startLine": 88,
+              "startColumn": 5,
+              "endColumn": 53
+            }
+          },
+          "message": {
+            "text": "Worker.on_before_init"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/worker.py",
+    "line": 97,
+    "message": "This call to [WorkController.on_after_init](1) in an initialization method is overridden by [Worker.on_after_init](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "98e339df5c70b15a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 37,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/worker/worker.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 147,
+              "startColumn": 5,
+              "endColumn": 39
+            }
+          },
+          "message": {
+            "text": "WorkController.on_after_init"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/apps/worker.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 18
+            },
+            "region": {
+              "startLine": 100,
+              "startColumn": 5,
+              "endLine": 102,
+              "endColumn": 33
+            }
+          },
+          "message": {
+            "text": "Worker.on_after_init"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/missing-call-to-init",
+    "rule_name": "py/missing-call-to-init",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 190,
+    "message": "Class RedisBackend may not be initialized properly as [method Backend.__init__](1) is not called from its [__init__ method](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c9542849a3eb3b17:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 65,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 138,
+              "startColumn": 5,
+              "endLine": 140,
+              "endColumn": 71
+            }
+          },
+          "message": {
+            "text": "method Backend.__init__"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/redis.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 19
+            },
+            "region": {
+              "startLine": 213,
+              "startColumn": 5,
+              "endLine": 215,
+              "endColumn": 50
+            }
+          },
+          "message": {
+            "text": "__init__ method"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/catch-base-exception",
+    "rule_name": "py/catch-base-exception",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/base.py",
+    "line": 37,
+    "message": "Except block directly handles BaseException.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3197ebea83bd53b9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/catch-base-exception",
+    "rule_name": "py/catch-base-exception",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/trace.py",
+    "line": 502,
+    "message": "Except block directly handles BaseException.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "70fab3c9a77405d4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/asynchronous.py",
+    "line": 80,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "14fcae77e9dd0b52:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/amqp.py",
+    "line": 527,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "11973581c83772d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 796,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6b9ff7b621e00de:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 1186,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "386977e52729a85e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 1293,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9a7a756b4dfe5c1c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 1311,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bee988ce00650f74:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 600,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "58d3bd906d2e7bad:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 1178,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1f9fe871a0a36016:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "t/benchmarks/bench_worker.py",
+    "line": 102,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cadc113b70bd81c5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bootsteps.py",
+    "line": 183,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fb4208f4ddd81762:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/cassandra.py",
+    "line": 199,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8efc989b72e8019d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 48,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 1296,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "38b8bc617fe1d8fd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/collections.py",
+    "line": 680,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5dcf3cfd1f33c8bf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 2273,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c724339e9241238b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/control.py",
+    "line": 120,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "97521f360529ad66:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/fixups/django.py",
+    "line": 178,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e92f0517bf8529d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/fixups/django.py",
+    "line": 214,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bb32301951af08e0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 44,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/elasticsearch.py",
+    "line": 110,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1a0fc6769385670e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/elasticsearch.py",
+    "line": 112,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "dae18a308b9fa6f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 55,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/eventlet.py",
+    "line": 74,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f61796de00baf7e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 50,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/eventlet.py",
+    "line": 80,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "44359f3502625bcb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/gevent.py",
+    "line": 77,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "29c9e79a901af1d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/log.py",
+    "line": 56,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ea1aabe089914b24:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/loops.py",
+    "line": 133,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d74652ff6a1588d6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/migrate.py",
+    "line": 280,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cc47905d3042a564:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/migrate.py",
+    "line": 282,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4b9a7f4b638caa1c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/migrate.py",
+    "line": 333,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "52d4b481f8636c4a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 45,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/apps/multi.py",
+    "line": 312,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "140955c2a59e060b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/pidbox.py",
+    "line": 119,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "87c4ee2630b7d052:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 21,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/platforms.py",
+    "line": 685,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e02b3e9c1c5214:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 45,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/rdb.py",
+    "line": 120,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "dafe8fdd3dc4e03a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 36,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d06b2bf93c250551:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 605,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9196063b559e8df5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/strategy.py",
+    "line": 88,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1ccc872ec1271092:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 21,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/state.py",
+    "line": 258,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fdc6b0964a0c14a6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/trace.py",
+    "line": 751,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "984614c148a55c3f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 21,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/utils.py",
+    "line": 177,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "98ded20d32d6f663:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/testing/worker.py",
+    "line": 53,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "da7a343a463ebf3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/worker.py",
+    "line": 230,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e3a7192ddeb15f74:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/worker.py",
+    "line": 278,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9075ab1bad1c29ab:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 36,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/useless-except",
+    "rule_name": "py/useless-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/cosmosdbsql.py",
+    "line": 172,
+    "message": "Non-exception [instance of 'NoneType'](1) in exception handler which will never match raised exception.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "10d62a226964321b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 34,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/cosmosdbsql.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 19,
+              "startColumn": 57,
+              "endColumn": 61
+            }
+          },
+          "message": {
+            "text": "instance of 'NoneType'"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/useless-except",
+    "rule_name": "py/useless-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/gevent.py",
+    "line": 38,
+    "message": "Non-exception [instance of 'NoneType'](1) in exception handler which will never match raised exception.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4276ad5d45abcc94:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 20,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/concurrency/gevent.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 38
+            },
+            "region": {
+              "startLine": 13,
+              "startColumn": 15,
+              "endColumn": 19
+            }
+          },
+          "message": {
+            "text": "instance of 'NoneType'"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/regex/duplicate-in-character-class",
+    "rule_name": "py/regex/duplicate-in-character-class",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/eventlet/webcrawler.py",
+    "line": 38,
+    "message": "This regular expression includes duplicate character ':' in a set of characters.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8894e5f8b3ea3950:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 75,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unnecessary-lambda",
+    "rule_name": "py/unnecessary-lambda",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/upgrade.py",
+    "line": 48,
+    "message": "This 'lambda' is just a simple wrapper around a callable object. Use that object directly.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "efcc7b222355a7fb:1",
+        "primaryLocationStartColumnFingerprint": "43"
+      },
+      "startColumn": 48,
+      "endColumn": 64,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/database/__init__.py",
+    "line": 42,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3bcd5a8a87c9a793:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/database/__init__.py",
+    "line": 189,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6ebdb72fbe577aa2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/_state.py",
+    "line": 126,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "15681742c468f24e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/amqp.py",
+    "line": 142,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "901ac108f51aa2a5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/annotations.py",
+    "line": 21,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e96e7275a9e06eda:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 28,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/annotations.py",
+    "line": 27,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f4d2a84a82b6dd5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/amqp.py",
+    "line": 179,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "34f085a3406e3356:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 97,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3d37ccbfc096f5bb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 328,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2d864423bd513654:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 380,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c916230401010ee:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 75,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/autoscale.py",
+    "line": 83,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2979fbe77ac74c25:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 662,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e3f33f6da4a5bfc3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 77,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/autoscale.py",
+    "line": 115,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "84c246809830b3f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 1123,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "40dade40beaedb57:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/base.py",
+    "line": 261,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d31f474b49e45563:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/loaders/base.py",
+    "line": 208,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6a80af53381281c1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 62,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/loaders/base.py",
+    "line": 251,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "eb9aee2c479195d6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 454,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1f242ae535c5ed5e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 653,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b31a86026d960009:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 677,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "43ec3f50e16e2a85:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 71,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 756,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "24a7e17c75490de4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 63,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 667,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "34f4c61f54708703:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 752,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a92a4c6b799f5cc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 51,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 846,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "70ed41cddb1d8560:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 57,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 1101,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "381537c2fc2ed550:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 1118,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4c1e94dd6d80b9ef:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 70,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bootsteps.py",
+    "line": 363,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1de1e83237a46e7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bootsteps.py",
+    "line": 367,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "21e2c04eda4073e0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 28,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bootsteps.py",
+    "line": 374,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6532f53cceba96b3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 369,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "190c4d85196544f7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 79,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 874,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7bd6ea32090f58b9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 59,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 953,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4256ab9961f8e74f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 41,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "docs/_ext/celerydocs.py",
+    "line": 127,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1865a51347550220:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 59,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 1045,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c5c35e1cf3e74a6c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "docs/conf.py",
+    "line": 96,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c57519d650226bc1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/consul.py",
+    "line": 74,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7512296026acaa54:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/control.py",
+    "line": 92,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "34f9b3f1f0253584:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/consumer/consumer.py",
+    "line": 268,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "91c1ca9ed0f8e16f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 47,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/control.py",
+    "line": 370,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "71bd6a10c054dc67:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 53,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/consumer/consumer.py",
+    "line": 651,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "376332e3a3b9b92d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/cursesmon.py",
+    "line": 173,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ff935d3573953dfa:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 36,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/cursesmon.py",
+    "line": 239,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9464524624954982:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/cursesmon.py",
+    "line": 245,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bb4802ec63f0b64:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/debug.py",
+    "line": 138,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "98edf5e36ec34daf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/deprecated.py",
+    "line": 93,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3930fa9cdc99805c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/deprecated.py",
+    "line": 101,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2efe738c846fb46e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/dispatcher.py",
+    "line": 162,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "35a3ecf8f2298df4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/dumper.py",
+    "line": 50,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fc3d48b4f29b7455:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 28,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/fixups/django.py",
+    "line": 192,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "17ca6221f4962d84:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 53,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/elasticsearch.py",
+    "line": 104,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ae305b1701163f6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/consumer/events.py",
+    "line": 54,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aa9324fc577040cc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/events.py",
+    "line": 39,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "48b2f8d7f7e44af7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 21,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/filesystem.py",
+    "line": 80,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "88c985837122c1fc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/functional.py",
+    "line": 97,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7ba4077d62f08626:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/consumer/gossip.py",
+    "line": 94,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "645228ccbdfdbc42:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/gcs.py",
+    "line": 313,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "74215bce05406006:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/consumer/gossip.py",
+    "line": 183,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a72b34987e344b9d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 44,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/log.py",
+    "line": 87,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "25661252bc8f3510:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 73,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/local.py",
+    "line": 296,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ffe43a66bad708:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 46,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/log.py",
+    "line": 263,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b6892dc7f6a2b979:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/log.py",
+    "line": 284,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f6eb15e8f3db254e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/testing/manager.py",
+    "line": 89,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "20aba0e8003f1a6c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/testing/manager.py",
+    "line": 109,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c80e528ee1636d2a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 66,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/migrate.py",
+    "line": 91,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "700a4d09ffc6e31:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/mongodb.py",
+    "line": 236,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "da078288adf81ef2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/apps/multi.py",
+    "line": 195,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9848d2e060d56e6d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/apps/multi.py",
+    "line": 255,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c54a9a391bba08d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 19,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/objects.py",
+    "line": 14,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a8b8404990fa1f0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 59,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/objects.py",
+    "line": 89,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b328a494935606cd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/platforms.py",
+    "line": 98,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f6a68eaabbd42119:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/prefork.py",
+    "line": 132,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7b69d3a1b56e76e8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 46,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/platforms.py",
+    "line": 485,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8fb60bcf161472ef:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/platforms.py",
+    "line": 502,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "996ec69a4ded4771:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 170,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e0a778032973c4c2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 190,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9f0c4f767e69c222:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 55,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 507,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6331a7b34bbc568:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 371,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6b086f23ef3eda71:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 52,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 373,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "96c22fce5d081a80:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 405,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "259c7d2f57cc0dd7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 28,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 540,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5f34ce5ca7c0a3dd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 61,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 566,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "88037232e051f66:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 77,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 867,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e9fed11914de710:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 36,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 1019,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7f32c3832f9a0933:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 51,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/routes.py",
+    "line": 41,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "792a7cd50107f4f3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 47,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/routes.py",
+    "line": 98,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cda36716bee3111f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 76,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/rpc.py",
+    "line": 57,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5c9f4f00e3a57dbd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/rpc.py",
+    "line": 75,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b66aa1f618135f7c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/rpc.py",
+    "line": 195,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f0087cbddc7afe21:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 62,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/serialization.py",
+    "line": 38,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "77268a770127e022:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 51,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/shell.py",
+    "line": 31,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "36f3afc1ec7681c6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 35,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/strategy.py",
+    "line": 132,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2fa89b8213356398:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 57,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/state.py",
+    "line": 267,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d37937405215f408:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/events/state.py",
+    "line": 540,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bd2f1e8aa4c5ac8d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/eventlet/tasks.py",
+    "line": 7,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cc298796d766b4f2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/time.py",
+    "line": 318,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8412189ed8952abc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 65,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/apps/worker.py",
+    "line": 198,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a8a88102c98047e8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/worker.py",
+    "line": 80,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9086fd8484c53d56:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/worker.py",
+    "line": 288,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3eeed71f23ea0bb1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 79,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/worker.py",
+    "line": 307,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "576e2059603211d3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/inheritance/incorrect-overridden-signature",
+    "rule_name": "py/inheritance/incorrect-overridden-signature",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/loaders/base.py",
+    "line": 208,
+    "message": "Overridden method signature does not match [call](1), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](3), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](4), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](5), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](6), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](7), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](8), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.\nOverridden method signature does not match [call](9), where it is passed an argument named 'fail_silently'. Overriding method [method Loader.read_configuration](2) matches the call.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6a80af53381281c1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 62,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 119,
+              "startColumn": 13,
+              "endColumn": 54
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/loaders/default.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 110
+            },
+            "region": {
+              "startLine": 25,
+              "startColumn": 5,
+              "endColumn": 54
+            }
+          },
+          "message": {
+            "text": "method Loader.read_configuration"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 127,
+              "startColumn": 13,
+              "endColumn": 54
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 135,
+              "startColumn": 13,
+              "endColumn": 53
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 137,
+              "startColumn": 9,
+              "endColumn": 49
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 154,
+              "startColumn": 24,
+              "endColumn": 65
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 156,
+              "startColumn": 24,
+              "endColumn": 65
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 8,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 171,
+              "startColumn": 17,
+              "endColumn": 58
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 9,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/app/test_loaders.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 51
+            },
+            "region": {
+              "startLine": 172,
+              "startColumn": 13,
+              "endColumn": 53
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/inheritance/incorrect-overridden-signature",
+    "rule_name": "py/inheritance/incorrect-overridden-signature",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 612,
+    "message": "Overridden method signature does not match [call](1), where it is passed too few arguments. Overriding method [method DisabledBackend.store_result](2) matches the call.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ac3c609ca8d27029:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 62,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/backends/test_base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 104
+            },
+            "region": {
+              "startLine": 1424,
+              "startColumn": 9,
+              "endColumn": 49
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 1198,
+              "startColumn": 5,
+              "endColumn": 45
+            }
+          },
+          "message": {
+            "text": "method DisabledBackend.store_result"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/mixed-tuple-returns",
+    "rule_name": "py/mixed-tuple-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/collections.py",
+    "line": 376,
+    "message": "ConfigurationView._to_keys returns [tuple of size 1](1) and [tuple of size 2](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "553d76cb220ae833:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/collections.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 31
+            },
+            "region": {
+              "startLine": 382,
+              "startColumn": 16,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "tuple of size 1"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/utils/collections.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 31
+            },
+            "region": {
+              "startLine": 381,
+              "startColumn": 20,
+              "endColumn": 49
+            }
+          },
+          "message": {
+            "text": "tuple of size 2"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/procedure-return-value-used",
+    "rule_name": "py/procedure-return-value-used",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/gevent.py",
+    "line": 35,
+    "message": "The result of [apply_target](1) is used even though it is always None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "33948c676c91323c:1",
+        "primaryLocationStartColumnFingerprint": "7"
+      },
+      "startColumn": 20,
+      "endColumn": 62,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/concurrency/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 23
+            },
+            "region": {
+              "startLine": 22,
+              "endLine": 24,
+              "endColumn": 63
+            }
+          },
+          "message": {
+            "text": "apply_target"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 44,
+    "message": "Import of module [celery.app.builtins](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e02da16f1acd9e78:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/builtins.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 111
+            }
+          },
+          "message": {
+            "text": "celery.app.builtins"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 49,
+    "message": "Import of module [celery.app.utils](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d677e0bf9b5d1b7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/utils.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 57
+            }
+          },
+          "message": {
+            "text": "celery.app.utils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 459,
+    "message": "Import of module [celery.bin.celery](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4512beb48b1f04e4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 45,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/bin/celery.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 112
+            }
+          },
+          "message": {
+            "text": "celery.bin.celery"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 25,
+    "message": "Import of module [celery.app.task](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1dc06822e9a8cc9c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/task.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 113
+            }
+          },
+          "message": {
+            "text": "celery.app.task"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/builtins.py",
+    "line": 43,
+    "message": "Import of module [celery.backends.base](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "63e397f3e0263363:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 68,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            }
+          },
+          "message": {
+            "text": "celery.backends.base"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/celery.py",
+    "line": 14,
+    "message": "Import of module [celery.app.utils](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c70664872d6c81b7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/utils.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 57
+            }
+          },
+          "message": {
+            "text": "celery.app.utils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/celery.py",
+    "line": 19,
+    "message": "Import of module [celery.bin.control](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6ba9d90bfd92a157:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 56,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/bin/control.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 114
+            }
+          },
+          "message": {
+            "text": "celery.bin.control"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/control.py",
+    "line": 18,
+    "message": "Import of module [celery.worker.request](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8d1895f7aab62ea1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/worker/request.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 97
+            }
+          },
+          "message": {
+            "text": "celery.worker.request"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/bin/control.py",
+    "line": 12,
+    "message": "Import of module [celery.worker.control](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fe1a1215e65f866d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 40,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/worker/control.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 34
+            }
+          },
+          "message": {
+            "text": "celery.worker.control"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 18,
+    "message": "Import of module [celery.app.task](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "150aa116459932ff:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/task.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 113
+            }
+          },
+          "message": {
+            "text": "celery.app.task"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/request.py",
+    "line": 19,
+    "message": "Import of module [celery.app.trace](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "95130e2972e5cd28:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 73,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/trace.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            }
+          },
+          "message": {
+            "text": "celery.app.trace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/task.py",
+    "line": 23,
+    "message": "Import of module [celery.app.utils](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "436c42de277be2c2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/utils.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 57
+            }
+          },
+          "message": {
+            "text": "celery.app.utils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/task.py",
+    "line": 790,
+    "message": "Import of module [celery.app.trace](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "39d1a06066b69ef0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 50,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/trace.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            }
+          },
+          "message": {
+            "text": "celery.app.trace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/trace.py",
+    "line": 21,
+    "message": "Import of module [celery.app.task](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3511ef2a756724f7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/task.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 113
+            }
+          },
+          "message": {
+            "text": "celery.app.task"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/trace.py",
+    "line": 22,
+    "message": "Import of module [celery.app.task](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "88a0352dc8673125:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 45,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/task.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 113
+            }
+          },
+          "message": {
+            "text": "celery.app.task"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/utils.py",
+    "line": 380,
+    "message": "Import of module [celery.app.base](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ed9d6877f36348bb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/app/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 28
+            }
+          },
+          "message": {
+            "text": "celery.app.base"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/asynchronous.py",
+    "line": 33,
+    "message": "Module 'eventlet' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "82b29bdd054e8c29:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/base.py",
+    "line": 22,
+    "message": "Module 'celery.exceptions' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "984cda55ce425e41:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/utils/text.py",
+    "line": 5,
+    "message": "Module 're' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e0442101f8860438:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-own-module",
+    "rule_name": "py/import-own-module",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/next-steps/proj/celery.py",
+    "line": 1,
+    "message": "The module 'celery' imports itself.\nThe module 'proj.celery' imports itself.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "35aaec99899d232c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "t/smoke/tasks.py",
+    "line": 13,
+    "message": "Import pollutes the enclosing namespace, as the imported module [t.integration.tasks](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5bac1badabd6ff6c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/integration/tasks.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 126
+            }
+          },
+          "message": {
+            "text": "t.integration.tasks"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "t/unit/bin/proj/app2.py",
+    "line": 1,
+    "message": "Import of 'celery' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "10ac1d757adeeb3a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 14,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/arangodb.py",
+    "line": 16,
+    "message": "Import of 'AQLQueryError' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5d8bcf08dd731c7a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 53,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/app/base.py",
+    "line": 44,
+    "message": "Import of 'builtins' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e02da16f1acd9e78:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "t/unit/contrib/proj/foo.py",
+    "line": 1,
+    "message": "Import of 'plugh' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "efc9ce14ef35c491:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/stamping/myapp.py",
+    "line": 34,
+    "message": "Import of 'tasks' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "53953586f9f126d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 13,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/django/proj/urls.py",
+    "line": 1,
+    "message": "Import of 'handler404' is not used.\nImport of 'handler500' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c4332df08ab97d0e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 52,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/django/proj/urls.py",
+    "line": 2,
+    "message": "Import of 'include' is not used.\nImport of 'path' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b4b8e01a60f15d99:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/urls.py",
+    "line": 2,
+    "message": "Import of 'handler404' is not used.\nImport of 'handler500' is not used.\nImport of 'include' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d80f75d5cdfab742:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 85,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/commented-out-code",
+    "rule_name": "py/commented-out-code",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 1362,
+    "message": "This comment appears to contain commented-out code.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9294dff377a076f5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 77,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/file-not-closed",
+    "rule_name": "py/file-not-closed",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/platforms.py",
+    "line": 330,
+    "message": "File is opened but is not closed.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1f6c36f1f63e0a72:1",
+        "primaryLocationStartColumnFingerprint": "7"
+      },
+      "startColumn": 20,
+      "endColumn": 50,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/file-not-closed",
+    "rule_name": "py/file-not-closed",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "setup.py",
+    "line": 95,
+    "message": "File is opened but is not closed.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b7e8a6693c148e2:1",
+        "primaryLocationStartColumnFingerprint": "28"
+      },
+      "startColumn": 41,
+      "endColumn": 63,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/testing/manager.py",
+    "line": 104,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7f275f2c873fa12a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 70,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 272,
+    "message": "This assignment to 'buf' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a7536ab3ce94b94e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 16,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/concurrency/asynpool.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 27
+            },
+            "region": {
+              "startLine": 295,
+              "startColumn": 13,
+              "endColumn": 16
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-loop-variable",
+    "rule_name": "py/unused-loop-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/testing/manager.py",
+    "line": 119,
+    "message": "For loop variable 'i' is not used in the loop body.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ae41a03ece1e34e1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 66,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 295,
+    "message": "Variable buf is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c4c5caa292aada53:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 1386,
+    "message": "Variable args is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1f124191cc54742f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 13,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/canvas.py",
+    "line": 1387,
+    "message": "Variable kwargs is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cc5e3cef2121aa9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/contrib/migrate.py",
+    "line": 308,
+    "message": "Variable ack_message is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ee5c8433a51c903b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/stamping/revoke_example.py",
+    "line": 75,
+    "message": "Variable result is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "722cc22ae2097c7b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 11,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/worker/state.py",
+    "line": 111,
+    "message": "Variable _all_total_count is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "421b340373038d41:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/quorum-queues/declare_queue.py",
+    "line": 13,
+    "message": "The global variable 'channel' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6234a6024a7891bb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 12,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 30,
+    "message": "The global variable 'DATABASE_ENGINE' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c87289522a0dba5b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 31,
+    "message": "The global variable 'DATABASE_NAME' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8bd41f415a31e082:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 32,
+    "message": "The global variable 'DATABASE_USER' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "80daa8f30425d99:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 33,
+    "message": "The global variable 'DATABASE_PASSWORD' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "78572dceadcf458b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 34,
+    "message": "The global variable 'DATABASE_HOST' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "93221276d81bf908:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": 35,
+    "message": "The global variable 'DATABASE_PORT' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8e76c4002e0208b1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/database/__init__.py",
+    "line": 79,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f329b63a003fc545:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 53,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/arangodb.py",
+    "line": 64,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1dec56c2cd981d49:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/cache.py",
+    "line": 102,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "de7dc2ac912d52c3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/cache.py",
+    "line": 111,
+    "message": "Assignment overwrites attribute expires, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1ec431acd895c91:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 63,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 150,
+              "startColumn": 9,
+              "endColumn": 67
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/cache.py",
+    "line": 113,
+    "message": "Assignment overwrites attribute key_t, which was previously defined in superclass [BaseKeyValueStoreBackend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2303dd6d061caa49:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 63,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 919,
+              "startColumn": 13,
+              "endColumn": 45
+            }
+          },
+          "message": {
+            "text": "BaseKeyValueStoreBackend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/couchdb.py",
+    "line": 38,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "901ca3a334a917af:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/couchbase.py",
+    "line": 47,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "387e864459688250:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/elasticsearch.py",
+    "line": 51,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e9364ed1efe9d410:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/dynamodb.py",
+    "line": 71,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "89146665642841b4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/filesystem.py",
+    "line": 39,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "454dcc4df819d3f0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/mongodb.py",
+    "line": 74,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b2b6663a2dc51d81:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 69,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 319,
+    "message": "Assignment overwrites attribute url, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d0cd379764010dd0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 165,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/rpc.py",
+    "line": 132,
+    "message": "Assignment overwrites attribute serializer, which was previously defined in superclass [Backend](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a42f29c2b99788af:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 63,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/backends/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 20
+            },
+            "region": {
+              "startLine": 143,
+              "startColumn": 9,
+              "endColumn": 63
+            }
+          },
+          "message": {
+            "text": "Backend"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/solo.py",
+    "line": 19,
+    "message": "Assignment overwrites attribute limit, which was previously defined in superclass [BasePool](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "693d6cb25591c694:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/concurrency/base.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 23
+            },
+            "region": {
+              "startLine": 75,
+              "startColumn": 9,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "BasePool"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-of-mutable-attribute",
+    "rule_name": "py/import-of-mutable-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/redis.py",
+    "line": 15,
+    "message": "Importing the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](2) will be not be observed locally.\nImporting the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](3) will be not be observed locally.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4e37943287921bd7:1",
+        "primaryLocationStartColumnFingerprint": "26"
+      },
+      "startColumn": 27,
+      "endColumn": 47,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/_state.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 72
+            }
+          },
+          "message": {
+            "text": "module celery._state"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 163,
+              "startColumn": 9,
+              "endColumn": 36
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 169,
+              "startColumn": 5,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-of-mutable-attribute",
+    "rule_name": "py/import-of-mutable-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/result.py",
+    "line": 14,
+    "message": "Importing the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](2) will be not be observed locally.\nImporting the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](3) will be not be observed locally.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "efb67d17ced322eb:1",
+        "primaryLocationStartColumnFingerprint": "47"
+      },
+      "startColumn": 48,
+      "endColumn": 68,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/_state.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 72
+            }
+          },
+          "message": {
+            "text": "module celery._state"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 163,
+              "startColumn": 9,
+              "endColumn": 36
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 169,
+              "startColumn": 5,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/import-of-mutable-attribute",
+    "rule_name": "py/import-of-mutable-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/backends/rpc.py",
+    "line": 13,
+    "message": "Importing the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](2) will be not be observed locally.\nImporting the value of 'task_join_will_block' from [module celery._state](1) means that any change made to [celery._state.task_join_will_block](3) will be not be observed locally.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1c437cf95a435f71:1",
+        "primaryLocationStartColumnFingerprint": "40"
+      },
+      "startColumn": 41,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "celery/_state.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 72
+            }
+          },
+          "message": {
+            "text": "module celery._state"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 163,
+              "startColumn": 9,
+              "endColumn": 36
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "t/unit/conftest.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 33
+            },
+            "region": {
+              "startLine": 169,
+              "startColumn": 5,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "celery._state.task_join_will_block"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/exit-from-finally",
+    "rule_name": "py/exit-from-finally",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "celery/concurrency/asynpool.py",
+    "line": 409,
+    "message": "'return' in a finally block will swallow any exceptions raised.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c6751f68638626bb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/stamping/tasks.py",
+    "line": 19,
+    "message": "Local variable 'stamps' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "64e4efd928c0b112:1",
+        "primaryLocationStartColumnFingerprint": "3"
+      },
+      "startColumn": 8,
+      "endColumn": 14,
+      "relatedLocations": null
+    }
+  }
+]

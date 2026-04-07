@@ -1,0 +1,530 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/celery/src/task_app/templates/index.html",
+    "line": 14,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 18,
+      "start_col": 1,
+      "end_col": 8,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/celery/src/task_app/templates/index.html",
+    "line": 24,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 26,
+      "start_col": 1,
+      "end_col": 8,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/celery/src/task_app/templates/index.html",
+    "line": 32,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 35,
+      "start_col": 1,
+      "end_col": 8,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/javascript/js_example/templates/base.html",
+    "line": 3,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 3,
+      "start_col": 1,
+      "end_col": 83,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/javascript/js_example/templates/base.html",
+    "line": 4,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 4,
+      "start_col": 1,
+      "end_col": 81,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/javascript/js_example/templates/jquery.html",
+    "line": 10,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 10,
+      "start_col": 3,
+      "end_col": 70,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/templates/auth/login.html",
+    "line": 8,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 14,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/templates/auth/register.html",
+    "line": 8,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 14,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/templates/blog/create.html",
+    "line": 8,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 14,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/templates/blog/update.html",
+    "line": 8,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 14,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/templates/blog/update.html",
+    "line": 16,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 18,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.lang.security.audit.eval-detected.eval-detected",
+    "rule_name": "python.lang.security.audit.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "src/flask/cli.py",
+    "line": 1031,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 1031,
+      "start_col": 13,
+      "end_col": 58,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "src/flask/config.py",
+    "line": 209,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 209,
+      "start_col": 17,
+      "end_col": 80,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup",
+    "rule_name": "python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "src/flask/json/tag.py",
+    "line": 188,
+    "message": "Detected explicitly unescaped content using 'Markup()'. This permits the unescaped data to include unescaped HTML which could result in cross-site scripting. Ensure this data is not externally controlled, or consider rewriting to not use 'Markup()'.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 188,
+      "start_col": 16,
+      "end_col": 29,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://tedboy.github.io/flask/generated/generated/flask.Markup.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "flask",
+    "project_version": "3.1.1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "src/flask/sessions.py",
+    "line": 295,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 295,
+      "start_col": 12,
+      "end_col": 32,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

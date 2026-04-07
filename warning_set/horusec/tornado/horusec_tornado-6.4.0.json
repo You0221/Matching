@@ -1,0 +1,5193 @@
+[
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-JAVASCRIPT-2",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "demos/chat/static/chat.js",
+    "line": "58",
+    "message": "(1/1) * Possible vulnerability detected: No use eval\nThe eval function is extremely dangerous. Because if any user input is not handled correctly and passed to it, it will be possible to execute code remotely in the context of your application (RCE - Remote Code Executuion). For more information checkout the CWE-94 (https://cwe.mitre.org/data/definitions/94.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "if (callback) callback(eval(\"(\" + response + \")\"));",
+      "column": "31",
+      "language": "JavaScript",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "10a8ecac2b2be4f8703d1f80934b657368154fd940a1a1f66dd39ff18cf44e8c",
+        "a0ff4a70067766377ce7d9d6cfcc84bfd162a0be17337505b6a2882f192b39ba"
+      ],
+      "vulnHash": "b4688fe2c06c96263bbb7df5f6f8ed07c5bea265ba4446a86f756e028b4372f9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-JAVASCRIPT-2",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "demos/chat/static/chat.js",
+    "line": "102",
+    "message": "(1/1) * Possible vulnerability detected: No use eval\nThe eval function is extremely dangerous. Because if any user input is not handled correctly and passed to it, it will be possible to execute code remotely in the context of your application (RCE - Remote Code Executuion). For more information checkout the CWE-94 (https://cwe.mitre.org/data/definitions/94.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "updater.newMessages(eval(\"(\" + response + \")\"));",
+      "column": "32",
+      "language": "JavaScript",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fd126c8f2d08968baec2b0a806930232fe93edfa69cdabd19cdf3e070a11d6b3",
+        "1dc163827a7e89c9ff34ad3fe62191c60df10d7f805a7e243ff51631cc418b19"
+      ],
+      "vulnHash": "e3a8b52965752cf8ccbdc949ed96eddf891f638802164b83c3dc821d19b2cc93"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "demos/facebook/facebook.py",
+    "line": "84",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "client_secret=self.settings[\"facebook_secret\"],",
+      "column": "16",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8bf8a7347c4309e16681b369694b178418c21f4185204ac3f032c1801e0d4a95",
+        "f43fdc5e801d0dd00ee3a01527e2788bc23d4496ee006a6f64ca298ae8501ad7"
+      ],
+      "vulnHash": "91fca8dd696550eb2f077f45966b51e85f00e30935b4356a00a7561504743f33"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "975",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "client_secret = settings[\"secret\"]",
+      "column": "16",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c81a93dc53111951ebd05ce697739c130e7fb9f39c4ee9fb7b4d5b6dbc3e8563",
+        "efcf9878da5581bb4ace8d77918fb1147987fda1044492326fc258550ca87ad4"
+      ],
+      "vulnHash": "761cbbaee5365e0ef08534cb49a89ae2cd83144977bf277f9a03f971241591ab"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "1028",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "client_secret=self.settings[\"facebook_secret\"],",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c352ca93b3d90f526e241c2d8ec34af717e8a706b807ea28b32185656d28632f",
+        "fcd7f9877bccb1f15234f7397af0f6f65e74348f8d40a586d02257fbd3491592"
+      ],
+      "vulnHash": "27d65815a32fabb7002cbdf93b5631eb27db6854f688f9c38a3823795bd33c64"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "1088",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "key=client_secret.encode(\"utf8\"),",
+      "column": "20",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0c4cd35d00f515d760e4b053759770d6cf6ed4aa8dd82fdd73bb4c7bcc47617a",
+        "e5e87b1758d4ad10ab0d8379d4b3e2b94320d34ba3328e3091f571e1ae13165d"
+      ],
+      "vulnHash": "8f2a01da74f7096780d4e7f1204119b449efd5f7c1227180cc3de8921fda4b1d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B324",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "demos/s3server/s3server.py",
+    "line": "124",
+    "message": "(1/1) * Possible vulnerability detected: Use of weak MD4, MD5, or SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "123             )\n124         hash = hashlib.md5(object_name).hexdigest()\n125         path = os.path",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5fcb467401613801dedab2a63f1b310fde640d4c3209e6c2c2bca1c643563a09",
+        "5f1b5c4f37165e868bb1411e0cbc5da5333ed96625a94cb7d28f8c7c5262e8ce"
+      ],
+      "vulnHash": "b7001744c244c2342dff8fa7c8027a2d37785b65e4b14e53d251cd04de76c183"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B324",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1690",
+    "message": "(1/1) * Possible vulnerability detected: Use of weak MD4, MD5, or SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1689         \"\"\"\n1690         hasher = hashlib.sha1()\n1691         for part in self._write_buffer:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9525450c71ef3d6f907e0f9a0a676faff00955ab6b159fe24493ba2119e843c0",
+        "30bdc67d87f90a880909be8d1bd8b92bcbb75ef9d7736d8818a811476f439880"
+      ],
+      "vulnHash": "6c18699f4b2903f4f34f1972eefcf3a539ae733b861e14ea288371c9d4692822"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B324",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "887",
+    "message": "(1/1) * Possible vulnerability detected: Use of weak MD4, MD5, or SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "886         \"\"\"\n887         sha1 = hashlib.sha1()\n888         sha1.update(utf8(key))\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "659a62271b5df14717c885a12c3f644b2d9ec24e612535fe0f0e36cb77671846",
+        "daddafd0c76cea6b51c7ae5afc4f65fecc42e1ddde8672b472ba77a8e7eb4cc9"
+      ],
+      "vulnHash": "28af0f6d15a8d734c7764e8abeae85b2817e9dbac981d6da73e77b73e5d0afca"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/s3server/s3server.py",
+    "line": "53",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "52 define(\"port\", default=9888, help=\"TCP port to listen on\")\n53 define(\"root_directory\", default=\"/",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fa5d51695bcacf92584c6f915fd6684bfa0f117f042a7e0598e863dd0f55653b",
+        "e923d70ec1ebbf4f2bb4b0d98269deb318fc9e14a8504a64e8d7062e0ba5fb68"
+      ],
+      "vulnHash": "3912919402c306d855ee1544e72ac8975ca5c307a20012fd41c53d83e98f3438"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B310",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": "48",
+    "message": "(1/1) * Possible vulnerability detected: Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "47     if not os.path.exists(filename):\n48         data = urllib.urlopen(url).read()\n49         with",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f3c4583ad17d7bb048245352e3c4a9caaa296a46b2033597dfffc9d9f7370e0d",
+        "9aecd305b90340e512745e2af7913f10ff830818cc1511c0c772cc7c0a58882c"
+      ],
+      "vulnHash": "45541675ef7c631ef6da66c52d86962db5b9432bc3ec944c4048ebdf1490338e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B102",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "setup.py",
+    "line": "32",
+    "message": "(1/1) * Possible vulnerability detected: Use of exec detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "31     ns = {}\n32     exec(f.read(), ns)\n33     version = ns[\"version\"]\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0e79dfc3d7ac00ef1a3230be986a747fcaabcceddc62d3c61288a1573fe6f7d6",
+        "a47d3c80495112fb247a5a93e137a3ce65569f077f9cd2f335434997e6f72fee"
+      ],
+      "vulnHash": "7219d7a87bdb8dd24348896903884f780fde0b52fac854256b67399c5bace5b3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B104",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "tornado/httpserver.py",
+    "line": "322",
+    "message": "(1/1) * Possible vulnerability detected: Possible binding to all interfaces.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "321             # Unix (or other) socket; fake the remote address.\n322             self.remote_ip = ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4bb640c75afd095c129b4fc75c5e7a26054ce038265d3b125e731870d1e456d6",
+        "aed902dd9c805cad9ab94d85a4329e0d30d0dbe6b1482aea558509ae261a1b66"
+      ],
+      "vulnHash": "311b6b28bd7a3db235204bde99cab29a24c88c79bdb4e2343531d5271d5dab71"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B102",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "tornado/util.py",
+    "line": "161",
+    "message": "(1/1) * Possible vulnerability detected: Use of exec detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "160         code = compile(code, \"<string>\", \"exec\", dont_inherit=True)\n161     exec(code, glob, loc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ce6a9ab2bb63a0e623575044e0fdb4309467e007e069670ba0909d4b693aba77",
+        "0acd7a60e54b9bcb97c19f9dcfd59a02fd8098a26f92b4f1d3254d9597b58681"
+      ],
+      "vulnHash": "ce5cc7c99d34c3e46842da7b2e71ff7be72191b3e4122d669d24546fb0a0cc30"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/blog.py",
+    "line": "66",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "65         ]\n66         settings = dict(\n67             blog_title=\"Tornado Blog\",\n68             te",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3e6fbfa728e3844bab91ae931e610364708176692f6ac9613bc41b005ac8692e",
+        "0df583c9c3ee86e3816fbc254d7a3d818498b2d0ae4966f252bc9cfc3ad3f4f6"
+      ],
+      "vulnHash": "307effb4d598d7e68d34ee2a7452605ec31694cebb7460006542f03c98c50e0f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/chat/chatdemo.py",
+    "line": "109",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "108     parse_command_line()\n109     app = tornado.web.Application(\n110         [\n111             (r",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3530176af50a90d655f7a99740ad153f68a333291f5c7e7b53bea4b25446a781",
+        "5da5c19b8da069654a309d36286d7ad6bd05bddc913daa21a43ff76694926a74"
+      ],
+      "vulnHash": "0f653ec5ec2c444514eaa0a1d9ddb3ae8ba878f91e234b2dd6f2079484b6c376"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/facebook/facebook.py",
+    "line": "35",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "34         ]\n35         settings = dict(\n36             cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RAN",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "93e3260254f7ff537c143e526331ac24eae1495819cb48dd7a374486bd344049",
+        "66a3509f175bd08775d2af365bf9de75d9312fcd6488e2b96026d151e7b359ba"
+      ],
+      "vulnHash": "74d6bdceba7a943bfd1964e80000da16f1197fd1213dd152845d9b0812e2d8f1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/google_auth/main.py",
+    "line": "93",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "92     tornado.options.parse_command_line()\n93     app = tornado.web.Application(\n94         [\n95   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8ab6cfe90ca5517c0b2b97362ca4725de0fe153e9e7674d2c006345f2e65c578",
+        "5ab1e72a07e90e540a67b33a8f0fe4bce75fb465c0058b95adcca438fc4eb6aa"
+      ],
+      "vulnHash": "ad6823e6802687f8bba9404f2b4d098c740e2a137b2877c4ae009794c5cdbb41"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "demos/s3server/s3server.py",
+    "line": "92",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "91     def render_xml(self, value):\n92         assert isinstance(value, dict) and len(value) == 1\n93",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0b63f0caa541021588a87f0042167e48510b20c33fa4522262ec3649dfe85a5d",
+        "e6b8443bb26e06deb8bea9541bacc766e944d9ff38bed9498522a92c1de703c3"
+      ],
+      "vulnHash": "9b47f8166624191b9c407992e2cc3cfc86a7fcc9496efc2d1a35119c101bdf60"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/websocket/chatdemo.py",
+    "line": "35",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "34         handlers = [(r\"/\", MainHandler), (r\"/chatsocket\", ChatSocketHandler)]\n35         settings",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e639c434d336431f1b9dbc84c16d02d607bad1f1cb27d767ad24649bfb1e5301",
+        "46370e21109bd74dd44aca6e53d0a6e928418ac75bc57e0b08bb9022c6ec13f8"
+      ],
+      "vulnHash": "a0c3f4d53adfc971679e242aff9dc01b2c8dedaa89089a6d42b7930b5e09ee22"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "demos/webspider/webspider.py",
+    "line": "87",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "86     await q.join(timeout=timedelta(seconds=300))\n87     assert fetching == (fetched | dead)\n88   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ba13a5dbabb6a1488679c6edaa83b004cea73cabdd508640b8ca41aedb929593",
+        "b1ebfa9f828e99b28aac97f13fee77209f02cb510e87974b258a193df079807f"
+      ],
+      "vulnHash": "ca5ba42b3867739b0ce879ca79af7e1240fab1f83d7ee11b5606c09ae51770ac"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B311",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/benchmark/benchmark.py",
+    "line": "57",
+    "message": "(1/1) * Possible vulnerability detected: Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "56     app = Application([(\"/\", RootHandler)])\n57     port = random.randrange(options.min_port, opti",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "aa052ec1ea9c7c751d39e48150333e5274d8c5f8b86980ed8c72dcf01229199d",
+        "c071d1b66919d94aba52d7c2484d5658a4ced0342e0f7efaefe217d3faf92157"
+      ],
+      "vulnHash": "72ce2f73c25755636a766eb83dbc18b26b92cd99c03645bc4125c7cfba2d1277"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/benchmark/chunk_benchmark.py",
+    "line": "37",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "36         response.rethrow()\n37         assert len(response.body) == (options.num_chunks * options.",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d7609c987237402e982a3d24759ff2311a27070581b19ffb86bcec085015a766",
+        "6ccb69a4a4f0373e3d38bf3fbaf00365180e15df6cd97ee26a7f91feb108fbcc"
+      ],
+      "vulnHash": "4f85c4890f84e93e028c2a4de8515b4b186d0875b15379be1829bc65f0cafd19"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": "26",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "25 import os\n26 import subprocess\n27 import sys\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "544593305a0557539127f25a98e952a8b1c3006b44a96fc87b28502cae136d95",
+        "6cb24af5533550a316c957296791630613123169cba76da6ee7da87843928122"
+      ],
+      "vulnHash": "86a382f75eced99d0b9cf7b96fd01174862e8d26575857f3c0efa6b28fac4d64"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B607",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": "65",
+    "message": "(1/2) * Possible vulnerability detected: Starting a process with a partial executable path\n         \n(2/2) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "64         # http://blog.jaraco.com/2012/01/how-i-install-python-on-windows.html\n65         subproce",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "367794cc52f6cfc5c469241a0992197093dc8d15a6bb1fe8353e03dc5d86d1ad",
+        "3c80665e4904424b04b27edc794bfacbb4def2c12e29cfba6ab5652d8c37df8c"
+      ],
+      "vulnHash": "61c4987c3de96a90ba189478dc0ccba671296b66ae03bfdd37a51ad46fdaba00"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": "70",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "69         filename = download_to_cache('http://python-distribute.org/distribute_setup.py')\n70      ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "83db6c0b1bca000bf9021dd788d3680a32b94289080b1970b8b5bcf19c6ef619",
+        "e36632b2f09053cc157af7cda4774d6bae82f314cad63b4fc29d69dafd22c014"
+      ],
+      "vulnHash": "b57cfe967b4599fa2a8325f873cc843422e35ad02a3812cd97b0992519f05f27"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": "72",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "71 \n72     subprocess.check_call([EASY_INSTALL] + PY_PACKAGES)\n73 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dbcc723b15e27b578b5df4015c215212efa65e29208a2437a2dc98a64374a41a",
+        "8ab56c7f157614954948959227e669459877fc8f87dbc7f4c8e2140a5c7577e7"
+      ],
+      "vulnHash": "ba7ce593e5cfb4622efa246ad53622eb32a669add324f516a2fd6fadb349f9ab"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": "128",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "127         callback_uri = callback_uri or handler.request.uri\n128         assert callback_uri is no",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fa29c997ff8ce125811b51e1df1780f7606415b38f341d40927ffbc077f8b505",
+        "cae1deef1145e04d424b40e57603ea53b65c06949b0afc9da87d70b9e7071d91"
+      ],
+      "vulnHash": "4794c88da3f2cf22fb71d7d113d0e0d1ff798ac5d75af8560978705dabd471d2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": "344",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "343             http_client = self.get_auth_http_client()\n344         assert http_client is not None",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3ea9e437b9e61a5f2105fb6cfbe11387169311b0f5b8d3312f55058bdfd36603",
+        "09e721a3d00ee563c4566f43c0f2af42f377d04cdffb13328807eae53d22cac8"
+      ],
+      "vulnHash": "5ecd9b985bb5283085b2f2c223ee899443da8a05571b72de88c1988751a5e06f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": "393",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "392             http_client = self.get_auth_http_client()\n393         assert http_client is not None",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7dc339dcfb1be5229f11997f5b5ead44f4f3e49c0d533dabfb0f0caeb80ce361",
+        "a34af029508daf73c39b700040ee6ea3f9a0847830480c301c81ee4d421d3a33"
+      ],
+      "vulnHash": "ec6a56b4ada85777d8e8aa8cf040f39a2c202d24343ccf0c106360aa6843a692"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "739",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'https://api.twitter.com/oauth/request_token'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "738 \n739     _OAUTH_REQUEST_TOKEN_URL = \"https://api.twitter.com/oauth/request_token\"\n740     _OAUTH",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "896f576a4af77ad7179a99b44df91a1364de3c7e536dd16dfdab7718cd501cfb",
+        "4199990b7036d69109c8978c6583161645920e174e8531a2926a919e995f7739"
+      ],
+      "vulnHash": "153563f767221596d6b357a78fe86c6d9165d9b0c9d920aa1ba0fa3639d316e0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "740",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'https://api.twitter.com/oauth/access_token'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "739     _OAUTH_REQUEST_TOKEN_URL = \"https://api.twitter.com/oauth/request_token\"\n740     _OAUTH_ACCE",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1b5e4a75e4fa705ce349e355300f3d9bd5b3226647065002fbe4ad032036296e",
+        "68850ebac0e60b6effacf78ad916a8bf0689fb1b8ea50920ccc10f21111448be"
+      ],
+      "vulnHash": "a82443115ea389d321f0ed5a13461766227dfd34c3c71520a375884711761f86"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "888",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'https://www.googleapis.com/oauth2/v4/token'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "887     _OAUTH_AUTHORIZE_URL = \"https://accounts.google.com/o/oauth2/v2/auth\"\n888     _OAUTH_ACCESS_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "202f6b27af5e948dcac6a523e0e1d5a6aa2d1f3d241ba0acb5ffe96fd5e8b7b3",
+        "7a1542d6a20fa475b1ca285691f4c6c356b539031f86434997b05e659bb25010"
+      ],
+      "vulnHash": "1aae8e7673b10464328b8d147a7c7b032270a0be1c780ebcc1f62b58064cdb96"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": "999",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'https://graph.facebook.com/oauth/access_token?'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "998 \n999     _OAUTH_ACCESS_TOKEN_URL = \"https://graph.facebook.com/oauth/access_token?\"\n1000     _OA",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8657df72530a3a0e90598add8318239536c9aeab1bc5f0b4253fe6611e0c826e",
+        "7662e55926a78463895af2a19bc40306f2285ce8c43f968d09009572103e0ce1"
+      ],
+      "vulnHash": "e50ae18a88059c765b36a00f6e1be1447aca195d228032bd23a9c7bcd20db1c9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": "1082",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1081         }\n1082         assert session[\"access_token\"] is not None\n1083 \n1084         user = awa",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4e76e0b4ec48e0e9c223187141b003646c78ed779ea68b87c583d29b3251f926",
+        "9ac2dfffdae52e37c26f0b39a0841da47ad3d4dcd3a4f96bf4362bf250aaa42c"
+      ],
+      "vulnHash": "c9957eddbafcb0e736f23cd872be7127903ba465677d4918110c9b99db891024"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": "84",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "83 import types\n84 import subprocess\n85 import weakref\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "83fa4c6ea393d87bc7b8afce8f6818ca6c13e1d6f6a51a33455b279bd1e25353",
+        "33d5ebddfeb6f0ec3b7733af5ee66125e3b4c962039da44e2137f7267d689300"
+      ],
+      "vulnHash": "af7c5ab4c45a4cf849fc31f9aafb9a14a8eaaa48dd71654905cebce4915ee447"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": "216",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "215     if _autoreload_is_main:\n216         assert _original_argv is not None\n217         spec = _or",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f9d3bb19e9bebf9a031f6f92415315a1dd248f055a2c611a4efc49dd60bedf9b",
+        "032a5a9622c6ddb966fb7562bf9de44041480f07f7d209cbfe657ca835e364c2"
+      ],
+      "vulnHash": "8b2746b7e9220b0997c2412136a1f212e7f9633489a9c784faf91d3055b6e654"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": "234",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "233     if not _has_execv:\n234         subprocess.Popen([sys.executable] + argv)\n235         os._exi",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "189873bbff995b62feadf2f22c74431300e3e4286182b888a03c0859c84edd95",
+        "8d42fe50c31df5841f7cb348f55005fec20ccb85dcc514d30c28108562ffc1a7"
+      ],
+      "vulnHash": "a2109ec696e0763c1655eab3d778a63c108f10952911fe8841b0d7d4b5fbc517"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B606",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/autoreload.py",
+    "line": "237",
+    "message": "(1/1) * Possible vulnerability detected: Starting a process without a shell.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "236     else:\n237         os.execv(sys.executable, [sys.executable] + argv)\n238 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cd89a9fb942b3a5b5a03436dda7e9704369be230056ee2c0bf0ec75b3037a5dc",
+        "7da35ad28143804201a5f4f4f764181072abcaa290abe18821868ec28fbb3926"
+      ],
+      "vulnHash": "65d5ace7450b64ced66f1b8ec054aaf016937f99bba9749543747d91014cb4b3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": "310",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "309         else:\n310             assert path is not None\n311             runpy.run_path(path, run_n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6a293fa60275e67453c10b01f1c48bde8ca74821467a7809c26f5d87b40d7375",
+        "fed16de1cc6932202eb0a23ebff5e38f8e6cda12741572523a8c0e48b1ed8716"
+      ],
+      "vulnHash": "c77d822284ee7539a3a1c7ace8bc2d45897e7cbdecad491ad1b1781891249a4a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": "336",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "335     if opts.module is not None:\n336         assert opts.module is not None\n337         # runpy d",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8054cf5fe7385a6629931c607a0884b3dfc96af4255cc8ce06065e0e2142eb88",
+        "d185eb48ff793df8c108d50dc0a9e7caaa634db4c5d976259d6256f290624194"
+      ],
+      "vulnHash": "c520fc9418bfa5e671393533f84af552e65f8f7d5c6e40e4bc89e7329ffb3a88"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "269",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "268         if curl_error:\n269             assert curl_message is not None\n270             error = C",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "776f58d6251fdd1042db521a16755f9fa96ebc660080e46979a58a4f59199eab",
+        "25446d10721dbf9ccc1efd1920488222f574695f1b69a05354c6fd86d2f26f50"
+      ],
+      "vulnHash": "07d4bd89cab298aa0ec3b449671c1076feb4b35b7291d0f5282afcaf8c9b72c8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "271",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "270             error = CurlError(curl_error, curl_message)  # type: Optional[CurlError]\n271        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fb88a01f5f40e8c7dd7370411e69af8f8e8c8ec82da949ba308a6ed7154bed4f",
+        "36108cbbb3a7d7b2622ffb5b126b210d6e340800b476b3c9c42e6feb18c83a73"
+      ],
+      "vulnHash": "0edcc4b8aa5495683b6e3d0c58d7c0e9636726e68cdb4e31a20b86a4452ab22d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "368",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "367             def write_function(b: Union[bytes, bytearray]) -> int:\n368                 assert re",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9b6834279e8cf2dc1852ab4f740355855732c92d96e9a24c879740781f4b48d9",
+        "8d273384ac020de305ae0023f9a4b938154eb4d91fb16e0b4276a3a08fbfa941"
+      ],
+      "vulnHash": "12a7fefcb52b0dc14026fc59180afec4eff78ddb38c41f1e6e58e81906f1c2c9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "377",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "376         curl.setopt(pycurl.MAXREDIRS, request.max_redirects)\n377         assert request.connect_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "24b5cce04f33b2a4c52fd50be8428b88e04bab9c4f54d5024d8763615213d35d",
+        "070dd9a0fba2d126f629475816d9376ba50eef0e0427c3c4a22e0c806810b3f9"
+      ],
+      "vulnHash": "6e2072c490d5439e6495477183e857772fde523eae9579a0bbf0fd399a40295c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "379",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "378         curl.setopt(pycurl.CONNECTTIMEOUT_MS, int(1000 * request.connect_timeout))\n379         a",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cabed09065ef3af120ca121123b09e28024e4b84ad2b76fe399c7058bdb45b9f",
+        "0535e6fec1d41436452143f3a2b015973f59b99c5ef34d01f6d6cec591ebae4c"
+      ],
+      "vulnHash": "adf62f14ca27419e80a5fd340c9fde49c7783d380eeea0755a45264febcb6d60"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "395",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "394             if request.proxy_username:\n395                 assert request.proxy_password is not ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e401f47899ed1c7c701f5352e1c75911ffc39636584a2a802841acebffa29de5",
+        "8033cd010f2f8231961cfedd77ad803bb5508f66013c147824ae5287decfabc9"
+      ],
+      "vulnHash": "034235407a8b4a7542d3dd6d9513867ac5c2f8fd4f285db31249d9eb4a5a3fe5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": "496",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "495         if request.auth_username is not None:\n496             assert request.auth_password is no",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f7e6c71cb15460bfe7ad6f58d6b337b31359dcbf91b817d2456a46f72c5f85e9",
+        "6e28a785f1da396716e8ab860d4fd727dee737676b7a93e0dc3e7cfed461e8fd"
+      ],
+      "vulnHash": "634b83a1ab5b33d287b39860df8e2e25d92f15eab4fc647d1ffc9df2415007c5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/gen.py",
+    "line": "517",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "516     children_futs = list(map(convert_yielded, children_seq))\n517     assert all(is_future(i) or ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2fd9ddbee678b755d6c916b01bb07003a050a50c2b14edc66ca7fb010234d875",
+        "6d49ff2e4f82e82c1d5ed6322b1e23ed85fb3f4d6f10e222834908a9570ae4b6"
+      ],
+      "vulnHash": "7aec7a3ce8a3a938a6901ed865da0068dbfb0b3d71f7b0d790c30b3403b40a4b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "66",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "65         if value is not None:\n66             assert typ is not None\n67             self.logger.er",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7852d0698c527bc9359afb00606fbf0eb5ea65e333858c2925fc6351f31da2ed",
+        "0eefd2b944ae2785e99f6a58b5e50f7bbb9f69caab31c1ded22d319766db0b47"
+      ],
+      "vulnHash": "7a4350d9910f27a88c808a80d05638475ab70b571de82cb27f3baf0e59b33768"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "229",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "228             if self.is_client:\n229                 assert isinstance(start_line, httputil.Respon",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5cb2b31b57a10d7dc2a86b0e89e3d2ea65c3a69011e65ec5ee396d98266892c4",
+        "380b1d8fbad2554e91da6cb8ae9a7241bddb35b28a384ce5e70a35593651b930"
+      ],
+      "vulnHash": "061605b252e468f50cea4cbf252928511d2bb0d157e83882edd14513ed9be31a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "388",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "387         if self.is_client:\n388             assert isinstance(start_line, httputil.RequestStartLi",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3f4f34d43684b912b8a214caabd7c5110d428cc4936e2e45107cbb6a32739ba4",
+        "a96d94428d041f53baed76f51fd71c1da91eff1ef748c0395b91b0922ec2634f"
+      ],
+      "vulnHash": "e9c5ec5cc26a45f33a9432b94a7f1034fe8201548b904e635a1fb691cc027ffd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "402",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "401         else:\n402             assert isinstance(start_line, httputil.ResponseStartLine)\n403     ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "78a96ac2d71bc52c9a3eb09d882cd97572e7ad75c15fcdb105eb74685d09c8ea",
+        "fc0d57c76b9f427a95a499212c3fc65fa0fd5e8feee5ca0b339c3e15c63eece8"
+      ],
+      "vulnHash": "766a762e93acbaef928d7c613648f1ac6048c6fc6174b518cc96401b40acfbd0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "403",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "402             assert isinstance(start_line, httputil.ResponseStartLine)\n403             assert sel",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "eb7d983ca2bfc8368b20e787421e37883ad9aeb10eff4d2f395538548cddff3c",
+        "d5320b415bd50fd4b213508e84b4049df31412913012bdf5197b6583dc075d2b"
+      ],
+      "vulnHash": "e58289e4e02b7f93e4a933e5f125a88ec2713a2449b96d82a499080eba5f7c3f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "404",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "403             assert self._request_start_line is not None\n404             assert self._request_hea",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "82959d56e40f46c3351427cd15f1066556b10eefadcdb53e15aeabe1884a9e14",
+        "f45aa0ad6e420db269d41fd8bf9d109d78c64043edc39144bec13ec53dbdbd6d"
+      ],
+      "vulnHash": "ae7052da12f19e41bbe6a3d159219c47bef82b6fd61b6a1831944ffb40318714"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "698",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "697             crlf = await self.stream.read_bytes(2)\n698             assert crlf == b\"\\r\\n\"\n699 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f034b4fff7836c7b8130d77ca0a2dc68d1fb168fd9d36396660fd1591411d712",
+        "80630f8c50e5dac1756ebf19a992ad801f1e059227c691577af6005cc30c822b"
+      ],
+      "vulnHash": "0b28b4c1609267643923e247d9b5d51fe29a9af93e070f8d05ad3f849b5568dd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "803",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "802         # (start_serving is already responsible for logging them).\n803         assert self._serv",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1cf5a44a09cd7112ad5c8a343d8c67c373809b2ac69028bf1e2a10f49f61bf0d",
+        "5f321f27f84d9d085fb41c1a9ca576894ec9b616f2937af1ac1c668f468bb6d1"
+      ],
+      "vulnHash": "414218bcd5c7c4aeadf8a74f0c0c6076d0e78b2b8c1ca22fce8d7c46d5a9edff"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "806",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "805             await self._serving_future\n806         except Exception:\n807             pass\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0b45c713d402cd49a8aeebcca1b4b997635c3e003cbb35287a812b7b228b780b",
+        "9273c58c177915e0262958d6d7127ab20b5e5f4ff68a56a479b4150b2de64fc8"
+      ],
+      "vulnHash": "fbf12d88cd438fc473ba27a4331bd326214d153693a0aa9ef13b84da44995c45"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": "814",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "813         \"\"\"\n814         assert isinstance(delegate, httputil.HTTPServerConnectionDelegate)\n815  ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c44882c13bb14410c71418e3a7769ebe95d259a7b0c3a67541c4918ef123d324",
+        "1db54d155ea6997822ac381ed4b3304789070c768a7159f5ac57d6048d474122"
+      ],
+      "vulnHash": "ed9b8829039662d06288fa9665fe580bfa4d45fe18d22e8e71ce55f893dce7d5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httpclient.py",
+    "line": "106",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "105             await gen.sleep(0)\n106             assert async_client_class is not None\n107        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "90aecae5d364f9b6235bbdf1fc7502313f606af2a59027b7afb193b541f94445",
+        "a8b3d4531870684abfbe23de4c731a891a8355ba93fa8a6692fd276651551271"
+      ],
+      "vulnHash": "64ed888858f6e845c6a579ea25acdc00f0ca0a8f2c29ad43574f304247edb950"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/httpclient.py",
+    "line": "347",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: ''",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "346     # implementations.\n347     _DEFAULTS = dict(\n348         connect_timeout=20.0,\n349         r",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "aed59d5cece079f68fd033716c026d3fdd3388287aec3cda2845558cecbca00e",
+        "df035250e25ff4bd581d1abdca6b06bfa339a295b35480617ce884baa8cacc2f"
+      ],
+      "vulnHash": "52f3cccb4a25d1d5f901c8cfa64d4432fff28fa787b7f9177292f4e4ed76eb82"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httpserver.py",
+    "line": "289",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "288     def finish(self) -> None:\n289         assert self.request is not None\n290         self.reque",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "14e2baca8ae170cef445ab59d8e45418ed59acf29d016122ed98225153182c0f",
+        "b855f61d020ca8254c79bd4bf98feb78383e7328fb3cee13631ee69532d16f21"
+      ],
+      "vulnHash": "af096df1f33d6efd12c38c1023414d68779cb3fb8f279a5ebcdb9ebf1b10a908"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httputil.py",
+    "line": "396",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "395                     parsed = parse_cookie(self.headers[\"Cookie\"])\n396                 except Exc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "525b216588dd89e7fe881a52f89b87d91c833d2e6091cc39a113c97b69fd4d0e",
+        "e06afd7e7a465d70017d7a614c42bf969b445a6b3e9803f83d401dd453a5c7ff"
+      ],
+      "vulnHash": "a844b8027b77ea2941dae5f479beb6a53ffb1e11ea19e234d6ad493832f271be"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httputil.py",
+    "line": "402",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "401                             self._cookies[k] = v\n402                         except Exception:\n4",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e6699bd39400a3ef9046c05d18dbb028964d3b909d57fe244151eed25e9634b2",
+        "22b053b0aec88529598d0663870c76826164c4bc0f12cf60c54e76534c4f3412"
+      ],
+      "vulnHash": "0c3bf233ebe886fcfa572fe25848235cd4fae5badef9d1fe01098a6015c32199"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": "517",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "516                     fut.set_result(result)\n517             assert future_cell[0] is not None\n518",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c6eb41b2f91f49f63ee3ad3b50ea4a8c2d6fabd7b453caa2de37612c0a09b35f",
+        "9ae1517e2e2fd16a669acf9bd9a2ca0aa0e6a1510e26f000ec8640fe2813b6c8"
+      ],
+      "vulnHash": "efa7aac06d9b17908aab9379c9a9529099a19add6dedbf81579ba070f05ef4fc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": "528",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "527                 # will be logged).\n528                 assert future_cell[0] is not None\n529    ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f9ebeb3d973e9d4254086c6865f98e281d338afcb83d70a42f7c374317fc21fa",
+        "03b5387e04e5aeca2aa5e14650a3562d16c30c20de783c3c44a5c2b60bbdbd27"
+      ],
+      "vulnHash": "3d932f4b6ebce7a776c4c9c28faea5b58658bacc054717ad6e22cc3b3b4d4de6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": "536",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "535             self.remove_timeout(timeout_handle)\n536         assert future_cell[0] is not None\n53",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4431168dd08be2216a134e636570fbb3d0671042f6213176c7663916d85da4d8",
+        "cd39de29411b60bfdfcc6452d7db75ef3aa57e388c97f6c0f5d3b5a976d0730b"
+      ],
+      "vulnHash": "73df4852cfa85594f12e3e87f1c49a21b65f27d926d8dae9e638dbb69aa58e28"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": "702",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "701         else:\n702             assert is_future(future)\n703             # For concurrent futures,",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b8faf967a08b4a5a19147aa5eef40a37659ed674babddeecb4b1add6db553ba3",
+        "81a3f38736e2dac5d840e4385eba49fea3d4b10fdf1d3d9cfc930628a756dc6c"
+      ],
+      "vulnHash": "d04da9660acb1010ea136391f01796f9547f37cf045106844662186722715f3b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B311",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": "954",
+    "message": "(1/1) * Possible vulnerability detected: Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "953             # apply jitter fraction\n954             callback_time_sec *= 1 + (self.jitter * (ran",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "65878fd02c8a0622857ccdf1dfeb4e4a7d6c332c85bf9c55e0e7e7499597e2bd",
+        "24c6dc037029e982932139c620e2670164f9f234e5e67fc4131ba22fe17b9066"
+      ],
+      "vulnHash": "f4ad261e8f73dd00972a2066916a261e777a0034eb13523c3c6e0b6001d3a7c2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "166",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "165         \"\"\"\n166         assert size > 0\n167         try:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "64f03763fdabc5b6c497e2774e1dbede670b10c3e66b96af4eb953daa9b1fac7",
+        "9d3df4c35aed72d1dd773de9dfe1c7466dd026d86fc8cb0329c79227938e75ab"
+      ],
+      "vulnHash": "20c60a9baf7c9bc993f70c20929dec0700172d74abe6485aaceb5e83f8c42f2e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "182",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "181         \"\"\"\n182         assert 0 < size <= self._size\n183         self._size -= size\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "07839e7e67fdc9c036cf93e498224b322932b47fdea5317cd370fc73c55f200f",
+        "1346028db47d74f404de8359a6a3b26ebe49778fcb81f57a615dabc06770c83d"
+      ],
+      "vulnHash": "0c622156ff44c636233319a147fe8a55509ce15e97774bd8063792c348c5898d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "203",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "202 \n203         assert size == 0\n204         self._first_pos = pos\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0d56b71dc7c88285fafde4f9e209fcee395fcd5b009ecfd7266f8ea18a07f696",
+        "131d44346f472d1007d3e4b44de6f24a011cd69e4034b113b6dc3f175307ece5"
+      ],
+      "vulnHash": "dfc26b783c7e2192a5b2dee6dee8036e0e0348d0f66cb8e69d941609de892459"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "418",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "417         future = self._start_read()\n418         assert isinstance(num_bytes, numbers.Integral)\n4",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "50be4d80b39466d709e29023b26507a46516685d75ec2636155bca774547e399",
+        "4d4cfdb21990024e8f0b454a0a093bd3bd9a7a3a1c8926ca9be34a950cfadbac"
+      ],
+      "vulnHash": "d729436d696168cab82281753075e4c4b5f482dc1de46a501091aebd2e35fbeb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "717",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "716             if state != self._state:\n717                 assert (\n718                     self._",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0ed03005f5d63ae49404c922785b8555881844c511d4498132a8baa3eab495a4",
+        "d3bd63505410f7de2e5ecedd939e9331a7efc182613125afb7384327d5d37f5f"
+      ],
+      "vulnHash": "aa45f0f7475c4d40013997cd71a718f5fd93668b26be3f3327465132e1a8382a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "804",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "803             self._check_closed()\n804             assert self._read_future is None, \"Already read",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d431d6816c54e6cd21216e4e5a35161f3ae6dd4780779c294a9242effb68fa01",
+        "d50421df65371ebe6e3adb38f3bd0dcf7f077e1cbabef9d72e67b7254834d9b9"
+      ],
+      "vulnHash": "fda6623572a64f44e0c45a8a2646a1078c1c366b21f4465d0a17c453244da2b4"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "952",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "951                 break\n952             assert size > 0\n953             try:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b06dfef18c25c00f77c172834f17b5cf2d4ca0e06a5ec3c1a8140359db368347",
+        "cf559f4cdeb066cd837ad2642c4eff942456c91108597fa2c2ad4b9983d086a1"
+      ],
+      "vulnHash": "3e4d1ee292a1e140bbf01853078bc5adea79a117f7226c34b3d7dee28ea0bd19"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "989",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "988             return b\"\"\n989         assert loc <= self._read_buffer_size\n990         # Slice the ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d85ada4dc6116fc0f65354e8447d328ae88ddb024383127e241d9702dd27b2f7",
+        "6926973d85ce4cc1173331dcd2637d1cb03d86a1edc3e4cdc9138039bde0c0ed"
+      ],
+      "vulnHash": "75e15cf25239cbb4bcf6b3e61e9a3f89eb361227e53823a12ae731a0b071ea6a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "1416",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1415             # the server's claimed hostname.\n1416             assert ssl.HAS_SNI\n1417          ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "da09dcfbd9e5e1aa954e02fd8c35bbd263ff475c7f6894809db5b0007b56a26d",
+        "fd20c1bcae33daa1cfb80b2fd96081f74f09d6f27be32cdd3e78f144e37eb274"
+      ],
+      "vulnHash": "fe136f5595cd7cf0de207f73ebb27fa3b90a38ddc198f295c8bdafea6df62e77"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": "1473",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1472         old_state = self._state\n1473         assert old_state is not None\n1474         self._st",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b5b6a1567412d70c891d363940067571cd009d50b6c231c02704b0a83bf61915",
+        "c2e88103c8cc983945edcf6747bc5425158579d3ae5d34fa94d5c04bb48ef5f2"
+      ],
+      "vulnHash": "ab85353e84e09e33e3d1bf4b919938e4fe8bec29947fb9ce2d4817a6c59f7029"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": "258",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "257         if code not in cls._cache:\n258             assert code in _supported_locales\n259        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3685022dc2870152f8aa8dcf154de79cef4b11f58f50c38225c59650ffdbc8f9",
+        "4d3ba26b509cac9191874e3ae7d091f37801eeaef4376d087fcd2e6fa42997f3"
+      ],
+      "vulnHash": "078ba39326ef5a3f733bddae5e5660dfb0c1f9108b5a41b7a173a7af86160089"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": "499",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "498         if plural_message is not None:\n499             assert count is not None\n500             ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "acf974f615e643be3821d02d406e85e3e649dc684c652240e068c5ca03ec6622",
+        "3d2f45d9059a6d4f1bb774e85dde1a7b9a1cc64bb14ee7882c015546ae452af3"
+      ],
+      "vulnHash": "fe99aeff7ea44da1dfad5924957ce57baa2cb851ad86776faacd1ddd475adefc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": "538",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "537         if plural_message is not None:\n538             assert count is not None\n539             ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "def85f8770246aff20d4f41c1da4aec5a1008e73ffdb624960e12df68f408f76",
+        "1c999497fb1c74754bd444359d6ff255d66cd6752e6d0d3a0fe181d915834a2e"
+      ],
+      "vulnHash": "0ff80b178941129dfb33e7186303d9e9429f8a1c574d3ba3c62071ce74788619"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": "570",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "569         if plural_message is not None:\n570             assert count is not None\n571             ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "748d69088c8cb0ab4ba844cab8177d63e971d60e3f9e248659ea103cf1bc6f33",
+        "829a5c02b3578e16a92e44cc9be5491188152a749620234083b55decf52e759c"
+      ],
+      "vulnHash": "668f744b92cd4fd0b3825044b9eea726d11b38bbcac266542cc2a66038110935"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/log.py",
+    "line": "67",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "66                     return True\n67     except Exception:\n68         # Very broad exception handli",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "755750b312b23966db4258e35c7d1b56e61e7ff58aa4d9c1ef5bf9b839fa7ef9",
+        "c4e882f048b7a4152511b07da21139b272c4f61e0a0a2427e5c0f3aadb131ed8"
+      ],
+      "vulnHash": "537964cbd0c5228423d7e93ad399a92b084817a81503dce2f7b8322caf113041"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/log.py",
+    "line": "171",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "170             message = record.getMessage()\n171             assert isinstance(message, basestring_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "84bf1315e57fc3631c8c3711e938b6d734c3eeb3e14fc8e81543a508986e4e63",
+        "c924e7f2f9a1a474d73f0284ee1538efcb3c7fc45a51c8951a9963b2d97904c4"
+      ],
+      "vulnHash": "970fe448d42396005a7a3fe95755a792a2259c9542df5945d5642b5104e716e3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": "611",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "610         return ssl_options\n611     assert isinstance(ssl_options, dict)\n612     assert all(k in ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ad74ffa2e32b342b097967fbda05081a9b89a416789b6bfbea39ea981f6fbdc6",
+        "c3c359361fbd1c019246d7ba28bba0e4f1a2344bebf9d99e2f7db65333bedd1a"
+      ],
+      "vulnHash": "88ff2fbfe3c1aaa513ed85cbe3ce5e796c2af29fbb1d561c88f3648601717880"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": "612",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "611     assert isinstance(ssl_options, dict)\n612     assert all(k in _SSL_CONTEXT_KEYWORDS for k in ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7c132362041d0896e71cb03fe7b0cb146afe1368439913b58b649d87bc8d91a6",
+        "16e64ca92b322eebf15db2471a4460f6639c68638d15ea70cccfbf21f755451b"
+      ],
+      "vulnHash": "eac8b86464288688f40e8fae74e59b8502b5f00b26c86c69c8be57f13be2c342"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": "665",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "664         server_side = False\n665     assert ssl.HAS_SNI\n666     # TODO: add a unittest for hostna",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ca59668ce380a57b14424d9ff95854754ee1fba7f3f1795da8bea051c060d9a6",
+        "00ebf83843197745d806c9c9666fe0dcbd367de42e3621a335fbac1973079ad3"
+      ],
+      "vulnHash": "9f0e06f09fe446cc4803f60969d04dea722ab300e470ee8a2cf3541d1ba3500d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/options.py",
+    "line": "287",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "286 \n287             assert frame.f_back is not None\n288             file_name = frame.f_back.f_code",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a96b26721e5afd70330375a66d527fcafe8352b2d5d7f7085c50b550f3cd0e29",
+        "ea6e94410d9ee1d8848365e2a3d1210bd8c7c137f7af9db84abd6f874ffbd683"
+      ],
+      "vulnHash": "e838c1fdc59219771b0e4e96cd5fe55632eac4ec5310fa48461bd438ba1fb9e5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/options.py",
+    "line": "523",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "522     def __setattr__(self, name: str, value: Any) -> None:\n523         assert name not in self._o",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f40ebc8e2d5bd584b957a293cad86441ddf925b7ca5fb404f6d2311a4df5152b",
+        "c49a5548e37c90962346b325e18cd49ae5d7b2bd28c51fcfd43ab6d441d5f1bc"
+      ],
+      "vulnHash": "3899453fe7766087212093ed77dc7c4d4693d91450251742cdebcd9a758216c6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/platform/asyncio.py",
+    "line": "544",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "543         with self._select_cond:\n544             assert self._select_args is None\n545            ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d4c8f324ec52e6b5a23c2d32ac968d861b4a6817314b796d74df2f28b32c0add",
+        "2fc701b897ba544497a4b1fce52d4a63c022c691833090e17010fc07b6f0d329"
+      ],
+      "vulnHash": "36442fc4ef805af8938e8dcadfa631c0bdeb868b5b240dfcd62237e656a4a3e2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/platform/asyncio.py",
+    "line": "555",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "554                     return\n555                 assert self._select_args is not None\n556         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cbb89f2c8d048a31574e467cbd5ba11cae285041ef6684ceb30f78f199912da8",
+        "4a01a59e4a00d0ebe228aaa32bcf90c7c5e9ca148a9f05ef589b1e1174370062"
+      ],
+      "vulnHash": "e17a6ede697ec5611343485ca060a5bb2b0bdde5a371cc9c3db167facb6f1d6a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": "24",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "23 import signal\n24 import subprocess\n25 import sys\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "61dfdacfbf9548f0f9b254dfc18992a0649e63423ab5d29f4036c6f03f923455",
+        "540c736831b192a45efe99d13169c94221a68e39ebb20f554769dbf8d6e9358b"
+      ],
+      "vulnHash": "fc305ccdf9a4d123e0d2f27af624b3c54aab9cd66b1ba20e1d80646a06cf36a8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": "121",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "120     global _task_id\n121     assert _task_id is None\n122     if num_processes is None or num_proc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "749fd70d8a1e5ee62fc6c5c2c10d71a53b2e57f03847e4e36b8b2d92590c42ed",
+        "e273cf8967466ebdeb4652dade743aa19374a18078e3b5e7110b1a3b36bd6d0a"
+      ],
+      "vulnHash": "7c30df9463a52ee362ab8b97e12db0098d34ae9a0bae44839ffe433bc783a604"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": "240",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "239         try:\n240             self.proc = subprocess.Popen(*args, **kwargs)\n241         except:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "179bb63f1949cc2dde39eae3cebcb8f92445b3a35a297c4d3b80152e22c37ec3",
+        "051e27f441144227036dfe439621fc908c8b03900be893e0509733535dc6b468"
+      ],
+      "vulnHash": "0aa6444ed00899bf97587d359fd53d1578f5896c0d156a138674bd8abee364e1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": "351",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "350             return\n351         assert ret_pid == pid\n352         subproc = cls._waiting.pop(pid)",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "da14c95b29fb576b64d38a323263a02659864c5b90a52070c2ac517050692cf9",
+        "4ad3fb19aef8c99ead205f02c65f8bdb82f489b981ddee6b6cbbe0ec65bba70e"
+      ],
+      "vulnHash": "7a887b1b40d76cca4e1f3059807a85a14f9c70435c3a12f235e10766ae89e9f7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": "362",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "361             else:\n362                 assert os.WIFEXITED(status)\n363                 self.retur",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "342523c497168c621610c6c4d4eb75d0bce8e37bf38d00309d972efa0ef40721",
+        "fc4c72b5b7d64888726288830a98947a2db102a4246c99639e7540795a432d6f"
+      ],
+      "vulnHash": "48715a4a4a81cc7ad890e158bcc9667698326b8ff512d7b98fe49d148f0f79b2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/queues.py",
+    "line": "216",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "215         if self._getters:\n216             assert self.empty(), \"queue non-empty, why are getters",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "098a87d436ed0a6503c9b69a9287188410875483c8019a58b18b34453f102627",
+        "68133025da55eaff45096d3f93a25cbf36b512f94374a782027d63ed112595f0"
+      ],
+      "vulnHash": "b168e9ba49fb81563cbb82eb8f85f6712d2f875a53c06a8c3dd3e49929146563"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/queues.py",
+    "line": "264",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "263         if self._putters:\n264             assert self.full(), \"queue not full, why are putters w",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4f0b197ac9c6ef144b9eab0c8f820c2a970a06b4be41002c58defe04d1c591fb",
+        "79073b383c46e95fd5adf70046f876edcb2cf4a6469444036ec3d8dd28ac0fac"
+      ],
+      "vulnHash": "d4fd3f6312ec03ac5aeff8ffe10bdc754d74748d5257bb28c1b7d00cc386d73d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "243",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "242     ) -> Optional[Awaitable[None]]:\n243         assert isinstance(start_line, httputil.RequestSt",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "47e2886883128a2208816c54fc73c75abcaeb70353dfa6358b5d97b1b38974cf",
+        "a6e2703ac333163ffe405b58b5d18d5579b7cf395161ce970aa37d8916848bb3"
+      ],
+      "vulnHash": "aa564489ba7b97799617929ad10ea813a032f203364a207ac2e8144c3d6a42a7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "263",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "262     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:\n263         assert self.",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "21b7c1beaac42edba19bcc59a0b5525db98093352a5ec78a23680241ba0d991b",
+        "11ebf1327ec8f5e7fc4abc84e4334cb69f348d4145a67611a0bddefc8ffcb24b"
+      ],
+      "vulnHash": "2f0d849eafdf5f1568eb4919a1c4d12b84300c7912a9cffb96d7918b89da4611"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "267",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "266     def finish(self) -> None:\n267         assert self.delegate is not None\n268         self.dele",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "014f2ff353518b20dc41a4be2eea6cf5d650f3989cf1d6c59ac2a93181dd0a1a",
+        "586841c4ce38ab4650185f0c25045501124c42f16efc5c54c79c1c682a633efe"
+      ],
+      "vulnHash": "8c53b10cf1abadb98047267bb3dbd172d466e78babcba8e34ef01bfd865ec572"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "271",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "270     def on_connection_close(self) -> None:\n271         assert self.delegate is not None\n272     ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8e9f52ba36744e0958a5498fe01e2eb781644b3db4d0831036d2ae3f20ac31af",
+        "1d8c978a6140e1c4b1c19045150d13d0ae645f757551a89fe97dff4fb7c69ae7"
+      ],
+      "vulnHash": "9c2c6ca3f7614ff111f87196c1386a4e1059c375ed7d8052a27bc57d2a3550d9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "342",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "341             if isinstance(rule, (tuple, list)):\n342                 assert len(rule) in (2, 3, 4",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "60a923c0b4be7e7da7b73976dc3a13ab6436225b86bf6b724675ac5c2df1538a",
+        "0d574d5c0cd461e15137890e0b5c5718695552dc30cd2f73e50c756b45c7fd87"
+      ],
+      "vulnHash": "aeb54ee030c5940cb1045523b5b0e5b6a03d870e06c325587ad51664339f7b96"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "392",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "391         elif isinstance(target, httputil.HTTPServerConnectionDelegate):\n392             assert r",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e1624c08b71d3fab05f7679db260e2246012578accbe00382457ddb6a7326828",
+        "f6cbfeb13004d4754e64952b42ff2c452be073c6a888e9a9fa076783c5a79026"
+      ],
+      "vulnHash": "c770609abc27e27c8515b47d826690b457cce42101d399d0b514f023b1475bc7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "396",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "395         elif callable(target):\n396             assert request.connection is not None\n397        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ce6cbb50e737d2dfe4b4053fa90cd389839fc1f424225b114c9aee8fd7bcb6ed",
+        "bb47c2633dd3d47f1a2cdfd465fc512606213125dd5be4cbe64a73ec1b67b274"
+      ],
+      "vulnHash": "893e95f8eaa978efd4d56921446a7d36623e8b9edb0fbeb5f9d51939d2d2e616"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "563",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "562 \n563         assert len(self.regex.groupindex) in (0, self.regex.groups), (\n564             \"gro",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f8653e3c02aa7cf08231d32173926501b59e784b2e8bf4acdf5e5fd0fe7b5a95",
+        "f4f4d8338887761d6de8d0d6f2f2a42d41b86a8fd8b95397d0dd988f9d7a0878"
+      ],
+      "vulnHash": "c3c5b2bee62168fa1786c9c87a12f21696e770791e15e89adccbea000ad73b10"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": "596",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "595             raise ValueError(\"Cannot reverse url regex \" + self.regex.pattern)\n596         asser",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "edf3af020e82c2c87d5bdaa966b69810b794b03410eab319d1c2844b1096b0a9",
+        "8ac24b8f5cd362000cc312974e805e78a704f52c55b3afc152d97abc7130d64c"
+      ],
+      "vulnHash": "a02328d5b35a304f5f41f17b67319801b67bacc60d111595fb884ea0adac1142"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "167",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "166         self.queue.append((key, request, callback))\n167         assert request.connect_timeout i",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "017e2580fd8173f7e3a37c1d844fec475274bcc154f09acba831e2717bdc1ceb",
+        "8b309edc31c7d8434dc831257b7e2c40fdcb026a8571f603b926a43898d3806f"
+      ],
+      "vulnHash": "8bbad6410a8ea6707334a2fc3ec70fbe013c5da360f7cd3271a25a4839b2d8aa"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "168",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "167         assert request.connect_timeout is not None\n168         assert request.request_timeout is",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b3ae29c673cda150dfee7ff4199c31dabd85f810847957d7e9fb121e547a3a67",
+        "24394b3e2e66fb901de669f20c01b8209dec51055ac1eac5cd957fc192606474"
+      ],
+      "vulnHash": "cc35759c1d1780c837ed27038221b16bc745a9eab85eefadce504ffdff640541"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "393",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "392             if username is not None:\n393                 assert password is not None\n394        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "70907a443693805b7daddc7c7c6f797377145f84192dda577ad099c5f7d5d69b",
+        "d390abfef5e8991204b51ffd72a5f3145e08fe7c2b487bd9d392ade1463732a1"
+      ],
+      "vulnHash": "8dff8a6e81562a111442457c544eef4f04a406a535769398aa71056bdd5bb077"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "595",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "594     ) -> None:\n595         assert isinstance(first_line, httputil.ResponseStartLine)\n596        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "418dd35656179b417ae67d402f5961e47b8d9ec524dedebb33253d305f3f2fa5",
+        "7d93cae527deb2f15534dfb472b51971b314b861e53f4e105da9b0a531151302"
+      ],
+      "vulnHash": "44895ffa8137b06419148c4258291bb0514ada0f5b44c44d88d9e6f1e1091484"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "615",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "614         if self.request.follow_redirects:\n615             assert self.request.max_redirects is n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1ef432776475e3d1878f5da9cd0e00ed754090058d83c21b119aa702d194b8cd",
+        "e4c85c3a2868d915424b6fd8e05b8c282d5d074bffa45621526e01bf3e9039f6"
+      ],
+      "vulnHash": "6c007489e360a05521bad523df0eed78051091a70b97e75df160f0f3fecfb19d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "625",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "624     def finish(self) -> None:\n625         assert self.code is not None\n626         data = b\"\".jo",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ffc61cbf5884a6ab654c9313a211a0e6cd24836d2ea15e2672807d8240b51710",
+        "9fce7b86b05b641db4fb3a9aa3cd6b0c66940a33994b042032df947039a4f957"
+      ],
+      "vulnHash": "90e69338f69fe270b5492d14209aa6fcb1ccd906e3a1d6a493fe77fc75f3735c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "630",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "629         if self._should_follow_redirect():\n630             assert isinstance(self.request, _Requ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "740b7c9d44109fac5ec40893f11215c667ef82c502bb83c76cd34bc267e92a3f",
+        "d8d22246a3d128cab8a2bd91ec6717ec4467604be7c70388f2df76a74ad7a261"
+      ],
+      "vulnHash": "80160bca96c52c72a0e1e31ce1ea3c34f03821e47a59f4b27f399b7bf7895a0a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "631",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "630             assert isinstance(self.request, _RequestProxy)\n631             assert self.headers i",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0023ff1d4144e1c454124e89d8704ef1b2ac525651bb8e337f67cd9639a7887d",
+        "dea4fd06c9bf83a755cc2c5290e2aa80ab470471347b5b52415e628808a7e092"
+      ],
+      "vulnHash": "e60ac3d4f464a1e4af6ac68aee45a6635908cf97bd14ad0f321dc0118c44274f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "636",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "635             )\n636             assert self.request.max_redirects is not None\n637             new_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "82068cd73bf94217f7aa49204ec29e5fcf8bac53de79359ba385a028f92271f5",
+        "ef890235ab31ba694ba00e3a5588212b2d97e23306ea6c5ec761d5a4a351fb8f"
+      ],
+      "vulnHash": "24cd761412645b72b7375748339acf483866c5412ab61804874e3dcfbb063055"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": "667",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "666             self._release()\n667             assert self.client is not None\n668             fut =",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "28878748a415fe4d4bd415f73b5ffefafe54538f9bd78b458d471c9f88aa5039",
+        "0effc1de79548401e886931db9e0c32cb6a05f5a82c05d82573b89cbec041c87"
+      ],
+      "vulnHash": "da2c8feb156a1a5c40be6b115fbd65f8e7dcaa00af7e322ecc0a453bc8ce5aaa"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": "298",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "297         \"\"\"\n298         assert not self._started\n299         self._started = True\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "784831cee7921d972539c73731973704e3ede1b2d2032f538f7627528b16b8d8",
+        "71237c80481473b9280d0036624c7b834efb2276b022ee5d23b64900c6e217ef"
+      ],
+      "vulnHash": "af909157caf4f10e0413d0668ba66da9d644a1dc26e4e6e4925b1b2e493b99a8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": "316",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "315         for fd, sock in self._sockets.items():\n316             assert sock.fileno() == fd\n317   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4fda58f06afbd9860a68f01ad885ea2e99d0538e877ecd87bf385884321fd293",
+        "940289d23252f15e96fd832c18e1bd72852ba522439aded07fec906e7edbed81"
+      ],
+      "vulnHash": "edd59228ed041201e213375f0333c4e8406408fda93da9e327589764807c7b91"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": "342",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "341         if self.ssl_options is not None:\n342             assert ssl, \"Python 2.6+ and OpenSSL re",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d74b533adfd672a1d1610054bc98db01c346ea0622504c17cef32c730f1ac5c4",
+        "7ce16bd2ed38d1d3d81df42692d458f5990a7d8b424546d117655f6dd687323e"
+      ],
+      "vulnHash": "7d072dc16188148f0ff13d3582dcce4e1bd6b6f1fded6f5607e91f46dd4474a7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "306",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "305         # Validate the whitespace setting.\n306         assert whitespace is not None\n307        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e9dddc004443ef9c0770d0b8a371b1d435a8ae6521e6034acd7dcf6f46cfa26b",
+        "a5229d0c22871163443e438b974da0b26011ca9d5942ec2066c49f8d70b9fc55"
+      ],
+      "vulnHash": "d2b7fa4f54862cdb1fa6e327967a88513c4dc262a43030473ba76654aa294d46"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "583",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "582     ) -> None:\n583         assert loader is not None\n584         included = loader.load(self.nam",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8ecab22ad45498177deb1458f0096f17ede55e581eb7297b7f71bced02e95b07",
+        "9ec94b4429f747e0e6555fadbd1360b82118c1174aa5623e71aed5948bb75ddb"
+      ],
+      "vulnHash": "853894fac6023b7790bf57bbcf6e298b6f8fb43706f245e5aa502ccd9026a289"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "588",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "587     def generate(self, writer: \"_CodeWriter\") -> None:\n588         assert writer.loader is not N",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "58f7bfa03d4a98783fa9b36f1ca29ff7854a2edb0638fdc0c12f27ce63887a9f",
+        "1fe0a6b7382eb744136909c9e5dee594ba87607f875b7d31221032b9688c3139"
+      ],
+      "vulnHash": "4684a019ee8ffe0e3dce6c352768c9c11b72223d2420aa6ea7eba29b55e8fc80"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "749",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "748             def __exit__(_, *args: Any) -> None:\n749                 assert self._indent > 0\n750",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0ab2f3a3d65e4dcfcfd2b4ba59a32e92ec10c9ef782188d214e465da55398ce5",
+        "fe67b0b77c99648edcbec0198e1cd32729e4a8991200fb2735689631f00b5810"
+      ],
+      "vulnHash": "4ac350e3e120ba1338d7cc08fafb5a60680da9f1f49a931fb7fb712481d234f0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "790",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "789     def find(self, needle: str, start: int = 0, end: Optional[int] = None) -> int:\n790         a",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b779a310ee31852119831b2dfc7263b530b4ff72a2c8028b2864d3059ecd97ac",
+        "4995d0d8cc70d2a2a771c0a1b38c9b5a443918ce1be11f1120388c28a57674f0"
+      ],
+      "vulnHash": "7c56854112d1c494ba287e9751ba1ef14d74bc70443f7b49ebdc7c7f3c9591fe"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "797",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "796             end += pos\n797             assert end >= start\n798             index = self.text.fin",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a7caa6d5f5cd9df36335ed7c063c30db7164f199cb72d99d333f31aaa4833cf0",
+        "a2408092c85c6326187d0ba1dffc9564c1a760bbafd89ed4853ba017186c06e2"
+      ],
+      "vulnHash": "3c76028748caeaf354ff4167a7192c4b87fb94b281dbf60c216e6dd878c3a820"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": "925",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "924         # Block\n925         assert start_brace == \"{%\", start_brace\n926         end = reader.fin",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "181c2c0774bfedca733fea3bc03564262c59d4988876b4b5cf3e09c098bd611f",
+        "1a39cc59a1f5128cc83a45811e6dde3651e731137a0cb42a23bce46e60c4d8b2"
+      ],
+      "vulnHash": "3f7f3cc202aa4ad2805247946cd0d3a7cedd3e36516448bd47c9c65a96ee4f04"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": "223",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "222             done, pending = self.io_loop.run_sync(lambda: asyncio.wait(tasks))\n223             a",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6b0e8c1e621a3391f8cfb95a028093fb5f36f371e69339f8a8e6080568c27194",
+        "b48a45bce0f02ae72ccc05df560084ef11562516fe36f9bbfeee7335e7349b8a"
+      ],
+      "vulnHash": "cb1f7c27218923270584425ff61d93e1136a39d9ca536a389a7a170e26ef1723"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": "303",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "302         \"\"\"\n303         assert _arg is None or not kwargs\n304         self.__stop_args = kwargs ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "163219601ad53fcd5bbd1f974f446e48b0cd5e6490db9cca0d4d5fa9636c3fc6",
+        "c128e77865f9e2a70523de4775ab9b1b7403a41caee4f820291b78662cf780dd"
+      ],
+      "vulnHash": "7c21a93ba06116f255f5a6738ec4e0986c52283e25e76105fbb233a566b1fbc5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": "358",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "357                 self.__timeout = None\n358         assert self.__stopped\n359         self.__stopp",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4e76e5c440e001a619388cacb367966675fddfc558cb5eca3a3b62359946014e",
+        "f04b1c83346ecbabfaae4e970bbff07eefeb753dd1726cf5b6c6d804bb4c80c1"
+      ],
+      "vulnHash": "dd4d6043096d95718119b93dfcb9dd22b98cb6987e2d5313bdfac6b0a380c884"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "233",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "232         self.clear()\n233         assert self.request.connection is not None\n234         # TODO: ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "02782bb15bd7ad1198fdffd378b3402b87bb19910552f21f870e450ceeb90d61",
+        "4d1a140fabdaf61d9f1b17426030b32d3f9829ed8f0dd5a1687f8af5044b7ef7"
+      ],
+      "vulnHash": "bdf42b900567e16911fc3ec41b8caafd9afed480d9059574c0bed48683505e75"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "469",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "468         # `get_argument`.)\n469         assert isinstance(strip, bool)\n470 \n471         return se",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "24c99539f5c12071801da6cd166eb6645168fb8815ef6bd09bb1aad45f50a819",
+        "1d0d994c243fa7e22949331f32d3057b6bf92d336c2f0cf8098c606e2dea3c2d"
+      ],
+      "vulnHash": "f5edb804b5fc7cb90d28bcfbd996d69f6284567e121f3c4544bbec7e1dd4f879"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "892",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "891         else:\n892             assert isinstance(status, int) and 300 <= status <= 399\n893       ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e7dd8358f5449a8e15b60873e464c200bfdc66f130c0380ed597889f49172d34",
+        "97c3f8cf003891e6d213b10834fe14b930fdd1f2c1baa444a28805eb2429186f"
+      ],
+      "vulnHash": "6a6a40bca7dc3b0f7824203491ff5d4f0f9ca06ef59c62058d462f1f2dc6b656"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1082",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1081                 frame = frame.f_back\n1082             assert frame.f_code.co_filename is not No",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1e279e0dc05015d6788a5f84623f89674a23dcd623c18fc426d746d8dc7dc035",
+        "caab837b0a314903f6de3cf75377f21adf8917cd4feb041d5de2536c73a3656b"
+      ],
+      "vulnHash": "9041a24bd902e0453e7cf0ad50599b1b8f9a26e7e8bb2ae09d065c239baccb89"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1149",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1148         \"\"\"\n1149         assert self.request.connection is not None\n1150         chunk = b\"\".jo",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c67b4ead05150dbed45db9628f0dd13f40b9b946e50d73c276843f404d227aa0",
+        "42430f5b82a666e4ada3b84f6e52ec0aa42ec18a037b796a04377783023c3125"
+      ],
+      "vulnHash": "44d680328c5d7f96be875057041ff27f25692ca3537ab1c69dc4e94f6b15bed5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1155",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1154             for transform in self._transforms:\n1155                 assert chunk is not None\n11",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1c4a7135afdc3c67cdc0172a901d9ecd9588297999f7779476e739a540d22c77",
+        "e14b8db21ef76c9507ec87fe9a1ab0ff7a45a7cc23f47d674cbb734ec04a067b"
+      ],
+      "vulnHash": "5aab8da67bbb0efea4f471e35db34b390bc00ef0e91adb18c7c83b1f80a74375"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1223",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1222             if self._status_code in (204, 304) or (100 <= self._status_code < 200):\n1223       ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "19997df0f022685ef0b908b1a3cf833731e497d7954e5393bd90e1ca77749d14",
+        "714e23a37e3711394d9e5611fe43509b7b65b561513e0b49bb6cc9360462c84e"
+      ],
+      "vulnHash": "6ee71641b9b923a0ebf2e9b8c2eec245ef488fc63a8d52cf8681a51e4163862f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1231",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1230 \n1231         assert self.request.connection is not None\n1232         # Now that the request is",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3a707f05b3708b83c27d3bafd4230d6a6bff16f97d18d769b1467b0bf5561bbc",
+        "9f340c29e2da6e360925ac6ed0b215e9dff56f50a55a1948ac8bbd76e2e5b006"
+      ],
+      "vulnHash": "7aec4aafe39197d994c63b9cf112158cdd6de2f82694610cbb38b3778c3339c6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1347",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1346                 self._locale = self.get_browser_locale()\n1347                 assert self._loca",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "769b65cf93e308081ca4444c9380f688313aa7f8550f9b1d53393e076bc53b5b",
+        "ff9ea10f0aec05f5a9a996a73da205c0466068bb47c280c0ae40bffc04dc2257"
+      ],
+      "vulnHash": "c21562caf9cf88c4bf68f73140d35f225a62564425e332cebecc51dba6026740"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1534",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1533                 timestamp = time.time()\n1534             assert token is not None\n1535         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "aefd9dbf3f7ab4f73e64560711cfecb49d996544f44514728a0765ae43d6f0e2",
+        "e8f55c83f3741d660b7556240846a219882e69855c59e3794aaa80fdcb3aed16"
+      ],
+      "vulnHash": "589b750ccd148c2873654ddba763c3d9f9aacb5b3476040471a8613b3a574d33"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "1535",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1534             assert token is not None\n1535             assert timestamp is not None\n1536        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a86269565fa307b85f23eaa849cda936a32d202af298be074ea512d5695dde37",
+        "d6a13bb118f819add043512e2d0b1e3031e12ef11a391621e17e924209ee8a61"
+      ],
+      "vulnHash": "1f5fcd8c81d6e175e3cd8957ff864c51560bad379093598f94b838a42eb9edb0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2013",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2012     ) -> None:\n2013         assert isinstance(application, Application)\n2014         self.appli",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a879ed4218a2dd041973123647cb9a4a710ff17113767f9bf5691a840709b2c4",
+        "9d9964120eec8d4441ba9a72e3127b51c2a7aada0b11f73ad9a0ee2143a9b694"
+      ],
+      "vulnHash": "cc2010411976bc3c0c287017e5031db7f5e9366d752e9b7768e9f763812feecb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2262",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2261         else:\n2262             assert isinstance(modules, dict)\n2263             for name, cls ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "bab5adc56669f547b8f1ed02c36775177e07e1c6c1910187aba142b607a9f6f4",
+        "84c9ec8caa615946b2638c523998d37fa35c8852944b8fa0f8179cefde1fae67"
+      ],
+      "vulnHash": "50be5a8074c16115d8de5f8f6c653b3aace8b49ca55ba061dde268b9f57126a6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2764",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2763         else:\n2764             assert self.request.method == \"HEAD\"\n2765 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "63a9036b96c9fb3c9ceb878848efe7da0fb6ef7d73048f851035665d8ea0225d",
+        "17d4fda9a51e91bd3aa756c28fe2d8157187531797aecd9bbb3bec138250a230"
+      ],
+      "vulnHash": "dcff161a8c20a677bd975ad787a93cb62ce3c0ee1cadf9061f35a4278770b827"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2775",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2774         \"\"\"\n2775         assert self.absolute_path is not None\n2776         version_hash = self",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "528652b7621b4dc7fd7deaa8474f2ee2e939ac6ec3cc080e915091aec27a4dfc",
+        "8cf2b7c6d59d339a549c43e8b90b100c4b019f3b17c6fb236fa0ef8efe3ba9c7"
+      ],
+      "vulnHash": "ff5c62f185ea6815eb858d5b1af6f0b8077083c0dbf76024b9211b5dedce5f7e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2823",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2822                 if_since = if_since.replace(tzinfo=datetime.timezone.utc)\n2823             asse",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3addcdb26586cbe50373e565fe52842693b5e1d76524c662207aa84f4865193c",
+        "15fdfba4f58075529cb76b1a9caf2952c2357f9da1be73336de51ebadb6ff9af"
+      ],
+      "vulnHash": "2b348c48ed90ae22d08f62264f134763a96df2a4f08b72143701238f678ed6ad"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2941",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2940                     if remaining is not None:\n2941                         assert remaining == ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f6b8a1b0734f1accddb9294aeb964234bf19498e78624c1b3364d5cfd56bf535",
+        "3a93cdd5720a411e1ae78dc011b0dffbbfaae42ab50c52b68302e6aada0e8ab7"
+      ],
+      "vulnHash": "39def0d30453a38313c323bbe3eca53f487832d52fb26235dac91a353df03723"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "2963",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2962     def _stat(self) -> os.stat_result:\n2963         assert self.absolute_path is not None\n2964 ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "40d5b4dd800e4b81e52c91ad6a10ee3d9bead02355d09481fc4d3aeda4330500",
+        "37aa31cc338bfc55daa86e76e823834c6b6efd49a37d5683a320681f903fe3f4"
+      ],
+      "vulnHash": "f3e667ede0c10814256e09d1a245501ef13001b50badbf7fb79f464c712702c3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3013",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3012         \"\"\"\n3013         assert self.absolute_path is not None\n3014         mime_type, encoding",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "547246d36b94341f34eebfa4172632c0c9059468cb4beaff9e10689e7dffd7bb",
+        "f7e8a6b2e4461b3b38cb111b2bedca2c20f53be1a17794920054f28420cac20f"
+      ],
+      "vulnHash": "93d0e8c1e621c3e644c5dcaf4b1a9ab6978bb69c937850d915ae2d5b95542d23"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3295",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3294                     else:\n3295                         assert self.request.uri is not None\n3296",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e272d8397d7d6c408e1a059eb8c34a095326b3af8ea8261228ba28b03e476a48",
+        "c258d37f7e9892a0db9504a786e4da64b3241d20642933582168b948f747e7f0"
+      ],
+      "vulnHash": "95c748f2f67d93b6d6d6a866f6a0fa572f8fff0bcb384e3f807c19d1b562e595"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3489",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3488     if version == 1:\n3489         assert not isinstance(secret, dict)\n3490         signature = ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fecfdb3788e78f6f2e85a7c209d019dd919f12ea8ebd690acdeac9e4a29a382d",
+        "868e49a11d170c284ba13343f4eebd5e8ecd5c730c54c8744c69abff4411bc6c"
+      ],
+      "vulnHash": "60af65cde15203a3df6503621f27dee54d8af60537ebb47da943f9cd6dd5d7d3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3523",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3522         if isinstance(secret, dict):\n3523             assert (\n3524                 key_version",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "48cabca0028386f1aa3df1862d77dff074289c73ffa55b3b2b0077e583af701f",
+        "546138c496f1f8bd05d6fc62d0f8aece450e217b6225d6e0f8c0d0b70f27bf2e"
+      ],
+      "vulnHash": "b3b7d01b4bd47acbf6c5a6e73f27d2120af08b27629031882e1a9ac2f1ac9403"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3526",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3525             ), \"Key version must be set when sign key dict is used\"\n3526             assert ver",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "de1cdabf4972596decc54b3e2cd9fd02a36a0888ab6e4e2efdbcc29361020468",
+        "c423c3bbcb50f350ed4a2bebfc5e981eba036003c35e16df68d7be57a3e5991f"
+      ],
+      "vulnHash": "0cfa6ad7f86d4bcb0822836ef1d3b5e0bab9049faafd1605f017b0fe1d1c0162"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": "3586",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3585     if version == 1:\n3586         assert not isinstance(secret, dict)\n3587         return _deco",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "224366dc288976c4d7f49c2e06e108ae2718430ec1ebb88707ab1b58e36ff09e",
+        "50061e4edd8203e6eac7aa135b02eb352c6639bc73cba83bb964f3ae851baf91"
+      ],
+      "vulnHash": "3cbbfd3cfb1b9f3933c4416b2329de28dd97356c4e706b89bdf3cd0d6116dc98"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "368",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "367         \"\"\"\n368         assert self.ws_connection is not None\n369         return self.ws_connect",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "51f82b044b69b4ead2df485296341a16a07e5d4b90605cf42896d58be70a4c32",
+        "76a153217d69ccf73e1ed327c303616cb63e8e249e8e43b27b4a5a193fc3b3e9"
+      ],
+      "vulnHash": "4be528b47a9d6680050d28765cd32041d2d4b05e71948a78a9ed8c18a86b36f2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "554",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "553         \"\"\"\n554         assert self.ws_connection is not None\n555         self.ws_connection.set",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "405c743607619d4a15f5a5b09402bdbbc460fa4404bb1e151c60f6033a58a50c",
+        "2971b4f7b22146093e0c03b519a9cbe9079cb3a614783baa68b6f6edcdf8e60b"
+      ],
+      "vulnHash": "2701306fec81dae13f6fa56e4d9d8b9354bbb674880b4863deedcf761b3426fc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "639",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "638                 result = gen.convert_yielded(result)\n639                 assert self.stream is n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cb1fa3d647f2ca7db5521a7422d9f7e91c36bcea0e77b955cc11d51e83bfa639",
+        "b2875c8e63e64b50b0dbdacac971084f3e5b39d037d2bd2c5684389903887c24"
+      ],
+      "vulnHash": "78845fc52738d0fb47b3cb6f5e85a801fc04625112430db7d7731d79a7eb9461"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "748",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "747         data = compressor.compress(data) + compressor.flush(zlib.Z_SYNC_FLUSH)\n748         asser",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "989ff304f842cbcf667355c02158e0d847d64a6fa55915384123a722c0830505",
+        "619483b56f525b8f7838bfe4cd4b6b004993791e94d796ab3751ad8c0a2d58a1"
+      ],
+      "vulnHash": "34eb9daf3bfaa4a285bb43b7a85bcf237ceb12dc023d7ab584baa2b355e277b3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "905",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "904         if self.selected_subprotocol:\n905             assert self.selected_subprotocol in subpro",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4dbacf4b7235c34ff1fd8d2aa2a050c35dce2a32acf55dd0d41acdfd5545c125",
+        "be2149c3c9fbc58d31efeeb6ab3e46cea8d280bf7676dbc4bf455005e68aa21a"
+      ],
+      "vulnHash": "0b050b9f610192a351606c654aa696e74b30b1f5198cbc0513ae608c0f7d1508"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "963",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "962         \"\"\"\n963         assert headers[\"Upgrade\"].lower() == \"websocket\"\n964         assert head",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1de1d3bd43ae65fcb5dec2cfefe84e6590be2bd59dc96581c70616e089f724ce",
+        "6695ea36853aae182947690f70894f624d583b4854b2c3127880ca867088fdf8"
+      ],
+      "vulnHash": "e52f436f6ef147d44097defaeda655c27925825951c09b933f91d1b7f2ded54e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "964",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "963         assert headers[\"Upgrade\"].lower() == \"websocket\"\n964         assert headers[\"Connection\"",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cf8ca18b1f92358a04ffc16e773ff1f07c9de0b79dc738d6d85ecd533c889b6b",
+        "7651f0458e773488049bed14890cf34e2534b39e8380cd66a78bab9a8b90160c"
+      ],
+      "vulnHash": "6f7ca18430c347aea55e7cbd6646dd32f1ee2c0397da02e77995c0d0f03b419b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "966",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "965         accept = self.compute_accept_value(key)\n966         assert headers[\"Sec-Websocket-Accept",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "07b4c94b8da42c0b5a8ff053fef37a89e28a9c1069226e74237fd0d2ef313b39",
+        "9ec302024d8896015c3cb0fe94e2e37fe92d06acae4be885662f3a80d706f275"
+      ],
+      "vulnHash": "8c264d29f3cb8410879d69ae7c1debf1ae3e596aafdf6bd9814c44045ca43ae2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1070",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1069         message = tornado.escape.utf8(message)\n1070         assert isinstance(message, bytes)\n1",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "030a40e041d0e94513e53d58b357c779258deae81622a6b3925e66566f1b7988",
+        "1cb3c58b649ed8dc615b825748f36af659b17911a851afa9c47ec13651058ccc"
+      ],
+      "vulnHash": "44fbf94c2e6b46da121f04742d6a1143b842483bcfd3c19e73314fc611f76df3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1096",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1095         \"\"\"Send ping frame.\"\"\"\n1096         assert isinstance(data, bytes)\n1097         self._w",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e473fc9505e557f20f4c98acd11c5ad6319aa8a779377211e360db07428f88c2",
+        "b3384045f9992d526a3f881fa5fe5313696b055dcb67129e225a840586d1e1c8"
+      ],
+      "vulnHash": "0e666b51e5c42801e26e00cfe41b8c8a176340823642aef09d8e3e155f8033fc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1159",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1158         if is_masked:\n1159             assert self._frame_mask is not None\n1160             dat",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b4769d6ed67eb23f6849a483b13700e3955a1a4d1fec66a79d9b60b8ad9c30e3",
+        "9faad0e615ad24ca8c84471a2226149e4b8a3d1a2dbccee65290e9bb38197100"
+      ],
+      "vulnHash": "12c48bde8af7f8abfbc781548267f187d4570b7368f44f8109ec35180fbe8273"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1201",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1200         if self._frame_compressed:\n1201             assert self._decompressor is not None\n1202 ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fcc3702f2849b8dc5695fcb42aa49307e5f9ca0c6b8180a4c1fb1e0e263bc401",
+        "4d38e41e50225b926a9533e4899f8e8bb5077be420cc7227a2724dd81b9ee2f1"
+      ],
+      "vulnHash": "0600c2e34753cea541545fb59b5f567e53767dc3b7e181563ef01d6900a6206a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1299",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1298             return timeout\n1299         assert self.ping_interval is not None\n1300         retu",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ae0a2117b1c7e896959c2457502252b95d8ed90961e398f5f106c26b30593d96",
+        "341d9c29e2362f46dfa79da1d9bbc1871f76101a0d4250f56be83ed09f175043"
+      ],
+      "vulnHash": "6dc06dde63ea6aeed045d1811a0885a69b3e93e1b17546e8b2168f1fbc85c1ea"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1304",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1303         \"\"\"Start sending periodic pings to keep the connection alive\"\"\"\n1304         assert sel",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "31207bb178358f400bc9f80463f2e91c802358133f1794b1899b7fbeb038fb73",
+        "714045c31a89f5873e2a9e5b25e834c65a87a1880b34ff372d49b6c77b663e05"
+      ],
+      "vulnHash": "f912c5476644ae3cf6160212962e24f4c2e8f3eb3e58b6ad1338084b16dcc361"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1327",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1326         since_last_ping = now - self.last_ping\n1327         assert self.ping_interval is not No",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6aab4527f9f8df9f850dd8cf7c2c3e60be2780bc1ee9f3ffab9ae4e7498b9b0b",
+        "fd9f60714e0c423f27c0ffecb7bd9b4b0be51dbab6e76bf2b24219c445859c6b"
+      ],
+      "vulnHash": "df9e526fdc76afecec613d7fb4b40321a35ef3e53f799813ce5992f65534be8d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1328",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1327         assert self.ping_interval is not None\n1328         assert self.ping_timeout is not None",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e7c9d508b0d314f8063adbd474c14e231d735242c399d731eff3c59d42b508fd",
+        "12f0837e1054b5a81f7f6005b1705c273a6585ddc4a25f45204ab2554782309d"
+      ],
+      "vulnHash": "1547e89989a07e5b89b213b3b1fffb8baf6ddc0a9226d1c5dc889ad048576972"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1467",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1466     ) -> None:\n1467         assert isinstance(start_line, httputil.ResponseStartLine)\n1468     ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3de52779ca2a3e9844bf661a36159ac78849bd542e2fba286d1ca62b2126f67e",
+        "fcbf365dc1e2fed9973d88d16d7befe53d1a93d6415de05d42167e4d10d7cd79"
+      ],
+      "vulnHash": "ca09338618e66e06d21bab474ca7cfd2b2bbd672d4730f350fa47848c0733ee2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1582",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1581     ) -> None:\n1582         assert typ is not None\n1583         assert value is not None\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fff336006dee12375f0c3a3bf1ee59ca9106ce13a459a5f9a356e7506e15725d",
+        "00e2fb6534934f2b3e1a49cfe702ec058d4c5ea6078180f7c1f36cd5185999d5"
+      ],
+      "vulnHash": "ffdbf346b1ca06d74791c1763b2378ed0eb9eaa8d59ae07c66986759c7bdaefa"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1583",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1582         assert typ is not None\n1583         assert value is not None\n1584         app_log.error",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "24498fb35e853f12fa0555cdb1a65b0d576d7318e159ba1aa6ef58f51850b982",
+        "cbb2687723d798385a61c4830234fe2f132b66a6379f919951a3827650b0445c"
+      ],
+      "vulnHash": "c8d8965b12e4fcc7afa15990c9840f30bb18078d005a97add6436cd5c94237d4"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": "1646",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1645     if isinstance(url, httpclient.HTTPRequest):\n1646         assert connect_timeout is None\n164",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9bd2a14bcfe74249a3aee68c981073ed40a069d73ba47cf0ebde864ff4c0e686",
+        "cb75f7df8106129bf6670e52df2780c49230f4dcb9db28e4e2a9a578212a21de"
+      ],
+      "vulnHash": "15e15bcb2d50393b0aee40a7113a17435ed1ad9070f773bc311e34c337a75045"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": "55",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "54 def to_wsgi_str(s: bytes) -> str:\n55     assert isinstance(s, bytes)\n56     return s.decode(\"lati",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5d349b093ae85de0145a31bcf0144fb7a45847215489c7e88a69659d55c2c102",
+        "415752992621259da9a6007d6dd6cbb75a17b6e5cf1e1b90f94a15adb76616e2"
+      ],
+      "vulnHash": "4a01d6ab6d6a72743f6d965f9acd2339d2ef35d1a1d1d0aa28bff5b36a09b5f8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": "202",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "201             header_obj.add(key, value)\n202         assert request.connection is not None\n203    ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5c42b43cfe3e331865c3d1fd20d871303470bf38bfd64dcdecaf6577c6bd5297",
+        "0f67f07eba8b8f8233cc4fc5aa47e5b3c571401b7637f9ded615ce16f0297f0b"
+      ],
+      "vulnHash": "b7da8b42ca0d7e8469bfc0d3c84c7440768e2d70e2b540116e8dfcd8c617d6d6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": "255",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "254         request_time = 1000.0 * request.request_time()\n255         assert request.method is not ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "933e3520d15b9a0ff40c4057b1931a6ffbeb0d575827d4f3b433c1812f7f96dc",
+        "957d82d74b62483ce702847e37575b0939acd1b56b00f7cd403e0009800ad52f"
+      ],
+      "vulnHash": "5190409fb4b9fcfae244f8fdffe69fb6aeb26371aea6fc096a84ad10792039ac"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "tornado",
+    "project_version": "6.4.0",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": "256",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "255         assert request.method is not None\n256         assert request.uri is not None\n257        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "bc8a56d946e6b196db5bb39b499de4a2a81e2281c06e6b7728aa3b0915ab6b42",
+        "1156582192b125a1415b1b2f626384d942375c008b8f8b4f852e5d4141fe1e99"
+      ],
+      "vulnHash": "8e4d2f48b7465992ee5ba995962e8a4493f5f2f5674b8f0eee1dd844fe095b49"
+    }
+  }
+]

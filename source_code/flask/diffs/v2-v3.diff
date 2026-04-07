@@ -1,0 +1,1532 @@
+diff --git a/.devcontainer/on-create-command.sh b/.devcontainer/on-create-command.sh
+index fdf77952f1..eaebea6185 100755
+--- a/.devcontainer/on-create-command.sh
++++ b/.devcontainer/on-create-command.sh
+@@ -1,9 +1,7 @@
+ #!/bin/bash
+ set -e
+-
+-python3 -m venv .venv
++python3 -m venv --upgrade-deps .venv
+ . .venv/bin/activate
+-pip install -U pip
+ pip install -r requirements/dev.txt
+ pip install -e .
+ pre-commit install --install-hooks
+diff --git a/.editorconfig b/.editorconfig
+index e32c8029d1..2ff985a67a 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -9,5 +9,5 @@ end_of_line = lf
+ charset = utf-8
+ max_line_length = 88
+ 
+-[*.{yml,yaml,json,js,css,html}]
++[*.{css,html,js,json,jsx,scss,ts,tsx,yaml,yml}]
+ indent_size = 2
+diff --git a/.github/ISSUE_TEMPLATE/bug-report.md b/.github/ISSUE_TEMPLATE/bug-report.md
+index c2a15eeee8..0917c79791 100644
+--- a/.github/ISSUE_TEMPLATE/bug-report.md
++++ b/.github/ISSUE_TEMPLATE/bug-report.md
+@@ -5,7 +5,7 @@ about: Report a bug in Flask (not other projects which depend on Flask)
+ 
+ <!--
+ This issue tracker is a tool to address bugs in Flask itself. Please use
+-Pallets Discord or Stack Overflow for questions about your own code.
++GitHub Discussions or the Pallets Discord for questions about your own code.
+ 
+ Replace this comment with a clear outline of what the bug is.
+ -->
+diff --git a/.github/ISSUE_TEMPLATE/config.yml b/.github/ISSUE_TEMPLATE/config.yml
+index abe3915622..3f27ac9521 100644
+--- a/.github/ISSUE_TEMPLATE/config.yml
++++ b/.github/ISSUE_TEMPLATE/config.yml
+@@ -1,11 +1,11 @@
+ blank_issues_enabled: false
+ contact_links:
+   - name: Security issue
+-    url: security@palletsprojects.com
+-    about: Do not report security issues publicly. Email our security contact.
++    url: https://github.com/pallets/flask/security/advisories/new
++    about: Do not report security issues publicly. Create a private advisory.
+   - name: Questions
+-    url: https://stackoverflow.com/questions/tagged/flask?tab=Frequent
+-    about: Search for and ask questions about your code on Stack Overflow.
+-  - name: Questions and discussions
++    url: https://github.com/pallets/flask/discussions/
++    about: Ask questions about your own code on the Discussions tab.
++  - name: Questions on
+     url: https://discord.gg/pallets
+-    about: Discuss questions about your code on our Discord chat.
++    about: Ask questions about your own code on our Discord chat.
+diff --git a/.github/SECURITY.md b/.github/SECURITY.md
+deleted file mode 100644
+index fcfac71bfc..0000000000
+--- a/.github/SECURITY.md
++++ /dev/null
+@@ -1,19 +0,0 @@
+-# Security Policy
+-
+-If you believe you have identified a security issue with a Pallets
+-project, **do not open a public issue**. To responsibly report a
+-security issue, please email security@palletsprojects.com. A security
+-team member will contact you acknowledging the report and how to
+-continue.
+-
+-Be sure to include as much detail as necessary in your report. As with
+-reporting normal issues, a minimal reproducible example will help the
+-maintainers address the issue faster. If you are able, you may also
+-include a fix for the issue generated with `git format-patch`.
+-
+-The current and previous release will receive security patches, with
+-older versions evaluated based on usage information and severity.
+-
+-After fixing an issue, we will make a security release along with an
+-announcement on our blog. We may obtain a CVE id as well. You may
+-include a name and link if you would like to be credited for the report.
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+index 90f94bc32b..fa94b770a8 100644
+--- a/.github/dependabot.yml
++++ b/.github/dependabot.yml
+@@ -1,9 +1,24 @@
+ version: 2
+ updates:
+-- package-ecosystem: "github-actions"
+-  directory: "/"
+-  schedule:
+-    interval: "monthly"
+-    day: "monday"
+-    time: "16:00"
+-    timezone: "UTC"
++  - package-ecosystem: github-actions
++    directory: /
++    schedule:
++      interval: monthly
++    ignore:
++      # slsa depends on upload/download v3
++      - dependency-name: actions/upload-artifact
++        versions: '>= 4'
++      - dependency-name: actions/download-artifact
++        versions: '>= 4'
++    groups:
++      github-actions:
++        patterns:
++          - '*'
++  - package-ecosystem: pip
++    directory: /requirements/
++    schedule:
++      interval: monthly
++    groups:
++      python-requirements:
++        patterns:
++          - '*'
+diff --git a/.github/pull_request_template.md b/.github/pull_request_template.md
+index 29fd35f855..eb124d251a 100644
+--- a/.github/pull_request_template.md
++++ b/.github/pull_request_template.md
+@@ -1,6 +1,7 @@
+ <!--
+ Before opening a PR, open a ticket describing the issue or feature the
+-PR will address. Follow the steps in CONTRIBUTING.rst.
++PR will address. An issue is not required for fixing typos in
++documentation, or other simple non-code changes.
+ 
+ Replace this comment with a description of the change. Describe how it
+ addresses the linked ticket.
+@@ -9,22 +10,16 @@ addresses the linked ticket.
+ <!--
+ Link to relevant issues or previous PRs, one per line. Use "fixes" to
+ automatically close an issue.
+--->
+ 
+-- fixes #<issue number>
++fixes #<issue number>
++-->
+ 
+ <!--
+-Ensure each step in CONTRIBUTING.rst is complete by adding an "x" to
+-each box below.
++Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+ 
+-If only docs were changed, these aren't relevant and can be removed.
++- Add tests that demonstrate the correct behavior of the change. Tests
++  should fail without the change.
++- Add or update relevant docs, in the docs folder and in code.
++- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
++- Add `.. versionchanged::` entries in any relevant code docs.
+ -->
+-
+-Checklist:
+-
+-- [ ] Add tests that demonstrate the correct behavior of the change. Tests should fail without the change.
+-- [ ] Add or update relevant docs, in the docs folder and in code.
+-- [ ] Add an entry in `CHANGES.rst` summarizing the change and linking to the issue.
+-- [ ] Add `.. versionchanged::` entries in any relevant code docs.
+-- [ ] Run `pre-commit` hooks and fix any issues.
+-- [ ] Run `pytest` and `tox`, no tests failed.
+diff --git a/.github/workflows/lock.yaml b/.github/workflows/lock.yaml
+index e19cdb71a5..1677663fd5 100644
+--- a/.github/workflows/lock.yaml
++++ b/.github/workflows/lock.yaml
+@@ -1,8 +1,9 @@
+-name: 'Lock threads'
+-# Lock closed issues that have not received any further activity for
+-# two weeks. This does not close open issues, only humans may do that.
+-# We find that it is easier to respond to new issues with fresh examples
+-# rather than continuing discussions on old issues.
++name: Lock inactive closed issues
++# Lock closed issues that have not received any further activity for two weeks.
++# This does not close open issues, only humans may do that. It is easier to
++# respond to new issues with fresh examples rather than continuing discussions
++# on old issues.
++
+ on:
+   schedule:
+     - cron: '0 0 * * *'
+@@ -15,7 +16,8 @@ jobs:
+   lock:
+     runs-on: ubuntu-latest
+     steps:
+-      - uses: dessant/lock-threads@7de207be1d3ce97a9abe6ff1306222982d1ca9f9
++      - uses: dessant/lock-threads@7de207be1d3ce97a9abe6ff1306222982d1ca9f9 # v5.0.1
+         with:
+           issue-inactive-days: 14
+           pr-inactive-days: 14
++          discussion-inactive-days: 14
+diff --git a/.github/workflows/publish.yaml b/.github/workflows/publish.yaml
+index a6ae6e425b..0d5e126fe1 100644
+--- a/.github/workflows/publish.yaml
++++ b/.github/workflows/publish.yaml
+@@ -9,8 +9,8 @@ jobs:
+     outputs:
+       hash: ${{ steps.hash.outputs.hash }}
+     steps:
+-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+-      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
++      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
++      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+         with:
+           python-version: '3.x'
+           cache: pip
+@@ -23,9 +23,8 @@ jobs:
+       - name: generate hash
+         id: hash
+         run: cd dist && echo "hash=$(sha256sum * | base64 -w0)" >> $GITHUB_OUTPUT
+-      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32
++      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+         with:
+-          name: dist
+           path: ./dist
+   provenance:
+     needs: [build]
+@@ -34,7 +33,7 @@ jobs:
+       id-token: write
+       contents: write
+     # Can't pin with hash due to how this workflow works.
+-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
++    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.10.0
+     with:
+       base64-subjects: ${{ needs.build.outputs.hash }}
+   create-release:
+@@ -45,25 +44,30 @@ jobs:
+     permissions:
+       contents: write
+     steps:
+-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a
++      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+       - name: create release
+         run: >
+           gh release create --draft --repo ${{ github.repository }}
+           ${{ github.ref_name }}
+-          *.intoto.jsonl/* dist/*
++          *.intoto.jsonl/* artifact/*
+         env:
+           GH_TOKEN: ${{ github.token }}
+   publish-pypi:
+     needs: [provenance]
+     # Wait for approval before attempting to upload to PyPI. This allows reviewing the
+     # files in the draft release.
+-    environment: publish
++    environment:
++      name: publish
++      url: https://pypi.org/project/Flask/${{ github.ref_name }}
+     runs-on: ubuntu-latest
+     permissions:
+       id-token: write
+     steps:
+-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a
+-      - uses: pypa/gh-action-pypi-publish@f946db0f765b9ae754e44bfd5ae5b8b91cfb37ef
++      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
++      - uses: pypa/gh-action-pypi-publish@68e62d4871ad9d14a9d55f114e6ac71f0b408ec0 # v1.8.14
+         with:
+           repository-url: https://test.pypi.org/legacy/
+-      - uses: pypa/gh-action-pypi-publish@f946db0f765b9ae754e44bfd5ae5b8b91cfb37ef
++          packages-dir: artifact/
++      - uses: pypa/gh-action-pypi-publish@68e62d4871ad9d14a9d55f114e6ac71f0b408ec0 # v1.8.14
++        with:
++          packages-dir: artifact/
+diff --git a/.github/workflows/tests.yaml b/.github/workflows/tests.yaml
+index b47ea3b3c6..8795e60d9f 100644
+--- a/.github/workflows/tests.yaml
++++ b/.github/workflows/tests.yaml
+@@ -15,35 +15,45 @@ on:
+       - '*.rst'
+ jobs:
+   tests:
+-    name: ${{ matrix.name }}
+-    runs-on: ${{ matrix.os }}
++    name: ${{ matrix.name || matrix.python }}
++    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+     strategy:
+       fail-fast: false
+       matrix:
+         include:
+-          - {name: Linux, python: '3.12', os: ubuntu-latest, tox: py312}
+-          - {name: Windows, python: '3.12', os: windows-latest, tox: py312}
+-          - {name: Mac, python: '3.12', os: macos-latest, tox: py312}
+-          - {name: '3.11', python: '3.11', os: ubuntu-latest, tox: py311}
+-          - {name: '3.10', python: '3.10', os: ubuntu-latest, tox: py310}
+-          - {name: '3.9', python: '3.9', os: ubuntu-latest, tox: py39}
+-          - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
+-          - {name: 'PyPy', python: 'pypy-3.10', os: ubuntu-latest, tox: pypy310}
+-          - {name: 'Minimum Versions', python: '3.12', os: ubuntu-latest, tox: py312-min}
+-          - {name: 'Development Versions', python: '3.8', os: ubuntu-latest, tox: py38-dev}
+-          - {name: Typing, python: '3.12', os: ubuntu-latest, tox: typing}
++          - {python: '3.12'}
++          - {name: Windows, python: '3.12', os: windows-latest}
++          - {name: Mac, python: '3.12', os: macos-latest}
++          - {python: '3.11'}
++          - {python: '3.10'}
++          - {python: '3.9'}
++          - {python: '3.8'}
++          - {name: PyPy, python: 'pypy-3.10', tox: pypy310}
++          - {name: Minimum Versions, python: '3.12', tox: py-min}
++          - {name: Development Versions, python: '3.8', tox: py-dev}
+     steps:
+-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+-      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
++      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
++      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+         with:
+           python-version: ${{ matrix.python }}
+-          cache: 'pip'
++          allow-prereleases: true
++          cache: pip
++          cache-dependency-path: requirements*/*.txt
++      - run: pip install tox
++      - run: tox run -e ${{ matrix.tox || format('py{0}', matrix.python) }}
++  typing:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
++      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
++        with:
++          python-version: '3.x'
++          cache: pip
+           cache-dependency-path: requirements*/*.txt
+       - name: cache mypy
+-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2
++        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+         with:
+           path: ./.mypy_cache
+-          key: mypy|${{ matrix.python }}|${{ hashFiles('pyproject.toml') }}
+-        if: matrix.tox == 'typing'
++          key: mypy|${{ hashFiles('pyproject.toml') }}
+       - run: pip install tox
+-      - run: tox run -e ${{ matrix.tox }}
++      - run: tox run -e typing
+diff --git a/.gitignore b/.gitignore
+index 83aa92e56c..62c1b887d7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,10 +1,10 @@
+ .idea/
+ .vscode/
++.venv*/
++venv*/
+ __pycache__/
+-.tox/
+-.coverage
+-.coverage.*
++dist/
++.coverage*
+ htmlcov/
++.tox/
+ docs/_build/
+-dist/
+-venv/
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 81e76c2ead..828916171e 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -2,12 +2,12 @@ ci:
+   autoupdate_schedule: monthly
+ repos:
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+-    rev: v0.1.13
++    rev: v0.3.5
+     hooks:
+       - id: ruff
+       - id: ruff-format
+   - repo: https://github.com/pre-commit/pre-commit-hooks
+-    rev: v4.5.0
++    rev: v4.6.0
+     hooks:
+       - id: check-merge-conflict
+       - id: debug-statements
+diff --git a/.readthedocs.yaml b/.readthedocs.yaml
+index 5ffe32b36c..865c685979 100644
+--- a/.readthedocs.yaml
++++ b/.readthedocs.yaml
+@@ -2,7 +2,7 @@ version: 2
+ build:
+   os: ubuntu-22.04
+   tools:
+-    python: "3.12"
++    python: '3.12'
+ python:
+   install:
+     - requirements: requirements/docs.txt
+diff --git a/CHANGES.rst b/CHANGES.rst
+index d7ffaab570..082c7065d5 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,3 +1,25 @@
++Version 3.0.3
++-------------
++
++Released 2024-04-07
++
++-   The default ``hashlib.sha1`` may not be available in FIPS builds. Don't
++    access it at import time so the developer has time to change the default.
++    :issue:`5448`
++-   Don't initialize the ``cli`` attribute in the sansio scaffold, but rather in
++    the ``Flask`` concrete class. :pr:`5270`
++
++
++Version 3.0.2
++-------------
++
++Released 2024-02-03
++
++-   Correct type for ``jinja_loader`` property. :issue:`5388`
++-   Fix error with ``--extra-files`` and ``--exclude-patterns`` CLI options.
++    :issue:`5391`
++
++
+ Version 3.0.1
+ -------------
+ 
+diff --git a/LICENSE.rst b/LICENSE.txt
+similarity index 100%
+rename from LICENSE.rst
+rename to LICENSE.txt
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000000..8ab2d59ff0
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,65 @@
++# Flask
++
++Flask is a lightweight [WSGI][] web application framework. It is designed
++to make getting started quick and easy, with the ability to scale up to
++complex applications. It began as a simple wrapper around [Werkzeug][]
++and [Jinja][], and has become one of the most popular Python web
++application frameworks.
++
++Flask offers suggestions, but doesn't enforce any dependencies or
++project layout. It is up to the developer to choose the tools and
++libraries they want to use. There are many extensions provided by the
++community that make adding new functionality easy.
++
++[WSGI]: https://wsgi.readthedocs.io/
++[Werkzeug]: https://werkzeug.palletsprojects.com/
++[Jinja]: https://jinja.palletsprojects.com/
++
++
++## Installing
++
++Install and update from [PyPI][] using an installer such as [pip][]:
++
++```
++$ pip install -U Flask
++```
++
++[PyPI]: https://pypi.org/project/Flask/
++[pip]: https://pip.pypa.io/en/stable/getting-started/
++
++
++## A Simple Example
++
++```python
++# save this as app.py
++from flask import Flask
++
++app = Flask(__name__)
++
++@app.route("/")
++def hello():
++    return "Hello, World!"
++```
++
++```
++$ flask run
++  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
++```
++
++
++## Contributing
++
++For guidance on setting up a development environment and how to make a
++contribution to Flask, see the [contributing guidelines][].
++
++[contributing guidelines]: https://github.com/pallets/flask/blob/main/CONTRIBUTING.rst
++
++
++## Donate
++
++The Pallets organization develops and supports Flask and the libraries
++it uses. In order to grow the community of contributors and users, and
++allow the maintainers to devote more time to the projects, [please
++donate today][].
++
++[please donate today]: https://palletsprojects.com/donate
+diff --git a/README.rst b/README.rst
+deleted file mode 100644
+index 4b7ff42ad1..0000000000
+--- a/README.rst
++++ /dev/null
+@@ -1,80 +0,0 @@
+-Flask
+-=====
+-
+-Flask is a lightweight `WSGI`_ web application framework. It is designed
+-to make getting started quick and easy, with the ability to scale up to
+-complex applications. It began as a simple wrapper around `Werkzeug`_
+-and `Jinja`_ and has become one of the most popular Python web
+-application frameworks.
+-
+-Flask offers suggestions, but doesn't enforce any dependencies or
+-project layout. It is up to the developer to choose the tools and
+-libraries they want to use. There are many extensions provided by the
+-community that make adding new functionality easy.
+-
+-.. _WSGI: https://wsgi.readthedocs.io/
+-.. _Werkzeug: https://werkzeug.palletsprojects.com/
+-.. _Jinja: https://jinja.palletsprojects.com/
+-
+-
+-Installing
+-----------
+-
+-Install and update using `pip`_:
+-
+-.. code-block:: text
+-
+-    $ pip install -U Flask
+-
+-.. _pip: https://pip.pypa.io/en/stable/getting-started/
+-
+-
+-A Simple Example
+-----------------
+-
+-.. code-block:: python
+-
+-    # save this as app.py
+-    from flask import Flask
+-
+-    app = Flask(__name__)
+-
+-    @app.route("/")
+-    def hello():
+-        return "Hello, World!"
+-
+-.. code-block:: text
+-
+-    $ flask run
+-      * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+-
+-
+-Contributing
+-------------
+-
+-For guidance on setting up a development environment and how to make a
+-contribution to Flask, see the `contributing guidelines`_.
+-
+-.. _contributing guidelines: https://github.com/pallets/flask/blob/main/CONTRIBUTING.rst
+-
+-
+-Donate
+-------
+-
+-The Pallets organization develops and supports Flask and the libraries
+-it uses. In order to grow the community of contributors and users, and
+-allow the maintainers to devote more time to the projects, `please
+-donate today`_.
+-
+-.. _please donate today: https://palletsprojects.com/donate
+-
+-
+-Links
+------
+-
+--   Documentation: https://flask.palletsprojects.com/
+--   Changes: https://flask.palletsprojects.com/changes/
+--   PyPI Releases: https://pypi.org/project/Flask/
+--   Source Code: https://github.com/pallets/flask/
+--   Issue Tracker: https://github.com/pallets/flask/issues/
+--   Chat: https://discord.gg/pallets
+diff --git a/docs/conf.py b/docs/conf.py
+index 771a7228d1..25b8f004f8 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -11,16 +11,22 @@
+ 
+ # General --------------------------------------------------------------
+ 
+-master_doc = "index"
++default_role = "code"
+ extensions = [
+     "sphinx.ext.autodoc",
++    "sphinx.ext.extlinks",
+     "sphinx.ext.intersphinx",
+     "sphinxcontrib.log_cabinet",
+-    "pallets_sphinx_themes",
+-    "sphinx_issues",
+     "sphinx_tabs.tabs",
++    "pallets_sphinx_themes",
+ ]
++autodoc_member_order = "bysource"
+ autodoc_typehints = "description"
++autodoc_preserve_defaults = True
++extlinks = {
++    "issue": ("https://github.com/pallets/flask/issues/%s", "#%s"),
++    "pr": ("https://github.com/pallets/flask/pull/%s", "#%s"),
++}
+ intersphinx_mapping = {
+     "python": ("https://docs.python.org/3/", None),
+     "werkzeug": ("https://werkzeug.palletsprojects.com/", None),
+@@ -31,7 +37,6 @@
+     "wtforms": ("https://wtforms.readthedocs.io/", None),
+     "blinker": ("https://blinker.readthedocs.io/", None),
+ }
+-issues_github_path = "pallets/flask"
+ 
+ # HTML -----------------------------------------------------------------
+ 
+@@ -57,10 +62,6 @@
+ html_title = f"Flask Documentation ({version})"
+ html_show_sourcelink = False
+ 
+-# LaTeX ----------------------------------------------------------------
+-
+-latex_documents = [(master_doc, f"Flask-{version}.tex", html_title, author, "manual")]
+-
+ # Local Extensions -----------------------------------------------------
+ 
+ 
+diff --git a/docs/index.rst b/docs/index.rst
+index c447bb05ad..fc9f9146ce 100644
+--- a/docs/index.rst
++++ b/docs/index.rst
+@@ -54,7 +54,7 @@ community-maintained extensions to add even more functionality.
+    server
+    shell
+    patterns/index
+-   security
++   web-security
+    deploying/index
+    async-await
+ 
+diff --git a/docs/license.rst b/docs/license.rst
+index a53a98cf3d..2a445f9c62 100644
+--- a/docs/license.rst
++++ b/docs/license.rst
+@@ -1,4 +1,5 @@
+ BSD-3-Clause License
+ ====================
+ 
+-.. include:: ../LICENSE.rst
++.. literalinclude:: ../LICENSE.txt
++    :language: text
+diff --git a/docs/logging.rst b/docs/logging.rst
+index 0912b7a1d5..3958824233 100644
+--- a/docs/logging.rst
++++ b/docs/logging.rst
+@@ -159,7 +159,7 @@ Depending on your project, it may be more useful to configure each logger you
+ care about separately, instead of configuring only the root logger. ::
+ 
+     for logger in (
+-        app.logger,
++        logging.getLogger(app.name),
+         logging.getLogger('sqlalchemy'),
+         logging.getLogger('other_package'),
+     ):
+diff --git a/docs/security.rst b/docs/web-security.rst
+similarity index 100%
+rename from docs/security.rst
+rename to docs/web-security.rst
+diff --git a/pyproject.toml b/pyproject.toml
+index 4983b6ff4a..bf14d157d6 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,9 +1,9 @@
+ [project]
+ name = "Flask"
+-version = "3.0.1"
++version = "3.0.3"
+ description = "A simple framework for building complex web applications."
+-readme = "README.rst"
+-license = {file = "LICENSE.rst"}
++readme = "README.md"
++license = {file = "LICENSE.txt"}
+ maintainers = [{name = "Pallets", email = "contact@palletsprojects.com"}]
+ classifiers = [
+     "Development Status :: 5 - Production/Stable",
+@@ -17,6 +17,7 @@ classifiers = [
+     "Topic :: Internet :: WWW/HTTP :: WSGI",
+     "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+     "Topic :: Software Development :: Libraries :: Application Frameworks",
++    "Typing :: Typed",
+ ]
+ requires-python = ">=3.8"
+ dependencies = [
+@@ -32,8 +33,7 @@ dependencies = [
+ Donate = "https://palletsprojects.com/donate"
+ Documentation = "https://flask.palletsprojects.com/"
+ Changes = "https://flask.palletsprojects.com/changes/"
+-"Source Code" = "https://github.com/pallets/flask/"
+-"Issue Tracker" = "https://github.com/pallets/flask/issues/"
++Source = "https://github.com/pallets/flask/"
+ Chat = "https://discord.gg/pallets"
+ 
+ [project.optional-dependencies]
+@@ -93,11 +93,16 @@ module = [
+ ]
+ ignore_missing_imports = true
+ 
++[tool.pyright]
++pythonVersion = "3.8"
++include = ["src/flask", "tests"]
++typeCheckingMode = "basic"
++
+ [tool.ruff]
+ src = ["src"]
+ fix = true
+ show-fixes = true
+-show-source = true
++output-format = "full"
+ 
+ [tool.ruff.lint]
+ select = [
+diff --git a/requirements/build.txt b/requirements/build.txt
+index 6bfd666c59..9ecc489527 100644
+--- a/requirements/build.txt
++++ b/requirements/build.txt
+@@ -1,12 +1,12 @@
+ #
+-# This file is autogenerated by pip-compile with Python 3.11
++# This file is autogenerated by pip-compile with Python 3.12
+ # by the following command:
+ #
+ #    pip-compile build.in
+ #
+-build==1.0.3
++build==1.2.1
+     # via -r build.in
+-packaging==23.2
++packaging==24.0
+     # via build
+ pyproject-hooks==1.0.0
+     # via build
+diff --git a/requirements/dev.in b/requirements/dev.in
+index 2588467c15..1efde82b17 100644
+--- a/requirements/dev.in
++++ b/requirements/dev.in
+@@ -1,6 +1,5 @@
+--r docs.in
+--r tests.in
+--r typing.in
+-pip-tools
++-r docs.txt
++-r tests.txt
++-r typing.txt
+ pre-commit
+ tox
+diff --git a/requirements/dev.txt b/requirements/dev.txt
+index 454616e2ae..05b8758c0f 100644
+--- a/requirements/dev.txt
++++ b/requirements/dev.txt
+@@ -1,151 +1,195 @@
+ #
+-# This file is autogenerated by pip-compile with Python 3.11
++# This file is autogenerated by pip-compile with Python 3.12
+ # by the following command:
+ #
+ #    pip-compile dev.in
+ #
+ alabaster==0.7.16
+-    # via sphinx
+-asgiref==3.7.2
+     # via
+-    #   -r tests.in
+-    #   -r typing.in
++    #   -r docs.txt
++    #   sphinx
++asgiref==3.8.1
++    # via
++    #   -r tests.txt
++    #   -r typing.txt
+ babel==2.14.0
+-    # via sphinx
+-build==1.0.3
+-    # via pip-tools
+-cachetools==5.3.2
++    # via
++    #   -r docs.txt
++    #   sphinx
++cachetools==5.3.3
+     # via tox
+-certifi==2023.11.17
+-    # via requests
++certifi==2024.2.2
++    # via
++    #   -r docs.txt
++    #   requests
+ cffi==1.16.0
+-    # via cryptography
++    # via
++    #   -r typing.txt
++    #   cryptography
+ cfgv==3.4.0
+     # via pre-commit
+ chardet==5.2.0
+     # via tox
+ charset-normalizer==3.3.2
+-    # via requests
+-click==8.1.7
+-    # via pip-tools
++    # via
++    #   -r docs.txt
++    #   requests
+ colorama==0.4.6
+     # via tox
+-cryptography==41.0.7
+-    # via -r typing.in
++cryptography==42.0.5
++    # via -r typing.txt
+ distlib==0.3.8
+     # via virtualenv
+-docutils==0.18.1
++docutils==0.20.1
+     # via
++    #   -r docs.txt
+     #   sphinx
+     #   sphinx-tabs
+-filelock==3.13.1
++filelock==3.13.3
+     # via
+     #   tox
+     #   virtualenv
+-identify==2.5.33
++identify==2.5.35
+     # via pre-commit
+ idna==3.6
+-    # via requests
++    # via
++    #   -r docs.txt
++    #   requests
+ imagesize==1.4.1
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ iniconfig==2.0.0
+-    # via pytest
++    # via
++    #   -r tests.txt
++    #   -r typing.txt
++    #   pytest
+ jinja2==3.1.3
+-    # via sphinx
+-markupsafe==2.1.3
+-    # via jinja2
+-mypy==1.8.0
+-    # via -r typing.in
++    # via
++    #   -r docs.txt
++    #   sphinx
++markupsafe==2.1.5
++    # via
++    #   -r docs.txt
++    #   jinja2
++mypy==1.9.0
++    # via -r typing.txt
+ mypy-extensions==1.0.0
+-    # via mypy
++    # via
++    #   -r typing.txt
++    #   mypy
+ nodeenv==1.8.0
+-    # via pre-commit
+-packaging==23.2
+     # via
+-    #   build
++    #   -r typing.txt
++    #   pre-commit
++    #   pyright
++packaging==24.0
++    # via
++    #   -r docs.txt
++    #   -r tests.txt
++    #   -r typing.txt
+     #   pallets-sphinx-themes
+     #   pyproject-api
+     #   pytest
+     #   sphinx
+     #   tox
+ pallets-sphinx-themes==2.1.1
+-    # via -r docs.in
+-pip-tools==7.3.0
+-    # via -r dev.in
+-platformdirs==4.1.0
++    # via -r docs.txt
++platformdirs==4.2.0
+     # via
+     #   tox
+     #   virtualenv
+-pluggy==1.3.0
++pluggy==1.4.0
+     # via
++    #   -r tests.txt
++    #   -r typing.txt
+     #   pytest
+     #   tox
+-pre-commit==3.6.0
++pre-commit==3.7.0
+     # via -r dev.in
+-pycparser==2.21
+-    # via cffi
++pycparser==2.22
++    # via
++    #   -r typing.txt
++    #   cffi
+ pygments==2.17.2
+     # via
++    #   -r docs.txt
+     #   sphinx
+     #   sphinx-tabs
+ pyproject-api==1.6.1
+     # via tox
+-pyproject-hooks==1.0.0
+-    # via build
+-pytest==7.4.4
+-    # via -r tests.in
+-python-dotenv==1.0.0
+-    # via
+-    #   -r tests.in
+-    #   -r typing.in
++pyright==1.1.357
++    # via -r typing.txt
++pytest==8.1.1
++    # via
++    #   -r tests.txt
++    #   -r typing.txt
++python-dotenv==1.0.1
++    # via
++    #   -r tests.txt
++    #   -r typing.txt
+ pyyaml==6.0.1
+     # via pre-commit
+ requests==2.31.0
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ snowballstemmer==2.2.0
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinx==7.2.6
+     # via
+-    #   -r docs.in
++    #   -r docs.txt
+     #   pallets-sphinx-themes
+-    #   sphinx-issues
+     #   sphinx-tabs
+     #   sphinxcontrib-log-cabinet
+-sphinx-issues==3.0.1
+-    # via -r docs.in
+-sphinx-tabs==3.4.4
+-    # via -r docs.in
++sphinx-tabs==3.4.5
++    # via -r docs.txt
+ sphinxcontrib-applehelp==1.0.8
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinxcontrib-devhelp==1.0.6
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinxcontrib-htmlhelp==2.0.5
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinxcontrib-jsmath==1.0.1
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinxcontrib-log-cabinet==1.0.1
+-    # via -r docs.in
++    # via -r docs.txt
+ sphinxcontrib-qthelp==1.0.7
+-    # via sphinx
++    # via
++    #   -r docs.txt
++    #   sphinx
+ sphinxcontrib-serializinghtml==1.1.10
+-    # via sphinx
+-tox==4.12.0
++    # via
++    #   -r docs.txt
++    #   sphinx
++tox==4.14.2
+     # via -r dev.in
+ types-contextvars==2.4.7.3
+-    # via -r typing.in
++    # via -r typing.txt
+ types-dataclasses==0.6.6
+-    # via -r typing.in
+-typing-extensions==4.9.0
+-    # via mypy
+-urllib3==2.1.0
+-    # via requests
+-virtualenv==20.25.0
++    # via -r typing.txt
++typing-extensions==4.11.0
++    # via
++    #   -r typing.txt
++    #   mypy
++urllib3==2.2.1
++    # via
++    #   -r docs.txt
++    #   requests
++virtualenv==20.25.1
+     # via
+     #   pre-commit
+     #   tox
+-wheel==0.42.0
+-    # via pip-tools
+ 
+ # The following packages are considered to be unsafe in a requirements file:
+-# pip
+ # setuptools
+diff --git a/requirements/docs.in b/requirements/docs.in
+index a00c08f85b..fd5708f745 100644
+--- a/requirements/docs.in
++++ b/requirements/docs.in
+@@ -1,5 +1,4 @@
+ pallets-sphinx-themes
+ sphinx
+-sphinx-issues
+ sphinxcontrib-log-cabinet
+ sphinx-tabs
+diff --git a/requirements/docs.txt b/requirements/docs.txt
+index fed1b7b9ef..09752974bc 100644
+--- a/requirements/docs.txt
++++ b/requirements/docs.txt
+@@ -1,5 +1,5 @@
+ #
+-# This file is autogenerated by pip-compile with Python 3.11
++# This file is autogenerated by pip-compile with Python 3.12
+ # by the following command:
+ #
+ #    pip-compile docs.in
+@@ -8,11 +8,11 @@ alabaster==0.7.16
+     # via sphinx
+ babel==2.14.0
+     # via sphinx
+-certifi==2023.11.17
++certifi==2024.2.2
+     # via requests
+ charset-normalizer==3.3.2
+     # via requests
+-docutils==0.18.1
++docutils==0.20.1
+     # via
+     #   sphinx
+     #   sphinx-tabs
+@@ -22,9 +22,9 @@ imagesize==1.4.1
+     # via sphinx
+ jinja2==3.1.3
+     # via sphinx
+-markupsafe==2.1.3
++markupsafe==2.1.5
+     # via jinja2
+-packaging==23.2
++packaging==24.0
+     # via
+     #   pallets-sphinx-themes
+     #   sphinx
+@@ -42,12 +42,9 @@ sphinx==7.2.6
+     # via
+     #   -r docs.in
+     #   pallets-sphinx-themes
+-    #   sphinx-issues
+     #   sphinx-tabs
+     #   sphinxcontrib-log-cabinet
+-sphinx-issues==3.0.1
+-    # via -r docs.in
+-sphinx-tabs==3.4.4
++sphinx-tabs==3.4.5
+     # via -r docs.in
+ sphinxcontrib-applehelp==1.0.8
+     # via sphinx
+@@ -63,5 +60,5 @@ sphinxcontrib-qthelp==1.0.7
+     # via sphinx
+ sphinxcontrib-serializinghtml==1.1.10
+     # via sphinx
+-urllib3==2.1.0
++urllib3==2.2.1
+     # via requests
+diff --git a/requirements/tests.txt b/requirements/tests.txt
+index 4f7a590c06..2146b275a2 100644
+--- a/requirements/tests.txt
++++ b/requirements/tests.txt
+@@ -1,18 +1,18 @@
+ #
+-# This file is autogenerated by pip-compile with Python 3.11
++# This file is autogenerated by pip-compile with Python 3.12
+ # by the following command:
+ #
+ #    pip-compile tests.in
+ #
+-asgiref==3.7.2
++asgiref==3.8.1
+     # via -r tests.in
+ iniconfig==2.0.0
+     # via pytest
+-packaging==23.2
++packaging==24.0
+     # via pytest
+-pluggy==1.3.0
++pluggy==1.4.0
+     # via pytest
+-pytest==7.4.4
++pytest==8.1.1
+     # via -r tests.in
+-python-dotenv==1.0.0
++python-dotenv==1.0.1
+     # via -r tests.in
+diff --git a/requirements/typing.in b/requirements/typing.in
+index 211e0bd735..59128f345c 100644
+--- a/requirements/typing.in
++++ b/requirements/typing.in
+@@ -1,4 +1,6 @@
+ mypy
++pyright
++pytest
+ types-contextvars
+ types-dataclasses
+ asgiref
+diff --git a/requirements/typing.txt b/requirements/typing.txt
+index adbef1ab16..fa18143c0f 100644
+--- a/requirements/typing.txt
++++ b/requirements/typing.txt
+@@ -1,26 +1,41 @@
+ #
+-# This file is autogenerated by pip-compile with Python 3.11
++# This file is autogenerated by pip-compile with Python 3.12
+ # by the following command:
+ #
+ #    pip-compile typing.in
+ #
+-asgiref==3.7.2
++asgiref==3.8.1
+     # via -r typing.in
+ cffi==1.16.0
+     # via cryptography
+-cryptography==41.0.7
++cryptography==42.0.5
+     # via -r typing.in
+-mypy==1.8.0
++iniconfig==2.0.0
++    # via pytest
++mypy==1.9.0
+     # via -r typing.in
+ mypy-extensions==1.0.0
+     # via mypy
+-pycparser==2.21
++nodeenv==1.8.0
++    # via pyright
++packaging==24.0
++    # via pytest
++pluggy==1.4.0
++    # via pytest
++pycparser==2.22
+     # via cffi
+-python-dotenv==1.0.0
++pyright==1.1.357
++    # via -r typing.in
++pytest==8.1.1
++    # via -r typing.in
++python-dotenv==1.0.1
+     # via -r typing.in
+ types-contextvars==2.4.7.3
+     # via -r typing.in
+ types-dataclasses==0.6.6
+     # via -r typing.in
+-typing-extensions==4.9.0
++typing-extensions==4.11.0
+     # via mypy
++
++# The following packages are considered to be unsafe in a requirements file:
++# setuptools
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 12ac50d49b..7622b5e838 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -241,6 +241,16 @@ def __init__(
+             root_path=root_path,
+         )
+ 
++        #: The Click command group for registering CLI commands for this
++        #: object. The commands are available from the ``flask`` command
++        #: once the application has been discovered and blueprints have
++        #: been registered.
++        self.cli = cli.AppGroup()
++
++        # Set the name of the Click group in case someone wants to add
++        # the app's commands to another CLI tool.
++        self.cli.name = self.name
++
+         # Add a static route using the provided static_url_path, static_host,
+         # and static_folder if there is a configured static_folder.
+         # Note we do this without checking if static_folder exists.
+diff --git a/src/flask/blueprints.py b/src/flask/blueprints.py
+index 52859b855a..aa9eacf21b 100644
+--- a/src/flask/blueprints.py
++++ b/src/flask/blueprints.py
+@@ -4,16 +4,54 @@
+ import typing as t
+ from datetime import timedelta
+ 
++from .cli import AppGroup
+ from .globals import current_app
+ from .helpers import send_from_directory
+ from .sansio.blueprints import Blueprint as SansioBlueprint
+ from .sansio.blueprints import BlueprintSetupState as BlueprintSetupState  # noqa
++from .sansio.scaffold import _sentinel
+ 
+ if t.TYPE_CHECKING:  # pragma: no cover
+     from .wrappers import Response
+ 
+ 
+ class Blueprint(SansioBlueprint):
++    def __init__(
++        self,
++        name: str,
++        import_name: str,
++        static_folder: str | os.PathLike[str] | None = None,
++        static_url_path: str | None = None,
++        template_folder: str | os.PathLike[str] | None = None,
++        url_prefix: str | None = None,
++        subdomain: str | None = None,
++        url_defaults: dict[str, t.Any] | None = None,
++        root_path: str | None = None,
++        cli_group: str | None = _sentinel,  # type: ignore
++    ) -> None:
++        super().__init__(
++            name,
++            import_name,
++            static_folder,
++            static_url_path,
++            template_folder,
++            url_prefix,
++            subdomain,
++            url_defaults,
++            root_path,
++            cli_group,
++        )
++
++        #: The Click command group for registering CLI commands for this
++        #: object. The commands are available from the ``flask`` command
++        #: once the application has been discovered and blueprints have
++        #: been registered.
++        self.cli = AppGroup()
++
++        # Set the name of the Click group in case someone wants to add
++        # the app's commands to another CLI tool.
++        self.cli.name = self.name
++
+     def get_send_file_max_age(self, filename: str | None) -> int | None:
+         """Used by :func:`send_file` to determine the ``max_age`` cache
+         value for a given file path if it wasn't passed.
+diff --git a/src/flask/cli.py b/src/flask/cli.py
+index ffdcb182a7..ecb292a01e 100644
+--- a/src/flask/cli.py
++++ b/src/flask/cli.py
+@@ -229,15 +229,13 @@ def prepare_import(path: str) -> str:
+ @t.overload
+ def locate_app(
+     module_name: str, app_name: str | None, raise_if_not_found: t.Literal[True] = True
+-) -> Flask:
+-    ...
++) -> Flask: ...
+ 
+ 
+ @t.overload
+ def locate_app(
+     module_name: str, app_name: str | None, raise_if_not_found: t.Literal[False] = ...
+-) -> Flask | None:
+-    ...
++) -> Flask | None: ...
+ 
+ 
+ def locate_app(
+@@ -858,7 +856,9 @@ def convert(
+         self, value: t.Any, param: click.Parameter | None, ctx: click.Context | None
+     ) -> t.Any:
+         items = self.split_envvar_value(value)
+-        return [super().convert(item, param, ctx) for item in items]
++        # can't call no-arg super() inside list comprehension until Python 3.12
++        super_convert = super().convert
++        return [super_convert(item, param, ctx) for item in items]
+ 
+ 
+ @click.command("run", short_help="Run a development server.")
+diff --git a/src/flask/config.py b/src/flask/config.py
+index f2f4147806..7e3ba1790b 100644
+--- a/src/flask/config.py
++++ b/src/flask/config.py
+@@ -27,12 +27,10 @@ def __init__(
+         self.get_converter = get_converter
+ 
+     @t.overload
+-    def __get__(self, obj: None, owner: None) -> te.Self:
+-        ...
++    def __get__(self, obj: None, owner: None) -> te.Self: ...
+ 
+     @t.overload
+-    def __get__(self, obj: App, owner: type[App]) -> T:
+-        ...
++    def __get__(self, obj: App, owner: type[App]) -> T: ...
+ 
+     def __get__(self, obj: App | None, owner: type[App] | None = None) -> T | te.Self:
+         if obj is None:
+diff --git a/src/flask/json/tag.py b/src/flask/json/tag.py
+index 2bb986bc8f..8dc3629bf9 100644
+--- a/src/flask/json/tag.py
++++ b/src/flask/json/tag.py
+@@ -40,6 +40,7 @@ def to_python(self, value):
+ 
+     app.session_interface.serializer.register(TagOrderedDict, index=0)
+ """
++
+ from __future__ import annotations
+ 
+ import typing as t
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 21a79ba460..01fd5dbfae 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -410,10 +410,6 @@ def __init__(
+         # request.
+         self._got_first_request = False
+ 
+-        # Set the name of the Click group in case someone wants to add
+-        # the app's commands to another CLI tool.
+-        self.cli.name = self.name
+-
+     def _check_setup_finished(self, f_name: str) -> None:
+         if self._got_first_request:
+             raise AssertionError(
+diff --git a/src/flask/sansio/scaffold.py b/src/flask/sansio/scaffold.py
+index 40534f53c8..69e33a095b 100644
+--- a/src/flask/sansio/scaffold.py
++++ b/src/flask/sansio/scaffold.py
+@@ -8,17 +8,19 @@
+ from collections import defaultdict
+ from functools import update_wrapper
+ 
+-import click
++from jinja2 import BaseLoader
+ from jinja2 import FileSystemLoader
+ from werkzeug.exceptions import default_exceptions
+ from werkzeug.exceptions import HTTPException
+ from werkzeug.utils import cached_property
+ 
+ from .. import typing as ft
+-from ..cli import AppGroup
+ from ..helpers import get_root_path
+ from ..templating import _default_template_ctx_processor
+ 
++if t.TYPE_CHECKING:  # pragma: no cover
++    from click import Group
++
+ # a singleton sentinel value for parameter defaults
+ _sentinel = object()
+ 
+@@ -65,6 +67,7 @@ class Scaffold:
+     .. versionadded:: 2.0
+     """
+ 
++    cli: Group
+     name: str
+     _static_folder: str | None = None
+     _static_url_path: str | None = None
+@@ -96,12 +99,6 @@ def __init__(
+         #: up resources contained in the package.
+         self.root_path = root_path
+ 
+-        #: The Click command group for registering CLI commands for this
+-        #: object. The commands are available from the ``flask`` command
+-        #: once the application has been discovered and blueprints have
+-        #: been registered.
+-        self.cli: click.Group = AppGroup()
+-
+         #: A dictionary mapping endpoint names to view functions.
+         #:
+         #: To register a view function, use the :meth:`route` decorator.
+@@ -272,7 +269,7 @@ def static_url_path(self, value: str | None) -> None:
+         self._static_url_path = value
+ 
+     @cached_property
+-    def jinja_loader(self) -> FileSystemLoader | None:
++    def jinja_loader(self) -> BaseLoader | None:
+         """The Jinja loader for this object's templates. By default this
+         is a class :class:`jinja2.loaders.FileSystemLoader` to
+         :attr:`template_folder` if it is set.
+diff --git a/src/flask/sessions.py b/src/flask/sessions.py
+index bb753eb814..ee19ad6387 100644
+--- a/src/flask/sessions.py
++++ b/src/flask/sessions.py
+@@ -277,6 +277,14 @@ def save_session(
+ session_json_serializer = TaggedJSONSerializer()
+ 
+ 
++def _lazy_sha1(string: bytes = b"") -> t.Any:
++    """Don't access ``hashlib.sha1`` until runtime. FIPS builds may not include
++    SHA-1, in which case the import and use as a default would fail before the
++    developer can configure something else.
++    """
++    return hashlib.sha1(string)
++
++
+ class SecureCookieSessionInterface(SessionInterface):
+     """The default session interface that stores sessions in signed cookies
+     through the :mod:`itsdangerous` module.
+@@ -286,7 +294,7 @@ class SecureCookieSessionInterface(SessionInterface):
+     #: signing of cookie based sessions.
+     salt = "cookie-session"
+     #: the hash function to use for the signature.  The default is sha1
+-    digest_method = staticmethod(hashlib.sha1)
++    digest_method = staticmethod(_lazy_sha1)
+     #: the name of the itsdangerous supported key derivation.  The default
+     #: is hmac.
+     key_derivation = "hmac"
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 79de1fc8d1..09995488cc 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -679,3 +679,8 @@ def test_cli_empty(app):
+ 
+     result = app.test_cli_runner().invoke(args=["blue", "--help"])
+     assert result.exit_code == 2, f"Unexpected success:\n\n{result.output}"
++
++
++def test_run_exclude_patterns():
++    ctx = run_command.make_context("run", ["--exclude-patterns", __file__])
++    assert ctx.params["exclude_patterns"] == [__file__]
+diff --git a/tests/test_json.py b/tests/test_json.py
+index 500eb64d51..1e2b27dc9c 100644
+--- a/tests/test_json.py
++++ b/tests/test_json.py
+@@ -176,7 +176,7 @@ def test_jsonify_aware_datetimes(tz):
+ def test_jsonify_uuid_types(app, client):
+     """Test jsonify with uuid.UUID types"""
+ 
+-    test_uuid = uuid.UUID(bytes=b"\xDE\xAD\xBE\xEF" * 4)
++    test_uuid = uuid.UUID(bytes=b"\xde\xad\xbe\xef" * 4)
+     url = "/uuid_test"
+     app.add_url_rule(url, url, lambda: flask.jsonify(x=test_uuid))
+ 
+diff --git a/tests/typing/typing_app_decorators.py b/tests/typing/typing_app_decorators.py
+index c8d011136c..0e25a30c75 100644
+--- a/tests/typing/typing_app_decorators.py
++++ b/tests/typing/typing_app_decorators.py
+@@ -17,20 +17,16 @@ async def after_async(response: Response) -> Response:
+ 
+ 
+ @app.before_request
+-def before_sync() -> None:
+-    ...
++def before_sync() -> None: ...
+ 
+ 
+ @app.before_request
+-async def before_async() -> None:
+-    ...
++async def before_async() -> None: ...
+ 
+ 
+ @app.teardown_appcontext
+-def teardown_sync(exc: BaseException | None) -> None:
+-    ...
++def teardown_sync(exc: BaseException | None) -> None: ...
+ 
+ 
+ @app.teardown_appcontext
+-async def teardown_async(exc: BaseException | None) -> None:
+-    ...
++async def teardown_async(exc: BaseException | None) -> None: ...
+diff --git a/tox.ini b/tox.ini
+index 1ba066316c..5a232cd9eb 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -2,7 +2,7 @@
+ envlist =
+     py3{12,11,10,9,8}
+     pypy310
+-    py311-min
++    py312-min
+     py38-dev
+     style
+     typing
+@@ -19,7 +19,7 @@ deps =
+     -r requirements/tests.txt
+     min: -r requirements-skip/tests-min.txt
+     dev: -r requirements-skip/tests-dev.txt
+-commands = pytest -v --tb=short --basetemp={envtmpdir} {posargs:tests}
++commands = pytest -v --tb=short --basetemp={envtmpdir} {posargs}
+ 
+ [testenv:style]
+ deps = pre-commit
+@@ -32,4 +32,18 @@ commands = mypy
+ 
+ [testenv:docs]
+ deps = -r requirements/docs.txt
+-commands = sphinx-build -W -b html -d {envtmpdir}/doctrees docs {envtmpdir}/html
++commands = sphinx-build -W -b dirhtml docs docs/_build/dirhtml
++
++[testenv:update-requirements]
++deps =
++    pip-tools
++    pre-commit
++skip_install = true
++change_dir = requirements
++commands =
++    pre-commit autoupdate -j4
++    pip-compile -U build.in
++    pip-compile -U docs.in
++    pip-compile -U tests.in
++    pip-compile -U typing.in
++    pip-compile -U dev.in

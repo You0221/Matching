@@ -1,0 +1,3667 @@
+[
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/incomplete-ordering",
+    "rule_name": "py/incomplete-ordering",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 825,
+    "message": "Class _Timeout implements [__lt__](1), but does not implement __gt__ or __ge__.\nClass _Timeout implements [__le__](2), but does not implement __gt__ or __ge__.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "42657643b1697ef6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 24,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            },
+            "region": {
+              "startLine": 847,
+              "startColumn": 5,
+              "endColumn": 49
+            }
+          },
+          "message": {
+            "text": "__lt__"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            },
+            "region": {
+              "startLine": 850,
+              "startColumn": 5,
+              "endColumn": 49
+            }
+          },
+          "message": {
+            "text": "__le__"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 281,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "286cc5208e37be7e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 25,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 282,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7ad677998f24ad84:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 26,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 283,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3c6852ee955adc5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 285,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "72ddb08f888dc195:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 21,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 286,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6c40fc3b59bb4baa:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 22,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 288,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "95ce23829627dafa:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 24,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/init-calls-subclass",
+    "rule_name": "py/init-calls-subclass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/locale.py",
+    "line": 289,
+    "message": "This call to [Locale.translate](1) in an initialization method is overridden by [CSVLocale.translate](2).\nThis call to [Locale.translate](1) in an initialization method is overridden by [GettextLocale.translate](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f7d612148250b057:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 304,
+              "startColumn": 5,
+              "endLine": 309,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "Locale.translate"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 492,
+              "startColumn": 5,
+              "endLine": 497,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "CSVLocale.translate"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/locale.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 1
+            },
+            "region": {
+              "startLine": 531,
+              "startColumn": 5,
+              "endLine": 536,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "GettextLocale.translate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/missing-call-to-init",
+    "rule_name": "py/missing-call-to-init",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/httpserver.py",
+    "line": 46,
+    "message": "Class HTTPServer may not be initialized properly as [method TCPServer.__init__](1) is not called from its [__init__ method](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c86726454dddc093:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 82,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/tcpserver.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 3
+            },
+            "region": {
+              "startLine": 124,
+              "startColumn": 5,
+              "endLine": 129,
+              "endColumn": 15
+            }
+          },
+          "message": {
+            "text": "method TCPServer.__init__"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/httpserver.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 2
+            },
+            "region": {
+              "startLine": 156,
+              "startColumn": 5,
+              "endColumn": 59
+            }
+          },
+          "message": {
+            "text": "__init__ method"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/catch-base-exception",
+    "rule_name": "py/catch-base-exception",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/websocket/chatdemo.py",
+    "line": 76,
+    "message": "Except block directly handles BaseException.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6b41ec5891bb457e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/catch-base-exception",
+    "rule_name": "py/catch-base-exception",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/twisted.py",
+    "line": 146,
+    "message": "Except block directly handles BaseException.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "67f8c1ff19c71d12:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/asyncio.py",
+    "line": 74,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bc07a4066b67fbfa:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/asyncio.py",
+    "line": 126,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f94da5e0f32c75c7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/asyncio.py",
+    "line": 257,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "13abb04224b8ca09:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 625,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d358ac8817948a50:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/http1connection.py",
+    "line": 797,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7aa8846103c90c46:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 767,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8242fe6e36374d55:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 815,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3243666b4904d5f8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 626,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "19ffd65af4db1f16:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/simple_httpclient.py",
+    "line": 661,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "beb0196f251d5eb2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 21,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/testing.py",
+    "line": 189,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b572132c371df7c2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 47,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 2267,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5484c7107cb8dc3b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 1362,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "91b2cae814cf8006:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 41,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/process.py",
+    "line": 83,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ecba1f139e447f75:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/tcpserver.py",
+    "line": 340,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "18b269dd1591cfac:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 83,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/inheritance/incorrect-overridden-signature",
+    "rule_name": "py/inheritance/incorrect-overridden-signature",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/util.py",
+    "line": 297,
+    "message": "Overridden method signature does not match [call](1), where it is passed too many arguments. Overriding method [method BaseAsyncIOLoop.initialize](2) matches the call.\nOverridden method signature does not match [call](3), where it is passed too many arguments. Overriding method [method AsyncHTTPClient.initialize](4) matches the call.\nOverridden method signature does not match [call](5), where it is passed too many arguments. Overriding method [method ExecutorResolver.initialize](6) matches the call.\nOverridden method signature does not match [call](7), where it is passed too many arguments. Overriding method [method AsyncHTTPClient.initialize](4) matches the call.\nOverridden method signature does not match [call](3), where it is passed an argument named 'defaults'. Overriding method [method AsyncHTTPClient.initialize](4) matches the call.\nOverridden method signature does not match [call](7), where it is passed an argument named 'defaults'. Overriding method [method AsyncHTTPClient.initialize](4) matches the call.\nOverridden method signature does not match [call](5), where it is passed an argument named 'executor'. Overriding method [method ExecutorResolver.initialize](6) matches the call.\nOverridden method signature does not match [call](5), where it is passed an argument named 'close_executor'. Overriding method [method ExecutorResolver.initialize](6) matches the call.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5ebf0844c109cf7b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 35,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/platform/asyncio.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 288,
+              "startColumn": 9,
+              "endColumn": 63
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/platform/asyncio.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 89,
+              "startColumn": 5,
+              "endLine": 91,
+              "endColumn": 15
+            }
+          },
+          "message": {
+            "text": "method BaseAsyncIOLoop.initialize"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/curl_httpclient.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 23
+            },
+            "region": {
+              "startLine": 55,
+              "startColumn": 9,
+              "endColumn": 46
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/httpclient.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 24
+            },
+            "region": {
+              "startLine": 216,
+              "startColumn": 5,
+              "endColumn": 77
+            }
+          },
+          "message": {
+            "text": "method AsyncHTTPClient.initialize"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/netutil.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            },
+            "region": {
+              "startLine": 522,
+              "startColumn": 9,
+              "endColumn": 70
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/netutil.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            },
+            "region": {
+              "startLine": 457,
+              "startColumn": 5,
+              "endLine": 461,
+              "endColumn": 15
+            }
+          },
+          "message": {
+            "text": "method ExecutorResolver.initialize"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/simple_httpclient.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 12
+            },
+            "region": {
+              "startLine": 128,
+              "startColumn": 9,
+              "endColumn": 46
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/inheritance/incorrect-overridden-signature",
+    "rule_name": "py/inheritance/incorrect-overridden-signature",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 268,
+    "message": "Overridden method signature does not match [call](1), where it is passed an argument named 'include_body'. Overriding method [method StaticFileHandler.get](2) matches the call.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2946223c53e9dd0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 72,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 2681,
+              "startColumn": 16,
+              "endColumn": 50
+            }
+          },
+          "message": {
+            "text": "call"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 2683,
+              "startColumn": 11,
+              "endColumn": 71
+            }
+          },
+          "message": {
+            "text": "method StaticFileHandler.get"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/modification-of-default-value",
+    "rule_name": "py/modification-of-default-value",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/s3server/s3server.py",
+    "line": 103,
+    "message": "This expression mutates a [default value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "edee0725f9909262:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 18,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/s3server/s3server.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 26
+            },
+            "region": {
+              "startLine": 101,
+              "startColumn": 36,
+              "endColumn": 41
+            }
+          },
+          "message": {
+            "text": "default value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/not-named-self",
+    "rule_name": "py/not-named-self",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/template.py",
+    "line": 744,
+    "message": "Normal methods should have 'self', rather than '_', as their first parameter.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bc2e38a57afff7c8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 47,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/not-named-self",
+    "rule_name": "py/not-named-self",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/template.py",
+    "line": 748,
+    "message": "Normal methods should have 'self', rather than '_', as their first parameter.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9ea7817f61db49ec:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 49,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/asyncio.py",
+    "line": 36,
+    "message": "Import of module [tornado.gen](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b4c279c82220f6e8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 40,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/gen.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 8
+            }
+          },
+          "message": {
+            "text": "tornado.gen"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/asyncio.py",
+    "line": 37,
+    "message": "Import of module [tornado.ioloop](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "178ec7c68033d13:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 47,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            }
+          },
+          "message": {
+            "text": "tornado.ioloop"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 90,
+    "message": "Import of module [tornado.ioloop](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f322469e79e705f4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            }
+          },
+          "message": {
+            "text": "tornado.ioloop"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/httpclient.py",
+    "line": 187,
+    "message": "Import of module [tornado.simple_httpclient](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3201d412ec78f653:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 68,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/simple_httpclient.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 12
+            }
+          },
+          "message": {
+            "text": "tornado.simple_httpclient"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 178,
+    "message": "Import of module [tornado.platform.asyncio](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9148a7c4c4d8cd99:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/platform/asyncio.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            }
+          },
+          "message": {
+            "text": "tornado.platform.asyncio"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 360,
+    "message": "Import of module [tornado.platform.asyncio](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b60b70371be0a93:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 57,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/platform/asyncio.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            }
+          },
+          "message": {
+            "text": "tornado.platform.asyncio"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/ioloop.py",
+    "line": 722,
+    "message": "Import of module [tornado.process](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aebf62f007b4ac0d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 54,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/process.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 18
+            }
+          },
+          "message": {
+            "text": "tornado.process"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 38,
+    "message": "Import of module [tornado.ioloop](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "69e025fa6bd4244f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            }
+          },
+          "message": {
+            "text": "tornado.ioloop"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 40,
+    "message": "Import of module [tornado.netutil](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4d596c4d2a57a552:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 88,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/netutil.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            }
+          },
+          "message": {
+            "text": "tornado.netutil"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/netutil.py",
+    "line": 28,
+    "message": "Import of module [tornado.ioloop](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2bb67b25b15b2c2d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            }
+          },
+          "message": {
+            "text": "tornado.ioloop"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/process.py",
+    "line": 35,
+    "message": "Import of module [tornado.ioloop](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4a4475c4ad189dbe:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/ioloop.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            }
+          },
+          "message": {
+            "text": "tornado.ioloop"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/process.py",
+    "line": 36,
+    "message": "Import of module [tornado.iostream](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8e72abcc5dbb93d2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 42,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/iostream.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 11
+            }
+          },
+          "message": {
+            "text": "tornado.iostream"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cyclic-import",
+    "rule_name": "py/cyclic-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/simple_httpclient.py",
+    "line": 3,
+    "message": "Import of module [tornado.httpclient](1) begins an import cycle.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d2d3a6dbeac90f80:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 2,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/httpclient.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 24
+            }
+          },
+          "message": {
+            "text": "tornado.httpclient"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/file_upload/file_receiver.py",
+    "line": 15,
+    "message": "Module 'tornado' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3873fb1194fb6c73:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 83,
+    "message": "Module 'tornado' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "517f5913a8248a31:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/websocket.py",
+    "line": 21,
+    "message": "Module 'tornado' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "515abcc4ac171a53:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/wsgi.py",
+    "line": 32,
+    "message": "Module 'tornado' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "841f1566992da8f5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/import-own-module",
+    "rule_name": "py/import-own-module",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/autoreload.py",
+    "line": 268,
+    "message": "The module 'tornado.autoreload' imports itself.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aec913bd631099ab:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/httputil.py",
+    "line": 61,
+    "message": "Import of 'Deque' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7658515d743e4dc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/util.py",
+    "line": 51,
+    "message": "Import of 'is_finalizing' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3af76ee7d258d101:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/commented-out-code",
+    "rule_name": "py/commented-out-code",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/testing.py",
+    "line": 629,
+    "message": "This comment appears to contain commented-out code.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "606c26ba10339efb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/cookie-injection",
+    "rule_name": "py/cookie-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 706,
+    "message": "Cookie is constructed from a [user-supplied input](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2583264bd7b1041b:1",
+        "primaryLocationStartColumnFingerprint": "16"
+      },
+      "startColumn": 25,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 1879,
+              "startColumn": 17,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "user-supplied input"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/path-injection",
+    "rule_name": "py/path-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/s3server/s3server.py",
+    "line": 185,
+    "message": "This path depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f41b38737f7a8687:1",
+        "primaryLocationStartColumnFingerprint": "15"
+      },
+      "startColumn": 32,
+      "endColumn": 43,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/s3server/s3server.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 26
+            },
+            "region": {
+              "startLine": 150,
+              "startColumn": 19,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/reflective-xss",
+    "rule_name": "py/reflective-xss",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/chat/chatdemo.py",
+    "line": 77,
+    "message": "Cross-site scripting vulnerability due to a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5ba629518f6c1eec:1",
+        "primaryLocationStartColumnFingerprint": "11"
+      },
+      "startColumn": 24,
+      "endColumn": 31,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/chat/chatdemo.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 41
+            },
+            "region": {
+              "startLine": 67,
+              "startColumn": 14,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/reflective-xss",
+    "rule_name": "py/reflective-xss",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1208,
+    "message": "Cross-site scripting vulnerability due to a [user-provided value](1).\nCross-site scripting vulnerability due to a [user-provided value](2).\nCross-site scripting vulnerability due to a [user-provided value](3).\nCross-site scripting vulnerability due to a [user-provided value](4).\nCross-site scripting vulnerability due to a [user-provided value](5).\nCross-site scripting vulnerability due to a [user-provided value](6).\nCross-site scripting vulnerability due to a [user-provided value](7).\nCross-site scripting vulnerability due to a [user-provided value](8).\nCross-site scripting vulnerability due to a [user-provided value](9).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c98b77118a406c4e:1",
+        "primaryLocationStartColumnFingerprint": "11"
+      },
+      "startColumn": 24,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/httpclient_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            },
+            "region": {
+              "startLine": 37,
+              "startColumn": 13,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/httpclient_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            },
+            "region": {
+              "startLine": 44,
+              "startColumn": 14,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/httpclient_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            },
+            "region": {
+              "startLine": 83,
+              "startColumn": 13,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/httpclient_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            },
+            "region": {
+              "startLine": 155,
+              "startColumn": 13,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 5,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/httpserver_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 42
+            },
+            "region": {
+              "startLine": 234,
+              "startColumn": 14,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 6,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/s3server/s3server.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 26
+            },
+            "region": {
+              "startLine": 150,
+              "startColumn": 13,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 7,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/s3server/s3server.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 26
+            },
+            "region": {
+              "startLine": 150,
+              "startColumn": 19,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 8,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 708,
+              "startColumn": 17,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 9,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 3186,
+              "startColumn": 17,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/stack-trace-exposure",
+    "rule_name": "py/stack-trace-exposure",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1320,
+    "message": "[Stack trace information](1) flows to this location and may be exposed to an external user.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "34859a9d17d3190f:1",
+        "primaryLocationStartColumnFingerprint": "11"
+      },
+      "startColumn": 28,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 1319,
+              "startColumn": 25,
+              "endColumn": 72
+            }
+          },
+          "message": {
+            "text": "Stack trace information"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/insecure-protocol",
+    "rule_name": "py/insecure-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/netutil.py",
+    "line": 669,
+    "message": "Insecure SSL/TLS protocol version TLSv1 allowed by [call to ssl.create_default_context](1).\nInsecure SSL/TLS protocol version TLSv1 allowed by [call to ssl.create_default_context](2).\nInsecure SSL/TLS protocol version TLSv1 allowed by [call to ssl.create_default_context](3).\nInsecure SSL/TLS protocol version TLSv1_1 allowed by [call to ssl.create_default_context](1).\nInsecure SSL/TLS protocol version TLSv1_1 allowed by [call to ssl.create_default_context](2).\nInsecure SSL/TLS protocol version TLSv1_1 allowed by [call to ssl.create_default_context](3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a253c3a2faeae1c4:1",
+        "primaryLocationStartColumnFingerprint": "7"
+      },
+      "startColumn": 12,
+      "endColumn": 19,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/iostream_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 32
+            },
+            "region": {
+              "startLine": 930,
+              "startColumn": 19,
+              "endColumn": 70
+            }
+          },
+          "message": {
+            "text": "call to ssl.create_default_context"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/netutil.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            },
+            "region": {
+              "startLine": 35,
+              "startColumn": 24,
+              "endColumn": 75
+            }
+          },
+          "message": {
+            "text": "call to ssl.create_default_context"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/netutil.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 25
+            },
+            "region": {
+              "startLine": 36,
+              "startColumn": 24,
+              "endColumn": 75
+            }
+          },
+          "message": {
+            "text": "call to ssl.create_default_context"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/url-redirection",
+    "rule_name": "py/url-redirection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/blog/blog.py",
+    "line": 246,
+    "message": "Untrusted URL redirection depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3ba8eb420335ce2f:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 23,
+      "endColumn": 53,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/blog/blog.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 48
+            },
+            "region": {
+              "startLine": 229,
+              "startColumn": 20,
+              "endColumn": 24
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/url-redirection",
+    "rule_name": "py/url-redirection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/chat/chatdemo.py",
+    "line": 75,
+    "message": "Untrusted URL redirection depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "427fe9df8900eb58:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 27,
+      "endColumn": 52,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/chat/chatdemo.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 41
+            },
+            "region": {
+              "startLine": 67,
+              "startColumn": 14,
+              "endColumn": 18
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/url-redirection",
+    "rule_name": "py/url-redirection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/facebook/facebook.py",
+    "line": 88,
+    "message": "Untrusted URL redirection depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "716e8ddce86a0015:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 27,
+      "endColumn": 57,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/facebook/facebook.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 49
+            },
+            "region": {
+              "startLine": 72,
+              "startColumn": 19,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 169,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4195191b67f5a58c:1",
+        "primaryLocationStartColumnFingerprint": "34"
+      },
+      "startColumn": 35,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/http1connection.py",
+    "line": 655,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "615bb151e6501450:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 25,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/httputil.py",
+    "line": 43,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3700089ae7b658e0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/simple_httpclient.py",
+    "line": 522,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5bf15f5a06a43650:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/websocket.py",
+    "line": 1193,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9321e994c02bf42e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/webspider/webspider.py",
+    "line": 94,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a321b52fec69f2d9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unnecessary-delete",
+    "rule_name": "py/unnecessary-delete",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 1120,
+    "message": "Unnecessary deletion of local variable [buf](1) in function [read_from_fd](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7d04cb91775f95b5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 20,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/iostream.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 11
+            },
+            "region": {
+              "startLine": 1120,
+              "startColumn": 17,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "buf"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/iostream.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 11
+            },
+            "region": {
+              "startLine": 1114,
+              "startColumn": 5,
+              "endColumn": 80
+            }
+          },
+          "message": {
+            "text": "read_from_fd"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unnecessary-delete",
+    "rule_name": "py/unnecessary-delete",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/iostream.py",
+    "line": 1128,
+    "message": "Unnecessary deletion of local variable [data](1) in function [write_to_fd](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "51a3f5cd0ad2f23c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 21,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/iostream.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 11
+            },
+            "region": {
+              "startLine": 1128,
+              "startColumn": 17,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "data"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/iostream.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 11
+            },
+            "region": {
+              "startLine": 1122,
+              "startColumn": 5,
+              "endColumn": 52
+            }
+          },
+          "message": {
+            "text": "write_to_fd"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/netutil.py",
+    "line": 311,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b552d087f241561d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "maint/benchmark/parsing_benchmark.py",
+    "line": 38,
+    "message": "This assignment to 'line' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7db2cf1d713cf988:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 17,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "maint/benchmark/parsing_benchmark.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 55
+            },
+            "region": {
+              "startLine": 36,
+              "startColumn": 9,
+              "endColumn": 13
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/template.py",
+    "line": 908,
+    "message": "This assignment to 'contents' is unnecessary as it is [redefined](1) before this value is used.\nThis assignment to 'contents' is unnecessary as it is [redefined](2) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "dd1c2bf46325d6c3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 21,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/template.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 27
+            },
+            "region": {
+              "startLine": 917,
+              "startColumn": 13,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/template.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 27
+            },
+            "region": {
+              "startLine": 929,
+              "startColumn": 9,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1769,
+    "message": "This assignment to 'result' is unnecessary as it is [redefined](1) before this value is used.\nThis assignment to 'result' is unnecessary as it is [redefined](2) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6b617f73b6dfd00b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 1788,
+              "startColumn": 13,
+              "endColumn": 19
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 1800,
+              "startColumn": 17,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1790,
+    "message": "This assignment to 'result' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ae886aa7c6c32922:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 23,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/web.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 16
+            },
+            "region": {
+              "startLine": 1800,
+              "startColumn": 17,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 251,
+    "message": "Variable yielded is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ae01433e7cc7f6f8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 263,
+    "message": "Variable future is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "585551c00b0cb7aa:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 21,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 746,
+    "message": "Variable gen is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e9fa27a2a4f09a9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 746,
+    "message": "Variable result_future is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e9fa27a2a4f09a9:1",
+        "primaryLocationStartColumnFingerprint": "6"
+      },
+      "startColumn": 19,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 746,
+    "message": "Variable first_yielded is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e9fa27a2a4f09a9:1",
+        "primaryLocationStartColumnFingerprint": "22"
+      },
+      "startColumn": 35,
+      "endColumn": 48,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/gen.py",
+    "line": 823,
+    "message": "Variable f is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "544292151c8c66ca:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/http1connection.py",
+    "line": 303,
+    "message": "Variable header_future is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f840074bdbdb1663:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/httputil.py",
+    "line": 384,
+    "message": "Variable sep is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7531a11f57dbbffa:1",
+        "primaryLocationStartColumnFingerprint": "11"
+      },
+      "startColumn": 24,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/util.py",
+    "line": 175,
+    "message": "Variable exc_info is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f9a4258b8ad5f60b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 17,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1800,
+    "message": "Variable result is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "548cbe280077e604:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/__init__.py",
+    "line": 25,
+    "message": "The global variable 'version' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "df7410b614ae3346:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/__init__.py",
+    "line": 26,
+    "message": "The global variable 'version_info' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "edaf1259d5809cb9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 13,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/concurrent.py",
+    "line": 145,
+    "message": "The global variable '_NO_RESULT' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d6a04cbdbbd551e0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 11,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/testing.py",
+    "line": 41,
+    "message": "The global variable '_ExcInfoTuple' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2f43927e3458c336:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/util.py",
+    "line": 448,
+    "message": "The global variable '_websocket_mask' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c766657bd313d252:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/overwritten-inherited-attribute",
+    "rule_name": "py/overwritten-inherited-attribute",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/simple_httpclient.py",
+    "line": 276,
+    "message": "Assignment overwrites attribute tcp_client, which was previously defined in subclass [WebSocketClientConnection](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "56d3da1fa208d63d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 37,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/websocket.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 34
+            },
+            "region": {
+              "startLine": 1402,
+              "startColumn": 9,
+              "endColumn": 55
+            }
+          },
+          "message": {
+            "text": "WebSocketClientConnection"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/log-injection",
+    "rule_name": "py/log-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/file_upload/file_receiver.py",
+    "line": 43,
+    "message": "This log entry depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f1d9ad1663a1826b:1",
+        "primaryLocationStartColumnFingerprint": "39"
+      },
+      "startColumn": 48,
+      "endColumn": 56,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/file_upload/file_receiver.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 30
+            },
+            "region": {
+              "startLine": 40,
+              "startColumn": 19,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/log-injection",
+    "rule_name": "py/log-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "demos/file_upload/file_receiver.py",
+    "line": 43,
+    "message": "This log entry depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f1d9ad1663a1826b:1",
+        "primaryLocationStartColumnFingerprint": "49"
+      },
+      "startColumn": 58,
+      "endColumn": 63,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/file_upload/file_receiver.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 30
+            },
+            "region": {
+              "startLine": 40,
+              "startColumn": 13,
+              "endColumn": 17
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/log-injection",
+    "rule_name": "py/log-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1877,
+    "message": "This log entry depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f92bb4d168061f94:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 40,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 1919,
+              "startColumn": 27,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/log-injection",
+    "rule_name": "py/log-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 1878,
+    "message": "This log entry depends on a [user-provided value](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "29da3da6de605a22:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 17,
+      "endColumn": 29,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 1919,
+              "startColumn": 27,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/log-injection",
+    "rule_name": "py/log-injection",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/web.py",
+    "line": 3606,
+    "message": "This log entry depends on a [user-provided value](1).\nThis log entry depends on a [user-provided value](2).\nThis log entry depends on a [user-provided value](3).\nThis log entry depends on a [user-provided value](4).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2555708cf0241cca:1",
+        "primaryLocationStartColumnFingerprint": "47"
+      },
+      "startColumn": 56,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/blog/blog.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 48
+            },
+            "region": {
+              "startLine": 123,
+              "startColumn": 23,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/facebook/facebook.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 49
+            },
+            "region": {
+              "startLine": 51,
+              "startColumn": 26,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 3,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "demos/google_auth/main.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 33,
+              "startColumn": 26,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        },
+        {
+          "id": 4,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "tornado/test/web_test.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 17
+            },
+            "region": {
+              "startLine": 584,
+              "startColumn": 17,
+              "endColumn": 21
+            }
+          },
+          "message": {
+            "text": "user-provided value"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/options.py",
+    "line": 291,
+    "message": "Local variable 'options_file' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ba32ecbcdc63275d:1",
+        "primaryLocationStartColumnFingerprint": "16"
+      },
+      "startColumn": 25,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "tornado",
+    "project_version": "6.4.1",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "tornado/platform/twisted.py",
+    "line": 103,
+    "message": "Local variable 'resolved_family' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "48ebfc4544c5cf84:1",
+        "primaryLocationStartColumnFingerprint": "44"
+      },
+      "startColumn": 53,
+      "endColumn": 68,
+      "relatedLocations": null
+    }
+  }
+]

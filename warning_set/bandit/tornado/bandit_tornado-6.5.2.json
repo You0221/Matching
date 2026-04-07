@@ -1,0 +1,4786 @@
+[
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/blog.py",
+    "line": 66,
+    "message": "Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "65         ]\n66         settings = dict(\n67             blog_title=\"Tornado Blog\",\n68             template_path=os.path.join(os.path.dirname(__file__), \"templates\"),\n69             static_path=os.path.join(os.path.dirname(__file__), \"static\"),\n70             ui_modules={\"Entry\": EntryModule},\n71             xsrf_cookies=True,\n72             cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__\",\n73             login_url=\"/auth/login\",\n74             debug=True,\n75         )\n76         super().__init__(handlers, **settings)\n",
+      "line_range": [
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ],
+      "col_offset": 19,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/chat/chatdemo.py",
+    "line": 109,
+    "message": "Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "108     parse_command_line()\n109     app = tornado.web.Application(\n110         [\n111             (r\"/\", MainHandler),\n112             (r\"/a/message/new\", MessageNewHandler),\n113             (r\"/a/message/updates\", MessageUpdatesHandler),\n114         ],\n115         cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__\",\n116         template_path=os.path.join(os.path.dirname(__file__), \"templates\"),\n117         static_path=os.path.join(os.path.dirname(__file__), \"static\"),\n118         xsrf_cookies=True,\n119         debug=options.debug,\n120     )\n121     app.listen(options.port)\n",
+      "line_range": [
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120
+      ],
+      "col_offset": 10,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/facebook/facebook.py",
+    "line": 35,
+    "message": "Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "34         ]\n35         settings = dict(\n36             cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__\",\n37             login_url=\"/auth/login\",\n38             template_path=os.path.join(os.path.dirname(__file__), \"templates\"),\n39             static_path=os.path.join(os.path.dirname(__file__), \"static\"),\n40             xsrf_cookies=True,\n41             facebook_api_key=options.facebook_api_key,\n42             facebook_secret=options.facebook_secret,\n43             ui_modules={\"Post\": PostModule},\n44             debug=True,\n45             autoescape=None,\n46         )\n47         tornado.web.Application.__init__(self, handlers, **settings)\n",
+      "line_range": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "col_offset": 19,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/google_auth/main.py",
+    "line": 94,
+    "message": "Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "93     tornado.options.parse_command_line()\n94     app = tornado.web.Application(\n95         [\n96             url(r\"/\", IndexHandler),\n97             url(r\"/auth/google\", LoginHandler, name=\"google_oauth\"),\n98             url(r\"/logout\", LogoutHandler),\n99         ],\n100         redirect_base_uri=f\"http://localhost:{options.port}\",\n101         google_oauth=dict(\n102             key=options.google_oauth_key, secret=options.google_oauth_secret\n103         ),\n104         debug=True,\n105         cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__\",\n106         login_url=\"/auth/google\",\n107     )\n108     app.listen(options.port)\n",
+      "line_range": [
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107
+      ],
+      "col_offset": 10,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B108",
+    "rule_name": "hardcoded_tmp_directory",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/s3server/s3server.py",
+    "line": 53,
+    "message": "Probable insecure usage of temp file/directory.",
+    "cwe": [
+      377
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b108_hardcoded_tmp_directory.html",
+      "issue_cwe": {
+        "id": 377,
+        "link": "https://cwe.mitre.org/data/definitions/377.html"
+      },
+      "code_snippet": "52 define(\"port\", default=9888, help=\"TCP port to listen on\")\n53 define(\"root_directory\", default=\"/tmp/s3\", help=\"Root storage directory\")\n54 define(\"bucket_depth\", default=0, help=\"Bucket file system depth limit\")\n",
+      "line_range": [
+        53
+      ],
+      "col_offset": 33,
+      "end_col_offset": 42
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "demos/s3server/s3server.py",
+    "line": 92,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "91     def render_xml(self, value):\n92         assert isinstance(value, dict) and len(value) == 1\n93         self.set_header(\"Content-Type\", \"application/xml; charset=UTF-8\")\n",
+      "line_range": [
+        92
+      ],
+      "col_offset": 8,
+      "end_col_offset": 58
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B324",
+    "rule_name": "hashlib",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "demos/s3server/s3server.py",
+    "line": 124,
+    "message": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "code_snippet": "123             )\n124         hash = hashlib.md5(object_name).hexdigest()\n125         path = os.path.abspath(os.path.join(self.application.directory, bucket))\n",
+      "line_range": [
+        124
+      ],
+      "col_offset": 15,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "demos/websocket/chatdemo.py",
+    "line": 35,
+    "message": "Possible hardcoded password: '__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "34         handlers = [(r\"/\", MainHandler), (r\"/chatsocket\", ChatSocketHandler)]\n35         settings = dict(\n36             cookie_secret=\"__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__\",\n37             template_path=os.path.join(os.path.dirname(__file__), \"templates\"),\n38             static_path=os.path.join(os.path.dirname(__file__), \"static\"),\n39             xsrf_cookies=True,\n40         )\n41         super().__init__(handlers, **settings)\n",
+      "line_range": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "col_offset": 19,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "demos/webspider/webspider.py",
+    "line": 87,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "86     await q.join(timeout=timedelta(seconds=300))\n87     assert fetching == (fetched | dead)\n88     print(\"Done in %d seconds, fetched %s URLs.\" % (time.time() - start, len(fetched)))\n",
+      "line_range": [
+        87
+      ],
+      "col_offset": 4,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B311",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/benchmark/benchmark.py",
+    "line": 57,
+    "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+    "cwe": [
+      330
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "code_snippet": "56     app = Application([(\"/\", RootHandler)])\n57     port = random.randrange(options.min_port, options.max_port)\n58     app.listen(port, address=\"127.0.0.1\")\n",
+      "line_range": [
+        57
+      ],
+      "col_offset": 11,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/benchmark/chunk_benchmark.py",
+    "line": 37,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "36         response.rethrow()\n37         assert len(response.body) == (options.num_chunks * options.chunk_size)\n38         logging.warning(\"fetch completed in %s seconds\", response.request_time)\n",
+      "line_range": [
+        37
+      ],
+      "col_offset": 8,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 26,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "25 import os\n26 import subprocess\n27 import sys\n",
+      "line_range": [
+        26
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B607",
+    "rule_name": "start_process_with_partial_path",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 65,
+    "message": "Starting a process with a partial executable path",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b607_start_process_with_partial_path.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "64         # http://blog.jaraco.com/2012/01/how-i-install-python-on-windows.html\n65         subprocess.check_call(['msiexec', '/i', filename,\n66                                'ALLUSERS=1', '/passive'])\n67 \n",
+      "line_range": [
+        65,
+        66
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 65,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "64         # http://blog.jaraco.com/2012/01/how-i-install-python-on-windows.html\n65         subprocess.check_call(['msiexec', '/i', filename,\n66                                'ALLUSERS=1', '/passive'])\n67 \n",
+      "line_range": [
+        65,
+        66
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 70,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "69         filename = download_to_cache('http://python-distribute.org/distribute_setup.py')\n70         subprocess.check_call([sys.executable, filename])\n71 \n",
+      "line_range": [
+        70
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 72,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "71 \n72     subprocess.check_call([EASY_INSTALL] + PY_PACKAGES)\n73 \n",
+      "line_range": [
+        72
+      ],
+      "col_offset": 4,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B102",
+    "rule_name": "exec_used",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "setup.py",
+    "line": 28,
+    "message": "Use of exec detected.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b102_exec_used.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "27     ns = {}\n28     exec(f.read(), ns)\n29     version = ns[\"version\"]\n",
+      "line_range": [
+        28
+      ],
+      "col_offset": 4,
+      "end_col_offset": 22
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": 125,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "124         callback_uri = callback_uri or handler.request.uri\n125         assert callback_uri is not None\n126         args = self._openid_args(callback_uri, ax_attrs=ax_attrs)\n",
+      "line_range": [
+        125
+      ],
+      "col_offset": 8,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": 341,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "340             http_client = self.get_auth_http_client()\n341         assert http_client is not None\n342         if getattr(self, \"_OAUTH_VERSION\", \"1.0a\") == \"1.0a\":\n",
+      "line_range": [
+        341
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": 390,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "389             http_client = self.get_auth_http_client()\n390         assert http_client is not None\n391         response = await http_client.fetch(self._oauth_access_token_url(token))\n",
+      "line_range": [
+        390
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B105",
+    "rule_name": "hardcoded_password_string",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": 730,
+    "message": "Possible hardcoded password: 'https://api.twitter.com/oauth/request_token'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "729 \n730     _OAUTH_REQUEST_TOKEN_URL = \"https://api.twitter.com/oauth/request_token\"\n731     _OAUTH_ACCESS_TOKEN_URL = \"https://api.twitter.com/oauth/access_token\"\n",
+      "line_range": [
+        730
+      ],
+      "col_offset": 31,
+      "end_col_offset": 76
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B105",
+    "rule_name": "hardcoded_password_string",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": 731,
+    "message": "Possible hardcoded password: 'https://api.twitter.com/oauth/access_token'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "730     _OAUTH_REQUEST_TOKEN_URL = \"https://api.twitter.com/oauth/request_token\"\n731     _OAUTH_ACCESS_TOKEN_URL = \"https://api.twitter.com/oauth/access_token\"\n732     _OAUTH_AUTHORIZE_URL = \"https://api.twitter.com/oauth/authorize\"\n",
+      "line_range": [
+        731
+      ],
+      "col_offset": 30,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B105",
+    "rule_name": "hardcoded_password_string",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": 876,
+    "message": "Possible hardcoded password: 'https://www.googleapis.com/oauth2/v4/token'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "875     _OAUTH_AUTHORIZE_URL = \"https://accounts.google.com/o/oauth2/v2/auth\"\n876     _OAUTH_ACCESS_TOKEN_URL = \"https://www.googleapis.com/oauth2/v4/token\"\n877     _OAUTH_USERINFO_URL = \"https://www.googleapis.com/oauth2/v1/userinfo\"\n",
+      "line_range": [
+        876
+      ],
+      "col_offset": 30,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B105",
+    "rule_name": "hardcoded_password_string",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/auth.py",
+    "line": 984,
+    "message": "Possible hardcoded password: 'https://graph.facebook.com/oauth/access_token?'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "983 \n984     _OAUTH_ACCESS_TOKEN_URL = \"https://graph.facebook.com/oauth/access_token?\"\n985     _OAUTH_AUTHORIZE_URL = \"https://www.facebook.com/dialog/oauth?\"\n",
+      "line_range": [
+        984
+      ],
+      "col_offset": 30,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/auth.py",
+    "line": 1062,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1061         }\n1062         assert session[\"access_token\"] is not None\n1063 \n",
+      "line_range": [
+        1062
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": 84,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "83 import types\n84 import subprocess\n85 import weakref\n",
+      "line_range": [
+        84
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": 216,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "215     if _autoreload_is_main:\n216         assert _original_argv is not None\n217         spec = _original_spec\n",
+      "line_range": [
+        216
+      ],
+      "col_offset": 8,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": 234,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "233     if not _has_execv:\n234         subprocess.Popen([sys.executable] + argv)\n235         os._exit(0)\n",
+      "line_range": [
+        234
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B606",
+    "rule_name": "start_process_with_no_shell",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/autoreload.py",
+    "line": 237,
+    "message": "Starting a process without a shell.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b606_start_process_with_no_shell.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "236     else:\n237         os.execv(sys.executable, [sys.executable] + argv)\n238 \n",
+      "line_range": [
+        237
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": 310,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "309         else:\n310             assert path is not None\n311             runpy.run_path(path, run_name=\"__main__\")\n",
+      "line_range": [
+        310
+      ],
+      "col_offset": 12,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/autoreload.py",
+    "line": 336,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "335     if opts.module is not None:\n336         assert opts.module is not None\n337         # runpy did a fake import of the module as __main__, but now it's\n",
+      "line_range": [
+        336
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 272,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "271         if curl_error:\n272             assert curl_message is not None\n273             error = CurlError(curl_error, curl_message)  # type: Optional[CurlError]\n",
+      "line_range": [
+        272
+      ],
+      "col_offset": 12,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 274,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "273             error = CurlError(curl_error, curl_message)  # type: Optional[CurlError]\n274             assert error is not None\n275             code = error.code\n",
+      "line_range": [
+        274
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 372,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "371             def write_function(b: Union[bytes, bytearray]) -> int:\n372                 assert request.streaming_callback is not None\n373                 self.io_loop.add_callback(request.streaming_callback, b)\n",
+      "line_range": [
+        372
+      ],
+      "col_offset": 16,
+      "end_col_offset": 61
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 381,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "380         curl.setopt(pycurl.MAXREDIRS, request.max_redirects)\n381         assert request.connect_timeout is not None\n382         curl.setopt(pycurl.CONNECTTIMEOUT_MS, int(1000 * request.connect_timeout))\n",
+      "line_range": [
+        381
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 383,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "382         curl.setopt(pycurl.CONNECTTIMEOUT_MS, int(1000 * request.connect_timeout))\n383         assert request.request_timeout is not None\n384         curl.setopt(pycurl.TIMEOUT_MS, int(1000 * request.request_timeout))\n",
+      "line_range": [
+        383
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 399,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "398             if request.proxy_username:\n399                 assert request.proxy_password is not None\n400                 credentials = httputil.encode_username_password(\n",
+      "line_range": [
+        399
+      ],
+      "col_offset": 16,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/curl_httpclient.py",
+    "line": 500,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "499         if request.auth_username is not None:\n500             assert request.auth_password is not None\n501             if request.auth_mode is None or request.auth_mode == \"basic\":\n",
+      "line_range": [
+        500
+      ],
+      "col_offset": 12,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/gen.py",
+    "line": 533,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "532     children_futs = list(map(convert_yielded, children_seq))\n533     assert all(is_future(i) or isinstance(i, _NullFuture) for i in children_futs)\n534     unfinished_children = set(children_futs)\n",
+      "line_range": [
+        533
+      ],
+      "col_offset": 4,
+      "end_col_offset": 81
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 68,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "67         if value is not None:\n68             assert typ is not None\n69             # Let HTTPInputError pass through to higher-level handler\n",
+      "line_range": [
+        68
+      ],
+      "col_offset": 12,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 234,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "233             if self.is_client:\n234                 assert isinstance(start_line, httputil.ResponseStartLine)\n235                 if (\n",
+      "line_range": [
+        234
+      ],
+      "col_offset": 16,
+      "end_col_offset": 73
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 393,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "392         if self.is_client:\n393             assert isinstance(start_line, httputil.RequestStartLine)\n394             self._request_start_line = start_line\n",
+      "line_range": [
+        393
+      ],
+      "col_offset": 12,
+      "end_col_offset": 68
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 404,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "403         else:\n404             assert isinstance(start_line, httputil.ResponseStartLine)\n405             assert self._request_start_line is not None\n",
+      "line_range": [
+        404
+      ],
+      "col_offset": 12,
+      "end_col_offset": 69
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 405,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "404             assert isinstance(start_line, httputil.ResponseStartLine)\n405             assert self._request_start_line is not None\n406             assert self._request_headers is not None\n",
+      "line_range": [
+        405
+      ],
+      "col_offset": 12,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 406,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "405             assert self._request_start_line is not None\n406             assert self._request_headers is not None\n407             self._response_start_line = start_line\n",
+      "line_range": [
+        406
+      ],
+      "col_offset": 12,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 692,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "691             crlf = await self.stream.read_bytes(2)\n692             assert crlf == b\"\\r\\n\"\n693 \n",
+      "line_range": [
+        692
+      ],
+      "col_offset": 12,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 797,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "796         # (start_serving is already responsible for logging them).\n797         assert self._serving_future is not None\n798         try:\n",
+      "line_range": [
+        797
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 800,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "799             await self._serving_future\n800         except Exception:\n801             pass\n802 \n",
+      "line_range": [
+        800,
+        801
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/http1connection.py",
+    "line": 808,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "807         \"\"\"\n808         assert isinstance(delegate, httputil.HTTPServerConnectionDelegate)\n809         fut = gen.convert_yielded(self._server_request_loop(delegate))\n",
+      "line_range": [
+        808
+      ],
+      "col_offset": 8,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httpclient.py",
+    "line": 106,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "105             await gen.sleep(0)\n106             assert async_client_class is not None\n107             return async_client_class(**kwargs)\n",
+      "line_range": [
+        106
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "tornado/httpclient.py",
+    "line": 347,
+    "message": "Possible hardcoded password: ''",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "346     # implementations.\n347     _DEFAULTS = dict(\n348         connect_timeout=20.0,\n349         request_timeout=20.0,\n350         follow_redirects=True,\n351         max_redirects=5,\n352         decompress_response=True,\n353         proxy_password=\"\",\n354         allow_nonstandard_methods=False,\n355         validate_cert=True,\n356     )\n357 \n",
+      "line_range": [
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356
+      ],
+      "col_offset": 16,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httpserver.py",
+    "line": 289,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "288     def finish(self) -> None:\n289         assert self.request is not None\n290         self.request.body = b\"\".join(self._chunks)\n",
+      "line_range": [
+        289
+      ],
+      "col_offset": 8,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B104",
+    "rule_name": "hardcoded_bind_all_interfaces",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "tornado/httpserver.py",
+    "line": 322,
+    "message": "Possible binding to all interfaces.",
+    "cwe": [
+      605
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
+      "issue_cwe": {
+        "id": 605,
+        "link": "https://cwe.mitre.org/data/definitions/605.html"
+      },
+      "code_snippet": "321             # Unix (or other) socket; fake the remote address.\n322             self.remote_ip = \"0.0.0.0\"\n323         if protocol:\n",
+      "line_range": [
+        322
+      ],
+      "col_offset": 29,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httputil.py",
+    "line": 552,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "551                     parsed = parse_cookie(self.headers[\"Cookie\"])\n552                 except Exception:\n553                     pass\n554                 else:\n",
+      "line_range": [
+        552,
+        553
+      ],
+      "col_offset": 16,
+      "end_col_offset": 24
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/httputil.py",
+    "line": 558,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "557                             self._cookies[k] = v\n558                         except Exception:\n559                             # SimpleCookie imposes some restrictions on keys;\n560                             # parse_cookie does not. Discard any cookies\n561                             # with disallowed keys.\n562                             pass\n563         return self._cookies\n",
+      "line_range": [
+        558,
+        559,
+        560,
+        561,
+        562
+      ],
+      "col_offset": 24,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": 518,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "517                     fut.set_result(result)\n518             assert future_cell[\"future\"] is not None\n519             self.add_future(future_cell[\"future\"], lambda future: self.stop())\n",
+      "line_range": [
+        518
+      ],
+      "col_offset": 12,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": 531,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "530                 # will be logged).\n531                 assert future_cell[\"future\"] is not None\n532                 if not future_cell[\"future\"].cancel():\n",
+      "line_range": [
+        531
+      ],
+      "col_offset": 16,
+      "end_col_offset": 56
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": 539,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "538             self.remove_timeout(timeout_handle)\n539         assert future_cell[\"future\"] is not None\n540         if future_cell[\"future\"].cancelled() or not future_cell[\"future\"].done():\n",
+      "line_range": [
+        539
+      ],
+      "col_offset": 8,
+      "end_col_offset": 48
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": 710,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "709         else:\n710             assert is_future(future)\n711             # For concurrent futures, we use self.add_callback, so\n",
+      "line_range": [
+        710
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B311",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/ioloop.py",
+    "line": 962,
+    "message": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+    "cwe": [
+      330
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "code_snippet": "961             # apply jitter fraction\n962             callback_time_sec *= 1 + (self.jitter * (random.random() - 0.5))\n963         if self._next_timeout <= current_time:\n",
+      "line_range": [
+        962
+      ],
+      "col_offset": 53,
+      "end_col_offset": 68
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 166,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "165         \"\"\"\n166         assert size > 0\n167         try:\n",
+      "line_range": [
+        166
+      ],
+      "col_offset": 8,
+      "end_col_offset": 23
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 182,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "181         \"\"\"\n182         assert 0 < size <= self._size\n183         self._size -= size\n",
+      "line_range": [
+        182
+      ],
+      "col_offset": 8,
+      "end_col_offset": 37
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 203,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "202 \n203         assert size == 0\n204         self._first_pos = pos\n",
+      "line_range": [
+        203
+      ],
+      "col_offset": 8,
+      "end_col_offset": 24
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 418,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "417         future = self._start_read()\n418         assert isinstance(num_bytes, numbers.Integral)\n419         self._read_bytes = num_bytes\n",
+      "line_range": [
+        418
+      ],
+      "col_offset": 8,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 717,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "716             if state != self._state:\n717                 assert (\n718                     self._state is not None\n719                 ), \"shouldn't happen: _handle_events without self._state\"\n720                 self._state = state\n",
+      "line_range": [
+        717,
+        718,
+        719
+      ],
+      "col_offset": 16,
+      "end_col_offset": 73
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 804,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "803             self._check_closed()\n804             assert self._read_future is None, \"Already reading\"\n805         self._read_future = Future()\n",
+      "line_range": [
+        804
+      ],
+      "col_offset": 12,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 952,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "951                 break\n952             assert size > 0\n953             try:\n",
+      "line_range": [
+        952
+      ],
+      "col_offset": 12,
+      "end_col_offset": 27
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 989,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "988             return b\"\"\n989         assert loc <= self._read_buffer_size\n990         # Slice the bytearray buffer into bytes, without intermediate copying\n",
+      "line_range": [
+        989
+      ],
+      "col_offset": 8,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 1406,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1405             # the server's claimed hostname.\n1406             assert ssl.HAS_SNI\n1407             self._finish_ssl_connect()\n",
+      "line_range": [
+        1406
+      ],
+      "col_offset": 12,
+      "end_col_offset": 30
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/iostream.py",
+    "line": 1463,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1462         old_state = self._state\n1463         assert old_state is not None\n1464         self._state = None\n",
+      "line_range": [
+        1463
+      ],
+      "col_offset": 8,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": 258,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "257         if code not in cls._cache:\n258             assert code in _supported_locales\n259             translations = _translations.get(code, None)\n",
+      "line_range": [
+        258
+      ],
+      "col_offset": 12,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": 499,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "498         if plural_message is not None:\n499             assert count is not None\n500             if count != 1:\n",
+      "line_range": [
+        499
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": 538,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "537         if plural_message is not None:\n538             assert count is not None\n539             return self.ngettext(message, plural_message, count)\n",
+      "line_range": [
+        538
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/locale.py",
+    "line": 570,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "569         if plural_message is not None:\n570             assert count is not None\n571             msgs_with_ctxt = (\n",
+      "line_range": [
+        570
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/log.py",
+    "line": 67,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "66                     return True\n67     except Exception:\n68         # Very broad exception handling because it's always better to\n69         # fall back to non-colored logs than to break at startup.\n70         pass\n71     return False\n",
+      "line_range": [
+        67,
+        68,
+        69,
+        70
+      ],
+      "col_offset": 4,
+      "end_col_offset": 12
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/log.py",
+    "line": 171,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "170             message = record.getMessage()\n171             assert isinstance(message, basestring_type)  # guaranteed by logging\n172             # Encoding notes:  The logging module prefers to work with character\n",
+      "line_range": [
+        171
+      ],
+      "col_offset": 12,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": 610,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "609         return ssl_options\n610     assert isinstance(ssl_options, dict)\n611     assert all(k in _SSL_CONTEXT_KEYWORDS for k in ssl_options), ssl_options\n",
+      "line_range": [
+        610
+      ],
+      "col_offset": 4,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": 611,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "610     assert isinstance(ssl_options, dict)\n611     assert all(k in _SSL_CONTEXT_KEYWORDS for k in ssl_options), ssl_options\n612     # TODO: Now that we have the server_side argument, can we switch to\n",
+      "line_range": [
+        611
+      ],
+      "col_offset": 4,
+      "end_col_offset": 76
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/netutil.py",
+    "line": 664,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "663         server_side = False\n664     assert ssl.HAS_SNI\n665     # TODO: add a unittest for hostname validation (python added server-side SNI support in 3.4)\n",
+      "line_range": [
+        664
+      ],
+      "col_offset": 4,
+      "end_col_offset": 22
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/options.py",
+    "line": 287,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "286 \n287             assert frame.f_back is not None\n288             file_name = frame.f_back.f_code.co_filename\n",
+      "line_range": [
+        287
+      ],
+      "col_offset": 12,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/options.py",
+    "line": 519,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "518     def __setattr__(self, name: str, value: Any) -> None:\n519         assert name not in self._originals, \"don't reuse mockable objects\"\n520         self._originals[name] = getattr(self._options, name)\n",
+      "line_range": [
+        519
+      ],
+      "col_offset": 8,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/platform/asyncio.py",
+    "line": 571,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "570         with self._select_cond:\n571             assert self._select_args is None\n572             self._select_args = (list(self._readers.keys()), list(self._writers.keys()))\n",
+      "line_range": [
+        571
+      ],
+      "col_offset": 12,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/platform/asyncio.py",
+    "line": 582,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "581                     return\n582                 assert self._select_args is not None\n583                 to_read, to_write = self._select_args\n",
+      "line_range": [
+        582
+      ],
+      "col_offset": 16,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": 24,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "23 import signal\n24 import subprocess\n25 import sys\n",
+      "line_range": [
+        24
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": 121,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "120     global _task_id\n121     assert _task_id is None\n122     if num_processes is None or num_processes <= 0:\n",
+      "line_range": [
+        121
+      ],
+      "col_offset": 4,
+      "end_col_offset": 27
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": 240,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "239         try:\n240             self.proc = subprocess.Popen(*args, **kwargs)\n241         except:\n",
+      "line_range": [
+        240
+      ],
+      "col_offset": 24,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": 351,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "350             return\n351         assert ret_pid == pid\n352         subproc = cls._waiting.pop(pid)\n",
+      "line_range": [
+        351
+      ],
+      "col_offset": 8,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/process.py",
+    "line": 362,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "361             else:\n362                 assert os.WIFEXITED(status)\n363                 self.returncode = os.WEXITSTATUS(status)\n",
+      "line_range": [
+        362
+      ],
+      "col_offset": 16,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/queues.py",
+    "line": 216,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "215         if self._getters:\n216             assert self.empty(), \"queue non-empty, why are getters waiting?\"\n217             getter = self._getters.popleft()\n",
+      "line_range": [
+        216
+      ],
+      "col_offset": 12,
+      "end_col_offset": 76
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/queues.py",
+    "line": 264,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "263         if self._putters:\n264             assert self.full(), \"queue not full, why are putters waiting?\"\n265             item, putter = self._putters.popleft()\n",
+      "line_range": [
+        264
+      ],
+      "col_offset": 12,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 254,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "253     ) -> Optional[Awaitable[None]]:\n254         assert isinstance(start_line, httputil.RequestStartLine)\n255         request = httputil.HTTPServerRequest(\n",
+      "line_range": [
+        254
+      ],
+      "col_offset": 8,
+      "end_col_offset": 64
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 274,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "273     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:\n274         assert self.delegate is not None\n275         return self.delegate.data_received(chunk)\n",
+      "line_range": [
+        274
+      ],
+      "col_offset": 8,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 278,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "277     def finish(self) -> None:\n278         assert self.delegate is not None\n279         self.delegate.finish()\n",
+      "line_range": [
+        278
+      ],
+      "col_offset": 8,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 353,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "352             if isinstance(rule, (tuple, list)):\n353                 assert len(rule) in (2, 3, 4)\n354                 if isinstance(rule[0], basestring_type):\n",
+      "line_range": [
+        353
+      ],
+      "col_offset": 16,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 403,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "402         elif isinstance(target, httputil.HTTPServerConnectionDelegate):\n403             assert request.connection is not None\n404             return target.start_request(request.server_connection, request.connection)\n",
+      "line_range": [
+        403
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 407,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "406         elif callable(target):\n407             assert request.connection is not None\n408             return _CallableAdapter(\n",
+      "line_range": [
+        407
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 574,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "573 \n574         assert len(self.regex.groupindex) in (0, self.regex.groups), (\n575             \"groups in url regexes must either be all named or all \"\n576             \"positional: %r\" % self.regex.pattern\n577         )\n578 \n",
+      "line_range": [
+        574,
+        575,
+        576,
+        577
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/routing.py",
+    "line": 607,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "606             raise ValueError(\"Cannot reverse url regex \" + self.regex.pattern)\n607         assert len(args) == self._group_count, (\n608             \"required number of arguments \" \"not found\"\n609         )\n610         if not len(args):\n",
+      "line_range": [
+        607,
+        608,
+        609
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 167,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "166         self.queue.append((key, request, callback))\n167         assert request.connect_timeout is not None\n168         assert request.request_timeout is not None\n",
+      "line_range": [
+        167
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 168,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "167         assert request.connect_timeout is not None\n168         assert request.request_timeout is not None\n169         timeout_handle = None\n",
+      "line_range": [
+        168
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 391,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "390             if username is not None:\n391                 assert password is not None\n392                 if self.request.auth_mode not in (None, \"basic\"):\n",
+      "line_range": [
+        391
+      ],
+      "col_offset": 16,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 593,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "592     ) -> None:\n593         assert isinstance(first_line, httputil.ResponseStartLine)\n594         if self.request.expect_100_continue and first_line.code == 100:\n",
+      "line_range": [
+        593
+      ],
+      "col_offset": 8,
+      "end_col_offset": 65
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 613,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "612         if self.request.follow_redirects:\n613             assert self.request.max_redirects is not None\n614             return (\n",
+      "line_range": [
+        613
+      ],
+      "col_offset": 12,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 623,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "622     def finish(self) -> None:\n623         assert self.code is not None\n624         data = b\"\".join(self.chunks)\n",
+      "line_range": [
+        623
+      ],
+      "col_offset": 8,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 628,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "627         if self._should_follow_redirect():\n628             assert isinstance(self.request, _RequestProxy)\n629             assert self.headers is not None\n",
+      "line_range": [
+        628
+      ],
+      "col_offset": 12,
+      "end_col_offset": 58
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 629,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "628             assert isinstance(self.request, _RequestProxy)\n629             assert self.headers is not None\n630             new_request = copy.copy(self.request.request)\n",
+      "line_range": [
+        629
+      ],
+      "col_offset": 12,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 634,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "633             )\n634             assert self.request.max_redirects is not None\n635             new_request.max_redirects = self.request.max_redirects - 1\n",
+      "line_range": [
+        634
+      ],
+      "col_offset": 12,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/simple_httpclient.py",
+    "line": 665,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "664             self._release()\n665             assert self.client is not None\n666             fut = self.client.fetch(new_request, raise_error=False)\n",
+      "line_range": [
+        665
+      ],
+      "col_offset": 12,
+      "end_col_offset": 42
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": 298,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "297         \"\"\"\n298         assert not self._started\n299         self._started = True\n",
+      "line_range": [
+        298
+      ],
+      "col_offset": 8,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": 316,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "315         for fd, sock in self._sockets.items():\n316             assert sock.fileno() == fd\n317             # Unregister socket from IOLoop\n",
+      "line_range": [
+        316
+      ],
+      "col_offset": 12,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/tcpserver.py",
+    "line": 342,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "341         if self.ssl_options is not None:\n342             assert ssl, \"OpenSSL required for SSL\"\n343             try:\n",
+      "line_range": [
+        342
+      ],
+      "col_offset": 12,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 306,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "305         # Validate the whitespace setting.\n306         assert whitespace is not None\n307         filter_whitespace(whitespace, \"\")\n",
+      "line_range": [
+        306
+      ],
+      "col_offset": 8,
+      "end_col_offset": 37
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 583,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "582     ) -> None:\n583         assert loader is not None\n584         included = loader.load(self.name, self.template_name)\n",
+      "line_range": [
+        583
+      ],
+      "col_offset": 8,
+      "end_col_offset": 33
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 588,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "587     def generate(self, writer: \"_CodeWriter\") -> None:\n588         assert writer.loader is not None\n589         included = writer.loader.load(self.name, self.template_name)\n",
+      "line_range": [
+        588
+      ],
+      "col_offset": 8,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 749,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "748             def __exit__(_, *args: Any) -> None:\n749                 assert self._indent > 0\n750                 self._indent -= 1\n",
+      "line_range": [
+        749
+      ],
+      "col_offset": 16,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 790,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "789     def find(self, needle: str, start: int = 0, end: Optional[int] = None) -> int:\n790         assert start >= 0, start\n791         pos = self.pos\n",
+      "line_range": [
+        790
+      ],
+      "col_offset": 8,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 797,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "796             end += pos\n797             assert end >= start\n798             index = self.text.find(needle, start, end)\n",
+      "line_range": [
+        797
+      ],
+      "col_offset": 12,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/template.py",
+    "line": 925,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "924         # Block\n925         assert start_brace == \"{%\", start_brace\n926         end = reader.find(\"%}\")\n",
+      "line_range": [
+        925
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": 184,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "183             done, pending = self.io_loop.run_sync(lambda: asyncio.wait(tasks))\n184             assert not pending\n185             # If any task failed with anything but a CancelledError, raise it.\n",
+      "line_range": [
+        184
+      ],
+      "col_offset": 12,
+      "end_col_offset": 30
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": 288,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "287         \"\"\"\n288         assert _arg is None or not kwargs\n289         self.__stop_args = kwargs or _arg\n",
+      "line_range": [
+        288
+      ],
+      "col_offset": 8,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/testing.py",
+    "line": 343,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "342                 self.__timeout = None\n343         assert self.__stopped\n344         self.__stopped = False\n",
+      "line_range": [
+        343
+      ],
+      "col_offset": 8,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B102",
+    "rule_name": "exec_used",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "tornado/util.py",
+    "line": 144,
+    "message": "Use of exec detected.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b102_exec_used.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "143         code = compile(code, \"<string>\", \"exec\", dont_inherit=True)\n144     exec(code, glob, loc)\n145 \n",
+      "line_range": [
+        144
+      ],
+      "col_offset": 4,
+      "end_col_offset": 25
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 237,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "236         self.clear()\n237         assert self.request.connection is not None\n238         # TODO: need to add set_close_callback to HTTPConnection interface\n",
+      "line_range": [
+        237
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 479,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "478         # `get_argument`.)\n479         assert isinstance(strip, bool)\n480 \n",
+      "line_range": [
+        479
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 942,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "941         else:\n942             assert isinstance(status, int) and 300 <= status <= 399\n943         self.set_status(status)\n",
+      "line_range": [
+        942
+      ],
+      "col_offset": 12,
+      "end_col_offset": 67
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1132,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1131                 frame = frame.f_back\n1132             assert frame.f_code.co_filename is not None\n1133             template_path = os.path.dirname(frame.f_code.co_filename)\n",
+      "line_range": [
+        1132
+      ],
+      "col_offset": 12,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1199,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1198         \"\"\"\n1199         assert self.request.connection is not None\n1200         chunk = b\"\".join(self._write_buffer)\n",
+      "line_range": [
+        1199
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1205,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1204             for transform in self._transforms:\n1205                 assert chunk is not None\n1206                 (\n",
+      "line_range": [
+        1205
+      ],
+      "col_offset": 16,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1273,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1272             if self._status_code in (204, 304) or (100 <= self._status_code < 200):\n1273                 assert not self._write_buffer, (\n1274                     \"Cannot send body with %s\" % self._status_code\n1275                 )\n1276                 self._clear_representation_headers()\n",
+      "line_range": [
+        1273,
+        1274,
+        1275
+      ],
+      "col_offset": 16,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1281,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1280 \n1281         assert self.request.connection is not None\n1282         # Now that the request is finished, clear the callback we\n",
+      "line_range": [
+        1281
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1397,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1396                 self._locale = self.get_browser_locale()\n1397                 assert self._locale\n1398         return self._locale\n",
+      "line_range": [
+        1397
+      ],
+      "col_offset": 16,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1584,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1583                 timestamp = time.time()\n1584             assert token is not None\n1585             assert timestamp is not None\n",
+      "line_range": [
+        1584
+      ],
+      "col_offset": 12,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1585,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1584             assert token is not None\n1585             assert timestamp is not None\n1586             self._raw_xsrf_token = (version, token, timestamp)\n",
+      "line_range": [
+        1585
+      ],
+      "col_offset": 12,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B324",
+    "rule_name": "hashlib",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 1740,
+    "message": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "code_snippet": "1739         \"\"\"\n1740         hasher = hashlib.sha1()\n1741         for part in self._write_buffer:\n",
+      "line_range": [
+        1740
+      ],
+      "col_offset": 17,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 2072,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2071     ) -> None:\n2072         assert isinstance(application, Application)\n2073         self.application = application\n",
+      "line_range": [
+        2072
+      ],
+      "col_offset": 8,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 2321,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2320         else:\n2321             assert isinstance(modules, dict)\n2322             for name, cls in modules.items():\n",
+      "line_range": [
+        2321
+      ],
+      "col_offset": 12,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 2837,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2836         else:\n2837             assert self.request.method == \"HEAD\"\n2838 \n",
+      "line_range": [
+        2837
+      ],
+      "col_offset": 12,
+      "end_col_offset": 48
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 2848,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2847         \"\"\"\n2848         assert self.absolute_path is not None\n2849         version_hash = self._get_cached_version(self.absolute_path)\n",
+      "line_range": [
+        2848
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 2899,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2898                 if_since = if_since.replace(tzinfo=datetime.timezone.utc)\n2899             assert self.modified is not None\n2900             if if_since >= self.modified:\n",
+      "line_range": [
+        2899
+      ],
+      "col_offset": 12,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3017,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3016                     if remaining is not None:\n3017                         assert remaining == 0\n3018                     return\n",
+      "line_range": [
+        3017
+      ],
+      "col_offset": 24,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3039,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3038     def _stat(self) -> os.stat_result:\n3039         assert self.absolute_path is not None\n3040         if not hasattr(self, \"_stat_result\"):\n",
+      "line_range": [
+        3039
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3089,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3088         \"\"\"\n3089         assert self.absolute_path is not None\n3090         mime_type, encoding = mimetypes.guess_type(self.absolute_path)\n",
+      "line_range": [
+        3089
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3369,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3368                     else:\n3369                         assert self.request.uri is not None\n3370                         next_url = self.request.uri\n",
+      "line_range": [
+        3369
+      ],
+      "col_offset": 24,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3563,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3562     if version == 1:\n3563         assert not isinstance(secret, dict)\n3564         signature = _create_signature_v1(secret, name, value, timestamp)\n",
+      "line_range": [
+        3563
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3597,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3596         if isinstance(secret, dict):\n3597             assert (\n3598                 key_version is not None\n3599             ), \"Key version must be set when sign key dict is used\"\n3600             assert version >= 2, \"Version must be at least 2 for key version support\"\n",
+      "line_range": [
+        3597,
+        3598,
+        3599
+      ],
+      "col_offset": 12,
+      "end_col_offset": 67
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3600,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3599             ), \"Key version must be set when sign key dict is used\"\n3600             assert version >= 2, \"Version must be at least 2 for key version support\"\n3601             secret = secret[key_version]\n",
+      "line_range": [
+        3600
+      ],
+      "col_offset": 12,
+      "end_col_offset": 85
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/web.py",
+    "line": 3660,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3659     if version == 1:\n3660         assert not isinstance(secret, dict)\n3661         return _decode_signed_value_v1(secret, name, value, max_age_days, clock)\n",
+      "line_range": [
+        3660
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 396,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "395         \"\"\"\n396         assert self.ws_connection is not None\n397         return self.ws_connection.selected_subprotocol\n",
+      "line_range": [
+        396
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 582,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "581         \"\"\"\n582         assert self.ws_connection is not None\n583         self.ws_connection.set_nodelay(value)\n",
+      "line_range": [
+        582
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 667,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "666                 result = gen.convert_yielded(result)\n667                 assert self.stream is not None\n668                 self.stream.io_loop.add_future(result, lambda f: f.result())\n",
+      "line_range": [
+        667
+      ],
+      "col_offset": 16,
+      "end_col_offset": 46
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 776,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "775         data = compressor.compress(data) + compressor.flush(zlib.Z_SYNC_FLUSH)\n776         assert data.endswith(b\"\\x00\\x00\\xff\\xff\")\n777         return data[:-4]\n",
+      "line_range": [
+        776
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B324",
+    "rule_name": "hashlib",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 914,
+    "message": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "code_snippet": "913         \"\"\"\n914         sha1 = hashlib.sha1()\n915         sha1.update(utf8(key))\n",
+      "line_range": [
+        914
+      ],
+      "col_offset": 15,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 932,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "931         if self.selected_subprotocol:\n932             assert self.selected_subprotocol in subprotocols\n933             handler.set_header(\"Sec-WebSocket-Protocol\", self.selected_subprotocol)\n",
+      "line_range": [
+        932
+      ],
+      "col_offset": 12,
+      "end_col_offset": 60
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 990,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "989         \"\"\"\n990         assert headers[\"Upgrade\"].lower() == \"websocket\"\n991         assert headers[\"Connection\"].lower() == \"upgrade\"\n",
+      "line_range": [
+        990
+      ],
+      "col_offset": 8,
+      "end_col_offset": 56
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 991,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "990         assert headers[\"Upgrade\"].lower() == \"websocket\"\n991         assert headers[\"Connection\"].lower() == \"upgrade\"\n992         accept = self.compute_accept_value(key)\n",
+      "line_range": [
+        991
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 993,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "992         accept = self.compute_accept_value(key)\n993         assert headers[\"Sec-Websocket-Accept\"] == accept\n994 \n",
+      "line_range": [
+        993
+      ],
+      "col_offset": 8,
+      "end_col_offset": 56
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1095,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1094         message = tornado.escape.utf8(message)\n1095         assert isinstance(message, bytes)\n1096         self._message_bytes_out += len(message)\n",
+      "line_range": [
+        1095
+      ],
+      "col_offset": 8,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1121,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1120         \"\"\"Send ping frame.\"\"\"\n1121         assert isinstance(data, bytes)\n1122         self._write_frame(True, 0x9, data)\n",
+      "line_range": [
+        1121
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1184,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1183         if is_masked:\n1184             assert self._frame_mask is not None\n1185             data = _websocket_mask(self._frame_mask, data)\n",
+      "line_range": [
+        1184
+      ],
+      "col_offset": 12,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1226,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1225         if self._frame_compressed:\n1226             assert self._decompressor is not None\n1227             try:\n",
+      "line_range": [
+        1226
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1512,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1511     ) -> None:\n1512         assert isinstance(start_line, httputil.ResponseStartLine)\n1513         if start_line.code != 101:\n",
+      "line_range": [
+        1512
+      ],
+      "col_offset": 8,
+      "end_col_offset": 65
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1627,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1626     ) -> None:\n1627         assert typ is not None\n1628         assert value is not None\n",
+      "line_range": [
+        1627
+      ],
+      "col_offset": 8,
+      "end_col_offset": 30
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1628,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1627         assert typ is not None\n1628         assert value is not None\n1629         app_log.error(\"Uncaught exception %s\", value, exc_info=(typ, value, tb))\n",
+      "line_range": [
+        1628
+      ],
+      "col_offset": 8,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/websocket.py",
+    "line": 1696,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1695     if isinstance(url, httpclient.HTTPRequest):\n1696         assert connect_timeout is None\n1697         request = url\n",
+      "line_range": [
+        1696
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": 55,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "54 def to_wsgi_str(s: bytes) -> str:\n55     assert isinstance(s, bytes)\n56     return s.decode(\"latin1\")\n",
+      "line_range": [
+        55
+      ],
+      "col_offset": 4,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": 202,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "201             header_obj.add(key, value)\n202         assert request.connection is not None\n203         request.connection.write_headers(start_line, header_obj, chunk=body)\n",
+      "line_range": [
+        202
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": 255,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "254         request_time = 1000.0 * request.request_time()\n255         assert request.method is not None\n256         assert request.uri is not None\n",
+      "line_range": [
+        255
+      ],
+      "col_offset": 8,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "tornado",
+    "project_version": "6.5.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "tornado/wsgi.py",
+    "line": 256,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "255         assert request.method is not None\n256         assert request.uri is not None\n257         summary = (\n",
+      "line_range": [
+        256
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  }
+]

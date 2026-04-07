@@ -1,0 +1,938 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/app/registry.py",
+    "line": 67,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 67,
+      "start_col": 9,
+      "end_col": 30,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/loaders/base.py",
+    "line": 88,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 88,
+      "start_col": 16,
+      "end_col": 64,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/loaders/base.py",
+    "line": 257,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 257,
+      "start_col": 18,
+      "end_col": 50,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/loaders/base.py",
+    "line": 270,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 270,
+      "start_col": 16,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/local.py",
+    "line": 46,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 46,
+      "start_col": 16,
+      "end_col": 37,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/local.py",
+    "line": 533,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 533,
+      "start_col": 38,
+      "end_col": 58,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/functional.py",
+    "line": 339,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 339,
+      "start_col": 5,
+      "end_col": 32,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 132,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 132,
+      "start_col": 33,
+      "end_col": 62,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 132,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 132,
+      "start_col": 33,
+      "end_col": 62,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 132,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 132,
+      "start_col": 46,
+      "end_col": 61,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 132,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 132,
+      "start_col": 46,
+      "end_col": 61,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 164,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 164,
+      "start_col": 9,
+      "end_col": 40,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 164,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 164,
+      "start_col": 9,
+      "end_col": 40,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 164,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 164,
+      "start_col": 22,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/utils/serialization.py",
+    "line": 164,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 164,
+      "start_col": 22,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/worker/state.py",
+    "line": 265,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 265,
+      "start_col": 40,
+      "end_col": 79,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "celery/worker/state.py",
+    "line": 279,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 279,
+      "start_col": 16,
+      "end_col": 57,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "bash.curl.security.curl-pipe-bash.curl-pipe-bash",
+    "rule_name": "bash.curl.security.curl-pipe-bash.curl-pipe-bash",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "docker/scripts/install-pyenv.sh",
+    "line": 3,
+    "message": "Data is being piped into `bash` from a `curl` command. An attacker with control of the server in the `curl` command could inject malicious code into the pipe, resulting in a system compromise. Avoid piping untrusted data into `bash` or any other shell if you can. If you must do this, consider checking the SHA sum of the content returned by the server to verify its integrity.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 3,
+      "start_col": 1,
+      "end_col": 87,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "bash",
+        "curl"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/security/ssl/worker.key",
+    "line": 1,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 2,
+      "start_col": 1,
+      "end_col": 24,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "bash.lang.security.ifs-tampering.ifs-tampering",
+    "rule_name": "bash.lang.security.ifs-tampering.ifs-tampering",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "extra/bash-completion/celery.bash",
+    "line": 2,
+    "message": "The special variable IFS affects how splitting takes place when expanding unquoted variables. Don't set it globally. Prefer a dedicated utility such as 'cut' or 'awk' if you need to split input data. If you must use 'read', set IFS locally using e.g. 'IFS=\",\" read -a my_array'.",
+    "cwe": [
+      20
+    ],
+    "extra": {
+      "end_line": 3,
+      "start_col": 11,
+      "end_col": 2,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "bash"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "t/unit/security/__init__.py",
+    "line": 9,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 10,
+      "start_col": 11,
+      "end_col": 24,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "t/unit/security/__init__.py",
+    "line": 25,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 26,
+      "start_col": 14,
+      "end_col": 65,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "t/unit/security/__init__.py",
+    "line": 44,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 45,
+      "start_col": 11,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "t/unit/security/__init__.py",
+    "line": 60,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 61,
+      "start_col": 14,
+      "end_col": 58,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "celery",
+    "project_version": "5.5.0rc5",
+    "rule_id": "generic.secrets.security.detected-private-key.detected-private-key",
+    "rule_name": "generic.secrets.security.detected-private-key.detected-private-key",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "t/unit/security/__init__.py",
+    "line": 133,
+    "message": "Private Key detected. This is a sensitive credential and should not be hardcoded here. Instead, store this in a separate, private file.",
+    "cwe": [
+      798
+    ],
+    "extra": {
+      "end_line": 134,
+      "start_col": 1,
+      "end_col": 26,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "secrets"
+      ],
+      "owasp": [
+        "A07:2021 - Identification and Authentication Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://github.com/grab/secret-scanner/blob/master/scanner/signatures/pattern.go",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

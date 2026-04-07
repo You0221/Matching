@@ -11,65 +11,268 @@ from Warning_group import WarningGrouper
 class Matcher:
 
     def __init__(self, matching_threshold: int = 3, context_lines: int = 3,
-                 snippet_similarity: float = 0.9, hash_size: int = 20):
+                 snippet_similarity: float = 0.9, hash_size: int = 20,
+                 cwe_mapping_dir: Optional[str] = None):
         self.MATCHING_THRESHOLD = matching_threshold  # 位置匹配阈值
         self.CONTEXT_LINES = context_lines  # 片段匹配上下文行数
         self.SNIPPET_SIMILARITY = snippet_similarity  # 片段相似度阈值
         self.HASH_SIZE = hash_size  # 哈希匹配的token大小
         self.diff_matcher = DifflibMatcher(epsilon=3)
-
+        self.tool_converters = {
+            'bandit': self._convert_bandit,
+            'codeql': self._convert_codeql,
+            'horusec': self._convert_horusec,
+            'pylint': self._convert_pylint,
+            'semgrep': self._convert_semgrep,
+        }
+        self.cwe_mapper = None
+        if cwe_mapping_dir:
+            from cwe_mapper import CWEMapper
+            self.cwe_mapper = CWEMapper(cwe_mapping_dir)
 
     def load_warnings(self, json_file_path: str) -> List[Dict]:
-        """从Bandit JSON文件加载警告数据"""
+        """从 JSON 文件加载警告数据，自动识别工具类型并转换为统一格式"""
         try:
             with open(json_file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
-            warnings = []
+            if not isinstance(data, list):
+                print(f"警告: 文件 {json_file_path} 不是列表格式，跳过")
+                return []
 
-            if 'results' in data:
-                for result in data['results']:
-                    warning = {
-                        'filename': result.get('filename', ''),
-                        'line_number': result.get('line_number', 0),
-                        'issue_confidence': result.get('issue_confidence', ''),
-                        'issue_severity': result.get('issue_severity', ''),
-                        'issue_text': result.get('issue_text', ''),
-                        'test_name': result.get('test_name', ''),
-                        'test_id': result.get('test_id', ''),
-                        'code': result.get('code', ''),
-                        'unique_id': f"{result.get('filename', '')}:{result.get('line_number', 0)}:{result.get('test_id', '')}",
-                        'col_offset': result.get('col_offset', 0),
-                        'end_col_offset': result.get('end_col_offset', 0),
-                        'line_range': result.get('line_range', []),
-                        'issue_cwe': result.get('issue_cwe', {})
-                    }
-                    warnings.append(warning)
+            # 识别工具
+            tool = self._identify_tool(data, json_file_path)
+            if tool not in self.tool_converters:
+                print(f"警告: 不支持的工具 {tool}，跳过文件 {json_file_path}")
+                return []
 
-            print(f"从 {os.path.basename(json_file_path)} 加载了 {len(warnings)} 个警告")
+            converter = self.tool_converters[tool]
+            warnings = converter(data)
+            if self.cwe_mapper:
+                for w in warnings:
+                    if not w.get('cwe'):
+                        cwe = self.cwe_mapper.get_cwe(w['tool'], w['test_id'])
+                        if cwe:
+                            w['cwe'] = cwe
+            print(f"从 {os.path.basename(json_file_path)} 加载了 {len(warnings)} 个警告 (工具: {tool})")
             return warnings
-
         except Exception as e:
             print(f"加载文件 {json_file_path} 时出错: {e}")
             return []
 
+    def _identify_tool(self, data: List[Dict], file_path: str) -> str:
+        """根据警告内容或文件名识别工具"""
+        if data and 'tool' in data[0]:
+            return data[0]['tool']
+        basename = os.path.basename(file_path)
+        for tool in self.tool_converters.keys():
+            if basename.startswith(tool + '_'):
+                return tool
+        return 'unknown'
+
+    def _convert_bandit(self, items: List[Dict]) -> List[Dict]:
+        result = []
+        for item in items:
+            extra = item.get('extra', {})
+            # 提取 CWE
+            cwe = None
+            issue_cwe = item.get('issue_cwe', {})
+            if isinstance(issue_cwe, dict) and 'id' in issue_cwe:
+                cwe = f"CWE-{issue_cwe['id']}"
+            if not cwe and 'cwe' in item:
+                cwe_list = item['cwe']
+                if isinstance(cwe_list, list) and cwe_list:
+                    cwe = f"CWE-{cwe_list[0]}"
+            warning = {
+                'tool': 'bandit',
+                'project_name': item.get('project_name', ''),
+                'project_version': item.get('project_version', ''),
+                'filename': item.get('file', ''),
+                'line_number': int(item.get('line', 0)),
+                'test_id': item.get('rule_id', ''),
+                'test_name': item.get('rule_name', ''),
+                'issue_severity': item.get('severity', ''),
+                'issue_confidence': item.get('confidence', ''),
+                'issue_text': item.get('message', ''),
+                'code': extra.get('code_snippet', ''),
+                'line_range': extra.get('line_range', [item.get('line', 0)]),
+                'col_offset': extra.get('col_offset', 0),
+                'end_col_offset': extra.get('end_col_offset', 0),
+                'cwe': cwe,  # 新增字段
+            }
+            warning[
+                'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
+            result.append(warning)
+        return result
+
+    def _convert_codeql(self, items: List[Dict]) -> List[Dict]:
+        result = []
+        for item in items:
+            extra = item.get('extra', {})
+            # 提取 CWE
+            cwe = None
+            # 优先从 cwe 字段提取
+            if 'cwe' in item:
+                cwe_val = item['cwe']
+                if isinstance(cwe_val, list) and cwe_val:
+                    cwe = f"CWE-{cwe_val[0]}"
+                elif isinstance(cwe_val, (int, float)):
+                    cwe = f"CWE-{int(cwe_val)}"
+                elif isinstance(cwe_val, str) and cwe_val.startswith('CWE-'):
+                    cwe = cwe_val.split(',')[0].strip()
+            warning = {
+                'tool': 'codeql',
+                'project_name': item.get('project_name', ''),
+                'project_version': item.get('project_version', ''),
+                'filename': item.get('file', ''),
+                'line_number': int(item.get('line', 0)),
+                'test_id': item.get('rule_id', ''),
+                'test_name': item.get('rule_name', item.get('rule_id', '')),
+                'issue_severity': item.get('severity', ''),
+                'issue_confidence': item.get('confidence', ''),
+                'issue_text': item.get('message', ''),
+                'code': '',
+                'line_range': [item.get('line', 0)],  # 默认单行
+                'col_offset': extra.get('startColumn', 0),
+                'end_col_offset': extra.get('endColumn', 0),
+                'cwe': cwe,
+            }
+            warning[
+                'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
+            result.append(warning)
+        return result
+
+    def _convert_horusec(self, items: List[Dict]) -> List[Dict]:
+        result = []
+        for item in items:
+            extra = item.get('extra', {})
+            line_number = int(item.get('line', 0))
+            # 提取 CWE：从 extracted_cwe 字段获取
+            cwe = None
+            if 'extracted_cwe' in item:
+                cwe_val = item['extracted_cwe']
+                if isinstance(cwe_val, (int, float)):
+                    cwe = f"CWE-{int(cwe_val)}"
+                elif isinstance(cwe_val, str):
+                    cwe = self._normalize_cwe(cwe_val)  # 复用映射器的标准化函数
+            # 如果还没有，尝试从 details 中提取
+            if not cwe and 'details' in item:
+                details = item['details']
+                if 'CWE-' in details:
+                    # 简单提取第一个 CWE
+                    import re
+                    match = re.search(r'CWE-(\d+)', details)
+                    if match:
+                        cwe = f"CWE-{match.group(1)}"
+            warning = {
+                'tool': 'horusec',
+                'project_name': item.get('project_name', ''),
+                'project_version': item.get('project_version', ''),
+                'filename': item.get('file', ''),
+                'line_number': line_number,
+                'test_id': item.get('rule_id', ''),
+                'test_name': item.get('rule_name', ''),
+                'issue_severity': item.get('severity', ''),
+                'issue_confidence': item.get('confidence', ''),
+                'issue_text': item.get('message', ''),
+                'code': extra.get('code_snippet', ''),
+                'line_range': [line_number],
+                'col_offset': 0,
+                'end_col_offset': 0,
+                'cwe': cwe,
+            }
+            warning[
+                'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
+            result.append(warning)
+        return result
+
+    def _convert_pylint(self, items: List[Dict]) -> List[Dict]:
+        result = []
+        for item in items:
+            extra = item.get('extra', {})
+            line_range = [item.get('line', 0)]
+            if extra.get('endLine'):
+                line_range = [item.get('line', 0), extra['endLine']]
+            # 提取 CWE
+            cwe = None
+            if 'cwe' in item:
+                cwe_val = item['cwe']
+                if isinstance(cwe_val, list) and cwe_val:
+                    cwe = f"CWE-{cwe_val[0]}"
+                elif isinstance(cwe_val, (int, float)):
+                    cwe = f"CWE-{int(cwe_val)}"
+                elif isinstance(cwe_val, str) and cwe_val.startswith('CWE-'):
+                    cwe = cwe_val.split(',')[0].strip()
+            warning = {
+                'tool': 'pylint',
+                'project_name': item.get('project_name', ''),
+                'project_version': item.get('project_version', ''),
+                'filename': item.get('file', ''),
+                'line_number': int(item.get('line', 0)),
+                'test_id': item.get('rule_id', ''),
+                'test_name': item.get('rule_name', ''),
+                'issue_severity': item.get('severity', ''),
+                'issue_confidence': item.get('confidence', ''),
+                'issue_text': item.get('message', ''),
+                'code': '',  # Pylint 不直接提供代码片段
+                'line_range': line_range,
+                'col_offset': extra.get('column', 0),
+                'end_col_offset': extra.get('endColumn', 0),
+                'cwe': cwe,
+            }
+            warning[
+                'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
+            result.append(warning)
+        return result
+
+    def _convert_semgrep(self, items: List[Dict]) -> List[Dict]:
+        result = []
+        for item in items:
+            extra = item.get('extra', {})
+            line_range = [item.get('line', 0)]
+            if extra.get('end_line'):
+                line_range = [item.get('line', 0), extra['end_line']]
+            # 提取 CWE
+            cwe = None
+            if 'cwe' in item:
+                cwe_val = item['cwe']
+                if isinstance(cwe_val, list) and cwe_val:
+                    cwe = f"CWE-{cwe_val[0]}" if str(cwe_val[0]).isdigit() else cwe_val[0]
+                elif isinstance(cwe_val, str):
+                    if cwe_val.startswith('CWE-'):
+                        cwe = cwe_val.split(',')[0].strip()
+                    elif cwe_val.isdigit():
+                        cwe = f"CWE-{cwe_val}"
+            warning = {
+                'tool': 'semgrep',
+                'project_name': item.get('project_name', ''),
+                'project_version': item.get('project_version', ''),
+                'filename': item.get('file', ''),
+                'line_number': int(item.get('line', 0)),
+                'test_id': item.get('rule_id', ''),
+                'test_name': item.get('rule_name', item.get('rule_id', '')),
+                'issue_severity': item.get('severity', ''),
+                'issue_confidence': item.get('confidence', ''),
+                'issue_text': item.get('message', ''),
+                'code': '',
+                'line_range': line_range,
+                'col_offset': extra.get('start_col', 0),
+                'end_col_offset': extra.get('end_col', 0),
+                'cwe': cwe,
+            }
+            warning[
+                'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
+            result.append(warning)
+        return result
+
     def extract_relative_path(self, full_path: str) -> str:
-        version_patterns = [
-            "ansible-2.19.0b1",
-            "ansible-2.20.0rc2",
-            "ansible-2.19.0",
-            "ansible-2.18.1",
-            "ansible-2.17.4rc1",
-            "ansible-2.17.1rc1",
-        ]
+        """从完整路径中提取相对路径"""
+        # 如果路径是相对路径（不包含盘符且不包含版本模式），则直接返回
+        if not os.path.isabs(full_path) and ':' not in full_path:
+            # 简单检查是否可能已经是相对路径
+            return full_path.replace('\\', '/')
 
-        for pattern in version_patterns:
-            if pattern in full_path:
-                idx = full_path.index(pattern) + len(pattern)
-                relative_path = full_path[idx:].lstrip('\\/')
-                return relative_path
-
-        return os.path.basename(full_path)
+        return ""
 
     def is_same_file(self, path1: str, path2: str) -> bool:
         """判断是否为相同文件"""
@@ -248,9 +451,9 @@ class Matcher:
         # 4. 比较片段
         if parent_snippet.strip() == child_snippet.strip():
             return True
-        else:#相似度比较（可选）
-            if self.calculate_similarity(parent_snippet, child_snippet) >= self.SNIPPET_SIMILARITY:
-                return True
+        # else:#相似度比较（可选）
+        #     if self.calculate_similarity(parent_snippet, child_snippet) >= self.SNIPPET_SIMILARITY:
+        #         return True
         return False
 
     def snippet_matching_score(self, parent_alarm: Dict, child_alarm: Dict,
@@ -507,13 +710,10 @@ class Matcher:
         print(f"  共创建了 {len(file_groups)} 个文件组")
 
         # 遍历每个文件匹配组
-        print("\n处理文件组...")
         for file_key, group in file_groups.items():
             parent_warnings_in_file = group['parent']
             child_warnings_in_file = group['child']
 
-            print(
-                f"  文件组: {file_key} - 父警告: {len(parent_warnings_in_file)}, 子警告: {len(child_warnings_in_file)}")
 
             if child_warnings_in_file:  # CommonFile（有子警告）
                 # 构建文件路径
@@ -526,7 +726,7 @@ class Matcher:
                 child_exists = os.path.exists(child_file_path)
 
                 if not parent_exists or not child_exists:
-                    print(f"    文件不存在，跳过")
+                    print(f"    文件不存在，跳过(parent: {parent_file_path}, child: {child_file_path})")
                     continue
 
                 # 判断当前文件是否为未修改文件
@@ -537,11 +737,10 @@ class Matcher:
                 child_content = self.get_file_content(child_file_path)
 
                 if not parent_content or not child_content:
-                    print(f"    警告: 无法读取文件内容，跳过")
+                    print(f"    警告: 无法读取文件内容，跳过 (parent: {parent_file_path}, child: {child_file_path})")
                     continue
 
                 if not is_changed:  # 文件未修改
-                    print(f"    文件未修改，进行精确匹配")
                     for pa in parent_warnings_in_file:
                         parent_idx = parent_alarms.index(pa)
                         if parent_idx in parent_tracked_indices:
@@ -565,7 +764,6 @@ class Matcher:
                                     match_type_counts['exact'] += 1
                                     break
                 else:  # 文件已修改
-                    print(f"    文件已修改，进行匈牙利匹配")
                     # 在文件组级别只计算一次diff操作码
                     parent_lines = parent_content.split('\n')
                     child_lines = child_content.split('\n')

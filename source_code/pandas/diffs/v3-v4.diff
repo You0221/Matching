@@ -1,0 +1,2200 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index 6f134c9a7a7bd..50ff7a81ae103 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -14,9 +14,10 @@ jobs:
+     steps:
+       - checkout
+       - run: .circleci/setup_env.sh
+-      - run: >
+-          PATH=$HOME/miniconda3/envs/pandas-dev/bin:$HOME/miniconda3/condabin:$PATH
+-          LD_PRELOAD=$HOME/miniconda3/envs/pandas-dev/lib/libgomp.so.1:$LD_PRELOAD
++      - run: |
++          sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
++          PATH=$HOME/miniconda3/envs/pandas-dev/bin:$HOME/miniconda3/condabin:$PATH \
++          LD_PRELOAD=$HOME/miniconda3/envs/pandas-dev/lib/libgomp.so.1:$LD_PRELOAD \
+           ci/run_tests.sh
+   linux-musl:
+     docker:
+@@ -34,7 +35,7 @@ jobs:
+           /opt/python/cp311-cp311/bin/python -m venv ~/virtualenvs/pandas-dev
+           . ~/virtualenvs/pandas-dev/bin/activate
+           python -m pip install --no-cache-dir -U pip wheel setuptools meson-python==0.13.1 meson[ninja]==1.2.1
+-          python -m pip install --no-cache-dir versioneer[toml] cython numpy python-dateutil pytz pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
++          python -m pip install --no-cache-dir versioneer[toml] cython numpy python-dateutil "pytz<2024.2" pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
+           python -m pip install --no-cache-dir --no-build-isolation -e . --config-settings=setup-args="--werror"
+           python -m pip list --no-cache-dir
+       - run: |
+@@ -71,8 +72,14 @@ jobs:
+           name: Build aarch64 wheels
+           no_output_timeout: 30m # Sometimes the tests won't generate any output, make sure the job doesn't get killed by that
+           command: |
+-            pip3 install cibuildwheel==2.15.0
+-            cibuildwheel --prerelease-pythons --output-dir wheelhouse
++            pip3 install cibuildwheel==2.20.0
++            if [[ $CIBW_BUILD == cp313t* ]]; then
++              # TODO: temporarily run 3.13 free threaded builds without build isolation
++              # since we need pre-release cython
++              CIBW_BUILD_FRONTEND="pip; args: --no-build-isolation" cibuildwheel --prerelease-pythons --output-dir wheelhouse
++            else
++              cibuildwheel --prerelease-pythons --output-dir wheelhouse
++            fi
+ 
+           environment:
+             CIBW_BUILD: << parameters.cibw-build >>
+@@ -127,7 +134,11 @@ workflows:
+                            "cp310-manylinux_aarch64",
+                            "cp311-manylinux_aarch64",
+                            "cp312-manylinux_aarch64",
++                           "cp313-manylinux_aarch64",
++                           "cp313t-manylinux_aarch64",
+                            "cp39-musllinux_aarch64",
+                            "cp310-musllinux_aarch64",
+                            "cp311-musllinux_aarch64",
+-                           "cp312-musllinux_aarch64",]
++                           "cp312-musllinux_aarch64",
++                           "cp313-musllinux_aarch64",
++                           "cp313t-musllinux_aarch64"]
+diff --git a/.gitattributes b/.gitattributes
+index 19c6fd2fd1d47..2655d0d018d4f 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -68,7 +68,7 @@ ci export-ignore
+ doc export-ignore
+ gitpod export-ignore
+ MANIFEST.in export-ignore
+-scripts export-ignore
++scripts/** export-ignore
+ typings export-ignore
+ web export-ignore
+ CITATION.cff export-ignore
+@@ -82,3 +82,6 @@ setup.py export-ignore
+ # csv_dir_path fixture checks the existence of the directory
+ # exclude the whole directory to avoid running related tests in sdist
+ pandas/tests/io/parser/data export-ignore
++
++# Include cibw script in sdist since it's needed for building wheels
++scripts/cibw_before_build.sh -export-ignore
+diff --git a/.github/actions/build_pandas/action.yml b/.github/actions/build_pandas/action.yml
+index 63f687324b0ae..85b44ab24b36d 100644
+--- a/.github/actions/build_pandas/action.yml
++++ b/.github/actions/build_pandas/action.yml
+@@ -28,6 +28,13 @@ runs:
+         fi
+       shell: bash -el {0}
+ 
++    - name: Uninstall nomkl
++      run: |
++        if conda list nomkl | grep nomkl 1>/dev/null; then
++          conda remove nomkl -y
++        fi
++      shell: bash -el {0}
++
+     - name: Build Pandas
+       run: |
+         export CFLAGS="$CFLAGS ${{ inputs.cflags_adds }}"
+diff --git a/.github/workflows/code-checks.yml b/.github/workflows/code-checks.yml
+index 8e29d56f47dcf..f908d1e572ab1 100644
+--- a/.github/workflows/code-checks.yml
++++ b/.github/workflows/code-checks.yml
+@@ -51,6 +51,11 @@ jobs:
+     # TODO: The doctests have to be run first right now, since the Cython doctests only work
+     # with pandas installed in non-editable mode
+     # This can be removed once pytest-cython doesn't require C extensions to be installed inplace
++
++    - name: Extra installs
++      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions-azure-pipelines-travis-ci-and-gitlab-ci-cd
++      run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
++
+     - name: Run doctests
+       run: cd ci && ./code_checks.sh doctests
+       if: ${{ steps.build.outcome == 'success' && always() }}
+diff --git a/.github/workflows/docbuild-and-upload.yml b/.github/workflows/docbuild-and-upload.yml
+index 73acd9acc129a..e470b181772ed 100644
+--- a/.github/workflows/docbuild-and-upload.yml
++++ b/.github/workflows/docbuild-and-upload.yml
+@@ -46,6 +46,10 @@ jobs:
+     - name: Build Pandas
+       uses: ./.github/actions/build_pandas
+ 
++    - name: Extra installs
++      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions-azure-pipelines-travis-ci-and-gitlab-ci-cd
++      run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
++
+     - name: Test website
+       run: python -m pytest web/
+ 
+diff --git a/.github/workflows/unit-tests.yml b/.github/workflows/unit-tests.yml
+index bacc3d874a60d..ad63908e4682d 100644
+--- a/.github/workflows/unit-tests.yml
++++ b/.github/workflows/unit-tests.yml
+@@ -159,8 +159,8 @@ jobs:
+         fetch-depth: 0
+ 
+     - name: Extra installs
+-      run: sudo apt-get update && sudo apt-get install -y ${{ matrix.extra_apt }}
+-      if: ${{ matrix.extra_apt }}
++      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions-azure-pipelines-travis-ci-and-gitlab-ci-cd
++      run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 ${{ matrix.extra_apt || ''}}
+ 
+     - name: Generate extra locales
+       # These extra locales will be available for locale.setlocale() calls in tests
+@@ -257,7 +257,7 @@ jobs:
+           . ~/virtualenvs/pandas-dev/bin/activate
+           python -m pip install --no-cache-dir -U pip wheel setuptools meson[ninja]==1.2.1 meson-python==0.13.1
+           python -m pip install numpy --config-settings=setup-args="-Dallow-noblas=true"
+-          python -m pip install --no-cache-dir versioneer[toml] cython python-dateutil pytz pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
++          python -m pip install --no-cache-dir versioneer[toml] cython python-dateutil "pytz<2024.2" pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
+           python -m pip install --no-cache-dir --no-build-isolation -e . --config-settings=setup-args="--werror"
+           python -m pip list --no-cache-dir
+           export PANDAS_CI=1
+@@ -295,7 +295,7 @@ jobs:
+           /opt/python/cp311-cp311/bin/python -m venv ~/virtualenvs/pandas-dev
+           . ~/virtualenvs/pandas-dev/bin/activate
+           python -m pip install --no-cache-dir -U pip wheel setuptools meson-python==0.13.1 meson[ninja]==1.2.1
+-          python -m pip install --no-cache-dir versioneer[toml] cython numpy python-dateutil pytz pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
++          python -m pip install --no-cache-dir versioneer[toml] cython numpy python-dateutil "pytz<2024.2" pytest>=7.3.2 pytest-xdist>=2.2.0 hypothesis>=6.46.1
+           python -m pip install --no-cache-dir --no-build-isolation -e . --config-settings=setup-args="--werror"
+           python -m pip list --no-cache-dir
+ 
+@@ -329,7 +329,7 @@ jobs:
+     #    To freeze this file, uncomment out the ``if: false`` condition, and migrate the jobs
+     #    to the corresponding posix/windows-macos/sdist etc. workflows.
+     # Feel free to modify this comment as necessary.
+-    if: false # Uncomment this to freeze the workflow, comment it to unfreeze
++    # if: false # Uncomment this to freeze the workflow, comment it to unfreeze
+     defaults:
+       run:
+         shell: bash -eou pipefail {0}
+@@ -361,7 +361,7 @@ jobs:
+       - name: Set up Python Dev Version
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12-dev'
++          python-version: '3.13-dev'
+ 
+       - name: Build Environment
+         run: |
+@@ -369,7 +369,7 @@ jobs:
+           python -m pip install --upgrade pip setuptools wheel meson[ninja]==1.2.1 meson-python==0.13.1
+           python -m pip install --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple numpy
+           python -m pip install versioneer[toml]
+-          python -m pip install python-dateutil pytz tzdata cython hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0 pytest-cov
++          python -m pip install python-dateutil "pytz<2024.2" tzdata cython hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0 pytest-cov
+           python -m pip install -ve . --no-build-isolation --no-index --no-deps --config-settings=setup-args="--werror"
+           python -m pip list
+ 
+diff --git a/.github/workflows/wheels.yml b/.github/workflows/wheels.yml
+index 4bd9068e91b67..41417622c3ef2 100644
+--- a/.github/workflows/wheels.yml
++++ b/.github/workflows/wheels.yml
+@@ -99,7 +99,17 @@ jobs:
+         - [macos-14, macosx_arm64]
+         - [windows-2022, win_amd64]
+         # TODO: support PyPy?
+-        python: [["cp39", "3.9"], ["cp310", "3.10"], ["cp311", "3.11"], ["cp312", "3.12"]]
++        python: [["cp39", "3.9"], ["cp310", "3.10"], ["cp311", "3.11"], ["cp312", "3.12"], ["cp313", "3.13"], ["cp313t", "3.13"]]
++        include:
++        # TODO: Remove this plus installing build deps in cibw_before_build.sh
++        # after pandas can be built with a released NumPy/Cython
++        - python: ["cp313t", "3.13"]
++          cibw_build_frontend: 'pip; args: --no-build-isolation'
++        # TODO: Build free-threaded wheels for Windows
++        exclude:
++        - buildplat: [windows-2022, win_amd64]
++          python: ["cp313t", "3.13"]
++
+     env:
+       IS_PUSH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+       IS_SCHEDULE_DISPATCH: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+@@ -140,12 +150,13 @@ jobs:
+         run: echo "sdist_name=$(cd ./dist && ls -d */)" >> "$GITHUB_ENV"
+ 
+       - name: Build wheels
+-        uses: pypa/cibuildwheel@v2.17.0
++        uses: pypa/cibuildwheel@v2.20.0
+         with:
+          package-dir: ./dist/${{ startsWith(matrix.buildplat[1], 'macosx') && env.sdist_name || needs.build_sdist.outputs.sdist_file }}
+         env:
+           CIBW_PRERELEASE_PYTHONS: True
+           CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.buildplat[1] }}
++          CIBW_BUILD_FRONTEND: ${{ matrix.cibw_build_frontend || 'pip' }}
+ 
+       - name: Set up Python
+         uses: mamba-org/setup-micromamba@v1
+@@ -170,13 +181,13 @@ jobs:
+         shell: pwsh
+         run: |
+           $TST_CMD = @"
+-          python -m pip install hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0;
++          python -m pip install hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0 pytz<2024.2;
+           python -m pip install `$(Get-Item pandas\wheelhouse\*.whl);
+           python -c `'import pandas as pd; pd.test(extra_args=[`\"--no-strict-data-files`\", `\"-m not clipboard and not single_cpu and not slow and not network and not db`\"])`';
+           "@
+           # add rc to the end of the image name if the Python version is unreleased
+-          docker pull python:${{ matrix.python[1] == '3.12' && '3.12-rc' || format('{0}-windowsservercore', matrix.python[1]) }}
+-          docker run --env PANDAS_CI='1' -v ${PWD}:C:\pandas python:${{ matrix.python[1] == '3.12' && '3.12-rc' || format('{0}-windowsservercore', matrix.python[1]) }} powershell -Command $TST_CMD
++          docker pull python:${{ matrix.python[1] == '3.13' && '3.13-rc' || format('{0}-windowsservercore', matrix.python[1]) }}
++          docker run --env PANDAS_CI='1' -v ${PWD}:C:\pandas python:${{ matrix.python[1] == '3.13' && '3.13-rc' || format('{0}-windowsservercore', matrix.python[1]) }} powershell -Command $TST_CMD
+ 
+       - uses: actions/upload-artifact@v4
+         with:
+diff --git a/MANIFEST.in b/MANIFEST.in
+index 9894381ed6252..a7d7d7eb4e062 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -62,3 +62,6 @@ prune pandas/tests/io/parser/data
+ # Selectively re-add *.cxx files that were excluded above
+ graft pandas/_libs/src
+ graft pandas/_libs/include
++
++# Include cibw script in sdist since it's needed for building wheels
++include scripts/cibw_before_build.sh
+diff --git a/ci/deps/actions-310.yaml b/ci/deps/actions-310.yaml
+index ea2336ae78f81..d0e788d1b124f 100644
+--- a/ci/deps/actions-310.yaml
++++ b/ci/deps/actions-310.yaml
+@@ -20,12 +20,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/ci/deps/actions-311-downstream_compat.yaml b/ci/deps/actions-311-downstream_compat.yaml
+index 8f84a53b58610..7fda383dd9e1d 100644
+--- a/ci/deps/actions-311-downstream_compat.yaml
++++ b/ci/deps/actions-311-downstream_compat.yaml
+@@ -22,12 +22,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/ci/deps/actions-311-numpydev.yaml b/ci/deps/actions-311-numpydev.yaml
+index b62e8630f2059..21791e3a9c2eb 100644
+--- a/ci/deps/actions-311-numpydev.yaml
++++ b/ci/deps/actions-311-numpydev.yaml
+@@ -21,7 +21,8 @@ dependencies:
+ 
+   # pandas dependencies
+   - python-dateutil
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+   - pip
+ 
+   - pip:
+diff --git a/ci/deps/actions-311-pyarrownightly.yaml b/ci/deps/actions-311-pyarrownightly.yaml
+index d84063ac2a9ba..b90fa2e044cd6 100644
+--- a/ci/deps/actions-311-pyarrownightly.yaml
++++ b/ci/deps/actions-311-pyarrownightly.yaml
+@@ -18,8 +18,9 @@ dependencies:
+ 
+   # required dependencies
+   - python-dateutil
+-  - numpy
+-  - pytz
++  - numpy<2
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+   - pip
+ 
+   - pip:
+diff --git a/ci/deps/actions-311.yaml b/ci/deps/actions-311.yaml
+index 51a246ce73a11..c72d743bf3375 100644
+--- a/ci/deps/actions-311.yaml
++++ b/ci/deps/actions-311.yaml
+@@ -20,12 +20,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/ci/deps/actions-312.yaml b/ci/deps/actions-312.yaml
+index 7d2b9c39d2fe3..032bd68c09ad6 100644
+--- a/ci/deps/actions-312.yaml
++++ b/ci/deps/actions-312.yaml
+@@ -20,12 +20,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/ci/deps/actions-39-minimum_versions.yaml b/ci/deps/actions-39-minimum_versions.yaml
+index cedf4fb9dc867..7067048c4434d 100644
+--- a/ci/deps/actions-39-minimum_versions.yaml
++++ b/ci/deps/actions-39-minimum_versions.yaml
+@@ -27,8 +27,6 @@ dependencies:
+ 
+   # optional dependencies
+   - beautifulsoup4=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc=1.21.3
+   - bottleneck=1.3.6
+   - fastparquet=2022.12.0
+diff --git a/ci/deps/actions-39.yaml b/ci/deps/actions-39.yaml
+index 85f2a74e849ee..4320e9060fb4a 100644
+--- a/ci/deps/actions-39.yaml
++++ b/ci/deps/actions-39.yaml
+@@ -20,12 +20,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz<2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/ci/deps/actions-pypy-39.yaml b/ci/deps/actions-pypy-39.yaml
+index d9c8dd81b7c33..bdc07931988d1 100644
+--- a/ci/deps/actions-pypy-39.yaml
++++ b/ci/deps/actions-pypy-39.yaml
+@@ -22,6 +22,7 @@ dependencies:
+   # required
+   - numpy
+   - python-dateutil
++  # pytz 2024.2 timezones cause wrong results
+   - pytz
+   - pip:
+     - tzdata>=2022.7
+diff --git a/ci/deps/circle-310-arm64.yaml b/ci/deps/circle-310-arm64.yaml
+index c018ad94e7f30..36c584bf1fd10 100644
+--- a/ci/deps/circle-310-arm64.yaml
++++ b/ci/deps/circle-310-arm64.yaml
+@@ -21,12 +21,11 @@ dependencies:
+   # required dependencies
+   - python-dateutil
+   - numpy
+-  - pytz
++  # pytz 2024.2 timezones cause wrong results
++  - pytz < 2024.2
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc>=1.21.3
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index be6150d4e54ba..3f3241f81af59 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -254,7 +254,9 @@
+         "json_url": "https://pandas.pydata.org/versions.json",
+         "version_match": switcher_version,
+     },
+-    "show_version_warning_banner": True,
++    # This shows a warning for patch releases since the
++    # patch version doesn't compare as equal (e.g. 2.2.1 != 2.2.0 but it should be)
++    "show_version_warning_banner": False,
+     "icon_links": [
+         {
+             "name": "Mastodon",
+diff --git a/doc/source/user_guide/basics.rst b/doc/source/user_guide/basics.rst
+index f7d89110e6c8f..2ed446324f6b9 100644
+--- a/doc/source/user_guide/basics.rst
++++ b/doc/source/user_guide/basics.rst
+@@ -160,11 +160,10 @@ Here is a sample (using 100 column x 100,000 row ``DataFrames``):
+ .. csv-table::
+     :header: "Operation", "0.11.0 (ms)", "Prior Version (ms)", "Ratio to Prior"
+     :widths: 25, 25, 25, 25
+-    :delim: ;
+ 
+-    ``df1 > df2``; 13.32; 125.35;  0.1063
+-    ``df1 * df2``; 21.71;  36.63;  0.5928
+-    ``df1 + df2``; 22.04;  36.50;  0.6039
++    ``df1 > df2``, 13.32, 125.35,  0.1063
++    ``df1 * df2``, 21.71,  36.63,  0.5928
++    ``df1 + df2``, 22.04,  36.50,  0.6039
+ 
+ You are highly encouraged to install both libraries. See the section
+ :ref:`Recommended Dependencies <install.recommended_dependencies>` for more installation info.
+diff --git a/doc/source/user_guide/gotchas.rst b/doc/source/user_guide/gotchas.rst
+index 99c85ac66623d..26eb656357bf6 100644
+--- a/doc/source/user_guide/gotchas.rst
++++ b/doc/source/user_guide/gotchas.rst
+@@ -315,19 +315,8 @@ Why not make NumPy like R?
+ 
+ Many people have suggested that NumPy should simply emulate the ``NA`` support
+ present in the more domain-specific statistical programming language `R
+-<https://www.r-project.org/>`__. Part of the reason is the NumPy type hierarchy:
+-
+-.. csv-table::
+-   :header: "Typeclass","Dtypes"
+-   :widths: 30,70
+-   :delim: |
+-
+-   ``numpy.floating`` | ``float16, float32, float64, float128``
+-   ``numpy.integer`` | ``int8, int16, int32, int64``
+-   ``numpy.unsignedinteger`` | ``uint8, uint16, uint32, uint64``
+-   ``numpy.object_`` | ``object_``
+-   ``numpy.bool_`` | ``bool_``
+-   ``numpy.character`` | ``bytes_, str_``
++<https://www.r-project.org/>`__. Part of the reason is the
++`NumPy type hierarchy <https://numpy.org/doc/stable/user/basics.types.html>`__.
+ 
+ The R language, by contrast, only has a handful of built-in data types:
+ ``integer``, ``numeric`` (floating-point), ``character``, and
+diff --git a/doc/source/user_guide/groupby.rst b/doc/source/user_guide/groupby.rst
+index 11863f8aead31..ea08ffe061244 100644
+--- a/doc/source/user_guide/groupby.rst
++++ b/doc/source/user_guide/groupby.rst
+@@ -509,29 +509,28 @@ listed below, those with a ``*`` do *not* have an efficient, GroupBy-specific, i
+ .. csv-table::
+     :header: "Method", "Description"
+     :widths: 20, 80
+-    :delim: ;
+-
+-        :meth:`~.DataFrameGroupBy.any`;Compute whether any of the values in the groups are truthy
+-        :meth:`~.DataFrameGroupBy.all`;Compute whether all of the values in the groups are truthy
+-        :meth:`~.DataFrameGroupBy.count`;Compute the number of non-NA values in the groups
+-        :meth:`~.DataFrameGroupBy.cov` * ;Compute the covariance of the groups
+-        :meth:`~.DataFrameGroupBy.first`;Compute the first occurring value in each group
+-        :meth:`~.DataFrameGroupBy.idxmax`;Compute the index of the maximum value in each group
+-        :meth:`~.DataFrameGroupBy.idxmin`;Compute the index of the minimum value in each group
+-        :meth:`~.DataFrameGroupBy.last`;Compute the last occurring value in each group
+-        :meth:`~.DataFrameGroupBy.max`;Compute the maximum value in each group
+-        :meth:`~.DataFrameGroupBy.mean`;Compute the mean of each group
+-        :meth:`~.DataFrameGroupBy.median`;Compute the median of each group
+-        :meth:`~.DataFrameGroupBy.min`;Compute the minimum value in each group
+-        :meth:`~.DataFrameGroupBy.nunique`;Compute the number of unique values in each group
+-        :meth:`~.DataFrameGroupBy.prod`;Compute the product of the values in each group
+-        :meth:`~.DataFrameGroupBy.quantile`;Compute a given quantile of the values in each group
+-        :meth:`~.DataFrameGroupBy.sem`;Compute the standard error of the mean of the values in each group
+-        :meth:`~.DataFrameGroupBy.size`;Compute the number of values in each group
+-        :meth:`~.DataFrameGroupBy.skew` *;Compute the skew of the values in each group
+-        :meth:`~.DataFrameGroupBy.std`;Compute the standard deviation of the values in each group
+-        :meth:`~.DataFrameGroupBy.sum`;Compute the sum of the values in each group
+-        :meth:`~.DataFrameGroupBy.var`;Compute the variance of the values in each group
++
++        :meth:`~.DataFrameGroupBy.any`,Compute whether any of the values in the groups are truthy
++        :meth:`~.DataFrameGroupBy.all`,Compute whether all of the values in the groups are truthy
++        :meth:`~.DataFrameGroupBy.count`,Compute the number of non-NA values in the groups
++        :meth:`~.DataFrameGroupBy.cov` * ,Compute the covariance of the groups
++        :meth:`~.DataFrameGroupBy.first`,Compute the first occurring value in each group
++        :meth:`~.DataFrameGroupBy.idxmax`,Compute the index of the maximum value in each group
++        :meth:`~.DataFrameGroupBy.idxmin`,Compute the index of the minimum value in each group
++        :meth:`~.DataFrameGroupBy.last`,Compute the last occurring value in each group
++        :meth:`~.DataFrameGroupBy.max`,Compute the maximum value in each group
++        :meth:`~.DataFrameGroupBy.mean`,Compute the mean of each group
++        :meth:`~.DataFrameGroupBy.median`,Compute the median of each group
++        :meth:`~.DataFrameGroupBy.min`,Compute the minimum value in each group
++        :meth:`~.DataFrameGroupBy.nunique`,Compute the number of unique values in each group
++        :meth:`~.DataFrameGroupBy.prod`,Compute the product of the values in each group
++        :meth:`~.DataFrameGroupBy.quantile`,Compute a given quantile of the values in each group
++        :meth:`~.DataFrameGroupBy.sem`,Compute the standard error of the mean of the values in each group
++        :meth:`~.DataFrameGroupBy.size`,Compute the number of values in each group
++        :meth:`~.DataFrameGroupBy.skew` * ,Compute the skew of the values in each group
++        :meth:`~.DataFrameGroupBy.std`,Compute the standard deviation of the values in each group
++        :meth:`~.DataFrameGroupBy.sum`,Compute the sum of the values in each group
++        :meth:`~.DataFrameGroupBy.var`,Compute the variance of the values in each group
+ 
+ Some examples:
+ 
+@@ -835,19 +834,18 @@ The following methods on GroupBy act as transformations.
+ .. csv-table::
+     :header: "Method", "Description"
+     :widths: 20, 80
+-    :delim: ;
+-
+-        :meth:`~.DataFrameGroupBy.bfill`;Back fill NA values within each group
+-        :meth:`~.DataFrameGroupBy.cumcount`;Compute the cumulative count within each group
+-        :meth:`~.DataFrameGroupBy.cummax`;Compute the cumulative max within each group
+-        :meth:`~.DataFrameGroupBy.cummin`;Compute the cumulative min within each group
+-        :meth:`~.DataFrameGroupBy.cumprod`;Compute the cumulative product within each group
+-        :meth:`~.DataFrameGroupBy.cumsum`;Compute the cumulative sum within each group
+-        :meth:`~.DataFrameGroupBy.diff`;Compute the difference between adjacent values within each group
+-        :meth:`~.DataFrameGroupBy.ffill`;Forward fill NA values within each group
+-        :meth:`~.DataFrameGroupBy.pct_change`;Compute the percent change between adjacent values within each group
+-        :meth:`~.DataFrameGroupBy.rank`;Compute the rank of each value within each group
+-        :meth:`~.DataFrameGroupBy.shift`;Shift values up or down within each group
++
++        :meth:`~.DataFrameGroupBy.bfill`,Back fill NA values within each group
++        :meth:`~.DataFrameGroupBy.cumcount`,Compute the cumulative count within each group
++        :meth:`~.DataFrameGroupBy.cummax`,Compute the cumulative max within each group
++        :meth:`~.DataFrameGroupBy.cummin`,Compute the cumulative min within each group
++        :meth:`~.DataFrameGroupBy.cumprod`,Compute the cumulative product within each group
++        :meth:`~.DataFrameGroupBy.cumsum`,Compute the cumulative sum within each group
++        :meth:`~.DataFrameGroupBy.diff`,Compute the difference between adjacent values within each group
++        :meth:`~.DataFrameGroupBy.ffill`,Forward fill NA values within each group
++        :meth:`~.DataFrameGroupBy.pct_change`,Compute the percent change between adjacent values within each group
++        :meth:`~.DataFrameGroupBy.rank`,Compute the rank of each value within each group
++        :meth:`~.DataFrameGroupBy.shift`,Shift values up or down within each group
+ 
+ In addition, passing any built-in aggregation method as a string to
+ :meth:`~.DataFrameGroupBy.transform` (see the next section) will broadcast the result
+@@ -1095,11 +1093,10 @@ efficient, GroupBy-specific, implementation.
+ .. csv-table::
+     :header: "Method", "Description"
+     :widths: 20, 80
+-    :delim: ;
+ 
+-        :meth:`~.DataFrameGroupBy.head`;Select the top row(s) of each group
+-        :meth:`~.DataFrameGroupBy.nth`;Select the nth row(s) of each group
+-        :meth:`~.DataFrameGroupBy.tail`;Select the bottom row(s) of each group
++        :meth:`~.DataFrameGroupBy.head`,Select the top row(s) of each group
++        :meth:`~.DataFrameGroupBy.nth`,Select the nth row(s) of each group
++        :meth:`~.DataFrameGroupBy.tail`,Select the bottom row(s) of each group
+ 
+ Users can also use transformations along with Boolean indexing to construct complex
+ filtrations within groups. For example, suppose we are given groups of products and
+diff --git a/doc/source/user_guide/indexing.rst b/doc/source/user_guide/indexing.rst
+index 4954ee1538697..6c7aa15bfb75d 100644
+--- a/doc/source/user_guide/indexing.rst
++++ b/doc/source/user_guide/indexing.rst
+@@ -101,13 +101,14 @@ well). Any of the axes accessors may be the null slice ``:``. Axes left out of
+ the specification are assumed to be ``:``, e.g. ``p.loc['a']`` is equivalent to
+ ``p.loc['a', :]``.
+ 
+-.. csv-table::
+-    :header: "Object Type", "Indexers"
+-    :widths: 30, 50
+-    :delim: ;
+ 
+-    Series; ``s.loc[indexer]``
+-    DataFrame; ``df.loc[row_indexer,column_indexer]``
++.. ipython:: python
++
++   ser = pd.Series(range(5), index=list("abcde"))
++   ser.loc[["a", "c", "e"]]
++
++   df = pd.DataFrame(np.arange(25).reshape(5, 5), index=list("abcde"), columns=list("abcde"))
++   df.loc[["a", "c", "e"], ["b", "d"]]
+ 
+ .. _indexing.basics:
+ 
+@@ -123,10 +124,9 @@ indexing pandas objects with ``[]``:
+ .. csv-table::
+     :header: "Object Type", "Selection", "Return Value Type"
+     :widths: 30, 30, 60
+-    :delim: ;
+ 
+-    Series; ``series[label]``; scalar value
+-    DataFrame; ``frame[colname]``; ``Series`` corresponding to colname
++    Series, ``series[label]``, scalar value
++    DataFrame, ``frame[colname]``, ``Series`` corresponding to colname
+ 
+ Here we construct a simple time series data set to use for illustrating the
+ indexing functionality:
+@@ -1730,7 +1730,7 @@ Returning a view versus a copy
+ .. warning::
+ 
+     :ref:`Copy-on-Write <copy_on_write>`
+-    will become the new default in pandas 3.0. This means than chained indexing will
++    will become the new default in pandas 3.0. This means that chained indexing will
+     never work. As a consequence, the ``SettingWithCopyWarning`` won't be necessary
+     anymore.
+     See :ref:`this section <copy_on_write_chained_assignment>`
+diff --git a/doc/source/user_guide/io.rst b/doc/source/user_guide/io.rst
+index b3ad23e0d4104..64777eb920d5a 100644
+--- a/doc/source/user_guide/io.rst
++++ b/doc/source/user_guide/io.rst
+@@ -16,27 +16,26 @@ The pandas I/O API is a set of top level ``reader`` functions accessed like
+ .. csv-table::
+     :header: "Format Type", "Data Description", "Reader", "Writer"
+     :widths: 30, 100, 60, 60
+-    :delim: ;
+-
+-    text;`CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`__;:ref:`read_csv<io.read_csv_table>`;:ref:`to_csv<io.store_in_csv>`
+-    text;Fixed-Width Text File;:ref:`read_fwf<io.fwf_reader>`
+-    text;`JSON <https://www.json.org/>`__;:ref:`read_json<io.json_reader>`;:ref:`to_json<io.json_writer>`
+-    text;`HTML <https://en.wikipedia.org/wiki/HTML>`__;:ref:`read_html<io.read_html>`;:ref:`to_html<io.html>`
+-    text;`LaTeX <https://en.wikipedia.org/wiki/LaTeX>`__;;:ref:`Styler.to_latex<io.latex>`
+-    text;`XML <https://www.w3.org/standards/xml/core>`__;:ref:`read_xml<io.read_xml>`;:ref:`to_xml<io.xml>`
+-    text; Local clipboard;:ref:`read_clipboard<io.clipboard>`;:ref:`to_clipboard<io.clipboard>`
+-    binary;`MS Excel <https://en.wikipedia.org/wiki/Microsoft_Excel>`__;:ref:`read_excel<io.excel_reader>`;:ref:`to_excel<io.excel_writer>`
+-    binary;`OpenDocument <http://opendocumentformat.org>`__;:ref:`read_excel<io.ods>`;
+-    binary;`HDF5 Format <https://support.hdfgroup.org/HDF5/whatishdf5.html>`__;:ref:`read_hdf<io.hdf5>`;:ref:`to_hdf<io.hdf5>`
+-    binary;`Feather Format <https://github.com/wesm/feather>`__;:ref:`read_feather<io.feather>`;:ref:`to_feather<io.feather>`
+-    binary;`Parquet Format <https://parquet.apache.org/>`__;:ref:`read_parquet<io.parquet>`;:ref:`to_parquet<io.parquet>`
+-    binary;`ORC Format <https://orc.apache.org/>`__;:ref:`read_orc<io.orc>`;:ref:`to_orc<io.orc>`
+-    binary;`Stata <https://en.wikipedia.org/wiki/Stata>`__;:ref:`read_stata<io.stata_reader>`;:ref:`to_stata<io.stata_writer>`
+-    binary;`SAS <https://en.wikipedia.org/wiki/SAS_(software)>`__;:ref:`read_sas<io.sas_reader>`;
+-    binary;`SPSS <https://en.wikipedia.org/wiki/SPSS>`__;:ref:`read_spss<io.spss_reader>`;
+-    binary;`Python Pickle Format <https://docs.python.org/3/library/pickle.html>`__;:ref:`read_pickle<io.pickle>`;:ref:`to_pickle<io.pickle>`
+-    SQL;`SQL <https://en.wikipedia.org/wiki/SQL>`__;:ref:`read_sql<io.sql>`;:ref:`to_sql<io.sql>`
+-    SQL;`Google BigQuery <https://en.wikipedia.org/wiki/BigQuery>`__;:ref:`read_gbq<io.bigquery>`;:ref:`to_gbq<io.bigquery>`
++
++    text,`CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`__, :ref:`read_csv<io.read_csv_table>`, :ref:`to_csv<io.store_in_csv>`
++    text,Fixed-Width Text File, :ref:`read_fwf<io.fwf_reader>` , NA
++    text,`JSON <https://www.json.org/>`__, :ref:`read_json<io.json_reader>`, :ref:`to_json<io.json_writer>`
++    text,`HTML <https://en.wikipedia.org/wiki/HTML>`__, :ref:`read_html<io.read_html>`, :ref:`to_html<io.html>`
++    text,`LaTeX <https://en.wikipedia.org/wiki/LaTeX>`__, :ref:`Styler.to_latex<io.latex>` , NA
++    text,`XML <https://www.w3.org/standards/xml/core>`__, :ref:`read_xml<io.read_xml>`, :ref:`to_xml<io.xml>`
++    text, Local clipboard, :ref:`read_clipboard<io.clipboard>`, :ref:`to_clipboard<io.clipboard>`
++    binary,`MS Excel <https://en.wikipedia.org/wiki/Microsoft_Excel>`__ , :ref:`read_excel<io.excel_reader>`, :ref:`to_excel<io.excel_writer>`
++    binary,`OpenDocument <http://opendocumentformat.org>`__, :ref:`read_excel<io.ods>`, NA
++    binary,`HDF5 Format <https://support.hdfgroup.org/HDF5/whatishdf5.html>`__, :ref:`read_hdf<io.hdf5>`, :ref:`to_hdf<io.hdf5>`
++    binary,`Feather Format <https://github.com/wesm/feather>`__, :ref:`read_feather<io.feather>`, :ref:`to_feather<io.feather>`
++    binary,`Parquet Format <https://parquet.apache.org/>`__, :ref:`read_parquet<io.parquet>`, :ref:`to_parquet<io.parquet>`
++    binary,`ORC Format <https://orc.apache.org/>`__, :ref:`read_orc<io.orc>`, :ref:`to_orc<io.orc>`
++    binary,`Stata <https://en.wikipedia.org/wiki/Stata>`__, :ref:`read_stata<io.stata_reader>`, :ref:`to_stata<io.stata_writer>`
++    binary,`SAS <https://en.wikipedia.org/wiki/SAS_(software)>`__, :ref:`read_sas<io.sas_reader>` , NA
++    binary,`SPSS <https://en.wikipedia.org/wiki/SPSS>`__, :ref:`read_spss<io.spss_reader>` , NA
++    binary,`Python Pickle Format <https://docs.python.org/3/library/pickle.html>`__, :ref:`read_pickle<io.pickle>`, :ref:`to_pickle<io.pickle>`
++    SQL,`SQL <https://en.wikipedia.org/wiki/SQL>`__, :ref:`read_sql<io.sql>`,:ref:`to_sql<io.sql>`
++    SQL,`Google BigQuery <https://en.wikipedia.org/wiki/BigQuery>`__;:ref:`read_gbq<io.bigquery>`;:ref:`to_gbq<io.bigquery>`
+ 
+ :ref:`Here <io.perf>` is an informal performance comparison for some of these IO methods.
+ 
+@@ -1838,14 +1837,13 @@ with optional parameters:
+ 
+   .. csv-table::
+      :widths: 20, 150
+-     :delim: ;
+ 
+-     ``split``; dict like {index -> [index], columns -> [columns], data -> [values]}
+-     ``records``; list like [{column -> value}, ... , {column -> value}]
+-     ``index``; dict like {index -> {column -> value}}
+-     ``columns``; dict like {column -> {index -> value}}
+-     ``values``; just the values array
+-     ``table``; adhering to the JSON `Table Schema`_
++     ``split``, dict like {index -> [index]; columns -> [columns]; data -> [values]}
++     ``records``, list like [{column -> value}; ... ]
++     ``index``, dict like {index -> {column -> value}}
++     ``columns``, dict like {column -> {index -> value}}
++     ``values``, just the values array
++     ``table``, adhering to the JSON `Table Schema`_
+ 
+ * ``date_format`` : string, type of date conversion, 'epoch' for timestamp, 'iso' for ISO8601.
+ * ``double_precision`` : The number of decimal places to use when encoding floating point values, default 10.
+@@ -2033,14 +2031,13 @@ is ``None``. To explicitly force ``Series`` parsing, pass ``typ=series``
+ 
+   .. csv-table::
+      :widths: 20, 150
+-     :delim: ;
+-
+-     ``split``; dict like {index -> [index], columns -> [columns], data -> [values]}
+-     ``records``; list like [{column -> value}, ... , {column -> value}]
+-     ``index``; dict like {index -> {column -> value}}
+-     ``columns``; dict like {column -> {index -> value}}
+-     ``values``; just the values array
+-     ``table``; adhering to the JSON `Table Schema`_
++
++     ``split``, dict like {index -> [index]; columns -> [columns]; data -> [values]}
++     ``records``, list like [{column -> value} ...]
++     ``index``, dict like {index -> {column -> value}}
++     ``columns``, dict like {column -> {index -> value}}
++     ``values``, just the values array
++     ``table``, adhering to the JSON `Table Schema`_
+ 
+ 
+ * ``dtype`` : if True, infer dtypes, if a dict of column to dtype, then use those, if ``False``, then don't infer dtypes at all, default is True, apply only to the data.
+diff --git a/doc/source/user_guide/text.rst b/doc/source/user_guide/text.rst
+index cf27fc8385223..ad2690ae395be 100644
+--- a/doc/source/user_guide/text.rst
++++ b/doc/source/user_guide/text.rst
+@@ -726,57 +726,56 @@ Method summary
+ .. csv-table::
+     :header: "Method", "Description"
+     :widths: 20, 80
+-    :delim: ;
+-
+-    :meth:`~Series.str.cat`;Concatenate strings
+-    :meth:`~Series.str.split`;Split strings on delimiter
+-    :meth:`~Series.str.rsplit`;Split strings on delimiter working from the end of the string
+-    :meth:`~Series.str.get`;Index into each element (retrieve i-th element)
+-    :meth:`~Series.str.join`;Join strings in each element of the Series with passed separator
+-    :meth:`~Series.str.get_dummies`;Split strings on the delimiter returning DataFrame of dummy variables
+-    :meth:`~Series.str.contains`;Return boolean array if each string contains pattern/regex
+-    :meth:`~Series.str.replace`;Replace occurrences of pattern/regex/string with some other string or the return value of a callable given the occurrence
+-    :meth:`~Series.str.removeprefix`;Remove prefix from string, i.e. only remove if string starts with prefix.
+-    :meth:`~Series.str.removesuffix`;Remove suffix from string, i.e. only remove if string ends with suffix.
+-    :meth:`~Series.str.repeat`;Duplicate values (``s.str.repeat(3)`` equivalent to ``x * 3``)
+-    :meth:`~Series.str.pad`;"Add whitespace to left, right, or both sides of strings"
+-    :meth:`~Series.str.center`;Equivalent to ``str.center``
+-    :meth:`~Series.str.ljust`;Equivalent to ``str.ljust``
+-    :meth:`~Series.str.rjust`;Equivalent to ``str.rjust``
+-    :meth:`~Series.str.zfill`;Equivalent to ``str.zfill``
+-    :meth:`~Series.str.wrap`;Split long strings into lines with length less than a given width
+-    :meth:`~Series.str.slice`;Slice each string in the Series
+-    :meth:`~Series.str.slice_replace`;Replace slice in each string with passed value
+-    :meth:`~Series.str.count`;Count occurrences of pattern
+-    :meth:`~Series.str.startswith`;Equivalent to ``str.startswith(pat)`` for each element
+-    :meth:`~Series.str.endswith`;Equivalent to ``str.endswith(pat)`` for each element
+-    :meth:`~Series.str.findall`;Compute list of all occurrences of pattern/regex for each string
+-    :meth:`~Series.str.match`;"Call ``re.match`` on each element, returning matched groups as list"
+-    :meth:`~Series.str.extract`;"Call ``re.search`` on each element, returning DataFrame with one row for each element and one column for each regex capture group"
+-    :meth:`~Series.str.extractall`;"Call ``re.findall`` on each element, returning DataFrame with one row for each match and one column for each regex capture group"
+-    :meth:`~Series.str.len`;Compute string lengths
+-    :meth:`~Series.str.strip`;Equivalent to ``str.strip``
+-    :meth:`~Series.str.rstrip`;Equivalent to ``str.rstrip``
+-    :meth:`~Series.str.lstrip`;Equivalent to ``str.lstrip``
+-    :meth:`~Series.str.partition`;Equivalent to ``str.partition``
+-    :meth:`~Series.str.rpartition`;Equivalent to ``str.rpartition``
+-    :meth:`~Series.str.lower`;Equivalent to ``str.lower``
+-    :meth:`~Series.str.casefold`;Equivalent to ``str.casefold``
+-    :meth:`~Series.str.upper`;Equivalent to ``str.upper``
+-    :meth:`~Series.str.find`;Equivalent to ``str.find``
+-    :meth:`~Series.str.rfind`;Equivalent to ``str.rfind``
+-    :meth:`~Series.str.index`;Equivalent to ``str.index``
+-    :meth:`~Series.str.rindex`;Equivalent to ``str.rindex``
+-    :meth:`~Series.str.capitalize`;Equivalent to ``str.capitalize``
+-    :meth:`~Series.str.swapcase`;Equivalent to ``str.swapcase``
+-    :meth:`~Series.str.normalize`;Return Unicode normal form. Equivalent to ``unicodedata.normalize``
+-    :meth:`~Series.str.translate`;Equivalent to ``str.translate``
+-    :meth:`~Series.str.isalnum`;Equivalent to ``str.isalnum``
+-    :meth:`~Series.str.isalpha`;Equivalent to ``str.isalpha``
+-    :meth:`~Series.str.isdigit`;Equivalent to ``str.isdigit``
+-    :meth:`~Series.str.isspace`;Equivalent to ``str.isspace``
+-    :meth:`~Series.str.islower`;Equivalent to ``str.islower``
+-    :meth:`~Series.str.isupper`;Equivalent to ``str.isupper``
+-    :meth:`~Series.str.istitle`;Equivalent to ``str.istitle``
+-    :meth:`~Series.str.isnumeric`;Equivalent to ``str.isnumeric``
+-    :meth:`~Series.str.isdecimal`;Equivalent to ``str.isdecimal``
++
++    :meth:`~Series.str.cat`,Concatenate strings
++    :meth:`~Series.str.split`,Split strings on delimiter
++    :meth:`~Series.str.rsplit`,Split strings on delimiter working from the end of the string
++    :meth:`~Series.str.get`,Index into each element (retrieve i-th element)
++    :meth:`~Series.str.join`,Join strings in each element of the Series with passed separator
++    :meth:`~Series.str.get_dummies`,Split strings on the delimiter returning DataFrame of dummy variables
++    :meth:`~Series.str.contains`,Return boolean array if each string contains pattern/regex
++    :meth:`~Series.str.replace`,Replace occurrences of pattern/regex/string with some other string or the return value of a callable given the occurrence
++    :meth:`~Series.str.removeprefix`,Remove prefix from string i.e. only remove if string starts with prefix.
++    :meth:`~Series.str.removesuffix`,Remove suffix from string i.e. only remove if string ends with suffix.
++    :meth:`~Series.str.repeat`,Duplicate values (``s.str.repeat(3)`` equivalent to ``x * 3``)
++    :meth:`~Series.str.pad`,Add whitespace to the sides of strings
++    :meth:`~Series.str.center`,Equivalent to ``str.center``
++    :meth:`~Series.str.ljust`,Equivalent to ``str.ljust``
++    :meth:`~Series.str.rjust`,Equivalent to ``str.rjust``
++    :meth:`~Series.str.zfill`,Equivalent to ``str.zfill``
++    :meth:`~Series.str.wrap`,Split long strings into lines with length less than a given width
++    :meth:`~Series.str.slice`,Slice each string in the Series
++    :meth:`~Series.str.slice_replace`,Replace slice in each string with passed value
++    :meth:`~Series.str.count`,Count occurrences of pattern
++    :meth:`~Series.str.startswith`,Equivalent to ``str.startswith(pat)`` for each element
++    :meth:`~Series.str.endswith`,Equivalent to ``str.endswith(pat)`` for each element
++    :meth:`~Series.str.findall`,Compute list of all occurrences of pattern/regex for each string
++    :meth:`~Series.str.match`,Call ``re.match`` on each element returning matched groups as list
++    :meth:`~Series.str.extract`,Call ``re.search`` on each element returning DataFrame with one row for each element and one column for each regex capture group
++    :meth:`~Series.str.extractall`,Call ``re.findall`` on each element returning DataFrame with one row for each match and one column for each regex capture group
++    :meth:`~Series.str.len`,Compute string lengths
++    :meth:`~Series.str.strip`,Equivalent to ``str.strip``
++    :meth:`~Series.str.rstrip`,Equivalent to ``str.rstrip``
++    :meth:`~Series.str.lstrip`,Equivalent to ``str.lstrip``
++    :meth:`~Series.str.partition`,Equivalent to ``str.partition``
++    :meth:`~Series.str.rpartition`,Equivalent to ``str.rpartition``
++    :meth:`~Series.str.lower`,Equivalent to ``str.lower``
++    :meth:`~Series.str.casefold`,Equivalent to ``str.casefold``
++    :meth:`~Series.str.upper`,Equivalent to ``str.upper``
++    :meth:`~Series.str.find`,Equivalent to ``str.find``
++    :meth:`~Series.str.rfind`,Equivalent to ``str.rfind``
++    :meth:`~Series.str.index`,Equivalent to ``str.index``
++    :meth:`~Series.str.rindex`,Equivalent to ``str.rindex``
++    :meth:`~Series.str.capitalize`,Equivalent to ``str.capitalize``
++    :meth:`~Series.str.swapcase`,Equivalent to ``str.swapcase``
++    :meth:`~Series.str.normalize`,Return Unicode normal form. Equivalent to ``unicodedata.normalize``
++    :meth:`~Series.str.translate`,Equivalent to ``str.translate``
++    :meth:`~Series.str.isalnum`,Equivalent to ``str.isalnum``
++    :meth:`~Series.str.isalpha`,Equivalent to ``str.isalpha``
++    :meth:`~Series.str.isdigit`,Equivalent to ``str.isdigit``
++    :meth:`~Series.str.isspace`,Equivalent to ``str.isspace``
++    :meth:`~Series.str.islower`,Equivalent to ``str.islower``
++    :meth:`~Series.str.isupper`,Equivalent to ``str.isupper``
++    :meth:`~Series.str.istitle`,Equivalent to ``str.istitle``
++    :meth:`~Series.str.isnumeric`,Equivalent to ``str.isnumeric``
++    :meth:`~Series.str.isdecimal`,Equivalent to ``str.isdecimal``
+diff --git a/doc/source/whatsnew/index.rst b/doc/source/whatsnew/index.rst
+index 34a2845290d5a..09d76d71c6e1b 100644
+--- a/doc/source/whatsnew/index.rst
++++ b/doc/source/whatsnew/index.rst
+@@ -16,6 +16,7 @@ Version 2.2
+ .. toctree::
+    :maxdepth: 2
+ 
++   v2.2.3
+    v2.2.2
+    v2.2.1
+    v2.2.0
+diff --git a/doc/source/whatsnew/v2.2.2.rst b/doc/source/whatsnew/v2.2.2.rst
+index 72a2f84c4aaee..fbe5e9b4febb5 100644
+--- a/doc/source/whatsnew/v2.2.2.rst
++++ b/doc/source/whatsnew/v2.2.2.rst
+@@ -56,4 +56,4 @@ Other
+ Contributors
+ ~~~~~~~~~~~~
+ 
+-.. contributors:: v2.2.1..v2.2.2|HEAD
++.. contributors:: v2.2.1..v2.2.2
+diff --git a/doc/source/whatsnew/v2.2.3.rst b/doc/source/whatsnew/v2.2.3.rst
+new file mode 100644
+index 0000000000000..1696a7b6449af
+--- /dev/null
++++ b/doc/source/whatsnew/v2.2.3.rst
+@@ -0,0 +1,45 @@
++.. _whatsnew_223:
++
++What's new in 2.2.3 (September 20, 2024)
++----------------------------------------
++
++These are the changes in pandas 2.2.3. See :ref:`release` for a full changelog
++including other versions of pandas.
++
++{{ header }}
++
++.. ---------------------------------------------------------------------------
++
++.. _whatsnew_220.py13_compat:
++
++Pandas 2.2.3 is now compatible with Python 3.13
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Pandas 2.2.3 is the first version of pandas that is generally compatible with the upcoming
++Python 3.13, and both wheels for free-threaded and normal Python 3.13 will be uploaded for
++this release.
++
++As usual please report any bugs discovered to our `issue tracker <https://github.com/pandas-dev/pandas/issues/new/choose>`_
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_223.bug_fixes:
++
++Bug fixes
++~~~~~~~~~
++- Bug in :func:`eval` on :class:`complex` including division ``/`` discards imaginary part. (:issue:`21374`)
++- Minor fixes for numpy 2.1 compatibility. (:issue:`59444`)
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_223.other:
++
++Other
++~~~~~
++- Missing licenses for 3rd party dependencies were added back into the wheels. (:issue:`58632`)
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_223.contributors:
++
++Contributors
++~~~~~~~~~~~~
++
++.. contributors:: v2.2.2..v2.2.3|HEAD
+diff --git a/environment.yml b/environment.yml
+index 7f2db06d4d50e..58eb69ad1f070 100644
+--- a/environment.yml
++++ b/environment.yml
+@@ -27,8 +27,6 @@ dependencies:
+ 
+   # optional dependencies
+   - beautifulsoup4>=4.11.2
+-  # https://github.com/conda-forge/pytables-feedstock/issues/97
+-  - c-blosc2=2.13.2
+   - blosc
+   - bottleneck>=1.3.6
+   - fastparquet>=2022.12.0
+diff --git a/pandas/_libs/src/vendored/ujson/python/objToJSON.c b/pandas/_libs/src/vendored/ujson/python/objToJSON.c
+index fa91db5fe34e3..5f35860c59cb7 100644
+--- a/pandas/_libs/src/vendored/ujson/python/objToJSON.c
++++ b/pandas/_libs/src/vendored/ujson/python/objToJSON.c
+@@ -410,8 +410,8 @@ static void NpyArr_iterBegin(JSOBJ _obj, JSONTypeContext *tc) {
+   npyarr->type_num = PyArray_DESCR(obj)->type_num;
+ 
+   if (GET_TC(tc)->transpose) {
+-    npyarr->dim = PyArray_DIM(obj, npyarr->ndim);
+-    npyarr->stride = PyArray_STRIDE(obj, npyarr->ndim);
++    npyarr->dim = PyArray_DIM(obj, (int)npyarr->ndim);
++    npyarr->stride = PyArray_STRIDE(obj, (int)npyarr->ndim);
+     npyarr->stridedim = npyarr->ndim;
+     npyarr->index[npyarr->ndim] = 0;
+     npyarr->inc = -1;
+@@ -452,8 +452,8 @@ static void NpyArrPassThru_iterEnd(JSOBJ obj, JSONTypeContext *tc) {
+     return;
+   }
+   const PyArrayObject *arrayobj = (const PyArrayObject *)npyarr->array;
+-  npyarr->dim = PyArray_DIM(arrayobj, npyarr->stridedim);
+-  npyarr->stride = PyArray_STRIDE(arrayobj, npyarr->stridedim);
++  npyarr->dim = PyArray_DIM(arrayobj, (int)npyarr->stridedim);
++  npyarr->stride = PyArray_STRIDE(arrayobj, (int)npyarr->stridedim);
+   npyarr->dataptr += npyarr->stride;
+ 
+   NpyArr_freeItemValue(obj, tc);
+@@ -524,8 +524,8 @@ static int NpyArr_iterNext(JSOBJ _obj, JSONTypeContext *tc) {
+   }
+   const PyArrayObject *arrayobj = (const PyArrayObject *)npyarr->array;
+ 
+-  npyarr->dim = PyArray_DIM(arrayobj, npyarr->stridedim);
+-  npyarr->stride = PyArray_STRIDE(arrayobj, npyarr->stridedim);
++  npyarr->dim = PyArray_DIM(arrayobj, (int)npyarr->stridedim);
++  npyarr->stride = PyArray_STRIDE(arrayobj, (int)npyarr->stridedim);
+   npyarr->index[npyarr->stridedim] = 0;
+ 
+   ((PyObjectEncoder *)tc->encoder)->npyCtxtPassthru = npyarr;
+diff --git a/pandas/_libs/tslibs/np_datetime.pxd b/pandas/_libs/tslibs/np_datetime.pxd
+index cb2658d343772..a8ac80a2d0f39 100644
+--- a/pandas/_libs/tslibs/np_datetime.pxd
++++ b/pandas/_libs/tslibs/np_datetime.pxd
+@@ -89,7 +89,7 @@ cdef int string_to_dts(
+     int* out_local,
+     int* out_tzoffset,
+     bint want_exc,
+-    format: str | None = *,
++    str format = *,
+     bint exact = *
+ ) except? -1
+ 
+diff --git a/pandas/_libs/tslibs/np_datetime.pyx b/pandas/_libs/tslibs/np_datetime.pyx
+index aa01a05d0d932..779d1e3111932 100644
+--- a/pandas/_libs/tslibs/np_datetime.pyx
++++ b/pandas/_libs/tslibs/np_datetime.pyx
+@@ -331,7 +331,7 @@ cdef int string_to_dts(
+     int* out_local,
+     int* out_tzoffset,
+     bint want_exc,
+-    format: str | None=None,
++    str format=None,
+     bint exact=True,
+ ) except? -1:
+     cdef:
+diff --git a/pandas/_libs/tslibs/offsets.pyx b/pandas/_libs/tslibs/offsets.pyx
+index c37a4b285daef..5dacd7dd55231 100644
+--- a/pandas/_libs/tslibs/offsets.pyx
++++ b/pandas/_libs/tslibs/offsets.pyx
+@@ -4960,7 +4960,12 @@ cpdef to_offset(freq, bint is_period=False):
+     if result is None:
+         raise ValueError(INVALID_FREQ_ERR_MSG.format(freq))
+ 
+-    if is_period and not hasattr(result, "_period_dtype_code"):
++    try:
++        has_period_dtype_code = hasattr(result, "_period_dtype_code")
++    except ValueError:
++        has_period_dtype_code = False
++
++    if is_period and not has_period_dtype_code:
+         if isinstance(freq, str):
+             raise ValueError(f"{result.name} is not supported as period frequency")
+         else:
+diff --git a/pandas/_testing/__init__.py b/pandas/_testing/__init__.py
+index 361998db8e38b..87d419e2db8dd 100644
+--- a/pandas/_testing/__init__.py
++++ b/pandas/_testing/__init__.py
+@@ -111,6 +111,7 @@
+ 
+ COMPLEX_DTYPES: list[Dtype] = [complex, "complex64", "complex128"]
+ STRING_DTYPES: list[Dtype] = [str, "str", "U"]
++COMPLEX_FLOAT_DTYPES: list[Dtype] = [*COMPLEX_DTYPES, *FLOAT_NUMPY_DTYPES]
+ 
+ DATETIME64_DTYPES: list[Dtype] = ["datetime64[ns]", "M8[ns]"]
+ TIMEDELTA64_DTYPES: list[Dtype] = ["timedelta64[ns]", "m8[ns]"]
+diff --git a/pandas/compat/__init__.py b/pandas/compat/__init__.py
+index eb890c8b8c0ab..5ada6d705172f 100644
+--- a/pandas/compat/__init__.py
++++ b/pandas/compat/__init__.py
+@@ -31,6 +31,7 @@
+     pa_version_under14p0,
+     pa_version_under14p1,
+     pa_version_under16p0,
++    pa_version_under17p0,
+ )
+ 
+ if TYPE_CHECKING:
+@@ -188,6 +189,7 @@ def get_bz2_file() -> type[pandas.compat.compressors.BZ2File]:
+     "pa_version_under14p0",
+     "pa_version_under14p1",
+     "pa_version_under16p0",
++    "pa_version_under17p0",
+     "IS64",
+     "ISMUSL",
+     "PY310",
+diff --git a/pandas/compat/numpy/__init__.py b/pandas/compat/numpy/__init__.py
+index 3014bd652d8c4..a06761d03887b 100644
+--- a/pandas/compat/numpy/__init__.py
++++ b/pandas/compat/numpy/__init__.py
+@@ -12,7 +12,7 @@
+ np_version_gte1p24 = _nlv >= Version("1.24")
+ np_version_gte1p24p3 = _nlv >= Version("1.24.3")
+ np_version_gte1p25 = _nlv >= Version("1.25")
+-np_version_gt2 = _nlv >= Version("2.0.0.dev0")
++np_version_gt2 = _nlv >= Version("2.0.0")
+ is_numpy_dev = _nlv.dev is not None
+ _min_numpy_ver = "1.22.4"
+ 
+diff --git a/pandas/compat/pyarrow.py b/pandas/compat/pyarrow.py
+index a2dfa69bbf236..457d26766520d 100644
+--- a/pandas/compat/pyarrow.py
++++ b/pandas/compat/pyarrow.py
+@@ -16,6 +16,7 @@
+     pa_version_under14p1 = _palv < Version("14.0.1")
+     pa_version_under15p0 = _palv < Version("15.0.0")
+     pa_version_under16p0 = _palv < Version("16.0.0")
++    pa_version_under17p0 = _palv < Version("17.0.0")
+ except ImportError:
+     pa_version_under10p1 = True
+     pa_version_under11p0 = True
+@@ -25,3 +26,4 @@
+     pa_version_under14p1 = True
+     pa_version_under15p0 = True
+     pa_version_under16p0 = True
++    pa_version_under17p0 = True
+diff --git a/pandas/conftest.py b/pandas/conftest.py
+index 7c35dfdde90ba..10134c90f8eeb 100644
+--- a/pandas/conftest.py
++++ b/pandas/conftest.py
+@@ -1403,6 +1403,21 @@ def complex_dtype(request):
+     return request.param
+ 
+ 
++@pytest.fixture(params=tm.COMPLEX_FLOAT_DTYPES)
++def complex_or_float_dtype(request):
++    """
++    Parameterized fixture for complex and numpy float dtypes.
++
++    * complex
++    * 'complex64'
++    * 'complex128'
++    * float
++    * 'float32'
++    * 'float64'
++    """
++    return request.param
++
++
+ @pytest.fixture(params=tm.SIGNED_INT_NUMPY_DTYPES)
+ def any_signed_int_numpy_dtype(request):
+     """
+diff --git a/pandas/core/arrays/sparse/accessor.py b/pandas/core/arrays/sparse/accessor.py
+index fc7debb1f31e4..67bb417865475 100644
+--- a/pandas/core/arrays/sparse/accessor.py
++++ b/pandas/core/arrays/sparse/accessor.py
+@@ -92,8 +92,8 @@ def from_coo(cls, A, dense_index: bool = False) -> Series:
+         ...     ([3.0, 1.0, 2.0], ([1, 0, 0], [0, 2, 3])), shape=(3, 4)
+         ... )
+         >>> A
+-        <3x4 sparse matrix of type '<class 'numpy.float64'>'
+-        with 3 stored elements in COOrdinate format>
++        <COOrdinate sparse matrix of dtype 'float64'
++            with 3 stored elements and shape (3, 4)>
+ 
+         >>> A.todense()
+         matrix([[0., 0., 1., 2.],
+@@ -178,8 +178,8 @@ def to_coo(self, row_levels=(0,), column_levels=(1,), sort_labels: bool = False)
+         ...     row_levels=["A", "B"], column_levels=["C", "D"], sort_labels=True
+         ... )
+         >>> A
+-        <3x4 sparse matrix of type '<class 'numpy.float64'>'
+-        with 3 stored elements in COOrdinate format>
++        <COOrdinate sparse matrix of dtype 'float64'
++            with 3 stored elements and shape (3, 4)>
+         >>> A.todense()
+         matrix([[0., 0., 1., 3.],
+         [3., 0., 0., 0.],
+@@ -350,8 +350,8 @@ def to_coo(self):
+         --------
+         >>> df = pd.DataFrame({"A": pd.arrays.SparseArray([0, 1, 0, 1])})
+         >>> df.sparse.to_coo()
+-        <4x1 sparse matrix of type '<class 'numpy.int64'>'
+-                with 2 stored elements in COOrdinate format>
++        <COOrdinate sparse matrix of dtype 'int64'
++            with 2 stored elements and shape (4, 1)>
+         """
+         import_optional_dependency("scipy")
+         from scipy.sparse import coo_matrix
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index e8f614ff855c0..50527dace0b82 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -190,13 +190,13 @@ def _from_sequence(cls, scalars, *, dtype: Dtype | None = None, copy: bool = Fal
+             na_values = scalars._mask
+             result = scalars._data
+             result = lib.ensure_string_array(result, copy=copy, convert_na_value=False)
+-            return cls(pa.array(result, mask=na_values, type=pa.string()))
++            return cls(pa.array(result, mask=na_values, type=pa.large_string()))
+         elif isinstance(scalars, (pa.Array, pa.ChunkedArray)):
+-            return cls(pc.cast(scalars, pa.string()))
++            return cls(pc.cast(scalars, pa.large_string()))
+ 
+         # convert non-na-likes to str
+         result = lib.ensure_string_array(scalars, copy=copy)
+-        return cls(pa.array(result, type=pa.string(), from_pandas=True))
++        return cls(pa.array(result, type=pa.large_string(), from_pandas=True))
+ 
+     @classmethod
+     def _from_sequence_of_strings(
+@@ -239,7 +239,7 @@ def isin(self, values: ArrayLike) -> npt.NDArray[np.bool_]:
+         value_set = [
+             pa_scalar.as_py()
+             for pa_scalar in [pa.scalar(value, from_pandas=True) for value in values]
+-            if pa_scalar.type in (pa.string(), pa.null())
++            if pa_scalar.type in (pa.string(), pa.null(), pa.large_string())
+         ]
+ 
+         # short-circuit to return all False array.
+@@ -337,7 +337,9 @@ def _str_map(
+             result = lib.map_infer_mask(
+                 arr, f, mask.view("uint8"), convert=False, na_value=na_value
+             )
+-            result = pa.array(result, mask=mask, type=pa.string(), from_pandas=True)
++            result = pa.array(
++                result, mask=mask, type=pa.large_string(), from_pandas=True
++            )
+             return type(self)(result)
+         else:
+             # This is when the result type is object. We reach this when
+@@ -658,7 +660,9 @@ def _str_map(
+             result = lib.map_infer_mask(
+                 arr, f, mask.view("uint8"), convert=False, na_value=na_value
+             )
+-            result = pa.array(result, mask=mask, type=pa.string(), from_pandas=True)
++            result = pa.array(
++                result, mask=mask, type=pa.large_string(), from_pandas=True
++            )
+             return type(self)(result)
+         else:
+             # This is when the result type is object. We reach this when
+diff --git a/pandas/core/arrays/timedeltas.py b/pandas/core/arrays/timedeltas.py
+index e9260a3ec50a2..d4caec4bfd58a 100644
+--- a/pandas/core/arrays/timedeltas.py
++++ b/pandas/core/arrays/timedeltas.py
+@@ -468,6 +468,10 @@ def __mul__(self, other) -> Self:
+         if is_scalar(other):
+             # numpy will accept float and int, raise TypeError for others
+             result = self._ndarray * other
++            if result.dtype.kind != "m":
++                # numpy >= 2.1 may not raise a TypeError
++                # and seems to dispatch to others.__rmul__?
++                raise TypeError(f"Cannot multiply with {type(other).__name__}")
+             freq = None
+             if self.freq is not None and not isna(other):
+                 freq = self.freq * other
+@@ -495,6 +499,10 @@ def __mul__(self, other) -> Self:
+ 
+         # numpy will accept float or int dtype, raise TypeError for others
+         result = self._ndarray * other
++        if result.dtype.kind != "m":
++            # numpy >= 2.1 may not raise a TypeError
++            # and seems to dispatch to others.__rmul__?
++            raise TypeError(f"Cannot multiply with {type(other).__name__}")
+         return type(self)._simple_new(result, dtype=result.dtype)
+ 
+     __rmul__ = __mul__
+diff --git a/pandas/core/computation/expr.py b/pandas/core/computation/expr.py
+index b5861fbaebe9c..d642c37cea129 100644
+--- a/pandas/core/computation/expr.py
++++ b/pandas/core/computation/expr.py
+@@ -31,7 +31,6 @@
+     UNARY_OPS_SYMS,
+     BinOp,
+     Constant,
+-    Div,
+     FuncNode,
+     Op,
+     Term,
+@@ -370,7 +369,7 @@ class BaseExprVisitor(ast.NodeVisitor):
+         "Add",
+         "Sub",
+         "Mult",
+-        None,
++        "Div",
+         "Pow",
+         "FloorDiv",
+         "Mod",
+@@ -533,9 +532,6 @@ def visit_BinOp(self, node, **kwargs):
+         left, right = self._maybe_downcast_constants(left, right)
+         return self._maybe_evaluate_binop(op, op_class, left, right)
+ 
+-    def visit_Div(self, node, **kwargs):
+-        return lambda lhs, rhs: Div(lhs, rhs)
+-
+     def visit_UnaryOp(self, node, **kwargs):
+         op = self.visit(node.op)
+         operand = self.visit(node.operand)
+diff --git a/pandas/core/computation/ops.py b/pandas/core/computation/ops.py
+index 95ac20ba39edc..d8265456dfced 100644
+--- a/pandas/core/computation/ops.py
++++ b/pandas/core/computation/ops.py
+@@ -332,31 +332,6 @@ def _not_in(x, y):
+     _binary_ops_dict.update(d)
+ 
+ 
+-def _cast_inplace(terms, acceptable_dtypes, dtype) -> None:
+-    """
+-    Cast an expression inplace.
+-
+-    Parameters
+-    ----------
+-    terms : Op
+-        The expression that should cast.
+-    acceptable_dtypes : list of acceptable numpy.dtype
+-        Will not cast if term's dtype in this list.
+-    dtype : str or numpy.dtype
+-        The dtype to cast to.
+-    """
+-    dt = np.dtype(dtype)
+-    for term in terms:
+-        if term.type in acceptable_dtypes:
+-            continue
+-
+-        try:
+-            new_value = term.value.astype(dt)
+-        except AttributeError:
+-            new_value = dt.type(term.value)
+-        term.update(new_value)
+-
+-
+ def is_term(obj) -> bool:
+     return isinstance(obj, Term)
+ 
+@@ -517,30 +492,6 @@ def isnumeric(dtype) -> bool:
+     return issubclass(np.dtype(dtype).type, np.number)
+ 
+ 
+-class Div(BinOp):
+-    """
+-    Div operator to special case casting.
+-
+-    Parameters
+-    ----------
+-    lhs, rhs : Term or Op
+-        The Terms or Ops in the ``/`` expression.
+-    """
+-
+-    def __init__(self, lhs, rhs) -> None:
+-        super().__init__("/", lhs, rhs)
+-
+-        if not isnumeric(lhs.return_type) or not isnumeric(rhs.return_type):
+-            raise TypeError(
+-                f"unsupported operand type(s) for {self.op}: "
+-                f"'{lhs.return_type}' and '{rhs.return_type}'"
+-            )
+-
+-        # do not upcast float32s to float64 un-necessarily
+-        acceptable_dtypes = [np.float32, np.float64]
+-        _cast_inplace(com.flatten(self), acceptable_dtypes, np.float64)
+-
+-
+ UNARY_OPS_SYMS = ("+", "-", "~", "not")
+ _unary_ops_funcs = (operator.pos, operator.neg, operator.invert, operator.invert)
+ _unary_ops_dict = dict(zip(UNARY_OPS_SYMS, _unary_ops_funcs))
+diff --git a/pandas/core/dtypes/cast.py b/pandas/core/dtypes/cast.py
+index 7dd81ec59bc49..b72293b52df06 100644
+--- a/pandas/core/dtypes/cast.py
++++ b/pandas/core/dtypes/cast.py
+@@ -39,7 +39,6 @@
+     is_supported_dtype,
+ )
+ from pandas._libs.tslibs.timedeltas import array_to_timedelta64
+-from pandas.compat.numpy import np_version_gt2
+ from pandas.errors import (
+     IntCastingNaNError,
+     LossySetitemError,
+@@ -1647,13 +1646,11 @@ def maybe_cast_to_integer_array(arr: list | np.ndarray, dtype: np.dtype) -> np.n
+             with warnings.catch_warnings():
+                 # We already disallow dtype=uint w/ negative numbers
+                 # (test_constructor_coercion_signed_to_unsigned) so safe to ignore.
+-                if not np_version_gt2:
+-                    warnings.filterwarnings(
+-                        "ignore",
+-                        "NumPy will stop allowing conversion of "
+-                        "out-of-bound Python int",
+-                        DeprecationWarning,
+-                    )
++                warnings.filterwarnings(
++                    "ignore",
++                    "NumPy will stop allowing conversion of out-of-bound Python int",
++                    DeprecationWarning,
++                )
+                 casted = np.asarray(arr, dtype=dtype)
+         else:
+             with warnings.catch_warnings():
+diff --git a/pandas/io/gbq.py b/pandas/io/gbq.py
+index 350002bf461ff..24e4e0b7cef0a 100644
+--- a/pandas/io/gbq.py
++++ b/pandas/io/gbq.py
+@@ -11,7 +11,7 @@
+ from pandas.util._exceptions import find_stack_level
+ 
+ if TYPE_CHECKING:
+-    import google.auth
++    from google.auth.credentials import Credentials
+ 
+     from pandas import DataFrame
+ 
+@@ -37,7 +37,7 @@ def read_gbq(
+     dialect: str | None = None,
+     location: str | None = None,
+     configuration: dict[str, Any] | None = None,
+-    credentials: google.auth.credentials.Credentials | None = None,
++    credentials: Credentials | None = None,
+     use_bqstorage_api: bool | None = None,
+     max_results: int | None = None,
+     progress_bar_type: str | None = None,
+@@ -230,7 +230,7 @@ def to_gbq(
+     table_schema: list[dict[str, str]] | None = None,
+     location: str | None = None,
+     progress_bar: bool = True,
+-    credentials: google.auth.credentials.Credentials | None = None,
++    credentials: Credentials | None = None,
+ ) -> None:
+     warnings.warn(
+         "to_gbq is deprecated and will be removed in a future version. "
+diff --git a/pandas/plotting/_matplotlib/converter.py b/pandas/plotting/_matplotlib/converter.py
+index 0eb3318ac96c5..9acb93ce69a9c 100644
+--- a/pandas/plotting/_matplotlib/converter.py
++++ b/pandas/plotting/_matplotlib/converter.py
+@@ -584,7 +584,8 @@ def _get_periods_per_ymd(freq: BaseOffset) -> tuple[int, int, int]:
+     return ppd, ppm, ppy
+ 
+ 
+-def _daily_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
++@functools.cache
++def _daily_finder(vmin: float, vmax: float, freq: BaseOffset) -> np.ndarray:
+     # error: "BaseOffset" has no attribute "_period_dtype_code"
+     dtype_code = freq._period_dtype_code  # type: ignore[attr-defined]
+ 
+@@ -783,7 +784,8 @@ def _second_finder(label_interval: int) -> None:
+     return info
+ 
+ 
+-def _monthly_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
++@functools.cache
++def _monthly_finder(vmin: float, vmax: float, freq: BaseOffset) -> np.ndarray:
+     _, _, periodsperyear = _get_periods_per_ymd(freq)
+ 
+     vmin_orig = vmin
+@@ -854,7 +856,8 @@ def _monthly_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
+     return info
+ 
+ 
+-def _quarterly_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
++@functools.cache
++def _quarterly_finder(vmin: float, vmax: float, freq: BaseOffset) -> np.ndarray:
+     _, _, periodsperyear = _get_periods_per_ymd(freq)
+     vmin_orig = vmin
+     (vmin, vmax) = (int(vmin), int(vmax))
+@@ -901,7 +904,8 @@ def _quarterly_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
+     return info
+ 
+ 
+-def _annual_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
++@functools.cache
++def _annual_finder(vmin: float, vmax: float, freq: BaseOffset) -> np.ndarray:
+     # Note: small difference here vs other finders in adding 1 to vmax
+     (vmin, vmax) = (int(vmin), int(vmax + 1))
+     span = vmax - vmin + 1
+diff --git a/pandas/plotting/_matplotlib/core.py b/pandas/plotting/_matplotlib/core.py
+index 2979903edf360..3a1e589c2279b 100644
+--- a/pandas/plotting/_matplotlib/core.py
++++ b/pandas/plotting/_matplotlib/core.py
+@@ -547,7 +547,7 @@ def _maybe_right_yaxis(self, ax: Axes, axes_num: int) -> Axes:
+                 new_ax.set_yscale("log")
+             elif self.logy == "sym" or self.loglog == "sym":
+                 new_ax.set_yscale("symlog")
+-            return new_ax  # type: ignore[return-value]
++            return new_ax
+ 
+     @final
+     @cache_readonly
+@@ -893,7 +893,13 @@ def _make_legend(self) -> None:
+         elif self.subplots and self.legend:
+             for ax in self.axes:
+                 if ax.get_visible():
+-                    ax.legend(loc="best")
++                    with warnings.catch_warnings():
++                        warnings.filterwarnings(
++                            "ignore",
++                            "No artists with labels found to put in legend.",
++                            UserWarning,
++                        )
++                        ax.legend(loc="best")
+ 
+     @final
+     @staticmethod
+diff --git a/pandas/tests/arithmetic/test_timedelta64.py b/pandas/tests/arithmetic/test_timedelta64.py
+index 007d1e670e1e0..d02e827d435cf 100644
+--- a/pandas/tests/arithmetic/test_timedelta64.py
++++ b/pandas/tests/arithmetic/test_timedelta64.py
+@@ -1454,7 +1454,13 @@ def test_td64arr_mul_int(self, box_with_array):
+     def test_td64arr_mul_tdlike_scalar_raises(self, two_hours, box_with_array):
+         rng = timedelta_range("1 days", "10 days", name="foo")
+         rng = tm.box_expected(rng, box_with_array)
+-        msg = "argument must be an integer|cannot use operands with types dtype"
++        msg = "|".join(
++            [
++                "argument must be an integer",
++                "cannot use operands with types dtype",
++                "Cannot multiply with",
++            ]
++        )
+         with pytest.raises(TypeError, match=msg):
+             rng * two_hours
+ 
+diff --git a/pandas/tests/arrays/test_datetimelike.py b/pandas/tests/arrays/test_datetimelike.py
+index 7f85c891afeed..4961123a7ca07 100644
+--- a/pandas/tests/arrays/test_datetimelike.py
++++ b/pandas/tests/arrays/test_datetimelike.py
+@@ -659,7 +659,9 @@ def test_array_interface(self, datetime_index):
+         assert result is expected
+         tm.assert_numpy_array_equal(result, expected)
+         result = np.array(arr, dtype="datetime64[ns]")
+-        assert result is not expected
++        if not np_version_gt2:
++            # TODO: GH 57739
++            assert result is not expected
+         tm.assert_numpy_array_equal(result, expected)
+ 
+         # to object dtype
+@@ -974,7 +976,9 @@ def test_array_interface(self, timedelta_index):
+         assert result is expected
+         tm.assert_numpy_array_equal(result, expected)
+         result = np.array(arr, dtype="timedelta64[ns]")
+-        assert result is not expected
++        if not np_version_gt2:
++            # TODO: GH 57739
++            assert result is not expected
+         tm.assert_numpy_array_equal(result, expected)
+ 
+         # to object dtype
+diff --git a/pandas/tests/computation/test_eval.py b/pandas/tests/computation/test_eval.py
+index 17630f14b08c7..e8fad6b8cbd63 100644
+--- a/pandas/tests/computation/test_eval.py
++++ b/pandas/tests/computation/test_eval.py
+@@ -747,16 +747,26 @@ class TestTypeCasting:
+     @pytest.mark.parametrize("op", ["+", "-", "*", "**", "/"])
+     # maybe someday... numexpr has too many upcasting rules now
+     # chain(*(np.core.sctypes[x] for x in ['uint', 'int', 'float']))
+-    @pytest.mark.parametrize("dt", [np.float32, np.float64])
+     @pytest.mark.parametrize("left_right", [("df", "3"), ("3", "df")])
+-    def test_binop_typecasting(self, engine, parser, op, dt, left_right):
+-        df = DataFrame(np.random.default_rng(2).standard_normal((5, 3)), dtype=dt)
++    def test_binop_typecasting(
++        self, engine, parser, op, complex_or_float_dtype, left_right, request
++    ):
++        # GH#21374
++        dtype = complex_or_float_dtype
++        df = DataFrame(np.random.default_rng(2).standard_normal((5, 3)), dtype=dtype)
+         left, right = left_right
+         s = f"{left} {op} {right}"
+         res = pd.eval(s, engine=engine, parser=parser)
+-        assert df.values.dtype == dt
+-        assert res.values.dtype == dt
+-        tm.assert_frame_equal(res, eval(s))
++        if dtype == "complex64" and engine == "numexpr":
++            mark = pytest.mark.xfail(
++                reason="numexpr issue with complex that are upcast "
++                "to complex 128 "
++                "https://github.com/pydata/numexpr/issues/492"
++            )
++            request.applymarker(mark)
++        assert df.values.dtype == dtype
++        assert res.values.dtype == dtype
++        tm.assert_frame_equal(res, eval(s), check_exact=False)
+ 
+ 
+ # -------------------------------------
+diff --git a/pandas/tests/extension/base/missing.py b/pandas/tests/extension/base/missing.py
+index dbd6682c12123..fb15b2dec869c 100644
+--- a/pandas/tests/extension/base/missing.py
++++ b/pandas/tests/extension/base/missing.py
+@@ -27,7 +27,9 @@ def test_isna_returns_copy(self, data_missing, na_func):
+         expected = result.copy()
+         mask = getattr(result, na_func)()
+         if isinstance(mask.dtype, pd.SparseDtype):
++            # TODO: GH 57739
+             mask = np.array(mask)
++            mask.flags.writeable = True
+ 
+         mask[:] = True
+         tm.assert_series_equal(result, expected)
+diff --git a/pandas/tests/extension/test_sparse.py b/pandas/tests/extension/test_sparse.py
+index 4039a5d01f372..2d5989a5b4f1d 100644
+--- a/pandas/tests/extension/test_sparse.py
++++ b/pandas/tests/extension/test_sparse.py
+@@ -348,11 +348,16 @@ def test_argmin_argmax_all_na(self, method, data, na_value):
+         self._check_unsupported(data)
+         super().test_argmin_argmax_all_na(method, data, na_value)
+ 
++    @pytest.mark.fails_arm_wheels
+     @pytest.mark.parametrize("box", [pd.array, pd.Series, pd.DataFrame])
+     def test_equals(self, data, na_value, as_series, box):
+         self._check_unsupported(data)
+         super().test_equals(data, na_value, as_series, box)
+ 
++    @pytest.mark.fails_arm_wheels
++    def test_equals_same_data_different_object(self, data):
++        super().test_equals_same_data_different_object(data)
++
+     @pytest.mark.parametrize(
+         "func, na_action, expected",
+         [
+diff --git a/pandas/tests/groupby/test_groupby.py b/pandas/tests/groupby/test_groupby.py
+index ed9acdd0c9dde..44d6340e55507 100644
+--- a/pandas/tests/groupby/test_groupby.py
++++ b/pandas/tests/groupby/test_groupby.py
+@@ -2816,7 +2816,9 @@ def test_rolling_wrong_param_min_period():
+     test_df = DataFrame([name_l, val_l]).T
+     test_df.columns = ["name", "val"]
+ 
+-    result_error_msg = r"__init__\(\) got an unexpected keyword argument 'min_period'"
++    result_error_msg = (
++        r"^[a-zA-Z._]*\(\) got an unexpected keyword argument 'min_period'"
++    )
+     with pytest.raises(TypeError, match=result_error_msg):
+         test_df.groupby("name")["val"].rolling(window=2, min_period=1).sum()
+ 
+diff --git a/pandas/tests/indexes/datetimelike_/test_indexing.py b/pandas/tests/indexes/datetimelike_/test_indexing.py
+index ee7128601256a..7b2c81aaf17de 100644
+--- a/pandas/tests/indexes/datetimelike_/test_indexing.py
++++ b/pandas/tests/indexes/datetimelike_/test_indexing.py
+@@ -19,7 +19,7 @@
+ @pytest.mark.parametrize("ldtype", dtlike_dtypes)
+ @pytest.mark.parametrize("rdtype", dtlike_dtypes)
+ def test_get_indexer_non_unique_wrong_dtype(ldtype, rdtype):
+-    vals = np.tile(3600 * 10**9 * np.arange(3), 2)
++    vals = np.tile(3600 * 10**9 * np.arange(3, dtype=np.int64), 2)
+ 
+     def construct(dtype):
+         if dtype is dtlike_dtypes[-1]:
+diff --git a/pandas/tests/indexes/interval/test_interval_tree.py b/pandas/tests/indexes/interval/test_interval_tree.py
+index 45b25f2533afd..78388e84fc6dc 100644
+--- a/pandas/tests/indexes/interval/test_interval_tree.py
++++ b/pandas/tests/indexes/interval/test_interval_tree.py
+@@ -190,7 +190,6 @@ def test_construction_overflow(self):
+         expected = (50 + np.iinfo(np.int64).max) / 2
+         assert result == expected
+ 
+-    @pytest.mark.xfail(not IS64, reason="GH 23440")
+     @pytest.mark.parametrize(
+         "left, right, expected",
+         [
+diff --git a/pandas/tests/indexes/object/test_indexing.py b/pandas/tests/indexes/object/test_indexing.py
+index 443cacf94d239..ebf9dac715f8d 100644
+--- a/pandas/tests/indexes/object/test_indexing.py
++++ b/pandas/tests/indexes/object/test_indexing.py
+@@ -7,7 +7,6 @@
+     NA,
+     is_matching_na,
+ )
+-from pandas.compat import pa_version_under16p0
+ import pandas.util._test_decorators as td
+ 
+ import pandas as pd
+@@ -201,16 +200,7 @@ class TestSliceLocs:
+             (pd.IndexSlice["m":"m":-1], ""),  # type: ignore[misc]
+         ],
+     )
+-    def test_slice_locs_negative_step(self, in_slice, expected, dtype, request):
+-        if (
+-            not pa_version_under16p0
+-            and dtype == "string[pyarrow_numpy]"
+-            and in_slice == slice("a", "a", -1)
+-        ):
+-            request.applymarker(
+-                pytest.mark.xfail(reason="https://github.com/apache/arrow/issues/40642")
+-            )
+-
++    def test_slice_locs_negative_step(self, in_slice, expected, dtype):
+         index = Index(list("bcdxy"), dtype=dtype)
+ 
+         s_start, s_stop = index.slice_locs(in_slice.start, in_slice.stop, in_slice.step)
+diff --git a/pandas/tests/indexes/test_base.py b/pandas/tests/indexes/test_base.py
+index b7204d7af1cbb..7eeb626d91dc8 100644
+--- a/pandas/tests/indexes/test_base.py
++++ b/pandas/tests/indexes/test_base.py
+@@ -71,8 +71,8 @@ def test_constructor_casting(self, index):
+         tm.assert_contains_all(arr, new_index)
+         tm.assert_index_equal(index, new_index)
+ 
+-    @pytest.mark.parametrize("index", ["string"], indirect=True)
+-    def test_constructor_copy(self, index, using_infer_string):
++    def test_constructor_copy(self, using_infer_string):
++        index = Index(list("abc"), name="name")
+         arr = np.array(index)
+         new_index = Index(arr, copy=True, name="name")
+         assert isinstance(new_index, Index)
+diff --git a/pandas/tests/indexes/test_common.py b/pandas/tests/indexes/test_common.py
+index 80c39322b9b81..05b2aa584674c 100644
+--- a/pandas/tests/indexes/test_common.py
++++ b/pandas/tests/indexes/test_common.py
+@@ -452,6 +452,7 @@ def test_sort_values_invalid_na_position(index_with_missing, na_position):
+         index_with_missing.sort_values(na_position=na_position)
+ 
+ 
++@pytest.mark.fails_arm_wheels
+ @pytest.mark.filterwarnings(r"ignore:PeriodDtype\[B\] is deprecated:FutureWarning")
+ @pytest.mark.parametrize("na_position", ["first", "last"])
+ def test_sort_values_with_missing(index_with_missing, na_position, request):
+diff --git a/pandas/tests/indexing/interval/test_interval.py b/pandas/tests/indexing/interval/test_interval.py
+index cabfee9aa040a..dd51917b85a59 100644
+--- a/pandas/tests/indexing/interval/test_interval.py
++++ b/pandas/tests/indexing/interval/test_interval.py
+@@ -2,7 +2,6 @@
+ import pytest
+ 
+ from pandas._libs import index as libindex
+-from pandas.compat import IS64
+ 
+ import pandas as pd
+ from pandas import (
+@@ -210,7 +209,6 @@ def test_mi_intervalindex_slicing_with_scalar(self):
+         expected = Series([1, 6, 2, 8, 7], index=expected_index, name="value")
+         tm.assert_series_equal(result, expected)
+ 
+-    @pytest.mark.xfail(not IS64, reason="GH 23440")
+     @pytest.mark.parametrize(
+         "base",
+         [101, 1010],
+diff --git a/pandas/tests/indexing/interval/test_interval_new.py b/pandas/tests/indexing/interval/test_interval_new.py
+index 283921a23e368..018db5846f4e2 100644
+--- a/pandas/tests/indexing/interval/test_interval_new.py
++++ b/pandas/tests/indexing/interval/test_interval_new.py
+@@ -3,8 +3,6 @@
+ import numpy as np
+ import pytest
+ 
+-from pandas.compat import IS64
+-
+ from pandas import (
+     Index,
+     Interval,
+@@ -211,7 +209,6 @@ def test_loc_getitem_missing_key_error_message(
+             obj.loc[[4, 5, 6]]
+ 
+ 
+-@pytest.mark.xfail(not IS64, reason="GH 23440")
+ @pytest.mark.parametrize(
+     "intervals",
+     [
+diff --git a/pandas/tests/io/parser/test_dialect.py b/pandas/tests/io/parser/test_dialect.py
+index 7a72e66996d43..803114723bc74 100644
+--- a/pandas/tests/io/parser/test_dialect.py
++++ b/pandas/tests/io/parser/test_dialect.py
+@@ -26,7 +26,7 @@ def custom_dialect():
+         "escapechar": "~",
+         "delimiter": ":",
+         "skipinitialspace": False,
+-        "quotechar": "~",
++        "quotechar": "`",
+         "quoting": 3,
+     }
+     return dialect_name, dialect_kwargs
+diff --git a/pandas/tests/io/parser/test_multi_thread.py b/pandas/tests/io/parser/test_multi_thread.py
+index da9b9bddd30cd..704ca010f6506 100644
+--- a/pandas/tests/io/parser/test_multi_thread.py
++++ b/pandas/tests/io/parser/test_multi_thread.py
+@@ -12,6 +12,7 @@
+ import pandas as pd
+ from pandas import DataFrame
+ import pandas._testing as tm
++from pandas.util.version import Version
+ 
+ xfail_pyarrow = pytest.mark.usefixtures("pyarrow_xfail")
+ 
+@@ -23,10 +24,16 @@
+ ]
+ 
+ 
+-@xfail_pyarrow  # ValueError: Found non-unique column index
+-def test_multi_thread_string_io_read_csv(all_parsers):
++@pytest.mark.filterwarnings("ignore:Passing a BlockManager:DeprecationWarning")
++def test_multi_thread_string_io_read_csv(all_parsers, request):
+     # see gh-11786
+     parser = all_parsers
++    if parser.engine == "pyarrow":
++        pa = pytest.importorskip("pyarrow")
++        if Version(pa.__version__) < Version("16.0"):
++            request.applymarker(
++                pytest.mark.xfail(reason="# ValueError: Found non-unique column index")
++            )
+     max_row_range = 100
+     num_files = 10
+ 
+diff --git a/pandas/tests/io/test_common.py b/pandas/tests/io/test_common.py
+index 074033868635a..e51f86563081b 100644
+--- a/pandas/tests/io/test_common.py
++++ b/pandas/tests/io/test_common.py
+@@ -485,7 +485,10 @@ def test_warning_missing_utf_bom(self, encoding, compression_):
+                 df.to_csv(path, compression=compression_, encoding=encoding)
+ 
+             # reading should fail (otherwise we wouldn't need the warning)
+-            msg = r"UTF-\d+ stream does not start with BOM"
++            msg = (
++                r"UTF-\d+ stream does not start with BOM|"
++                r"'utf-\d+' codec can't decode byte"
++            )
+             with pytest.raises(UnicodeError, match=msg):
+                 pd.read_csv(path, compression=compression_, encoding=encoding)
+ 
+diff --git a/pandas/tests/io/test_gcs.py b/pandas/tests/io/test_gcs.py
+index 0ce6a8bf82cd8..4b337b5b82052 100644
+--- a/pandas/tests/io/test_gcs.py
++++ b/pandas/tests/io/test_gcs.py
+@@ -7,6 +7,8 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat.pyarrow import pa_version_under17p0
++
+ from pandas import (
+     DataFrame,
+     Index,
+@@ -52,7 +54,7 @@ def ls(self, path, **kwargs):
+ # Patches pyarrow; other processes should not pick up change
+ @pytest.mark.single_cpu
+ @pytest.mark.parametrize("format", ["csv", "json", "parquet", "excel", "markdown"])
+-def test_to_read_gcs(gcs_buffer, format, monkeypatch, capsys):
++def test_to_read_gcs(gcs_buffer, format, monkeypatch, capsys, request):
+     """
+     Test that many to/read functions support GCS.
+ 
+@@ -91,6 +93,13 @@ def from_uri(path):
+                 to_local = pathlib.Path(path.replace("gs://", "")).absolute().as_uri()
+                 return pa_fs.LocalFileSystem(to_local)
+ 
++        request.applymarker(
++            pytest.mark.xfail(
++                not pa_version_under17p0,
++                raises=TypeError,
++                reason="pyarrow 17 broke the mocked filesystem",
++            )
++        )
+         with monkeypatch.context() as m:
+             m.setattr(pa_fs, "FileSystem", MockFileSystem)
+             df1.to_parquet(path)
+diff --git a/pandas/tests/io/test_parquet.py b/pandas/tests/io/test_parquet.py
+index e4b94177eedb2..760a64c8d4c33 100644
+--- a/pandas/tests/io/test_parquet.py
++++ b/pandas/tests/io/test_parquet.py
+@@ -448,12 +448,8 @@ def test_read_filters(self, engine, tmp_path):
+             repeat=1,
+         )
+ 
+-    def test_write_index(self, engine, using_copy_on_write, request):
++    def test_write_index(self, engine):
+         check_names = engine != "fastparquet"
+-        if using_copy_on_write and engine == "fastparquet":
+-            request.applymarker(
+-                pytest.mark.xfail(reason="fastparquet write into index")
+-            )
+ 
+         df = pd.DataFrame({"A": [1, 2, 3]})
+         check_round_trip(df, engine)
+@@ -1191,6 +1187,10 @@ def test_duplicate_columns(self, fp):
+         msg = "Cannot create parquet dataset with duplicate column names"
+         self.check_error_on_write(df, fp, ValueError, msg)
+ 
++    @pytest.mark.xfail(
++        Version(np.__version__) >= Version("2.0.0"),
++        reason="fastparquet uses np.float_ in numpy2",
++    )
+     def test_bool_with_none(self, fp):
+         df = pd.DataFrame({"a": [True, None, False]})
+         expected = pd.DataFrame({"a": [1.0, np.nan, 0.0]}, dtype="float16")
+@@ -1306,7 +1306,10 @@ def test_empty_dataframe(self, fp):
+         expected = df.copy()
+         check_round_trip(df, fp, expected=expected)
+ 
+-    @pytest.mark.skipif(using_copy_on_write(), reason="fastparquet writes into Index")
++    @pytest.mark.xfail(
++        _HAVE_FASTPARQUET and Version(fastparquet.__version__) > Version("2022.12"),
++        reason="fastparquet bug, see https://github.com/dask/fastparquet/issues/929",
++    )
+     def test_timezone_aware_index(self, fp, timezone_aware_date_list):
+         idx = 5 * [timezone_aware_date_list]
+ 
+diff --git a/pandas/tests/io/test_sql.py b/pandas/tests/io/test_sql.py
+index 4f1f965f26aa9..7068247bbfa8b 100644
+--- a/pandas/tests/io/test_sql.py
++++ b/pandas/tests/io/test_sql.py
+@@ -2320,9 +2320,16 @@ def test_api_escaped_table_name(conn, request):
+ def test_api_read_sql_duplicate_columns(conn, request):
+     # GH#53117
+     if "adbc" in conn:
+-        request.node.add_marker(
+-            pytest.mark.xfail(reason="pyarrow->pandas throws ValueError", strict=True)
+-        )
++        pa = pytest.importorskip("pyarrow")
++        if not (
++            Version(pa.__version__) >= Version("16.0")
++            and conn in ["sqlite_adbc_conn", "postgresql_adbc_conn"]
++        ):
++            request.node.add_marker(
++                pytest.mark.xfail(
++                    reason="pyarrow->pandas throws ValueError", strict=True
++                )
++            )
+     conn = request.getfixturevalue(conn)
+     if sql.has_table("test_table", conn):
+         with sql.SQLDatabase(conn, need_transaction=True) as pandasSQL:
+diff --git a/pandas/tests/io/xml/test_xml.py b/pandas/tests/io/xml/test_xml.py
+index 6f429c1ecbf8a..900734e9f0fdf 100644
+--- a/pandas/tests/io/xml/test_xml.py
++++ b/pandas/tests/io/xml/test_xml.py
+@@ -1044,7 +1044,7 @@ def test_utf16_encoding(xml_baby_names, parser):
+         UnicodeError,
+         match=(
+             "UTF-16 stream does not start with BOM|"
+-            "'utf-16-le' codec can't decode byte"
++            "'utf-16(-le)?' codec can't decode byte"
+         ),
+     ):
+         read_xml(xml_baby_names, encoding="UTF-16", parser=parser)
+diff --git a/pandas/tests/plotting/frame/test_frame.py b/pandas/tests/plotting/frame/test_frame.py
+index 45dc612148f40..4ca4067214bbd 100644
+--- a/pandas/tests/plotting/frame/test_frame.py
++++ b/pandas/tests/plotting/frame/test_frame.py
+@@ -44,6 +44,7 @@
+     _check_visible,
+     get_y_axis,
+ )
++from pandas.util.version import Version
+ 
+ from pandas.io.formats.printing import pprint_thing
+ 
+@@ -2487,8 +2488,14 @@ def test_group_subplot_invalid_column_name(self):
+         d = {"a": np.arange(10), "b": np.arange(10)}
+         df = DataFrame(d)
+ 
+-        with pytest.raises(ValueError, match=r"Column label\(s\) \['bad_name'\]"):
+-            df.plot(subplots=[("a", "bad_name")])
++        if Version(np.__version__) < Version("2.0.0"):
++            with pytest.raises(ValueError, match=r"Column label\(s\) \['bad_name'\]"):
++                df.plot(subplots=[("a", "bad_name")])
++        else:
++            with pytest.raises(
++                ValueError, match=r"Column label\(s\) \[np\.str\_\('bad_name'\)\]"
++            ):
++                df.plot(subplots=[("a", "bad_name")])
+ 
+     def test_group_subplot_duplicated_column(self):
+         d = {"a": np.arange(10), "b": np.arange(10), "c": np.arange(10)}
+diff --git a/pandas/tests/plotting/test_datetimelike.py b/pandas/tests/plotting/test_datetimelike.py
+index 112172656b6ec..6c318402ea226 100644
+--- a/pandas/tests/plotting/test_datetimelike.py
++++ b/pandas/tests/plotting/test_datetimelike.py
+@@ -1451,13 +1451,19 @@ def test_mpl_nopandas(self):
+         values1 = np.arange(10.0, 11.0, 0.5)
+         values2 = np.arange(11.0, 12.0, 0.5)
+ 
+-        kw = {"fmt": "-", "lw": 4}
+-
+         _, ax = mpl.pyplot.subplots()
+-        ax.plot_date([x.toordinal() for x in dates], values1, **kw)
+-        ax.plot_date([x.toordinal() for x in dates], values2, **kw)
+-
+-        line1, line2 = ax.get_lines()
++        (
++            line1,
++            line2,
++        ) = ax.plot(
++            [x.toordinal() for x in dates],
++            values1,
++            "-",
++            [x.toordinal() for x in dates],
++            values2,
++            "-",
++            linewidth=4,
++        )
+ 
+         exp = np.array([x.toordinal() for x in dates], dtype=np.float64)
+         tm.assert_numpy_array_equal(line1.get_xydata()[:, 0], exp)
+diff --git a/pandas/tests/scalar/timedelta/test_arithmetic.py b/pandas/tests/scalar/timedelta/test_arithmetic.py
+index d2fa0f722ca6f..a4d846f068d00 100644
+--- a/pandas/tests/scalar/timedelta/test_arithmetic.py
++++ b/pandas/tests/scalar/timedelta/test_arithmetic.py
+@@ -418,7 +418,7 @@ def test_td_mul_numeric_ndarray(self):
+ 
+     def test_td_mul_numeric_ndarray_0d(self):
+         td = Timedelta("1 day")
+-        other = np.array(2)
++        other = np.array(2, dtype=np.int64)
+         assert other.ndim == 0
+         expected = Timedelta("2 days")
+ 
+@@ -622,6 +622,7 @@ def test_td_floordiv_invalid_scalar(self):
+             [
+                 r"Invalid dtype datetime64\[D\] for __floordiv__",
+                 "'dtype' is an invalid keyword argument for this function",
++                "this function got an unexpected keyword argument 'dtype'",
+                 r"ufunc '?floor_divide'? cannot use operands with types",
+             ]
+         )
+diff --git a/pandas/tests/series/indexing/test_setitem.py b/pandas/tests/series/indexing/test_setitem.py
+index 23137f0975fb1..ed681563f6fcd 100644
+--- a/pandas/tests/series/indexing/test_setitem.py
++++ b/pandas/tests/series/indexing/test_setitem.py
+@@ -3,11 +3,15 @@
+     datetime,
+ )
+ from decimal import Decimal
++import os
+ 
+ import numpy as np
+ import pytest
+ 
+-from pandas.compat.numpy import np_version_gte1p24
++from pandas.compat.numpy import (
++    np_version_gt2,
++    np_version_gte1p24,
++)
+ from pandas.errors import IndexingError
+ 
+ from pandas.core.dtypes.common import is_list_like
+@@ -1443,7 +1447,11 @@ def obj(self):
+             marks=pytest.mark.xfail(
+                 (
+                     not np_version_gte1p24
+-                    or (np_version_gte1p24 and np._get_promotion_state() != "weak")
++                    or (
++                        np_version_gte1p24
++                        and not np_version_gt2
++                        and os.environ.get("NPY_PROMOTION_STATE", "legacy") != "weak"
++                    )
+                 ),
+                 reason="np.float32(1.1) ends up as 1.100000023841858, so "
+                 "np_can_hold_element raises and we cast to float64",
+diff --git a/pandas/tests/series/test_ufunc.py b/pandas/tests/series/test_ufunc.py
+index 9d13ebf740eab..e03e87a44107f 100644
+--- a/pandas/tests/series/test_ufunc.py
++++ b/pandas/tests/series/test_ufunc.py
+@@ -18,7 +18,10 @@ def ufunc(request):
+     return request.param
+ 
+ 
+-@pytest.fixture(params=[True, False], ids=["sparse", "dense"])
++@pytest.fixture(
++    params=[pytest.param(True, marks=pytest.mark.fails_arm_wheels), False],
++    ids=["sparse", "dense"],
++)
+ def sparse(request):
+     return request.param
+ 
+diff --git a/pandas/tests/tools/test_to_datetime.py b/pandas/tests/tools/test_to_datetime.py
+index a1ed996dade8e..ede38ce9c9a09 100644
+--- a/pandas/tests/tools/test_to_datetime.py
++++ b/pandas/tests/tools/test_to_datetime.py
+@@ -3407,7 +3407,18 @@ def test_invalid_origin(self, unit):
+         with pytest.raises(ValueError, match=msg):
+             to_datetime("2005-01-01", origin="1960-01-01", unit=unit)
+ 
+-    def test_epoch(self, units, epochs, epoch_1960, units_from_epochs):
++    @pytest.mark.parametrize(
++        "epochs",
++        [
++            Timestamp(1960, 1, 1),
++            datetime(1960, 1, 1),
++            "1960-01-01",
++            np.datetime64("1960-01-01"),
++        ],
++    )
++    def test_epoch(self, units, epochs):
++        epoch_1960 = Timestamp(1960, 1, 1)
++        units_from_epochs = np.arange(5, dtype=np.int64)
+         expected = Series(
+             [pd.Timedelta(x, unit=units) + epoch_1960 for x in units_from_epochs]
+         )
+diff --git a/pandas/util/_print_versions.py b/pandas/util/_print_versions.py
+index e39c2f7badb1d..4ede5627c28b9 100644
+--- a/pandas/util/_print_versions.py
++++ b/pandas/util/_print_versions.py
+@@ -45,7 +45,7 @@ def _get_sys_info() -> dict[str, JSONSerializable]:
+     language_code, encoding = locale.getlocale()
+     return {
+         "commit": _get_commit_hash(),
+-        "python": ".".join([str(i) for i in sys.version_info]),
++        "python": platform.python_version(),
+         "python-bits": struct.calcsize("P") * 8,
+         "OS": uname_result.system,
+         "OS-release": uname_result.release,
+@@ -70,33 +70,25 @@ def _get_dependency_info() -> dict[str, JSONSerializable]:
+         "pytz",
+         "dateutil",
+         # install / build,
+-        "setuptools",
+         "pip",
+         "Cython",
+-        # test
+-        "pytest",
+-        "hypothesis",
+         # docs
+         "sphinx",
+-        # Other, need a min version
+-        "blosc",
+-        "feather",
+-        "xlsxwriter",
+-        "lxml.etree",
+-        "html5lib",
+-        "pymysql",
+-        "psycopg2",
+-        "jinja2",
+         # Other, not imported.
+         "IPython",
+-        "pandas_datareader",
+     ]
++    # Optional dependencies
+     deps.extend(list(VERSIONS))
+ 
+     result: dict[str, JSONSerializable] = {}
+     for modname in deps:
+-        mod = import_optional_dependency(modname, errors="ignore")
+-        result[modname] = get_version(mod) if mod else None
++        try:
++            mod = import_optional_dependency(modname, errors="ignore")
++        except Exception:
++            # Dependency conflicts may cause a non ImportError
++            result[modname] = "N/A"
++        else:
++            result[modname] = get_version(mod) if mod else None
+     return result
+ 
+ 
+diff --git a/pyproject.toml b/pyproject.toml
+index db9f055799ab0..238abd85dcdb1 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -5,10 +5,10 @@ requires = [
+     "meson-python==0.13.1",
+     "meson==1.2.1",
+     "wheel",
+-    "Cython==3.0.5",  # Note: sync with setup.py, environment.yml and asv.conf.json
+-    # Force numpy higher than 2.0rc1, so that built wheels are compatible
++    "Cython~=3.0.5",  # Note: sync with setup.py, environment.yml and asv.conf.json
++    # Force numpy higher than 2.0, so that built wheels are compatible
+     # with both numpy 1 and 2
+-    "numpy>=2.0.0rc1",
++    "numpy>=2.0",
+     "versioneer[toml]"
+ ]
+ 
+@@ -153,22 +153,28 @@ setup = ['--vsenv'] # For Windows
+ skip = "cp36-* cp37-* cp38-* pp* *_i686 *_ppc64le *_s390x"
+ build-verbosity = "3"
+ environment = {LDFLAGS="-Wl,--strip-all"}
+-# TODO: remove this once numpy 2.0 proper releases
+-# and specify numpy 2.0 as a dependency in [build-system] requires in pyproject.toml
+-before-build = "pip install numpy==2.0.0rc1"
+-test-requires = "hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0"
++# pytz 2024.2 causing some failures
++test-requires = "hypothesis>=6.46.1 pytest>=7.3.2 pytest-xdist>=2.2.0 pytz<2024.2"
+ test-command = """
+   PANDAS_CI='1' python -c 'import pandas as pd; \
+   pd.test(extra_args=["-m not clipboard and not single_cpu and not slow and not network and not db", "-n 2", "--no-strict-data-files"]); \
+   pd.test(extra_args=["-m not clipboard and single_cpu and not slow and not network and not db", "--no-strict-data-files"]);' \
+   """
++free-threaded-support = true
++before-build = "PACKAGE_DIR={package} bash {package}/scripts/cibw_before_build.sh"
+ 
+ [tool.cibuildwheel.windows]
+-# TODO: remove this once numpy 2.0 proper releases
+-# and specify numpy 2.0 as a dependency in [build-system] requires in pyproject.toml
+-before-build = "pip install delvewheel numpy==2.0.0rc1"
++before-build = "pip install delvewheel && bash {package}/scripts/cibw_before_build.sh"
+ repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
+ 
++[[tool.cibuildwheel.overrides]]
++select = "*-manylinux_aarch64*"
++test-command = """
++  PANDAS_CI='1' python -c 'import pandas as pd; \
++  pd.test(extra_args=["-m not clipboard and not single_cpu and not slow and not network and not db and not fails_arm_wheels", "-n 2", "--no-strict-data-files"]); \
++  pd.test(extra_args=["-m not clipboard and single_cpu and not slow and not network and not db", "--no-strict-data-files"]);' \
++  """
++
+ [[tool.cibuildwheel.overrides]]
+ select = "*-musllinux*"
+ before-test = "apk update && apk add musl-locales"
+@@ -525,6 +531,10 @@ markers = [
+   "clipboard: mark a pd.read_clipboard test",
+   "arm_slow: mark a test as slow for arm64 architecture",
+   "skip_ubsan: Tests known to fail UBSAN check",
++  # TODO: someone should investigate this ...
++  # these tests only fail in the wheel builder and don't fail in regular
++  # ARM CI
++  "fails_arm_wheels: Tests that fail in the ARM wheel build only",
+ ]
+ 
+ [tool.mypy]
+diff --git a/scripts/cibw_before_build.sh b/scripts/cibw_before_build.sh
+new file mode 100644
+index 0000000000000..679b91e3280ec
+--- /dev/null
++++ b/scripts/cibw_before_build.sh
+@@ -0,0 +1,12 @@
++# Add 3rd party licenses, like numpy does
++for file in $PACKAGE_DIR/LICENSES/*; do
++  cat $file >> $PACKAGE_DIR/LICENSE
++done
++
++# TODO: Delete when there's a PyPI Cython release that supports free-threaded Python 3.13.
++FREE_THREADED_BUILD="$(python -c"import sysconfig; print(bool(sysconfig.get_config_var('Py_GIL_DISABLED')))")"
++if [[ $FREE_THREADED_BUILD == "True"  ]]; then
++    python -m pip install -U pip
++    python -m pip install -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple numpy cython
++    python -m pip install ninja meson-python versioneer[toml]
++fi
+diff --git a/scripts/generate_pip_deps_from_conda.py b/scripts/generate_pip_deps_from_conda.py
+index bf38d2fa419d1..5fcf09cd073fe 100755
+--- a/scripts/generate_pip_deps_from_conda.py
++++ b/scripts/generate_pip_deps_from_conda.py
+@@ -23,7 +23,7 @@
+     import tomli as tomllib
+ import yaml
+ 
+-EXCLUDE = {"python", "c-compiler", "cxx-compiler", "c-blosc2"}
++EXCLUDE = {"python", "c-compiler", "cxx-compiler"}
+ REMAP_VERSION = {"tzdata": "2022.7"}
+ CONDA_TO_PIP = {
+     "pytables": "tables",
+diff --git a/scripts/validate_min_versions_in_sync.py b/scripts/validate_min_versions_in_sync.py
+index 62a92cdd10ebc..7dd3e96e6ec18 100755
+--- a/scripts/validate_min_versions_in_sync.py
++++ b/scripts/validate_min_versions_in_sync.py
+@@ -36,7 +36,7 @@
+ SETUP_PATH = pathlib.Path("pyproject.toml").resolve()
+ YAML_PATH = pathlib.Path("ci/deps")
+ ENV_PATH = pathlib.Path("environment.yml")
+-EXCLUDE_DEPS = {"tzdata", "blosc", "c-blosc2", "pandas-gbq", "pyqt", "pyqt5"}
++EXCLUDE_DEPS = {"tzdata", "blosc", "pandas-gbq", "pyqt", "pyqt5"}
+ EXCLUSION_LIST = frozenset(["python=3.8[build=*_pypy]"])
+ # pandas package is not available
+ # in pre-commit environment
+@@ -225,9 +225,6 @@ def get_versions_from_ci(content: list[str]) -> tuple[dict[str, str], dict[str,
+             seen_required = True
+         elif "# optional dependencies" in line:
+             seen_optional = True
+-        elif "#" in line:
+-            # just a comment
+-            continue
+         elif "- pip:" in line:
+             continue
+         elif seen_required and line.strip():

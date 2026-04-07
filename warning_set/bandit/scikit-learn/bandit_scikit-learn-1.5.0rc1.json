@@ -1,0 +1,5136 @@
+[
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/sphinxext/github_link.py",
+    "line": 3,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "2 import os\n3 import subprocess\n4 import sys\n",
+      "line_range": [
+        3
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/sphinxext/github_link.py",
+    "line": 13,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "12     try:\n13         revision = subprocess.check_output(REVISION_CMD.split()).strip()\n14     except (subprocess.CalledProcessError, OSError):\n",
+      "line_range": [
+        13
+      ],
+      "col_offset": 19,
+      "end_col_offset": 64
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 2718,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2717             return super(Word,self).__str__()\n2718         except Exception:\n2719             pass\n2720 \n",
+      "line_range": [
+        2718,
+        2719
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 2802,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2801             return super(Regex,self).__str__()\n2802         except Exception:\n2803             pass\n2804 \n",
+      "line_range": [
+        2802,
+        2803
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 2939,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2938             return super(QuotedString,self).__str__()\n2939         except Exception:\n2940             pass\n2941 \n",
+      "line_range": [
+        2939,
+        2940
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 3008,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3007             return super(CharsNotIn, self).__str__()\n3008         except Exception:\n3009             pass\n3010 \n",
+      "line_range": [
+        3008,
+        3009
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 3285,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3284             return super(ParseExpression,self).__str__()\n3285         except Exception:\n3286             pass\n3287 \n",
+      "line_range": [
+        3285,
+        3286
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/pyparsing.py",
+    "line": 3757,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3756             return super(ParseElementEnhance,self).__str__()\n3757         except Exception:\n3758             pass\n3759 \n",
+      "line_range": [
+        3757,
+        3758
+      ],
+      "col_offset": 8,
+      "end_col_offset": 16
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B408",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/svg2imagemap.py",
+    "line": 30,
+    "message": "Using xml.dom.minidom to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.",
+    "cwe": [
+      20
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b408-import-xml-minidom",
+      "issue_cwe": {
+        "id": 20,
+        "link": "https://cwe.mitre.org/data/definitions/20.html"
+      },
+      "code_snippet": "29 import sys\n30 import xml.dom.minidom\n31 \n",
+      "line_range": [
+        30
+      ],
+      "col_offset": 0,
+      "end_col_offset": 22
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B318",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/machine_learning_map/svg2imagemap.py",
+    "line": 45,
+    "message": "Using xml.dom.minidom.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called",
+    "cwe": [
+      20
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b313-b320-xml-bad-minidom",
+      "issue_cwe": {
+        "id": 20,
+        "link": "https://cwe.mitre.org/data/definitions/20.html"
+      },
+      "code_snippet": "44 \n45 svg_file = xml.dom.minidom.parse(sys.argv[1])\n46 svg = svg_file.getElementsByTagName(\"svg\")[0]\n",
+      "line_range": [
+        45
+      ],
+      "col_offset": 11,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B310",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 20,
+    "message": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "19         print(\"Downloading dataset from %s (3 MB)\" % URL)\n20         opener = urlopen(URL)\n21         with open(ARCHIVE_NAME, \"wb\") as archive:\n",
+      "line_range": [
+        20
+      ],
+      "col_offset": 17,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 26,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "25         print(\"Checking the integrity of the archive\")\n26         assert sha256(ARCHIVE_NAME.read_bytes()).hexdigest() == ARCHIVE_SHA256\n27 \n",
+      "line_range": [
+        26
+      ],
+      "col_offset": 8,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B202",
+    "rule_name": "tarfile_unsafe_members",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 30,
+    "message": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b202_tarfile_unsafe_members.html",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "29         with tarfile.open(ARCHIVE_NAME, \"r:gz\") as archive:\n30             archive.extractall(path=\".\")\n31 \n",
+      "line_range": [
+        30
+      ],
+      "col_offset": 12,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B310",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 170,
+    "message": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "169 \n170         urlretrieve(DOWNLOAD_URL, filename=archive_path, reporthook=progress)\n171         if _not_in_sphinx():\n",
+      "line_range": [
+        170
+      ],
+      "col_offset": 8,
+      "end_col_offset": 77
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 175,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "174         # Check that the archive was not tampered:\n175         assert sha256(archive_path.read_bytes()).hexdigest() == ARCHIVE_SHA256\n176 \n",
+      "line_range": [
+        175
+      ],
+      "col_offset": 8,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B310",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "examples/applications/wikipedia_principal_eigenvector.py",
+    "line": 65,
+    "message": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "64         print(\"Downloading data from '%s', please wait...\" % url)\n65         opener = urlopen(url)\n66         with open(filename, \"wb\") as f:\n",
+      "line_range": [
+        65
+      ],
+      "col_offset": 17,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "examples/cluster/plot_color_quantization.py",
+    "line": 50,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "49 w, h, d = original_shape = tuple(china.shape)\n50 assert d == 3\n51 image_array = np.reshape(china, (w * h, d))\n",
+      "line_range": [
+        50
+      ],
+      "col_offset": 0,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "examples/decomposition/plot_ica_blind_source_separation.py",
+    "line": 52,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "51 # We can `prove` that the ICA model applies by reverting the unmixing.\n52 assert np.allclose(X, np.dot(S_, A_.T) + ica.mean_)\n53 \n",
+      "line_range": [
+        52
+      ],
+      "col_offset": 0,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/_build_utils/pre_build_helpers.py",
+    "line": 5,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "4 import os\n5 import subprocess\n6 import sys\n",
+      "line_range": [
+        5
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/_build_utils/pre_build_helpers.py",
+    "line": 47,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "46                 # will raise a CalledProcessError if return code was non-zero\n47                 output = subprocess.check_output(\"./test_program\")\n48                 output = output.decode(sys.stdout.encoding or \"utf-8\").splitlines()\n",
+      "line_range": [
+        47
+      ],
+      "col_offset": 25,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/cluster/_agglomerative.py",
+    "line": 618,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "617     else:\n618         assert n_clusters <= n_samples\n619         n_nodes = 2 * n_samples - n_clusters\n",
+      "line_range": [
+        618
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/compose/_column_transformer.py",
+    "line": 725,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "724         # sanity check that transformers is exhausted\n725         assert not list(fitted_transformers)\n726         self.transformers_ = _with_dtype_warning_enabled_set_to(True, transformers_)\n",
+      "line_range": [
+        725
+      ],
+      "col_offset": 8,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_base.py",
+    "line": 389,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "388     else:\n389         assert descr_module is not None\n390         descr = load_descr(descr_module=descr_module, descr_file_name=descr_file_name)\n",
+      "line_range": [
+        389
+      ],
+      "col_offset": 8,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_base.py",
+    "line": 454,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "453     else:\n454         assert descr_module is not None\n455         descr = load_descr(descr_module=descr_module, descr_file_name=descr_file_name)\n",
+      "line_range": [
+        454
+      ],
+      "col_offset": 8,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B310",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_base.py",
+    "line": 1466,
+    "message": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "1465         try:\n1466             urlretrieve(remote.url, file_path)\n1467             break\n",
+      "line_range": [
+        1466
+      ],
+      "col_offset": 12,
+      "end_col_offset": 46
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B202",
+    "rule_name": "tarfile_unsafe_members",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_lfw.py",
+    "line": 121,
+    "message": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b202_tarfile_unsafe_members.html",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "120         with tarfile.open(archive_path, \"r:gz\") as fp:\n121             tarfile_extractall(fp, path=lfw_home)\n122         remove(archive_path)\n",
+      "line_range": [
+        121
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B324",
+    "rule_name": "hashlib",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_openml.py",
+    "line": 518,
+    "message": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "code_snippet": "517     with closing(gzip_file):\n518         md5 = hashlib.md5()\n519         for chunk in iter(lambda: gzip_file.read(4096), b\"\"):\n",
+      "line_range": [
+        518
+      ],
+      "col_offset": 14,
+      "end_col_offset": 27
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B403",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 31,
+    "message": "Consider possible security implications associated with pickle module.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "30 import os\n31 import pickle\n32 import re\n",
+      "line_range": [
+        31
+      ],
+      "col_offset": 0,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B202",
+    "rule_name": "tarfile_unsafe_members",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 85,
+    "message": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+    "cwe": [
+      22
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b202_tarfile_unsafe_members.html",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "code_snippet": "84     with tarfile.open(archive_path, \"r:gz\") as fp:\n85         tarfile_extractall(fp, path=target_dir)\n86 \n",
+      "line_range": [
+        85
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B301",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 310,
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "309             uncompressed_content = codecs.decode(compressed_content, \"zlib_codec\")\n310             cache = pickle.loads(uncompressed_content)\n311         except Exception as e:\n",
+      "line_range": [
+        310
+      ],
+      "col_offset": 20,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/decomposition/_pca.py",
+    "line": 593,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "592         else:\n593             assert self._fit_svd_solver == \"covariance_eigh\"\n594             # In the following, we center the covariance matrix C afterwards\n",
+      "line_range": [
+        593
+      ],
+      "col_offset": 12,
+      "end_col_offset": 60
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/ensemble/_hist_gradient_boosting/binning.py",
+    "line": 64,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "63         midpoints = percentile(col_data, percentiles, method=\"midpoint\").astype(X_DTYPE)\n64         assert midpoints.shape[0] == max_bins - 1\n65 \n",
+      "line_range": [
+        64
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/feature_extraction/_dict_vectorizer.py",
+    "line": 198,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "197         # smaller integers than 32-bit ones, np.frombuffer screws up.\n198         assert array(\"i\").itemsize == 4, (\n199             \"sizeof(int) != 4 on your platform; please report this at\"\n200             \" https://github.com/scikit-learn/scikit-learn/issues and\"\n201             \" include the output from platform.platform() in your bug report\"\n202         )\n203 \n",
+      "line_range": [
+        198,
+        199,
+        200,
+        201,
+        202
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B105",
+    "rule_name": "hardcoded_password_string",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "sklearn/feature_extraction/text.py",
+    "line": 551,
+    "message": "Possible hardcoded password: '(?u)\\b\\w\\w+\\b'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "550                 self.token_pattern is not None\n551                 and self.token_pattern != r\"(?u)\\b\\w\\w+\\b\"\n552             ):\n",
+      "line_range": [
+        551
+      ],
+      "col_offset": 42,
+      "end_col_offset": 58
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/linear_model/_ridge.py",
+    "line": 2097,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2096         # default value: False, so the condition below should never happen.\n2097         assert not (self.is_clf and self.alpha_per_target)\n2098 \n",
+      "line_range": [
+        2097
+      ],
+      "col_offset": 8,
+      "end_col_offset": 58
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/linear_model/_stochastic_gradient.py",
+    "line": 439,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "438     )\n439     assert y_i.shape[0] == y.shape[0] == sample_weight.shape[0]\n440 \n",
+      "line_range": [
+        439
+      ],
+      "col_offset": 4,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_locally_linear.py",
+    "line": 61,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "60     n_samples, n_neighbors = indices.shape\n61     assert X.shape[0] == n_samples\n62 \n",
+      "line_range": [
+        61
+      ],
+      "col_offset": 4,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_t_sne.py",
+    "line": 111,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "110     )\n111     assert np.all(np.isfinite(conditional_P)), \"All probabilities should be finite\"\n112 \n",
+      "line_range": [
+        111
+      ],
+      "col_offset": 4,
+      "end_col_offset": 83
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_t_sne.py",
+    "line": 124,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "123 \n124     assert np.all(np.abs(P.data) <= 1.0)\n125     if verbose >= 2:\n",
+      "line_range": [
+        124
+      ],
+      "col_offset": 4,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_t_sne.py",
+    "line": 960,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "959             P = _joint_probabilities(distances, self.perplexity, self.verbose)\n960             assert np.all(np.isfinite(P)), \"All probabilities should be finite\"\n961             assert np.all(P >= 0), \"All probabilities should be non-negative\"\n",
+      "line_range": [
+        960
+      ],
+      "col_offset": 12,
+      "end_col_offset": 79
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_t_sne.py",
+    "line": 961,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "960             assert np.all(np.isfinite(P)), \"All probabilities should be finite\"\n961             assert np.all(P >= 0), \"All probabilities should be non-negative\"\n962             assert np.all(\n",
+      "line_range": [
+        961
+      ],
+      "col_offset": 12,
+      "end_col_offset": 77
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/manifold/_t_sne.py",
+    "line": 962,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "961             assert np.all(P >= 0), \"All probabilities should be non-negative\"\n962             assert np.all(\n963                 P <= 1\n964             ), \"All probabilities should be less or then equal to one\"\n965 \n",
+      "line_range": [
+        962,
+        963,
+        964
+      ],
+      "col_offset": 12,
+      "end_col_offset": 70
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/metrics/_classification.py",
+    "line": 1836,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1835     if average is not None:\n1836         assert average != \"binary\" or len(precision) == 1\n1837         precision = _nanaverage(precision, weights=weights)\n",
+      "line_range": [
+        1836
+      ],
+      "col_offset": 8,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/neighbors/_base.py",
+    "line": 148,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "147     \"\"\"\n148     assert graph.format == \"csr\"\n149     out_of_order = graph.data[:-1] > graph.data[1:]\n",
+      "line_range": [
+        148
+      ],
+      "col_offset": 4,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/neighbors/_base.py",
+    "line": 316,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "315     n_samples = graph.shape[0]\n316     assert graph.format == \"csr\"\n317 \n",
+      "line_range": [
+        316
+      ],
+      "col_offset": 4,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/neighbors/_base.py",
+    "line": 367,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "366     \"\"\"\n367     assert graph.format == \"csr\"\n368 \n",
+      "line_range": [
+        367
+      ],
+      "col_offset": 4,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/svm/_base.py",
+    "line": 295,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "294     def _warn_from_fit_status(self):\n295         assert self.fit_status_ in (0, 1)\n296         if self.fit_status_ == 1:\n",
+      "line_range": [
+        295
+      ],
+      "col_offset": 8,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_array_api.py",
+    "line": 185,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "184         return xp.asarray(numpy.union1d(a, b))\n185     assert a.ndim == b.ndim == 1\n186     return xp.unique_values(xp.concat([xp.unique_values(a), xp.unique_values(b)]))\n",
+      "line_range": [
+        185
+      ],
+      "col_offset": 4,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_mocking.py",
+    "line": 179,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "178             if isinstance(checked_X, (bool, np.bool_)):\n179                 assert checked_X\n180             else:\n",
+      "line_range": [
+        179
+      ],
+      "col_offset": 16,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_mocking.py",
+    "line": 186,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "185             if isinstance(checked_y, (bool, np.bool_)):\n186                 assert checked_y\n187             else:\n",
+      "line_range": [
+        186
+      ],
+      "col_offset": 16,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_mocking.py",
+    "line": 215,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "214         \"\"\"\n215         assert _num_samples(X) == _num_samples(y)\n216         if self.methods_to_check == \"all\" or \"fit\" in self.methods_to_check:\n",
+      "line_range": [
+        215
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_testing.py",
+    "line": 30,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "29 from inspect import signature\n30 from subprocess import STDOUT, CalledProcessError, TimeoutExpired, check_output\n31 from unittest import TestCase\n",
+      "line_range": [
+        30
+      ],
+      "col_offset": 0,
+      "end_col_offset": 79
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/_testing.py",
+    "line": 714,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "713             try:\n714                 out = check_output(cmd, **kwargs)\n715             except CalledProcessError as e:\n",
+      "line_range": [
+        714
+      ],
+      "col_offset": 22,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B403",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 6,
+    "message": "Consider possible security implications associated with pickle module.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "5 \n6 import pickle\n7 import re\n",
+      "line_range": [
+        6
+      ],
+      "col_offset": 0,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 853,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "852 \n853     assert X_csr.format == \"csr\"\n854     yield \"csr\", X_csr.copy()\n",
+      "line_range": [
+        853
+      ],
+      "col_offset": 4,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 917,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "916             attribute_ns = get_namespace(est_xp_param)[0].__name__\n917         assert attribute_ns == input_ns, (\n918             f\"'{key}' attribute is in wrong namespace, expected {input_ns} \"\n919             f\"got {attribute_ns}\"\n920         )\n921 \n",
+      "line_range": [
+        917,
+        918,
+        919,
+        920
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 922,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "921 \n922         assert array_device(est_xp_param) == array_device(X_xp)\n923 \n",
+      "line_range": [
+        922
+      ],
+      "col_offset": 8,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 933,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "932         else:\n933             assert attribute.shape == est_xp_param_np.shape\n934             assert attribute.dtype == est_xp_param_np.dtype\n",
+      "line_range": [
+        933
+      ],
+      "col_offset": 12,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 934,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "933             assert attribute.shape == est_xp_param_np.shape\n934             assert attribute.dtype == est_xp_param_np.dtype\n935 \n",
+      "line_range": [
+        934
+      ],
+      "col_offset": 12,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 957,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "956             # score typically returns a Python float\n957             assert isinstance(result, float)\n958             assert isinstance(result_xp, float)\n",
+      "line_range": [
+        957
+      ],
+      "col_offset": 12,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 958,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "957             assert isinstance(result, float)\n958             assert isinstance(result_xp, float)\n959             if check_values:\n",
+      "line_range": [
+        958
+      ],
+      "col_offset": 12,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 960,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "959             if check_values:\n960                 assert abs(result - result_xp) < _atol_for_type(X.dtype)\n961             continue\n",
+      "line_range": [
+        960
+      ],
+      "col_offset": 16,
+      "end_col_offset": 72
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 969,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "968             result_ns = get_namespace(result_xp)[0].__name__\n969         assert result_ns == input_ns, (\n970             f\"'{method}' output is in wrong namespace, expected {input_ns}, \"\n971             f\"got {result_ns}.\"\n972         )\n973 \n",
+      "line_range": [
+        969,
+        970,
+        971,
+        972
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 974,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "973 \n974         assert array_device(result_xp) == array_device(X_xp)\n975         result_xp_np = _convert_to_numpy(result_xp, xp=xp)\n",
+      "line_range": [
+        974
+      ],
+      "col_offset": 8,
+      "end_col_offset": 60
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 986,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "985             if hasattr(result, \"shape\"):\n986                 assert result.shape == result_xp_np.shape\n987                 assert result.dtype == result_xp_np.dtype\n",
+      "line_range": [
+        986
+      ],
+      "col_offset": 16,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 987,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "986                 assert result.shape == result_xp_np.shape\n987                 assert result.dtype == result_xp_np.dtype\n988 \n",
+      "line_range": [
+        987
+      ],
+      "col_offset": 16,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 994,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "993                 inverse_result_ns = get_namespace(invese_result_xp)[0].__name__\n994             assert inverse_result_ns == input_ns, (\n995                 \"'inverse_transform' output is in wrong namespace, expected\"\n996                 f\" {input_ns}, got {inverse_result_ns}.\"\n997             )\n998 \n",
+      "line_range": [
+        994,
+        995,
+        996,
+        997
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 999,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "998 \n999             assert array_device(invese_result_xp) == array_device(X_xp)\n1000 \n",
+      "line_range": [
+        999
+      ],
+      "col_offset": 12,
+      "end_col_offset": 71
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1010,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1009             else:\n1010                 assert inverse_result.shape == invese_result_xp_np.shape\n1011                 assert inverse_result.dtype == invese_result_xp_np.dtype\n",
+      "line_range": [
+        1010
+      ],
+      "col_offset": 16,
+      "end_col_offset": 72
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1011,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1010                 assert inverse_result.shape == invese_result_xp_np.shape\n1011                 assert inverse_result.dtype == invese_result_xp_np.dtype\n1012 \n",
+      "line_range": [
+        1011
+      ],
+      "col_offset": 16,
+      "end_col_offset": 72
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1073,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1072                 if tags[\"multioutput_only\"]:\n1073                     assert pred.shape == (X.shape[0], 1)\n1074                 else:\n",
+      "line_range": [
+        1073
+      ],
+      "col_offset": 20,
+      "end_col_offset": 56
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1075,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1074                 else:\n1075                     assert pred.shape == (X.shape[0],)\n1076             if hasattr(estimator, \"predict_proba\"):\n",
+      "line_range": [
+        1075
+      ],
+      "col_offset": 20,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1082,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1081                     expected_probs_shape = (X.shape[0], 4)\n1082                 assert probs.shape == expected_probs_shape\n1083 \n",
+      "line_range": [
+        1082
+      ],
+      "col_offset": 16,
+      "end_col_offset": 58
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1414,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1413             getattr(estimator, method)(X)\n1414             assert estimator.__dict__ == dict_before, (\n1415                 \"Estimator changes __dict__ during %s\" % method\n1416             )\n1417 \n",
+      "line_range": [
+        1414,
+        1415,
+        1416
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1456,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1455     # check that fit doesn't add any public attribute\n1456     assert not attrs_added_by_fit, (\n1457         \"Estimator adds public attribute(s) during\"\n1458         \" the fit method.\"\n1459         \" Estimators are only allowed to add private attributes\"\n1460         \" either started with _ or ended\"\n1461         \" with _ but %s added\" % \", \".join(attrs_added_by_fit)\n1462     )\n1463 \n",
+      "line_range": [
+        1456,
+        1457,
+        1458,
+        1459,
+        1460,
+        1461,
+        1462
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1471,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1470 \n1471     assert not attrs_changed_by_fit, (\n1472         \"Estimator changes public attribute(s) during\"\n1473         \" the fit method. Estimators are only allowed\"\n1474         \" to change attributes started\"\n1475         \" or ended with _, but\"\n1476         \" %s changed\" % \", \".join(attrs_changed_by_fit)\n1477     )\n1478 \n",
+      "line_range": [
+        1471,
+        1472,
+        1473,
+        1474,
+        1475,
+        1476,
+        1477
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1760,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1759 \n1760     assert X_trans.shape[0] == X.shape[0]\n1761 \n",
+      "line_range": [
+        1760
+      ],
+      "col_offset": 4,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1785,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1784         for x_pred in X_pred:\n1785             assert x_pred.shape[0] == n_samples\n1786     else:\n",
+      "line_range": [
+        1785
+      ],
+      "col_offset": 12,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1788,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1787         # check for consistent n_samples\n1788         assert X_pred.shape[0] == n_samples\n1789 \n",
+      "line_range": [
+        1788
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1832,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1831             )\n1832             assert _num_samples(X_pred2) == n_samples\n1833             assert _num_samples(X_pred3) == n_samples\n",
+      "line_range": [
+        1832
+      ],
+      "col_offset": 12,
+      "end_col_offset": 53
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1833,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1832             assert _num_samples(X_pred2) == n_samples\n1833             assert _num_samples(X_pred3) == n_samples\n1834 \n",
+      "line_range": [
+        1833
+      ],
+      "col_offset": 12,
+      "end_col_offset": 53
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1910,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1909                 args = args[1:]\n1910             assert args[1] in [\"y\", \"Y\"], (\n1911                 \"Expected y or Y as second argument for method \"\n1912                 \"%s of %s. Got arguments: %r.\"\n1913                 % (func_name, type(estimator).__name__, args)\n1914             )\n1915 \n",
+      "line_range": [
+        1910,
+        1911,
+        1912,
+        1913,
+        1914
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 1966,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1965             # check that the output dtype is preserved\n1966             assert Xt.dtype == dtype, (\n1967                 f\"{name} (method={method}) does not preserve dtype. \"\n1968                 f\"Original/Expected dtype={dtype.__name__}, got dtype={Xt.dtype}.\"\n1969             )\n1970 \n",
+      "line_range": [
+        1966,
+        1967,
+        1968,
+        1969
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2102,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2101             # modules.\n2102             assert b\"_sklearn_version\" in pickled_estimator\n2103         unpickled_estimator = pickle.loads(pickled_estimator)\n",
+      "line_range": [
+        2102
+      ],
+      "col_offset": 12,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B301",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2103,
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "2102             assert b\"_sklearn_version\" in pickled_estimator\n2103         unpickled_estimator = pickle.loads(pickled_estimator)\n2104 \n",
+      "line_range": [
+        2103
+      ],
+      "col_offset": 30,
+      "end_col_offset": 61
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2155,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2154 \n2155     assert y_pred.shape == (n_samples, n_classes), (\n2156         \"The shape of the prediction for multioutput data is \"\n2157         \"incorrect. Expected {}, got {}.\".format((n_samples, n_labels), y_pred.shape)\n2158     )\n2159     assert y_pred.dtype.kind == \"i\"\n",
+      "line_range": [
+        2155,
+        2156,
+        2157,
+        2158
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2159,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2158     )\n2159     assert y_pred.dtype.kind == \"i\"\n2160 \n",
+      "line_range": [
+        2159
+      ],
+      "col_offset": 4,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2163,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2162         decision = estimator.decision_function(X)\n2163         assert isinstance(decision, np.ndarray)\n2164         assert decision.shape == (n_samples, n_classes), (\n",
+      "line_range": [
+        2163
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2164,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2163         assert isinstance(decision, np.ndarray)\n2164         assert decision.shape == (n_samples, n_classes), (\n2165             \"The shape of the decision function output for \"\n2166             \"multioutput data is incorrect. Expected {}, got {}.\".format(\n2167                 (n_samples, n_classes), decision.shape\n2168             )\n2169         )\n2170 \n",
+      "line_range": [
+        2164,
+        2165,
+        2166,
+        2167,
+        2168,
+        2169
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2180,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2179             for i in range(n_classes):\n2180                 assert y_prob[i].shape == (n_samples, 2), (\n2181                     \"The shape of the probability for multioutput data is\"\n2182                     \" incorrect. Expected {}, got {}.\".format(\n2183                         (n_samples, 2), y_prob[i].shape\n2184                     )\n2185                 )\n2186                 assert_array_equal(\n",
+      "line_range": [
+        2180,
+        2181,
+        2182,
+        2183,
+        2184,
+        2185
+      ],
+      "col_offset": 16,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2190,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2189         elif not tags[\"poor_score\"]:\n2190             assert y_prob.shape == (n_samples, n_classes), (\n2191                 \"The shape of the probability for multioutput data is\"\n2192                 \" incorrect. Expected {}, got {}.\".format(\n2193                     (n_samples, n_classes), y_prob.shape\n2194                 )\n2195             )\n2196             assert_array_equal(y_prob.round().astype(int), y_pred)\n",
+      "line_range": [
+        2190,
+        2191,
+        2192,
+        2193,
+        2194,
+        2195
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2221,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2220 \n2221     assert y_pred.dtype == np.dtype(\"float64\"), (\n2222         \"Multioutput predictions by a regressor are expected to be\"\n2223         \" floating-point precision. Got {} instead\".format(y_pred.dtype)\n2224     )\n2225     assert y_pred.shape == y.shape, (\n",
+      "line_range": [
+        2221,
+        2222,
+        2223,
+        2224
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2225,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2224     )\n2225     assert y_pred.shape == y.shape, (\n2226         \"The shape of the prediction for multioutput data is incorrect.\"\n2227         \" Expected {}, got {}.\"\n2228     )\n2229 \n",
+      "line_range": [
+        2225,
+        2226,
+        2227,
+        2228
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2258,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2257     pred = clusterer.labels_\n2258     assert pred.shape == (n_samples,)\n2259     assert adjusted_rand_score(pred, y) > 0.4\n",
+      "line_range": [
+        2258
+      ],
+      "col_offset": 4,
+      "end_col_offset": 37
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2259,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2258     assert pred.shape == (n_samples,)\n2259     assert adjusted_rand_score(pred, y) > 0.4\n2260     if _safe_tags(clusterer, key=\"non_deterministic\"):\n",
+      "line_range": [
+        2259
+      ],
+      "col_offset": 4,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2268,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2267     # fit_predict(X) and labels_ should be of type int\n2268     assert pred.dtype in [np.dtype(\"int32\"), np.dtype(\"int64\")]\n2269     assert pred2.dtype in [np.dtype(\"int32\"), np.dtype(\"int64\")]\n",
+      "line_range": [
+        2268
+      ],
+      "col_offset": 4,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2269,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2268     assert pred.dtype in [np.dtype(\"int32\"), np.dtype(\"int64\")]\n2269     assert pred2.dtype in [np.dtype(\"int32\"), np.dtype(\"int64\")]\n2270 \n",
+      "line_range": [
+        2269
+      ],
+      "col_offset": 4,
+      "end_col_offset": 64
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2283,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2282     # Labels are expected to start at 0 (no noise) or -1 (if noise)\n2283     assert labels_sorted[0] in [0, -1]\n2284     # Labels should be less than n_clusters - 1\n",
+      "line_range": [
+        2283
+      ],
+      "col_offset": 4,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2287,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2286         n_clusters = getattr(clusterer, \"n_clusters\")\n2287         assert n_clusters - 1 >= labels_sorted[-1]\n2288     # else labels should be less than max(labels_) which is necessarily true\n",
+      "line_range": [
+        2287
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2416,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2415         classifier.fit(X.tolist(), y.tolist())\n2416         assert hasattr(classifier, \"classes_\")\n2417         y_pred = classifier.predict(X)\n",
+      "line_range": [
+        2416
+      ],
+      "col_offset": 8,
+      "end_col_offset": 46
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2419,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2418 \n2419         assert y_pred.shape == (n_samples,)\n2420         # training set performance\n",
+      "line_range": [
+        2419
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2422,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2421         if not tags[\"poor_score\"]:\n2422             assert accuracy_score(y, y_pred) > 0.83\n2423 \n",
+      "line_range": [
+        2422
+      ],
+      "col_offset": 12,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2451,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2450                     if not tags[\"multioutput_only\"]:\n2451                         assert decision.shape == (n_samples,)\n2452                     else:\n",
+      "line_range": [
+        2451
+      ],
+      "col_offset": 24,
+      "end_col_offset": 61
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2453,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2452                     else:\n2453                         assert decision.shape == (n_samples, 1)\n2454                     dec_pred = (decision.ravel() > 0).astype(int)\n",
+      "line_range": [
+        2453
+      ],
+      "col_offset": 24,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2457,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2456                 else:\n2457                     assert decision.shape == (n_samples, n_classes)\n2458                     assert_array_equal(np.argmax(decision, axis=1), y_pred)\n",
+      "line_range": [
+        2457
+      ],
+      "col_offset": 20,
+      "end_col_offset": 67
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2480,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2479             y_prob = classifier.predict_proba(X)\n2480             assert y_prob.shape == (n_samples, n_classes)\n2481             assert_array_equal(np.argmax(y_prob, axis=1), y_pred)\n",
+      "line_range": [
+        2480
+      ],
+      "col_offset": 12,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2524,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2523     )\n2524     assert len(np.unique(sorted_decision[start:end])) == 1, msg\n2525 \n",
+      "line_range": [
+        2524
+      ],
+      "col_offset": 4,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2545,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2544     y_pred = estimator.predict(X)\n2545     assert y_pred.shape == (n_samples,)\n2546     assert y_pred.dtype.kind == \"i\"\n",
+      "line_range": [
+        2545
+      ],
+      "col_offset": 4,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2546,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2545     assert y_pred.shape == (n_samples,)\n2546     assert y_pred.dtype.kind == \"i\"\n2547     assert_array_equal(np.unique(y_pred), np.array([-1, 1]))\n",
+      "line_range": [
+        2546
+      ],
+      "col_offset": 4,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2552,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2551     for output in [decision, scores]:\n2552         assert output.dtype == np.dtype(\"float\")\n2553         assert output.shape == (n_samples,)\n",
+      "line_range": [
+        2552
+      ],
+      "col_offset": 8,
+      "end_col_offset": 48
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2553,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2552         assert output.dtype == np.dtype(\"float\")\n2553         assert output.shape == (n_samples,)\n2554 \n",
+      "line_range": [
+        2553
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2618,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2617         if isinstance(constraint, Interval):\n2618             assert (\n2619                 constraint.type == Real\n2620                 and constraint.left >= 0.0\n2621                 and constraint.right <= 0.5\n2622                 and (constraint.left > 0 or constraint.closed in {\"right\", \"neither\"})\n2623             ), \"contamination constraint should be an interval in (0, 0.5]\"\n2624 \n",
+      "line_range": [
+        2618,
+        2619,
+        2620,
+        2621,
+        2622,
+        2623
+      ],
+      "col_offset": 12,
+      "end_col_offset": 75
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2661,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2660 \n2661     assert y_pred.dtype == y_pred_list_of_arrays.dtype\n2662     assert y_pred.dtype == y_pred_list_of_lists.dtype\n",
+      "line_range": [
+        2661
+      ],
+      "col_offset": 4,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2662,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2661     assert y_pred.dtype == y_pred_list_of_arrays.dtype\n2662     assert y_pred.dtype == y_pred_list_of_lists.dtype\n2663     assert type(y_pred) == type(y_pred_list_of_arrays)\n",
+      "line_range": [
+        2662
+      ],
+      "col_offset": 4,
+      "end_col_offset": 53
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2663,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2662     assert y_pred.dtype == y_pred_list_of_lists.dtype\n2663     assert type(y_pred) == type(y_pred_list_of_arrays)\n2664     assert type(y_pred) == type(y_pred_list_of_lists)\n",
+      "line_range": [
+        2663
+      ],
+      "col_offset": 4,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2664,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2663     assert type(y_pred) == type(y_pred_list_of_arrays)\n2664     assert type(y_pred) == type(y_pred_list_of_lists)\n2665 \n",
+      "line_range": [
+        2664
+      ],
+      "col_offset": 4,
+      "end_col_offset": 53
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2698,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2697     # y_pred.shape -> y_test.shape with the same dtype\n2698     assert isinstance(y_pred, np.ndarray), (\n2699         f\"{name}.predict is expected to output a NumPy array. Got \"\n2700         f\"{type(y_pred)} instead.\"\n2701     )\n2702     assert y_pred.shape == y_test.shape, (\n",
+      "line_range": [
+        2698,
+        2699,
+        2700,
+        2701
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2702,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2701     )\n2702     assert y_pred.shape == y_test.shape, (\n2703         f\"{name}.predict outputs a NumPy array of shape {y_pred.shape} \"\n2704         f\"instead of {y_test.shape}.\"\n2705     )\n2706     assert y_pred.dtype == y_test.dtype, (\n",
+      "line_range": [
+        2702,
+        2703,
+        2704,
+        2705
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2706,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2705     )\n2706     assert y_pred.dtype == y_test.dtype, (\n2707         f\"{name}.predict does not output the same dtype than the targets. \"\n2708         f\"Got {y_pred.dtype} instead of {y_test.dtype}.\"\n2709     )\n2710 \n",
+      "line_range": [
+        2706,
+        2707,
+        2708,
+        2709
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2747,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2746     if isinstance(y_pred, list):\n2747         assert len(y_pred) == n_outputs, (\n2748             f\"When {name}.predict_proba returns a list, the list should \"\n2749             \"be of length n_outputs and contain NumPy arrays. Got length \"\n2750             f\"of {len(y_pred)} instead of {n_outputs}.\"\n2751         )\n2752         for pred in y_pred:\n",
+      "line_range": [
+        2747,
+        2748,
+        2749,
+        2750,
+        2751
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2753,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2752         for pred in y_pred:\n2753             assert pred.shape == (test_size, 2), (\n2754                 f\"When {name}.predict_proba returns a list, this list \"\n2755                 \"should contain NumPy arrays of shape (n_samples, 2). Got \"\n2756                 f\"NumPy arrays of shape {pred.shape} instead of \"\n2757                 f\"{(test_size, 2)}.\"\n2758             )\n2759             assert pred.dtype.kind == \"f\", (\n",
+      "line_range": [
+        2753,
+        2754,
+        2755,
+        2756,
+        2757,
+        2758
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2759,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2758             )\n2759             assert pred.dtype.kind == \"f\", (\n2760                 f\"When {name}.predict_proba returns a list, it should \"\n2761                 \"contain NumPy arrays with floating dtype. Got \"\n2762                 f\"{pred.dtype} instead.\"\n2763             )\n2764             # check that we have the correct probabilities\n",
+      "line_range": [
+        2759,
+        2760,
+        2761,
+        2762,
+        2763
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2773,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2772     elif isinstance(y_pred, np.ndarray):\n2773         assert y_pred.shape == (test_size, n_outputs), (\n2774             f\"When {name}.predict_proba returns a NumPy array, the \"\n2775             f\"expected shape is (n_samples, n_outputs). Got {y_pred.shape}\"\n2776             f\" instead of {(test_size, n_outputs)}.\"\n2777         )\n2778         assert y_pred.dtype.kind == \"f\", (\n",
+      "line_range": [
+        2773,
+        2774,
+        2775,
+        2776,
+        2777
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2778,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2777         )\n2778         assert y_pred.dtype.kind == \"f\", (\n2779             f\"When {name}.predict_proba returns a NumPy array, the \"\n2780             f\"expected data type is floating. Got {y_pred.dtype} instead.\"\n2781         )\n2782         err_msg = (\n",
+      "line_range": [
+        2778,
+        2779,
+        2780,
+        2781
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2827,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2826     # y_pred.shape -> y_test.shape with floating dtype\n2827     assert isinstance(y_pred, np.ndarray), (\n2828         f\"{name}.decision_function is expected to output a NumPy array.\"\n2829         f\" Got {type(y_pred)} instead.\"\n2830     )\n2831     assert y_pred.shape == (test_size, n_outputs), (\n",
+      "line_range": [
+        2827,
+        2828,
+        2829,
+        2830
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2831,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2830     )\n2831     assert y_pred.shape == (test_size, n_outputs), (\n2832         f\"{name}.decision_function is expected to provide a NumPy array \"\n2833         f\"of shape (n_samples, n_outputs). Got {y_pred.shape} instead of \"\n2834         f\"{(test_size, n_outputs)}.\"\n2835     )\n2836     assert y_pred.dtype.kind == \"f\", (\n",
+      "line_range": [
+        2831,
+        2832,
+        2833,
+        2834,
+        2835
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2836,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2835     )\n2836     assert y_pred.dtype.kind == \"f\", (\n2837         f\"{name}.decision_function is expected to output a floating dtype.\"\n2838         f\" Got {y_pred.dtype} instead.\"\n2839     )\n2840 \n",
+      "line_range": [
+        2836,
+        2837,
+        2838,
+        2839
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2871,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2870     set_random_state(estimator)\n2871     assert estimator.fit(X, y) is estimator\n2872 \n",
+      "line_range": [
+        2871
+      ],
+      "col_offset": 4,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2922,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2921         # check that we warned if we don't support multi-output\n2922         assert len(w) > 0, msg\n2923         assert (\n",
+      "line_range": [
+        2922
+      ],
+      "col_offset": 8,
+      "end_col_offset": 30
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2923,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2922         assert len(w) > 0, msg\n2923         assert (\n2924             \"DataConversionWarning('A column-vector y\"\n2925             \" was passed when a 1d array was expected\" in msg\n2926         )\n2927     assert_allclose(y_pred.ravel(), y_pred_2d.ravel())\n",
+      "line_range": [
+        2923,
+        2924,
+        2925,
+        2926
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2943,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2942         decision = classifier.decision_function(X)\n2943         assert isinstance(decision, np.ndarray)\n2944         if len(classes) == 2:\n",
+      "line_range": [
+        2943
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3109,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3108     y_pred = regressor.predict(X)\n3109     assert y_pred.shape == y_.shape\n3110 \n",
+      "line_range": [
+        3109
+      ],
+      "col_offset": 4,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3115,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3114     if not _safe_tags(regressor, key=\"poor_score\"):\n3115         assert regressor.score(X, y_) > 0.5\n3116 \n",
+      "line_range": [
+        3115
+      ],
+      "col_offset": 8,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3132,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3131     for func_name in funcs:\n3132         assert not hasattr(regressor, func_name)\n3133 \n",
+      "line_range": [
+        3132
+      ],
+      "col_offset": 8,
+      "end_col_offset": 48
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3177,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3176         if not _safe_tags(classifier_orig, key=\"poor_score\"):\n3177             assert np.mean(y_pred == 0) > 0.87\n3178 \n",
+      "line_range": [
+        3177
+      ],
+      "col_offset": 12,
+      "end_col_offset": 46
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3197,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3196     y_pred_balanced = classifier.predict(X_test)\n3197     assert f1_score(y_test, y_pred_balanced, average=\"weighted\") > f1_score(\n3198         y_test, y_pred, average=\"weighted\"\n3199     )\n3200 \n",
+      "line_range": [
+        3197,
+        3198,
+        3199
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3270,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3269         # fixed the random_state params recursively to be integer seeds.\n3270         assert joblib.hash(new_value) == joblib.hash(original_value), (\n3271             \"Estimator %s should not change or mutate \"\n3272             \" the parameter %s from %s to %s during fit.\"\n3273             % (name, param_name, original_value, new_value)\n3274         )\n3275 \n",
+      "line_range": [
+        3270,
+        3271,
+        3272,
+        3273,
+        3274
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3308,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3307     invalid_attr = set([attr for attr in invalid_attr if not attr.startswith(\"_\")])\n3308     assert not invalid_attr, (\n3309         \"Estimator %s should not set any attribute apart\"\n3310         \" from parameters during init. Found attributes %s.\"\n3311         % (name, sorted(invalid_attr))\n3312     )\n3313 \n",
+      "line_range": [
+        3308,
+        3309,
+        3310,
+        3311,
+        3312
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3339,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3338     est.sparsify()\n3339     assert sparse.issparse(est.coef_)\n3340     pred = est.predict(X)\n",
+      "line_range": [
+        3339
+      ],
+      "col_offset": 4,
+      "end_col_offset": 37
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B301",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3344,
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "3343     # pickle and unpickle with sparse coef_\n3344     est = pickle.loads(pickle.dumps(est))\n3345     assert sparse.issparse(est.coef_)\n",
+      "line_range": [
+        3344
+      ],
+      "col_offset": 10,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3345,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3344     est = pickle.loads(pickle.dumps(est))\n3345     assert sparse.issparse(est.coef_)\n3346     pred = est.predict(X)\n",
+      "line_range": [
+        3345
+      ],
+      "col_offset": 4,
+      "end_col_offset": 37
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3444,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3443         # test that set_params returns self\n3444         assert estimator.set_params() is estimator\n3445 \n",
+      "line_range": [
+        3444
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3477,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3476         for init_param in init_params:\n3477             assert (\n3478                 init_param.default != init_param.empty\n3479             ), \"parameter %s for %s has no default value\" % (\n3480                 init_param.name,\n3481                 type(estimator).__name__,\n3482             )\n3483             allowed_types = {\n",
+      "line_range": [
+        3477,
+        3478,
+        3479,
+        3480,
+        3481,
+        3482
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3505,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3504 \n3505             assert allowed_value, (\n3506                 f\"Parameter '{init_param.name}' of estimator \"\n3507                 f\"'{Estimator.__name__}' is of type \"\n3508                 f\"{type(init_param.default).__name__} which is not allowed. \"\n3509                 f\"'{init_param.name}' must be a callable or must be of type \"\n3510                 f\"{set(type.__name__ for type in allowed_types)}.\"\n3511             )\n3512             if init_param.name not in params.keys():\n",
+      "line_range": [
+        3505,
+        3506,
+        3507,
+        3508,
+        3509,
+        3510,
+        3511
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3514,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3513                 # deprecated parameter, not in get_params\n3514                 assert init_param.default is None, (\n3515                     f\"Estimator parameter '{init_param.name}' of estimator \"\n3516                     f\"'{Estimator.__name__}' is not returned by get_params. \"\n3517                     \"If it is deprecated, set its default value to None.\"\n3518                 )\n3519                 continue\n",
+      "line_range": [
+        3514,
+        3515,
+        3516,
+        3517,
+        3518
+      ],
+      "col_offset": 16,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3531,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3530                     # Allows to set default parameters to np.nan\n3531                     assert param_value is init_param.default, failure_text\n3532                 else:\n",
+      "line_range": [
+        3531
+      ],
+      "col_offset": 20,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3533,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3532                 else:\n3533                     assert param_value == init_param.default, failure_text\n3534 \n",
+      "line_range": [
+        3533
+      ],
+      "col_offset": 20,
+      "end_col_offset": 74
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3618,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3617 \n3618         assert np.all(estimator.n_iter_ >= 1)\n3619 \n",
+      "line_range": [
+        3618
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3647,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3646             for iter_ in estimator.n_iter_:\n3647                 assert iter_ >= 1\n3648         else:\n",
+      "line_range": [
+        3647
+      ],
+      "col_offset": 16,
+      "end_col_offset": 33
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3649,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3648         else:\n3649             assert estimator.n_iter_ >= 1\n3650 \n",
+      "line_range": [
+        3649
+      ],
+      "col_offset": 12,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3660,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3659 \n3660     assert all(item in deep_params.items() for item in shallow_params.items())\n3661 \n",
+      "line_range": [
+        3660
+      ],
+      "col_offset": 4,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3674,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3673     curr_params = estimator.get_params(deep=False)\n3674     assert set(orig_params.keys()) == set(curr_params.keys()), msg\n3675     for k, v in curr_params.items():\n",
+      "line_range": [
+        3674
+      ],
+      "col_offset": 4,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3676,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3675     for k, v in curr_params.items():\n3676         assert orig_params[k] is v, msg\n3677 \n",
+      "line_range": [
+        3676
+      ],
+      "col_offset": 8,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3705,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3704                 try:\n3705                     assert set(params_before_exception.keys()) == set(\n3706                         curr_params.keys()\n3707                     )\n3708                     for k, v in curr_params.items():\n",
+      "line_range": [
+        3705,
+        3706,
+        3707
+      ],
+      "col_offset": 20,
+      "end_col_offset": 21
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3709,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3708                     for k, v in curr_params.items():\n3709                         assert params_before_exception[k] is v\n3710                 except AssertionError:\n",
+      "line_range": [
+        3709
+      ],
+      "col_offset": 24,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3714,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3713                 curr_params = estimator.get_params(deep=False)\n3714                 assert set(test_params.keys()) == set(curr_params.keys()), msg\n3715                 for k, v in curr_params.items():\n",
+      "line_range": [
+        3714
+      ],
+      "col_offset": 16,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3716,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3715                 for k, v in curr_params.items():\n3716                     assert test_params[k] is v, msg\n3717         test_params[param_name] = default_value\n",
+      "line_range": [
+        3716
+      ],
+      "col_offset": 20,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3791,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3790     y_pred = estimator.fit_predict(X)\n3791     assert y_pred.shape == (n_samples,)\n3792     assert y_pred.dtype.kind == \"i\"\n",
+      "line_range": [
+        3791
+      ],
+      "col_offset": 4,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3792,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3791     assert y_pred.shape == (n_samples,)\n3792     assert y_pred.dtype.kind == \"i\"\n3793     assert_array_equal(np.unique(y_pred), np.array([-1, 1]))\n",
+      "line_range": [
+        3792
+      ],
+      "col_offset": 4,
+      "end_col_offset": 35
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3949,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3948 \n3949     assert not hasattr(estimator, \"n_features_in_\")\n3950     estimator.fit(X, y)\n",
+      "line_range": [
+        3949
+      ],
+      "col_offset": 4,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3951,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3950     estimator.fit(X, y)\n3951     assert hasattr(estimator, \"n_features_in_\")\n3952     assert estimator.n_features_in_ == X.shape[1]\n",
+      "line_range": [
+        3951
+      ],
+      "col_offset": 4,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3952,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "3951     assert hasattr(estimator, \"n_features_in_\")\n3952     assert estimator.n_features_in_ == X.shape[1]\n3953 \n",
+      "line_range": [
+        3952
+      ],
+      "col_offset": 4,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4011,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4010     estimator.fit(X, y)\n4011     assert estimator.n_features_in_ == X.shape[1]\n4012 \n",
+      "line_range": [
+        4011
+      ],
+      "col_offset": 4,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4044,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4043         estimator.partial_fit(X, y)\n4044     assert estimator.n_features_in_ == X.shape[1]\n4045 \n",
+      "line_range": [
+        4044
+      ],
+      "col_offset": 4,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4059,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4058     default_tags_keys = set(_DEFAULT_TAGS.keys())\n4059     assert tags_keys.intersection(default_tags_keys) == default_tags_keys, (\n4060         f\"{name}._get_tags() is missing entries for the following default tags\"\n4061         f\": {default_tags_keys - tags_keys.intersection(default_tags_keys)}\"\n4062     )\n4063 \n",
+      "line_range": [
+        4059,
+        4060,
+        4061,
+        4062
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4115,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4114         )\n4115     assert isinstance(estimator.feature_names_in_, np.ndarray)\n4116     assert estimator.feature_names_in_.dtype == object\n",
+      "line_range": [
+        4115
+      ],
+      "col_offset": 4,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4116,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4115     assert isinstance(estimator.feature_names_in_, np.ndarray)\n4116     assert estimator.feature_names_in_.dtype == object\n4117     assert_array_equal(estimator.feature_names_in_, names)\n",
+      "line_range": [
+        4116
+      ],
+      "col_offset": 4,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4241,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4240     feature_names_out = transformer.get_feature_names_out(input_features)\n4241     assert feature_names_out is not None\n4242     assert isinstance(feature_names_out, np.ndarray)\n",
+      "line_range": [
+        4241
+      ],
+      "col_offset": 4,
+      "end_col_offset": 40
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4242,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4241     assert feature_names_out is not None\n4242     assert isinstance(feature_names_out, np.ndarray)\n4243     assert feature_names_out.dtype == object\n",
+      "line_range": [
+        4242
+      ],
+      "col_offset": 4,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4243,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4242     assert isinstance(feature_names_out, np.ndarray)\n4243     assert feature_names_out.dtype == object\n4244     assert all(isinstance(name, str) for name in feature_names_out)\n",
+      "line_range": [
+        4243
+      ],
+      "col_offset": 4,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4244,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4243     assert feature_names_out.dtype == object\n4244     assert all(isinstance(name, str) for name in feature_names_out)\n4245 \n",
+      "line_range": [
+        4244
+      ],
+      "col_offset": 4,
+      "end_col_offset": 67
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4251,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4250 \n4251     assert (\n4252         len(feature_names_out) == n_features_out\n4253     ), f\"Expected {n_features_out} feature names, got {len(feature_names_out)}\"\n4254 \n",
+      "line_range": [
+        4251,
+        4252,
+        4253
+      ],
+      "col_offset": 4,
+      "end_col_offset": 79
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4308,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4307 \n4308     assert (\n4309         len(feature_names_out_default) == n_features_out\n4310     ), f\"Expected {n_features_out} feature names, got {len(feature_names_out_default)}\"\n4311 \n",
+      "line_range": [
+        4308,
+        4309,
+        4310
+      ],
+      "col_offset": 4,
+      "end_col_offset": 87
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4333,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4332         )\n4333         assert validation_params == estimator_params, err_msg\n4334 \n",
+      "line_range": [
+        4333
+      ],
+      "col_offset": 8,
+      "end_col_offset": 61
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4565,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4564 \n4565     assert is_supported_dataframe(df_trans)\n4566     # We always rely on the output of `get_feature_names_out` of the\n",
+      "line_range": [
+        4565
+      ],
+      "col_offset": 4,
+      "end_col_offset": 43
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 4657,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "4656         error_message = str(e)\n4657         assert (\n4658             f\"{capitalized_lib} output does not support sparse data.\" in error_message\n4659             or \"The transformer outputs a scipy sparse matrix.\" in error_message\n4660         ), e\n4661         return\n",
+      "line_range": [
+        4657,
+        4658,
+        4659,
+        4660
+      ],
+      "col_offset": 8,
+      "end_col_offset": 12
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/sparsefuncs.py",
+    "line": 79,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "78     \"\"\"\n79     assert scale.shape[0] == X.shape[1]\n80     X.data *= scale.take(X.indices, mode=\"clip\")\n",
+      "line_range": [
+        79
+      ],
+      "col_offset": 4,
+      "end_col_offset": 39
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "scikit-learn",
+    "project_version": "1.5.0rc1",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "sklearn/utils/sparsefuncs.py",
+    "line": 97,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "96     \"\"\"\n97     assert scale.shape[0] == X.shape[0]\n98     X.data *= np.repeat(scale, np.diff(X.indptr))\n",
+      "line_range": [
+        97
+      ],
+      "col_offset": 4,
+      "end_col_offset": 39
+    }
+  }
+]

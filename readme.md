@@ -1,31 +1,28 @@
-# Ansible 版本警告匹配与修复分析
-目前仅支持ansible单项目 
+# 源码警告匹配与修复分析
 
 ## 项目结构
 项目根目录/
 
-├── ansible/ # Ansible各版本源代码目录
+├── source_code/ # 源代码目录
 
-│   ├── ansible-2.17.1rc1/
+├── warning_set/ # 扫描的警告集（去除test）
 
-│   ├── ansible-2.17.4rc1/
-
-│   └── ...（其他待分析版本）
-
-├── bandit_*.json # Bandit扫描文件（命名：bandit_版本名.json）
+├── *.xlsx # 各工具CWE映射表
 
 ├── matcher.py # 工具主运行文件（核心入口）
 
 └── 其他源码文件（diff_matcher.py/fix_analyzer.py等）
 
 ## 文件功能说明
-|文件名|作用|
-|---|---|
-|matcher.py|工具主入口，整合警告加载、跨版本匹配、修复分析、结果生成全流程|
-|匹配算法.py|基础匹配类实现|
-|diff_matcher.py|基于 difflib 的行级 Diff 分析，实现位置匹配行范围划分以及匹配核心逻辑|
-|fix_analyzer.py|基于 AST 解析代码上下文，结合 Git Diff 判定警告修复状态|
-|Warning_group.py|按文件路径对跨版本警告分组，为匹配提供基础维度|
+| 文件名 | 作用 |
+|--------|------|
+| matcher.py | 工具主入口，整合警告加载、跨版本匹配、修复分析、结果生成全流程 |
+| 匹配算法.py | 基础匹配类实现 |
+| diff_matcher.py | 基于 difflib 的行级 Diff 分析，实现位置匹配行范围划分以及匹配核心逻辑 |
+| fix_analyzer.py | 基于 AST 解析代码上下文，结合 Git Diff 判定警告修复状态 |
+| Warning_group.py | 按文件路径对跨版本警告分组，为匹配提供基础维度 |
+| cwe_mapper.py | 加载各工具的 CWE 映射表（Excel），将工具规则 ID 转换为标准 CWE 编号，供统一格式转换时补充 CWE 字段 |
+| diff_generator.py | 为消失的警告（TP）生成代码差异片段，从预先生成的版本间 Git diff 文件中提取与警告修复范围相关的 hunk，并保存为独立 diff 文件 |
 
 ## 功能
 ### （1） 文件分组
@@ -49,14 +46,12 @@
 将未匹配的警告进行进一步分析，根据启发式规则分为已修复，未修复和未知，其中未知是无法通过警告集找到父文件或子文件的警告
 
 ## 输入文件
-- Bandit工具生成的JSON格式警告文件
+- JSON格式警告文件
 - 源代码目录
 
 ## 输出文件
-- matching_results.json
-- detailed_report.txt
-- 各版本的摘要文件
+- results（各工具各版本的进行正误报标记后的数据集）
+- all_warnings.json（全局标记警告）
 
 ## 注意事项
-代码中的文件路径以及fix_analyzer.py中的git仓库路径要替换成每个人自己的
-bandit_ansible_...开头的6个文件对应的是六个版本的警告，ansible文件夹里面是每个文件对应的代码
+matcher.py中main函数的路径要替换成自己的

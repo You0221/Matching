@@ -3,8 +3,7 @@ import os
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
-import subprocess
-import re
+
 
 
 class FixStatus(Enum):
@@ -33,6 +32,10 @@ class DiffChange:
     new_start: int = -1
     new_end: int = -1
     content: str = ""
+    hunk_old_start: int = -1
+    hunk_old_end: int = -1
+    hunk_new_start: int = -1
+    hunk_new_end: int = -1
 
 
 class ASTFixAnalyzer:
@@ -272,131 +275,195 @@ class ASTFixAnalyzer:
 
         return (start_line, end_line)
 
-    def analyze_diff_changes(self, old_file_path: str, new_file_path: str) -> List[DiffChange]:
+    def analyze_diff_changes(self, old_file_path: str, new_file_path: str,
+                             old_version_index: Optional[int] = None,
+                             new_version_index: Optional[int] = None,
+                             diff_content: Optional[str] = None) -> List[DiffChange]:
         """
         使用 Git Diff 分析两个文件之间的差异
         """
         changes = []
-
-        # 1. 确定 Git 仓库位置（里面存放了多个版本的提交记录）
-        git_repo_dir = r"D:\大创参考文献阅读\匹配代码\ansible\ansible-2.17.1rc1"
-
-        # 2. 获取相对路径
-        old_rel_path = self.extract_relative_path(old_file_path).replace('\\', '/')
-        new_rel_path = self.extract_relative_path(new_file_path).replace('\\', '/')
-
-        if not old_rel_path or not new_rel_path:
-            return changes  # 如果无法获取相对路径，返回空列表
-
-        # 3. 获取两个文件对应的 Git 提交哈希
-        old_commit = self._find_commit_for_file(old_file_path)
-        new_commit = self._find_commit_for_file(new_file_path)
-
-        if not old_commit or not new_commit:
+        # 优先使用直接传入的 diff 内容
+        if diff_content is not None:
+            relative_path = self.extract_relative_path(old_file_path)
+            if relative_path:
+                changes = self._parse_diff_string_for_file(diff_content, relative_path)
             return changes
 
-        try:
-            # 4. 执行 Git Diff 命令
-            # 格式: git diff <old_commit>:<old_file> <new_commit>:<new_file>
-            cmd = [
-                "git", "-C", git_repo_dir, "diff",
-                f"{old_commit}:{old_rel_path}",
-                f"{new_commit}:{new_rel_path}"
-            ]
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                encoding='utf-8'
-            )
-            if result.returncode == 0:
-                # 5. 解析 Git Diff 输出
-                changes = self._parse_git_diff_output(result.stdout)
-
-        except Exception as e:
-            print(f"Git Diff 执行出错: {e}")
-
+        if old_version_index is not None and new_version_index is not None:
+            # 获取项目根目录
+            # 例如：D:\...\source_code\ansible\ansible-2.17.1rc1\lib\ansible\...
+            source_base = os.path.dirname(os.path.dirname(old_file_path))  # .../source_code/project
+            project_root = os.path.dirname(source_base)  # .../source_code
+            relative_path = self.extract_relative_path(old_file_path)
+            if not relative_path:
+                return changes
+            diff_dir = os.path.join(project_root, 'diffs')
+            diff_filename = f"v{old_version_index}-v{new_version_index}.diff"
+            diff_file_path = os.path.join(diff_dir, diff_filename)
+            if os.path.exists(diff_file_path):
+                changes = self._parse_diff_file_for_file(diff_file_path, relative_path)
+            return changes
+        print(f"fix分析diff失败")
         return changes
 
-    def extract_relative_path(self, full_path: str) -> str:
-        """从完整路径中提取相对路径"""
-        version_patterns = [
-            "ansible-2.19.0b1",
-            "ansible-2.20.0rc2",
-            "ansible-2.19.0",
-            "ansible-2.18.1",
-            "ansible-2.17.4rc1",
-            "ansible-2.17.1rc1",
-        ]
-
-        for pattern in version_patterns:
-            if pattern in full_path:
-                idx = full_path.index(pattern) + len(pattern)
-                relative_path = full_path[idx:].lstrip('\\/')
-                return relative_path
-
-        return os.path.basename(full_path)
-
-    def _find_commit_for_file(self, file_path: str) -> Optional[str]:
+    def _parse_diff_string_for_file(self, diff_content: str, relative_path: str) -> List[DiffChange]:
         """
-        根据文件路径确定对应的 Git 提交哈希
-        2.17.1rc1 → 0eb97f3
-        2.17.4rc1 → 8a93c14
-        2.18.1 → 6093506
-        2.19.0 → 857253d
-        2.19.0b1 → d3a2200
-        2.20.0rc2 → 199abb5
+        解析 diff 字符串，提取指定文件的变更
         """
-        version_map = {#调整顺序避免有包括冲突
-            "2.19.0b1": "d3a2200",
-            "2.19.0": "857253d",
-            "2.20.0rc2": "199abb5",
-            "2.18.1": "6093506",
-            "2.17.4rc1": "8a93c14",
-            "2.17.1rc1": "0eb97f3",
-        }
-
-        for version, commit in version_map.items():
-            if version in file_path:
-                return commit
-        return None
-
-    def _parse_git_diff_output(self, diff_output: str) -> List[DiffChange]:
-        """
-        解析 Git Diff 的统一格式输出
-        """
+        import re
         changes = []
-        if not diff_output:
+        # 分割成文件块
+        diff_blocks = []
+        current_block = []
+        lines = diff_content.splitlines(keepends=True)
+        in_file = False
+        target_path_normalized = relative_path.replace('\\', '/')
+
+        for line in lines:
+            if line.startswith('diff --git'):
+                if current_block:
+                    diff_blocks.append(''.join(current_block))
+                    current_block = []
+                current_block.append(line)
+                in_file = True
+            elif in_file:
+                current_block.append(line)
+        if current_block:
+            diff_blocks.append(''.join(current_block))
+
+        # 找到目标文件的块
+        target_block = None
+        for block in diff_blocks:
+            match = re.search(r'^diff --git a/(.+?) b/(.+?)$', block, re.MULTILINE)
+            if match:
+                b_path = match.group(2).replace('\\', '/')
+                if b_path.endswith(target_path_normalized) or target_path_normalized in b_path:
+                    target_block = block
+                    break
+
+        if not target_block:
             return changes
 
-        lines = diff_output.split('\n')
+        # 解析文件块中的 hunk
+        lines = target_block.splitlines()
         i = 0
-
         while i < len(lines):
             line = lines[i]
             i += 1
-
-            # 解析变更块头
             if line.startswith('@@'):
-                # 格式: @@ -old_start,old_length +new_start,new_length @@
                 match = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@', line)
                 if not match:
                     continue
-
                 old_start = int(match.group(1))
+                old_count = int(match.group(2)) if match.group(2) else 1
                 new_start = int(match.group(3))
+                new_count = int(match.group(4)) if match.group(4) else 1
 
-                # 记录当前行号
+                # 计算 hunk 的旧范围和新范围
+                hunk_old_start = old_start
+                hunk_old_end = old_start + old_count - 1
+                hunk_new_start = new_start
+                hunk_new_end = new_start + new_count - 1
+
                 current_old_line = old_start
                 current_new_line = new_start
 
-                # 处理变更块内的行
                 while i < len(lines) and not lines[i].startswith('@@'):
                     diff_line = lines[i]
                     i += 1
-
                     if diff_line.startswith('-') and not diff_line.startswith('--'):
-                        # 删除的行
+                        changes.append(DiffChange(
+                            change_type='delete',
+                            old_start=current_old_line,
+                            old_end=current_old_line,
+                            content=diff_line[1:].strip(),
+                            hunk_old_start=hunk_old_start,
+                            hunk_old_end=hunk_old_end,
+                            hunk_new_start=hunk_new_start,
+                            hunk_new_end=hunk_new_end
+                        ))
+                        current_old_line += 1
+                    elif diff_line.startswith('+') and not diff_line.startswith('++'):
+                        changes.append(DiffChange(
+                            change_type='add',
+                            new_start=current_new_line,
+                            new_end=current_new_line,
+                            content=diff_line[1:].strip(),
+                            hunk_old_start=hunk_old_start,
+                            hunk_old_end=hunk_old_end,
+                            hunk_new_start=hunk_new_start,
+                            hunk_new_end=hunk_new_end
+                        ))
+                        current_new_line += 1
+                    elif diff_line.startswith(' '):
+                        current_old_line += 1
+                        current_new_line += 1
+        return changes
+
+    def _parse_diff_file_for_file(self, diff_file_path: str, relative_path: str) -> List[DiffChange]:
+        """
+        解析 diff 文件，提取指定文件的变更
+        """
+        import re
+        changes = []
+        try:
+            with open(diff_file_path, 'r', encoding='utf-8') as f:
+                diff_content = f.read()
+        except Exception:
+            return changes
+
+        # 分割成文件块
+        diff_blocks = []
+        current_block = []
+        lines = diff_content.splitlines(keepends=True)
+        in_file = False
+        target_path_normalized = relative_path.replace('\\', '/')
+
+        for line in lines:
+            if line.startswith('diff --git'):
+                if current_block:
+                    diff_blocks.append(''.join(current_block))
+                    current_block = []
+                current_block.append(line)
+                in_file = True
+            elif in_file:
+                current_block.append(line)
+        if current_block:
+            diff_blocks.append(''.join(current_block))
+
+        # 找到目标文件的块
+        target_block = None
+        for block in diff_blocks:
+            match = re.search(r'^diff --git a/(.+?) b/(.+?)$', block, re.MULTILINE)
+            if match:
+                b_path = match.group(2).replace('\\', '/')
+                if b_path.endswith(target_path_normalized) or target_path_normalized in b_path:
+                    target_block = block
+                    break
+
+        if not target_block:
+            return changes
+
+        # 解析文件块中的 hunk
+        lines = target_block.splitlines()
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            i += 1
+            if line.startswith('@@'):
+                match = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@', line)
+                if not match:
+                    continue
+                old_start = int(match.group(1))
+                new_start = int(match.group(3))
+                current_old_line = old_start
+                current_new_line = new_start
+
+                while i < len(lines) and not lines[i].startswith('@@'):
+                    diff_line = lines[i]
+                    i += 1
+                    if diff_line.startswith('-') and not diff_line.startswith('--'):
                         changes.append(DiffChange(
                             change_type='delete',
                             old_start=current_old_line,
@@ -404,9 +471,7 @@ class ASTFixAnalyzer:
                             content=diff_line[1:].strip()
                         ))
                         current_old_line += 1
-
                     elif diff_line.startswith('+') and not diff_line.startswith('++'):
-                        # 新增的行
                         changes.append(DiffChange(
                             change_type='add',
                             new_start=current_new_line,
@@ -414,17 +479,17 @@ class ASTFixAnalyzer:
                             content=diff_line[1:].strip()
                         ))
                         current_new_line += 1
-
                     elif diff_line.startswith(' '):
-                        # 未更改的行（上下文）
                         current_old_line += 1
                         current_new_line += 1
-
-            elif line.startswith('---') or line.startswith('+++'):
-                # 跳过文件头
-                continue
-
         return changes
+
+    def extract_relative_path(self, full_path: str) -> str:
+        if not os.path.isabs(full_path) and ':' not in full_path:
+            return full_path.replace('\\', '/')
+        return os.path.basename(full_path)
+
+
 
     def is_all_deletions(self, changes: List[DiffChange], scope_start: int, scope_end: int) -> bool:
         """
@@ -433,17 +498,18 @@ class ASTFixAnalyzer:
         if not changes:
             return False
 
-        scope_changes = [
+        overlapping_changes = [
             c for c in changes
-            if (c.old_start >= scope_start and c.old_end <= scope_end) or
-               (c.new_start >= scope_start and c.new_end <= scope_end)
+            if ((c.old_start != -1 and c.old_end != -1 and
+                 not (c.old_end < scope_start or c.old_start > scope_end)) or
+                (c.new_start != -1 and c.new_end != -1 and
+                 not (c.new_end < scope_start or c.new_start > scope_end)))
         ]
 
-        if not scope_changes:
+        if not overlapping_changes:
             return False
 
-        # 检查是否都是删除操作
-        return all(c.change_type == 'delete' for c in scope_changes)
+        return all(c.change_type == 'delete' for c in overlapping_changes)
 
     def has_field_modified(self, changes: List[DiffChange], field_name: str,
                            scope_start: int, scope_end: int) -> bool:
@@ -507,24 +573,42 @@ class ASTFixAnalyzer:
 
         # l11 检查警告是否在方法范围内
         repair_scope = self.get_repair_scope(warning, context)
-        diff_in_scope = [
+        overlapping_changes = [
             c for c in diff_changes
-            if ((c.old_start >= repair_scope[0] and c.old_end <= repair_scope[1]) or
-                (c.new_start >= repair_scope[0] and c.new_end <= repair_scope[1]))
+            if ((c.old_start <= repair_scope[1] and c.old_end >= repair_scope[0]) or
+                (c.new_start <= repair_scope[1] and c.new_end >= repair_scope[0]))
         ]
 
         # l14 如果没有更改
-        if not diff_in_scope:
+        if not overlapping_changes:
             return FixStatus.NON_FIX, "修复范围内没有代码更改"
 
         # l16 如果只有删除操作
-        if self.is_all_deletions(diff_in_scope, repair_scope[0], repair_scope[1]):
-            return FixStatus.NON_FIX, "修复范围内只有代码删除"
+        if self.is_all_deletions(overlapping_changes, repair_scope[0], repair_scope[1]):
+            # 收集这些删除变更所属的 hunk 范围
+            hunk_ranges = set()
+            for c in overlapping_changes:
+                if c.hunk_old_start != -1:
+                    hunk_ranges.add((c.hunk_old_start, c.hunk_old_end, c.hunk_new_start, c.hunk_new_end))
+            # 检查这些 hunk 中是否有新增变更
+            has_add_in_hunk = False
+            for (hunk_old_start, hunk_old_end, hunk_new_start, hunk_new_end) in hunk_ranges:
+                # 检查是否有任何 add 变更属于这个 hunk
+                for c in diff_changes:
+                    if c.change_type == 'add' and c.hunk_old_start == hunk_old_start and c.hunk_old_end == hunk_old_end:
+                        has_add_in_hunk = True
+                        break
+                if has_add_in_hunk:
+                    break
+            if has_add_in_hunk:
+                pass
+            else:
+                return FixStatus.NON_FIX, "修复范围内只有代码删除"
 
         # l19 如果是关于字段的警告
         if context.variable_name:
             # l22 检查字段是否被修改
-            if self.has_field_modified(diff_in_scope, context.variable_name,
+            if self.has_field_modified(overlapping_changes, context.variable_name,
                                        repair_scope[0], repair_scope[1]):
                 return FixStatus.FIXED, "相关字段被修改"
             else:

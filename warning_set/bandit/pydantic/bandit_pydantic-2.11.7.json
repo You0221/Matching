@@ -1,0 +1,2615 @@
+[
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "docs/plugins/algolia.py",
+    "line": 52,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "51 \n52     assert page.title is not None, 'Page title must not be None'\n53     title = cast(str, page.title)\n",
+      "line_range": [
+        52
+      ],
+      "col_offset": 4,
+      "end_col_offset": 64
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B113",
+    "rule_name": "request_without_timeout",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "docs/plugins/main.py",
+    "line": 272,
+    "message": "Call to requests without timeout",
+    "cwe": [
+      400
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b113_request_without_timeout.html",
+      "issue_cwe": {
+        "id": 400,
+        "link": "https://cwe.mitre.org/data/definitions/400.html"
+      },
+      "code_snippet": "271 \n272     req = requests.get('https://raw.githubusercontent.com/pydantic/pydantic-settings/main/docs/index.md')\n273     if req.status_code != 200:\n",
+      "line_range": [
+        272
+      ],
+      "col_offset": 10,
+      "end_col_offset": 105
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B506",
+    "rule_name": "yaml_load",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "docs/plugins/main.py",
+    "line": 448,
+    "message": "Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load().",
+    "cwe": [
+      20
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b506_yaml_load.html",
+      "issue_cwe": {
+        "id": 20,
+        "link": "https://cwe.mitre.org/data/definitions/20.html"
+      },
+      "code_snippet": "447     with (THIS_DIR / 'people.yml').open('rb') as f:\n448         people = yaml.load(f, Loader=yaml.FullLoader)\n449 \n",
+      "line_range": [
+        448
+      ],
+      "col_offset": 17,
+      "end_col_offset": 53
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": 543,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "542     else:\n543         assert mode in {'before', 'after', 'plain'}, f\"invalid mode: {mode!r}, expected 'before', 'after' or 'plain\"\n544         if n_positional == 2:\n",
+      "line_range": [
+        543
+      ],
+      "col_offset": 8,
+      "end_col_offset": 116
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": 659,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "658     else:\n659         assert mode == 'wrap', f\"invalid mode: {mode!r}, expected 'plain' or 'wrap'\"\n660         if n_positional == 2:\n",
+      "line_range": [
+        659
+      ],
+      "col_offset": 8,
+      "end_col_offset": 84
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": 752,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "751             # Make coverage happy as it can only get here in the last possible case\n752             assert isinstance(func, cached_property)\n753             func = func.func  # type: ignore\n",
+      "line_range": [
+        752
+      ],
+      "col_offset": 12,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_discriminated_union.py",
+    "line": 163,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "162         \"\"\"\n163         assert not self._used\n164         schema = self._apply_to_root(schema)\n",
+      "line_range": [
+        163
+      ],
+      "col_offset": 8,
+      "end_col_offset": 29
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 789,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "788                 if core_config.get('extra_fields_behavior') == 'allow':\n789                     assert cls.__mro__[0] is cls\n790                     assert cls.__mro__[-1] is object\n",
+      "line_range": [
+        789
+      ],
+      "col_offset": 20,
+      "end_col_offset": 48
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 790,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "789                     assert cls.__mro__[0] is cls\n790                     assert cls.__mro__[-1] is object\n791                     for candidate_cls in cls.__mro__[:-1]:\n",
+      "line_range": [
+        790
+      ],
+      "col_offset": 20,
+      "end_col_offset": 52
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 1467,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1466                 schema = self.generate_schema(annotation)\n1467                 assert schema['type'] != 'definitions'\n1468                 schema['ref'] = ref  # type: ignore\n",
+      "line_range": [
+        1467
+      ],
+      "col_offset": 16,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 1474,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1473         expected = list(get_literal_values(literal_type, type_check=False, unpack_type_aliases='eager'))\n1474         assert expected, f'literal \"expected\" cannot be empty, obj={literal_type}'\n1475         schema = core_schema.literal_schema(expected)\n",
+      "line_range": [
+        1474
+      ],
+      "col_offset": 8,
+      "end_col_offset": 82
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 1653,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1652             field = FieldInfo.from_annotated_attribute(annotation, default, _source=source)\n1653         assert field.annotation is not None, 'field.annotation should not be None when generating a schema'\n1654         with self.field_name_stack.push(name):\n",
+      "line_range": [
+        1653
+      ],
+      "col_offset": 8,
+      "end_col_offset": 107
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 2066,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2065             else:\n2066                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n2067 \n",
+      "line_range": [
+        2066
+      ],
+      "col_offset": 16,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 2133,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2132             if parameter_mode is None:\n2133                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n2134 \n",
+      "line_range": [
+        2133
+      ],
+      "col_offset": 16,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 2430,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2429             else:\n2430                 assert serializer.info.mode == 'plain'\n2431                 schema['serialization'] = core_schema.plain_serializer_function_ser_schema(\n",
+      "line_range": [
+        2430
+      ],
+      "col_offset": 16,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": 2591,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2590         else:\n2591             assert validator.info.mode == 'after'\n2592             if info_arg:\n",
+      "line_range": [
+        2591
+      ],
+      "col_offset": 12,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generics.py",
+    "line": 298,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "297             origin_type = getattr(typing, type_._name)\n298         assert origin_type is not None\n299 \n",
+      "line_range": [
+        298
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": 5,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "4 \n5 import subprocess\n6 from pathlib import Path\n",
+      "line_range": [
+        5
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B607",
+    "rule_name": "start_process_with_partial_path",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": 17,
+    "message": "Starting a process with a partial executable path",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b607_start_process_with_partial_path.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "16     try:\n17         subprocess.check_output(['git', '--help'])\n18         return True\n",
+      "line_range": [
+        17
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": 17,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "16     try:\n17         subprocess.check_output(['git', '--help'])\n18         return True\n",
+      "line_range": [
+        17
+      ],
+      "col_offset": 8,
+      "end_col_offset": 50
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B607",
+    "rule_name": "start_process_with_partial_path",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": 27,
+    "message": "Starting a process with a partial executable path",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b607_start_process_with_partial_path.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "26     \"\"\"Get the SHA-1 of the HEAD of a git repository.\"\"\"\n27     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=dir).decode('utf-8').strip()\n",
+      "line_range": [
+        27
+      ],
+      "col_offset": 11,
+      "end_col_offset": 84
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": 27,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "26     \"\"\"Get the SHA-1 of the HEAD of a git repository.\"\"\"\n27     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=dir).decode('utf-8').strip()\n",
+      "line_range": [
+        27
+      ],
+      "col_offset": 11,
+      "end_col_offset": 84
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_typing_extra.py",
+    "line": 436,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "435         # Thus we assert here for type checking purposes:\n436         assert isinstance(value, typing.ForwardRef)\n437 \n",
+      "line_range": [
+        436
+      ],
+      "col_offset": 8,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_validators.py",
+    "line": 359,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "358 \n359         assert isinstance(decimal_tuple.exponent, int)\n360 \n",
+      "line_range": [
+        359
+      ],
+      "col_offset": 8,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/dataclasses.py",
+    "line": 144,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "143     \"\"\"\n144     assert init is False, 'pydantic.dataclasses.dataclass only supports init=False'\n145     assert validate_on_init is not False, 'validate_on_init=False is no longer supported'\n",
+      "line_range": [
+        144
+      ],
+      "col_offset": 4,
+      "end_col_offset": 83
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/dataclasses.py",
+    "line": 145,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "144     assert init is False, 'pydantic.dataclasses.dataclass only supports init=False'\n145     assert validate_on_init is not False, 'validate_on_init=False is no longer supported'\n146 \n",
+      "line_range": [
+        145
+      ],
+      "col_offset": 4,
+      "end_col_offset": 89
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/decorator.py",
+    "line": 122,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "121             else:\n122                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n123                 self.v_kwargs_name = name\n",
+      "line_range": [
+        122
+      ],
+      "col_offset": 16,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B403",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/parse.py",
+    "line": 4,
+    "message": "Consider possible security implications associated with pickle module.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "3 import json\n4 import pickle\n5 import warnings\n",
+      "line_range": [
+        4
+      ],
+      "col_offset": 0,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B301",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/parse.py",
+    "line": 54,
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "53         bb = b if isinstance(b, bytes) else b.encode()  # type: ignore\n54         return pickle.loads(bb)\n55     else:\n",
+      "line_range": [
+        54
+      ],
+      "col_offset": 15,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 391,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "390     else:\n391         assert isinstance(step, _PipelineAnd)\n392         s = cs.chain_schema([handler(step.left), handler(step.right)])\n",
+      "line_range": [
+        391
+      ],
+      "col_offset": 8,
+      "end_col_offset": 45
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 514,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "513         if s and s['type'] in {'str', 'list', 'tuple', 'set', 'frozenset', 'dict'}:\n514             assert (\n515                 s['type'] == 'str'\n516                 or s['type'] == 'list'\n517                 or s['type'] == 'tuple'\n518                 or s['type'] == 'set'\n519                 or s['type'] == 'dict'\n520                 or s['type'] == 'frozenset'\n521             )\n522             s = s.copy()\n",
+      "line_range": [
+        514,
+        515,
+        516,
+        517,
+        518,
+        519,
+        520,
+        521
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 559,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "558                 def check_tz_aware(v: object) -> bool:\n559                     assert isinstance(v, datetime.datetime)\n560                     return v.tzinfo is not None\n",
+      "line_range": [
+        559
+      ],
+      "col_offset": 20,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 570,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "569                 def check_tz_naive(v: object) -> bool:\n570                     assert isinstance(v, datetime.datetime)\n571                     return v.tzinfo is None\n",
+      "line_range": [
+        570
+      ],
+      "col_offset": 20,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 585,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "584             s = _apply_constraint(s, annotated_types.Lt(constraint.lt))\n585         assert s is not None\n586     elif isinstance(constraint, annotated_types.Predicate):\n",
+      "line_range": [
+        585
+      ],
+      "col_offset": 8,
+      "end_col_offset": 28
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 635,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "634     else:\n635         assert isinstance(constraint, Pattern)\n636         if s and s['type'] == 'str':\n",
+      "line_range": [
+        635
+      ],
+      "col_offset": 8,
+      "end_col_offset": 46
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": 642,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "641             def check_pattern(v: object) -> bool:\n642                 assert isinstance(v, str)\n643                 return constraint.match(v) is not None\n",
+      "line_range": [
+        642
+      ],
+      "col_offset": 16,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/json_schema.py",
+    "line": 2412,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "2411 \n2412     assert not isinstance(cls.__pydantic_core_schema__, _mock_val_ser.MockCoreSchema), 'this is a bug! please report it'\n2413     return schema_generator_instance.generate(cls.__pydantic_core_schema__, mode=mode)\n",
+      "line_range": [
+        2412
+      ],
+      "col_offset": 4,
+      "end_col_offset": 120
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/main.py",
+    "line": 660,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "659 \n660             assert cls.__pydantic_fields_complete__\n661 \n",
+      "line_range": [
+        660
+      ],
+      "col_offset": 12,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 173,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "172         info_metaclass = ctx.cls.info.declared_metaclass\n173         assert info_metaclass, \"callback not passed from 'get_metaclass_hook'\"\n174         if getattr(info_metaclass.type, 'dataclass_transform_spec', None):\n",
+      "line_range": [
+        173
+      ],
+      "col_offset": 8,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 332,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "331                 # Cannot be TupleType as current_info represents a Pydantic model:\n332                 assert isinstance(filled_with_typevars, Instance)\n333                 if force_typevars_invariant:\n",
+      "line_range": [
+        332
+      ],
+      "col_offset": 16,
+      "end_col_offset": 65
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 368,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "367         \"\"\"Based on mypy.plugins.dataclasses.DataclassAttribute.serialize.\"\"\"\n368         assert self.type\n369         return {\n",
+      "line_range": [
+        368
+      ],
+      "col_offset": 8,
+      "end_col_offset": 24
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 647,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "646             lhs = stmt.lvalues[0]\n647             assert isinstance(lhs, NameExpr)  # collect_field_or_class_var_from_stmt guarantees this\n648             if isinstance(maybe_field, PydanticModelField):\n",
+      "line_range": [
+        647
+      ],
+      "col_offset": 12,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 831,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "830                 super_info = t.type.get_containing_type_info('__set__')\n831                 assert super_info\n832                 if setter.type:\n",
+      "line_range": [
+        831
+      ],
+      "col_offset": 16,
+      "end_col_offset": 33
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 876,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "875             base_settings_node = self._api.lookup_fully_qualified(BASESETTINGS_FULLNAME).node\n876             assert isinstance(base_settings_node, TypeInfo)\n877             if '__init__' in base_settings_node.names:\n",
+      "line_range": [
+        876
+      ],
+      "col_offset": 12,
+      "end_col_offset": 59
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 879,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "878                 base_settings_init_node = base_settings_node.names['__init__'].node\n879                 assert isinstance(base_settings_init_node, FuncDef)\n880                 if base_settings_init_node is not None and base_settings_init_node.type is not None:\n",
+      "line_range": [
+        879
+      ],
+      "col_offset": 16,
+      "end_col_offset": 67
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 882,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "881                     func_type = base_settings_init_node.type\n882                     assert isinstance(func_type, CallableType)\n883                     for arg_idx, arg_name in enumerate(func_type.arg_names):\n",
+      "line_range": [
+        882
+      ],
+      "col_offset": 20,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": 1317,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1316     for arg in args:\n1317         assert arg.type_annotation, 'All arguments must be fully typed.'\n1318         arg_types.append(arg.type_annotation)\n",
+      "line_range": [
+        1317
+      ],
+      "col_offset": 8,
+      "end_col_offset": 72
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/networks.py",
+    "line": 1307,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1306     email = parts.normalized\n1307     assert email is not None\n1308     name = name or parts.local_part\n",
+      "line_range": [
+        1307
+      ],
+      "col_offset": 4,
+      "end_col_offset": 28
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/type_adapter.py",
+    "line": 669,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "668             self.core_schema.rebuild()\n669             assert not isinstance(self.core_schema, _mock_val_ser.MockCoreSchema), 'this is a bug! please report it'\n670         return schema_generator_instance.generate(self.core_schema, mode=mode)\n",
+      "line_range": [
+        669
+      ],
+      "col_offset": 12,
+      "end_col_offset": 116
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/type_adapter.py",
+    "line": 712,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "711                 adapter.core_schema.rebuild()\n712                 assert not isinstance(adapter.core_schema, _mock_val_ser.MockCoreSchema), (\n713                     'this is a bug! please report it'\n714                 )\n715             inputs_.append((key, mode, adapter.core_schema))\n",
+      "line_range": [
+        712,
+        713,
+        714
+      ],
+      "col_offset": 16,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 212,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "211     def inner(f):  # type: ignore\n212         assert f not in RESOLVERS\n213         RESOLVERS[typ] = f\n",
+      "line_range": [
+        212
+      ],
+      "col_offset": 8,
+      "end_col_offset": 33
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 258,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "257     else:\n258         assert min_size == 0\n259         pattern = rf'(\\W(.{repeats}\\W)?)?'\n",
+      "line_range": [
+        258
+      ],
+      "col_offset": 8,
+      "end_col_offset": 28
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 268,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "267     if cls.gt is not None:\n268         assert min_value is None, 'Set `gt` or `ge`, but not both'\n269         min_value = cls.gt\n",
+      "line_range": [
+        268
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 271,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "270     if cls.lt is not None:\n271         assert max_value is None, 'Set `lt` or `le`, but not both'\n272         max_value = cls.lt\n",
+      "line_range": [
+        271
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 289,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "288     if cls.gt is not None:\n289         assert min_value is None, 'Set `gt` or `ge`, but not both'\n290         min_value = cls.gt\n",
+      "line_range": [
+        289
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 293,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "292     if cls.lt is not None:\n293         assert max_value is None, 'Set `lt` or `le`, but not both'\n294         max_value = cls.lt\n",
+      "line_range": [
+        293
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 305,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "304     if max_value is not None:\n305         assert max_value >= cls.multiple_of, 'Cannot build model with max value smaller than multiple of'\n306         max_value = math.floor(max_value / cls.multiple_of)\n",
+      "line_range": [
+        305
+      ],
+      "col_offset": 8,
+      "end_col_offset": 105
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 318,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "317     if cls.gt is not None:\n318         assert min_value is None, 'Set `gt` or `ge`, but not both'\n319         min_value = cls.gt + 1\n",
+      "line_range": [
+        318
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 321,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "320     if cls.lt is not None:\n321         assert max_value is None, 'Set `lt` or `le`, but not both'\n322         max_value = cls.lt - 1\n",
+      "line_range": [
+        321
+      ],
+      "col_offset": 8,
+      "end_col_offset": 66
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 339,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "338     if cls.ge is not None:\n339         assert cls.gt is None, 'Set `gt` or `ge`, but not both'\n340         min_value = cls.ge\n",
+      "line_range": [
+        339
+      ],
+      "col_offset": 8,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 346,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "345     if cls.le is not None:\n346         assert cls.lt is None, 'Set `lt` or `le`, but not both'\n347         max_value = cls.le\n",
+      "line_range": [
+        346
+      ],
+      "col_offset": 8,
+      "end_col_offset": 63
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": 377,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "376         else:\n377             assert min_size == 0\n378             strategy = st.from_regex(rf'(\\W(.{repeats}\\W)?)?')\n",
+      "line_range": [
+        377
+      ],
+      "col_offset": 12,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/class_validators.py",
+    "line": 89,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "88         )\n89         assert each_item is False, '\"each_item\" and \"whole\" conflict, remove \"whole\"'\n90         each_item = not whole\n",
+      "line_range": [
+        89
+      ],
+      "col_offset": 8,
+      "end_col_offset": 85
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/decorator.py",
+    "line": 105,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "104             else:\n105                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n106                 self.v_kwargs_name = name\n",
+      "line_range": [
+        105
+      ],
+      "col_offset": 16,
+      "end_col_offset": 62
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 763,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "762         \"\"\"\n763         assert self.discriminator_key is not None\n764 \n",
+      "line_range": [
+        763
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 768,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "767 \n768         assert self.sub_fields is not None\n769         sub_fields_mapping: Dict[str, 'ModelField'] = {}\n",
+      "line_range": [
+        768
+      ],
+      "col_offset": 8,
+      "end_col_offset": 42
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 853,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "852     ) -> 'ValidateReturn':\n853         assert self.type_.__class__ is not DeferredType\n854 \n",
+      "line_range": [
+        853
+      ],
+      "col_offset": 8,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 856,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "855         if self.type_.__class__ is ForwardRef:\n856             assert cls is not None\n857             raise ConfigError(\n",
+      "line_range": [
+        856
+      ],
+      "col_offset": 12,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 1103,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1102     ) -> 'ValidateReturn':\n1103         assert self.discriminator_key is not None\n1104         assert self.discriminator_alias is not None\n",
+      "line_range": [
+        1103
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 1104,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1103         assert self.discriminator_key is not None\n1104         assert self.discriminator_alias is not None\n1105 \n",
+      "line_range": [
+        1104
+      ],
+      "col_offset": 8,
+      "end_col_offset": 51
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 1124,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1123         if self.sub_fields_mapping is None:\n1124             assert cls is not None\n1125             raise ConfigError(\n",
+      "line_range": [
+        1124
+      ],
+      "col_offset": 12,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 1135,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1134             # TypeError: `discriminator_value` is unhashable.\n1135             assert self.sub_fields_mapping is not None\n1136             return v, ErrorWrapper(\n",
+      "line_range": [
+        1135
+      ],
+      "col_offset": 12,
+      "end_col_offset": 54
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": 1179,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "1178         elif self.shape == SHAPE_GENERIC:\n1179             assert self.sub_fields\n1180             t = '{}[{}]'.format(\n",
+      "line_range": [
+        1179
+      ],
+      "col_offset": 12,
+      "end_col_offset": 34
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": 293,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "292             origin_type = getattr(typing, type_._name)\n293         assert origin_type is not None\n294         # PEP-604 syntax (Ex.: list | str) is represented with a types.UnionType object that does not have __getitem__.\n",
+      "line_range": [
+        293
+      ],
+      "col_offset": 8,
+      "end_col_offset": 38
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": 389,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "388         if key not in fields:\n389             assert field.type_.__class__ is not DeferredType\n390             # https://github.com/nedbat/coveragepy/issues/198\n",
+      "line_range": [
+        389
+      ],
+      "col_offset": 12,
+      "end_col_offset": 60
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": 393,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "392 \n393         assert field.type_.__class__ is DeferredType, field.type_.__class__\n394 \n",
+      "line_range": [
+        393
+      ],
+      "col_offset": 8,
+      "end_col_offset": 75
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": 167,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "166         info_metaclass = ctx.cls.info.declared_metaclass\n167         assert info_metaclass, \"callback not passed from 'get_metaclass_hook'\"\n168         if getattr(info_metaclass.type, 'dataclass_transform_spec', None):\n",
+      "line_range": [
+        167
+      ],
+      "col_offset": 8,
+      "end_col_offset": 78
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": 182,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "181 \n182         assert ctx.callee_arg_names[0] == 'default', '\"default\" is no longer first argument in Field()'\n183         assert ctx.callee_arg_names[1] == 'default_factory', '\"default_factory\" is no longer second argument in Field()'\n",
+      "line_range": [
+        182
+      ],
+      "col_offset": 8,
+      "end_col_offset": 103
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": 183,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "182         assert ctx.callee_arg_names[0] == 'default', '\"default\" is no longer first argument in Field()'\n183         assert ctx.callee_arg_names[1] == 'default_factory', '\"default_factory\" is no longer second argument in Field()'\n184         default_args = ctx.args[0]\n",
+      "line_range": [
+        183
+      ],
+      "col_offset": 8,
+      "end_col_offset": 120
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": 860,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "859     for arg in args:\n860         assert arg.type_annotation, 'All arguments must be fully typed.'\n861         arg_types.append(arg.type_annotation)\n",
+      "line_range": [
+        860
+      ],
+      "col_offset": 8,
+      "end_col_offset": 72
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": 277,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "276         # the regex should always match, if it doesn't please report with details of the URL tried\n277         assert m, 'URL regex failed unexpectedly'\n278 \n",
+      "line_range": [
+        277
+      ],
+      "col_offset": 8,
+      "end_col_offset": 49
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": 365,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "364                 d = int_domain_regex().fullmatch(host)\n365                 assert d is not None\n366                 tld = d.group('tld')\n",
+      "line_range": [
+        365
+      ],
+      "col_offset": 16,
+      "end_col_offset": 36
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": 738,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "737         email = parts.normalized\n738         assert email is not None\n739         name = name or parts.local_part\n",
+      "line_range": [
+        738
+      ],
+      "col_offset": 8,
+      "end_col_offset": 32
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B403",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/parse.py",
+    "line": 2,
+    "message": "Consider possible security implications associated with pickle module.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "1 import json\n2 import pickle\n3 from enum import Enum\n",
+      "line_range": [
+        2
+      ],
+      "col_offset": 0,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B301",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/parse.py",
+    "line": 42,
+    "message": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+      "issue_cwe": {
+        "id": 502,
+        "link": "https://cwe.mitre.org/data/definitions/502.html"
+      },
+      "code_snippet": "41         bb = b if isinstance(b, bytes) else b.encode()\n42         return pickle.loads(bb)\n43     else:\n",
+      "line_range": [
+        42
+      ],
+      "col_offset": 15,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/schema.py",
+    "line": 526,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "525     else:\n526         assert field.shape in {SHAPE_SINGLETON, SHAPE_GENERIC}, field.shape\n527         f_schema, f_definitions, f_nested_models = field_singleton_schema(\n",
+      "line_range": [
+        526
+      ],
+      "col_offset": 8,
+      "end_col_offset": 75
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/schema.py",
+    "line": 715,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "714         if field_has_discriminator:\n715             assert field.sub_fields_mapping is not None\n716 \n",
+      "line_range": [
+        715
+      ],
+      "col_offset": 12,
+      "end_col_offset": 55
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B307",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/utils.py",
+    "line": 195,
+    "message": "Use of possibly insecure function - consider using safer ast.literal_eval.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b307-eval",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "194     try:\n195         eval('__IPYTHON__')\n196     except NameError:\n",
+      "line_range": [
+        195
+      ],
+      "col_offset": 8,
+      "end_col_offset": 27
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/utils.py",
+    "line": 665,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "664     \"\"\"\n665     assert p.exists(), 'path does not exist'\n666     for method, name in path_types.items():\n",
+      "line_range": [
+        665
+      ],
+      "col_offset": 4,
+      "end_col_offset": 44
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/validate_call_decorator.py",
+    "line": 36,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "35             try:\n36                 assert not isinstance(partial.func, partial), 'Partial of partial'\n37                 _check_function_type(function.func)\n",
+      "line_range": [
+        36
+      ],
+      "col_offset": 16,
+      "end_col_offset": 82
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/push.py",
+    "line": 6,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "5 from pathlib import Path\n6 from subprocess import CalledProcessError\n7 \n",
+      "line_range": [
+        6
+      ],
+      "col_offset": 0,
+      "end_col_offset": 41
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B404",
+    "rule_name": "blacklist",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/shared.py",
+    "line": 3,
+    "message": "Consider possible security implications associated with the subprocess module.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "2 \n3 import subprocess\n4 \n",
+      "line_range": [
+        3
+      ],
+      "col_offset": 0,
+      "end_col_offset": 17
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "pydantic",
+    "project_version": "2.11.7",
+    "rule_id": "B603",
+    "rule_name": "subprocess_without_shell_equals_true",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/shared.py",
+    "line": 8,
+    "message": "subprocess call - check for execution of untrusted input.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "7     \"\"\"Run a shell command and return the output.\"\"\"\n8     p = subprocess.run(args, stdout=subprocess.PIPE, check=True, encoding='utf-8')\n9     return p.stdout.strip()\n",
+      "line_range": [
+        8
+      ],
+      "col_offset": 8,
+      "end_col_offset": 82
+    }
+  }
+]

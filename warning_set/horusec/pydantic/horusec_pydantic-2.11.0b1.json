@@ -1,0 +1,3685 @@
+[
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/plugins/algolia.py",
+    "line": "152",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "algolia_write_api_key = os.environ['ALGOLIA_WRITE_API_KEY']",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2428f3543feff03d25780a96d8e0b625dbc6247bd2ec6e478594df0b402dc39d",
+        "1e44c1a905088d2d89c05664a68d6c987dfd3a9ca1d85d04ae74a2804e8feeb9"
+      ],
+      "vulnHash": "9e43000dd7cdf04ceda9a47a343cc449dcde17386c1fc39eb117c6c7e05934a9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/extra/algolia.js",
+    "line": "2",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "const ALGOLIA_API_KEY = '1fc841595212a2c3afe8c24dd4cb8790';",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "79c032886c54bdd9ecc4b507d9ce0b94ebd43734e6934197eb61db8782f7a1e1",
+        "6e8267a86cb31b3da49bfd796e57de7de131a3564c7f47ac2c3a677991de5e91"
+      ],
+      "vulnHash": "c97a8fa552479621ec09071b86917e063284c3d91b5a7f998f999046af60264d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/examples/custom_validators.md",
+    "line": "208",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "{'username': 'Spartacat', 'password': '123'},",
+      "column": "35",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ad4ac980bb7a7680b154af299c1272cd5a9110ce504b7a720a7b18c4df884e66",
+        "5a4ae979010d41e050b27307878e6d67c7a2790708cc07503eee608af8ea9cfb"
+      ],
+      "vulnHash": "21f273c3f259defffb371f8b2c467b4e621d626e40cd3e7a59046fdf7bba41fa"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/examples/custom_validators.md",
+    "line": "209",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "{'username': 'Iceburgh', 'password': '87'},",
+      "column": "34",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "417e24c55b435fed515914d9fad9311d16e924aa2059e3aeb71aa2c31a1ccc7b",
+        "e745af02e890b64159e089f18cf11a6806c2899ba6deff6449acd0dd0d9e8a7a"
+      ],
+      "vulnHash": "fce5d71c017db4b7e6626ac395839b4c484efdeb766e324f01660084a399a2ea"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/examples/custom_validators.md",
+    "line": "218",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "rd': '87'}]}, input_type=dict]",
+      "column": "162",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ec9efd78e5591186ad4fad98c6f272627448f06802396957e8b5fda76cac750f",
+        "aa7f60a654c9ead301faf2b7c8c3848cd576d2beb63a31984272c263b23cbe42"
+      ],
+      "vulnHash": "19d5788e9dbbfb18c6011e8bd5b5090cc6848c1d84cf089b924c73ae1464578e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "393",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "{'username': 'foo', 'password': 'bar', 'host': 'bar.com', 'port': 443}",
+      "column": "33",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "845e4256f48f7429c15910fb676a6c2ee401eb9757c4d89e9aad87a72cb8a47f",
+        "17324519670b291040b1fa0d350ba56cd31c4fd0ae10577b7d029522d6db1404"
+      ],
+      "vulnHash": "4895e77374dd4c64f86bf7d7a5539a1b56e3e81035db52685d870647dec3ab59"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "134",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `https` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7f800f8612547c6a60759254f27fac7a659d603e4b8fc791f0f4436a6cf05452",
+        "21e8a4fa0ee6035c95c602f929f6c389e87d8eaed49ef9945fc98c5751f9e7a9"
+      ],
+      "vulnHash": "48b2b9444affdd12893b6c6dbcdc81f5278b66e39c771705b011962c0b115acf"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "142",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `user` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2d6c185b3c4384ca92b5d9564b46559013440aa6ce9db775c679fb0f931a2d0b",
+        "2105cfe7f68e9f85f53b8d67119f512da3730b36d2b6edc97c2afb84fd13aa11"
+      ],
+      "vulnHash": "5698306717277c49be413caf3dc5b9cad8e87af557e54b5deff2aa188d464a43"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "150",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `pass` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6d7b4797d0e4358285189e25c7fa2b7bbb3a6d13226b73d64d5e9a781cfa1ca7",
+        "f3f6ce2fdb34ff81cc27994ce70f94a9638a08c899ba00a8c9777d950081f6c1"
+      ],
+      "vulnHash": "d1c12337acc2b2d1adc6eccb9eac441e8840938b856d42c985d742247ce916f2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "166",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `host` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c1cc9af1fea0a280ee2d95e7eb145b3f258b8d57a722ea42f030a5c819999fe8",
+        "e584da4d76c88a586458300165f65cbb09dbdee03ccdc1cf08e70b831a1ef9fc"
+      ],
+      "vulnHash": "5aaefb4a3079aee1c511a5c4103dd0414746a810b07f1d13eb51b62057d14973"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "177",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `port` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7903947a17288d089ff6f8360580c4682df4a3be28cd69fbedc819d97b2217f3",
+        "86cba45e175c5de907cac6788eed5d03c25c4c8d4c16f9212d020766b31eb71f"
+      ],
+      "vulnHash": "aed05c5480a45af5126c239dfb68e3fc95bdaf80f4188d8c7e274ec6169b5d17"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "185",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `/path` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2703799c097690bdcd7317129ae08c0fdbda2bed9e84f3a9919c5425e057f0a1",
+        "07f404047c14ff2b9aa3d9a90b6ab11c7f33bc4ef1d9928cd2ec9bb21f2ee0d1"
+      ],
+      "vulnHash": "4e55029cce6f78e627344d8e93a8b6e39eb108bc3943a75e027c3b4a2209bede"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "193",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `query` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "674a216cc096dbe826837027367ca8011ae7f51813a59d24400a5b3d94500049",
+        "a6557145eff4557fb324419531c9524007bd5967a9ac37cfb4d73bbad3f72c76"
+      ],
+      "vulnHash": "3f521a14a2f07600c34bcacdc19f62e76390da4002d176c3736db7b747010a72"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "200",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `[('foo', 'bar')]` in `https://user:pass@host:port/path?foo=bar#fragment`",
+      "column": "36",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5b1ea33477bc8a6981080570808736e72beee49f700378f2d8d14adaba7306e0",
+        "708a652571307df95a600b58a9a860782e40cb54e8971b1d53198673ac9cd3fd"
+      ],
+      "vulnHash": "3d7bf548abe2666af9c24f884fffd40bf606a175f3cd3c70a19a34d7725da9f1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "208",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "e.g. `fragment` in `https://user:pass@host:port/path?query#fragment`",
+      "column": "28",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d7b6568db2342bab552a082c4b9e965797039667c7075c7de10629528003989a",
+        "f9b20f7085d448445e73fb602f948ec66eeefd0b6cf00e7cea2311bda1654b69"
+      ],
+      "vulnHash": "4ab252b3792c2ce9bdcd17654c97ce9fa8c5ca9d60c7ad607e31fce89defa532"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "527",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`,",
+      "column": "30",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5a0d3c0d7bd863e410d455edcccb59d9396bf579a1d023497e5f18dcdcd5ed24",
+        "3958e674ab9973411aada26b69824585df50ac4966066370bdf0f4074673da79"
+      ],
+      "vulnHash": "0c468372f5e02d2ff447671821a1610343d6b34b0869680446b15f6dff8eb39a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "718",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "m = MyDatabaseModel(db='postgres://user:pass@localhost:5432/foobar')",
+      "column": "28",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "825d11ca63a7d9d54c168a4f597f46222e7da4d4a0c5b4e62079051cbcd847aa",
+        "bea03f6f7847ebdeede09b7e141c78b3b6fb3fd4809f6ab3881736edad764274"
+      ],
+      "vulnHash": "b1b5cfb9d5e0528777b913f0e9c09f8d6d579c24a94c4cf2f2fb6290f9e8b242"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "720",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "#> postgres://user:pass@localhost:5432/foobar",
+      "column": "7",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8df91a382959356be63f040c3861d0c0dd21d3d45921f84bb97b4fb1a2056d73",
+        "e4da33b8fb28eba558c960be90afdd838c129732a7b43ca86f8114eefdcea0fd"
+      ],
+      "vulnHash": "73eb3796521bf7ebe080b286c03ed91b06deda98f792f9a8ddc58d204ac67723"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "723",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "MyDatabaseModel(db='postgres://user:pass@localhost:5432')",
+      "column": "28",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "23201d2085d71574b77b3f885493cf9924e0599447bfceb9a6c66880dae39bff",
+        "c33ddf827265c73583a3a10fb9072a3a9667bbfecdfa8a4707f3f91a7fa74a03"
+      ],
+      "vulnHash": "00a374c9877067a8de07789029c20282248c0ef767cb5b73c140f20082c64f44"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/networks.py",
+    "line": "731",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "//user:pass@localhost:5432').path [type=assertion_error, input_value='postgres://user:pass@localhost",
+      "column": "38",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8189d57b8ea36ae2fd4256193042e354c6d63cde1f963e04a04fc5cb7d679400",
+        "69fd4a34cc7fac433e15b346387c0e0538ee9633b02cebc9c24aec2121822298"
+      ],
+      "vulnHash": "5c0721fcce30886526c08f1d4975fa5bd32b622c83c576a1f04805512c77691b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "416",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "user = UserLogin(name='pydantic', password='hunter2')",
+      "column": "34",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4ada95a961e8f7882ba5726d4ad530c74db0d6fd1262d0556331bd2794739599",
+        "079fc730ae0a3c2d935f00148273bce6b7e334bb88eab79ba666e0ea76c4083c"
+      ],
+      "vulnHash": "499687800a5ac262dbc3943243e7d31582107a5aa99d76e7020f4a8c5b8ccfa3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "420",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "#> user=UserLogin(name='pydantic', password='hunter2')",
+      "column": "35",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6fbf90fec37fa04d9fc85a52aa37be7ddfd9e9c30557ba90155ca7cae4d9050d",
+        "e972c70e615d9e8b07ff62d2b14ad71047c74b647c02d1f067a5fbad17dab551"
+      ],
+      "vulnHash": "059338400a8b71a1cc7a1430ee30947968610f1813381c69eb7bd2c242cd2d66"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "471",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "user = UserLogin(name='pydantic', password='password')",
+      "column": "34",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "295128a7ece94c5f8f4a9404a396e13e80e60dd958898975aa1d4b2f04cfc7ed",
+        "a0e5220679e3bdc6f2b541f3638ff0bef080dd76fb8e619478f59430be704cc4"
+      ],
+      "vulnHash": "9d82c2bb716a1f15c9dcadb8442ccc0de574c76896279550b8fc32fbe4c52880"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "476",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'as_any': {'name': 'pydantic', 'password': 'password'},",
+      "column": "36",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b09dbcc1b727e207d00b31b072e11f9de255fa69c574370e68e2c42879287823",
+        "dc38cc8984f800dec4fb747e9007cbbab969d55421daa7cbd4e9e6dedf4e50f9"
+      ],
+      "vulnHash": "f0c400f9f2666d2d2dc40e1818adcedfaf528e97e2cd815b6a86630e3145dc0f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "531",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'user1': {'name': 'pydantic', 'password': 'password'},",
+      "column": "35",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5144d6ffe47a592a6bfa3783baac55f7fd17d927fbe3f179a1c845227d9cf24c",
+        "704627a89089f828ec4be212b2a839eb3b43c9bcd9d05aec2160342784c5b0f1"
+      ],
+      "vulnHash": "d5cbebd9e5675870e1900f3eed25bcf10c7dae95487b25cca15b2aaa671c0a51"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "532",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'user2': {'name': 'pydantic', 'password': 'password'},",
+      "column": "35",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "99c19dd727e119e57e936f6990a24b8b2b6932d2646e5e679e2ce08ba3e70cc1",
+        "661ce279a28f797bfcf7fc9c3f586c8b77c8597b9ad83ce6aeb9077301b72df7"
+      ],
+      "vulnHash": "71a7c5051aa98afd1cc90000cb8193307d1c6e1534b98c1a750b82ce2abff524"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "565",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "password='pydantic-pw',",
+      "column": "4",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f10b6edf1c9d4507c587f341e481d92e6f206f8c3ca1e49e402a7f7f603c6ca3",
+        "990396c444229dbba5fb0a70cd67bd476b54be05c4b32d454c495cdcea207e69"
+      ],
+      "vulnHash": "ef7da855f500cba009f57fa8736ec6ef41946d718530ad9371b8a9a0d986c5b2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "566",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "friends=[UserLogin(name='sebastian', password='fastapi-pw', friends=[])],",
+      "column": "41",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9d0d0dbbb77ee59234d5e2c903bf0bd041273c103f7f5c59a3b9b1f887c933f8",
+        "314bf1f08ba3a4742dfdc5de269e33e71f46447cf0757eba8b1f53b63df08a7c"
+      ],
+      "vulnHash": "9c0f6fe8d7b0303840718df208b6b833cfdc22d91449fd56b3cce069875b8624"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "575",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "{'name': 'sebastian', 'friends': [], 'password': 'fastapi-pw'}",
+      "column": "50",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ed64d7e48a75028850360400f509df8e2d154f65493bd00c2bac30c1476f9519",
+        "2b9d3619f7fada904dc0667eecc02816f88b8c37e9143f1f1364761c1cca1d6d"
+      ],
+      "vulnHash": "0c99cdc7d68ae581f9e8d89cf854edb8376b863af3e97b266c5a5d83324e9cab"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "577",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'password': 'pydantic-pw',",
+      "column": "9",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e147c61fb2fcf3a1984eb98e688d3cc9866f580cc4f6907fc14955f763a4f86f",
+        "7e12f19a7f747d872502f6e92dd8ebcc65b321a6a09da47136f56f3eb164b0e7"
+      ],
+      "vulnHash": "bccb0f63f4dd928987b30dad1bf033e1a43ac4ae45ec055be8675af02f28aaac"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "628",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "u = OuterModel(user=UserInfo(name='John', password='secret_pw'))",
+      "column": "42",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ace81635e7ad4ad5082334d273325dbe8d943c626fa0a1aba7b29069bd0db3b5",
+        "36e37d68860790b41d2f74a1e58f0d21667c14f9535d32d5cc7435020539f81c"
+      ],
+      "vulnHash": "fca3808fc536beb2f3e50f001237953f70abf7a9612c92e2ae3bf1967ada83eb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/concepts/serialization.md",
+    "line": "685",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "user=User(id=42, username='JohnDoe', password='hashedpassword'),",
+      "column": "41",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c6cbc6dcfdcb073d948a34e674b95093254fe1cac368fe7987534eaebf98cee3",
+        "890744c5bc958dd4a008f58b6a5ab825240583050c781911684e6cfe2bb58ced"
+      ],
+      "vulnHash": "86fff469a2edfefdd105253cb170f88adee454ddbf3cb0434ac0f9ac72f28835"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/types.py",
+    "line": "1819",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "user = User(username='scolvin', password='password1')",
+      "column": "36",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2b24c2c0c08cb177572c2f82a9b33a12f0cd38b4fff649c08d6e8369ae62e165",
+        "88c95165c9e09f3af1d8a31c19e8761a4d24d9edbb3598f61fd5827ffeb1d5bc"
+      ],
+      "vulnHash": "cac4e00767403ffffcf965025a9a446be6972aaf53669bedfb3b112519f173ca"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/types.py",
+    "line": "1846",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "model = Model(password='IAmSensitive', password_bytes=b'IAmSensitiveBytes')",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cf6e96215c34b4b5737311f621d04bab23ec7d5a99c1dabf9324ab3907fe61af",
+        "e0f3a0493c63dc7f006f2db49c059faa6a2aa17ddd3266b363a7b3bf79cc0af4"
+      ],
+      "vulnHash": "57428a54ff138037d1c924cc6f8598c4cdc158fa007f99ea531151a7f6873cf8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/types.py",
+    "line": "1859",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "#> {\"password\":\"IAmSensitive\",\"password_bytes\":\"IAmSensitiveBytes\"}",
+      "column": "9",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ad98dee86b54c124a1e69bfdefc1470c57092b9af2db7f1f2cd3c188dc1fcf22",
+        "6444ec8883d49ac1bfa1f6481e5ef92d06e7a785d338febba41c758d9b472a92"
+      ],
+      "vulnHash": "559c6336165f8fad07fb3740f232000a427e79a91fdde785f79bf4768fd243bc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pydantic/types.py",
+    "line": "1887",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "user = User(username='scolvin', password=b'password1')",
+      "column": "36",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f41a4433aac84d4e7449ff15d371f00ee0fa3f3de8f24d21722b4dd4ec8b26d2",
+        "178dd2a63e158d2bdd6fdbbdf581feb78e31a39a9a5e322490fe6213e6d1ad15"
+      ],
+      "vulnHash": "f97758d30baea01b31eec4be91a7ed48f5072a676b962746021a5580575e05e2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-JAVASCRIPT-11",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/extra/feedback.js",
+    "line": "4",
+    "message": "(1/1) * Possible vulnerability detected: Origins should be verified during cross-origin communications\nBrowsers allow message exchanges between Window objects of different origins. Because any window can send / receive messages from other window it is important to verify the sender's / receiver's identity: When sending message with postMessage method, the identity's receiver should be defined (the wildcard keyword (*) should not be used).\nWhen receiving message with message event, the sender's identity should be verified using the origin and possibly source properties. For more information checkout the OWASP A2:2017 (https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication) and (https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "feedback.addEventListener(\"submit\", function(ev) {",
+      "column": "8",
+      "language": "JavaScript",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "86de22b1dab6301c7a4ed04c1e9b2ec520d3be4574db59e7f3067316eb4b1f56",
+        "9785220a43e66bf32076b8339bc14f1c4581bf0c134272eaa326dac19990c179"
+      ],
+      "vulnHash": "b19ce6d1ffc7e7c91a2a005bfcf951e6790a6bb3f15e175712323b92225cf541"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "HS-JAVASCRIPT-11",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/extra/algolia.js",
+    "line": "30",
+    "message": "(1/1) * Possible vulnerability detected: Origins should be verified during cross-origin communications\nBrowsers allow message exchanges between Window objects of different origins. Because any window can send / receive messages from other window it is important to verify the sender's / receiver's identity: When sending message with postMessage method, the identity's receiver should be defined (the wildcard keyword (*) should not be used).\nWhen receiving message with message event, the sender's identity should be verified using the origin and possibly source properties. For more information checkout the OWASP A2:2017 (https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication) and (https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "document.querySelector('#searchbox').addEventListener('input', event => {",
+      "column": "40",
+      "language": "JavaScript",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "24d8653351cfaef578e8d60cb7c30043c693edfc714a6d75b99875d458636cd0",
+        "05826d36dcd0d590a4cd313fd6040718df565f01fb9c764434fc542c82e7d488"
+      ],
+      "vulnHash": "c7fda08dcdee6348ab28fb7c7789c3aef3ed9d8bc8579c18c9b4e2640a7ac15a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B506",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "docs/plugins/main.py",
+    "line": "448",
+    "message": "(1/1) * Possible vulnerability detected: Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load().",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "447     with (THIS_DIR / 'people.yml').open('rb') as f:\n448         people = yaml.load(f, Loader=yam",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "bc1fc298454e48d6a82d8eda95d19de8b3267be106b3702b0c74473cab0ece13",
+        "1869950feffd978b69ef6bb6d34febb6f2669c05d45349ad7dab916a97d050da"
+      ],
+      "vulnHash": "ab82b7ab690ed95d8615d2d0db3707976d2a07feef7c731dca5fdc78cabb7699"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B301",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/parse.py",
+    "line": "54",
+    "message": "(1/1) * Possible vulnerability detected: Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "53         bb = b if isinstance(b, bytes) else b.encode()  # type: ignore\n54         return pickle.l",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "667639c9b9e98372d5495f0a26dba9758d68df438a3de63e3cbe8c2d0947a5c1",
+        "21bc0f382cb71809987dd464e9aab4294c21962e54969a7df6ca1d9778e32896"
+      ],
+      "vulnHash": "3517448f2f9e6b723a289edc7d8a17d58a86555028fca0ee801e7237e059a930"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B301",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/parse.py",
+    "line": "42",
+    "message": "(1/1) * Possible vulnerability detected: Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "41         bb = b if isinstance(b, bytes) else b.encode()\n42         return pickle.loads(bb)\n43     ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e8b55e0f2344a1f304ab7a78f753dc510dd0420a10d6ca95d277e76ae78b3612",
+        "21e4d90d6568d2b769348ac294ba0a4565901cb1ca2036fc0d56fbde6ba4048f"
+      ],
+      "vulnHash": "a8c942659c531169c20894d8db488e9f914a098867b4766764cd8d2844b4a015"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B307",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/utils.py",
+    "line": "195",
+    "message": "(1/1) * Possible vulnerability detected: Use of possibly insecure function - consider using safer ast.literal_eval.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "194     try:\n195         eval('__IPYTHON__')\n196     except NameError:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ea4ed960d11d594f37c1aefeeccdab81909b6dbfe1479c578c17353d87be0026",
+        "37bcce7ccdaab66d82d5c5f73b45edb8cea6ee164954f7865253076e49b232bf"
+      ],
+      "vulnHash": "cffeed578347636dcb3cab1b7543e64f164358350c64d7f65ea9495c75eaca40"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "docs/plugins/algolia.py",
+    "line": "52",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "51 \n52     assert page.title is not None, 'Page title must not be None'\n53     title = cast(str, pag",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dd8c32b5e258deaa3418d80657e75cbb35bad1853a32e0c904b92110bd71c6ad",
+        "c0dd4f2fc813696765a2b361383aae60f78323097a992826c73b288f04d6092f"
+      ],
+      "vulnHash": "1ac16840a27e057bd58a1ce98090c394502b6e582e2956d4294d6539bfaf7396"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": "543",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "542     else:\n543         assert mode in {'before', 'after', 'plain'}, f\"invalid mode: {mode!r}, exp",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "472c31ecf129f348c171a514f71da8ced63c5d70594826227e04a3b9ee7d5031",
+        "a1f1f7ce4fb69a23aa0a9a8dbe8d00edb8fcb784fa0a5750b0cce8850ea7f97c"
+      ],
+      "vulnHash": "ca652e52e8e2cecf738cee3e4ff7253dd1c8c6ae910ce8fe3ba1282ef757d9f7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": "659",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "658     else:\n659         assert mode == 'wrap', f\"invalid mode: {mode!r}, expected 'plain' or 'wrap",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0bb3c0b55ad3ac8476dc7cd577e41e7040ec57e2fca74271486600fa48a4b70a",
+        "13dade8e6455ae966762446d844ee4b3f3337201ec290d88d23a927688f70321"
+      ],
+      "vulnHash": "e7a278f849c55f1ecbaefd916c8e4fb814ccedb9dd44def2216bac3a170f107c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_decorators.py",
+    "line": "752",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "751             # Make coverage happy as it can only get here in the last possible case\n752         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e3f9ccf83335fd59c23ff51cc632751a2bc3af2ac2d80fa357aaac369152b7c0",
+        "dec18a36f63a1b371c8fc645ac88a7735b74a5f1e140e7aaeb1931972a617d0a"
+      ],
+      "vulnHash": "16b7c8f9e75ddb11b6010bbf416191d158bc9358a78daa3bb13234f155d10118"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_discriminated_union.py",
+    "line": "163",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "162         \"\"\"\n163         assert not self._used\n164         schema = self._apply_to_root(schema)\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4652ff29a958a1f3d7e31102d895b2711d093ebde9cb75ec83d68a37d6bc2d9c",
+        "49009e11594b4449548d4b5fd599d29b645246aad8339e894b7a91b4fd500485"
+      ],
+      "vulnHash": "eb037424c6018223283aacfc65149e9a7530f8dbe10a4cf02c5c681e9fc82ed0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "760",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "759                 if core_config.get('extra_fields_behavior') == 'allow':\n760                     ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9a0834f384cfc25bf93fbe3e887bb6c0ef86c09473375f06c7debd8f6f716c94",
+        "8eb7d4745b5c0f57e06cc22f567c2eb45b2d1862ac0145b029b30bd1aa5178d2"
+      ],
+      "vulnHash": "2de8f144b1cab3347e102c55e3f5d4b09145ff2bd4891a92968d78ac510bc3c2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "761",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "760                     assert cls.__mro__[0] is cls\n761                     assert cls.__mro__[-1] ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9bd798c337cbd584f66896d762a2eaf857014fa9dcb9ab1e6e323599962f83b5",
+        "6fa367d694708eb04a335f09a34a25c01d9383060404e74893c528dd119d6946"
+      ],
+      "vulnHash": "4982341e4d1101ee2c586cb91faf9e1e167c58145d6653f7303a48a1ea7eac79"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "1434",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1433                 schema = self.generate_schema(annotation)\n1434                 assert schema['t",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9f14954ad2e0ad4eb4e7ed80b2011906b46aa47b3729c39e472980e9375a7a54",
+        "cd735daad8ae27ace64fec1c187eebbc31e3ea3f36b45cc58ffe8905822c2681"
+      ],
+      "vulnHash": "9b72add22eaeec9dcaa01e7f170515f0aae0282a407f17d7e9deddfe15ab48d6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "1441",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1440         expected = list(get_literal_values(literal_type, type_check=False, unpack_type_aliases=",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "78f36c76783dfc51386d3e7893fdc5dc5b6a8f42cd027a8cecd37d07bd8ccafa",
+        "42b98e635203973e461ae202088d47970f66a2b75b109d7bb23c6768d681a51e"
+      ],
+      "vulnHash": "8980b3b631ae2c932f3f557b98575204bc1c284df828c754beb6e5b0c0e53cba"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "1620",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1619             field = FieldInfo.from_annotated_attribute(annotation, default)\n1620         assert",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f6f71d74f638f4d8dabf1b5799033c8b1986721a01a539dd6f18067b6def3534",
+        "814be24ef1c479f51c8c0b033a6e462a747eea46949e885a1165c519bbd45ee0"
+      ],
+      "vulnHash": "fb6f9833ab9209a9edfb6fd9a837c07e5883f6a051918e2ebe60cdc04b7ba53c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "1942",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1941             else:\n1942                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n1943 \n194",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6c00b874637c6d829fe04675c1adecb8ef8929e1d3f6a1a19750697d472f7173",
+        "3c93ae0cdc92c0a2cfef96d4b7a2174dd60f7f513b034d62b474b2b4e1c27ee3"
+      ],
+      "vulnHash": "e951e284b76b8e7f55cf9745629a61cd3eebb78569737e6b2efba7aed05a69e3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "2247",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2246             else:\n2247                 assert serializer.info.mode == 'plain'\n2248             ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "de65798aa019c73fe1a2896148e893d61a4938e162d38e20c3561424f8e69f4e",
+        "e2001774591e39aee3898bebc7d164bf0c64aac3598473ea0703166dd0f9342c"
+      ],
+      "vulnHash": "4d74b281b54a4206d8edf4b5ff924966117ba318c4ad7dcdc63cf1facd66b0a7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generate_schema.py",
+    "line": "2408",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2407         else:\n2408             assert validator.info.mode == 'after'\n2409             if info_a",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f6826ef5a590fdf703fb3070dd1cfb19b1ad4d2ba0b62a7d74b48d0c8e113283",
+        "b1b67f78c4f0dc7aed532730fa8680fb0b59630179f027fef66b82a30e0b2bb8"
+      ],
+      "vulnHash": "fe91edfec8aeaaa0a1eca361aee39836644df164376a729f2e8c1eff3cfadd96"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_generics.py",
+    "line": "298",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "297             origin_type = getattr(typing, type_._name)\n298         assert origin_type is not Non",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9b9b8e3ea4f99ae426b0c9d1d7b5073ea83d7accdce0e9e15de5e3afb25750b4",
+        "8e4278d09fc0cb8a288c0b9d14e83bfae65640cb4bcd1d75f76b5007ffa293d5"
+      ],
+      "vulnHash": "5b6156b450d67b34314743e3f9af1af561ecca93e7ff0d8eeecc005ebd6e9634"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": "6",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "5 import os\n6 import subprocess\n7 \n8 \n9 def is_git_repo(dir: str) -> bool:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c881bec2c8ddf3af20c21c6d00767659825605649b71c21e1f2176c90bcb1c1b",
+        "c92dc80c9de1d26a93dd099d24de2fd1081005c7f638305a8f3d3bc888651778"
+      ],
+      "vulnHash": "1ae632c26c15d8fc347ff94c12c3ab365f49168563fded3f5ae71ae7f7d15a35"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B607",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": "17",
+    "message": "(1/2) * Possible vulnerability detected: Starting a process with a partial executable path\n         \n(2/2) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "16     try:\n17         subprocess.check_output(['git', '--help'])\n18         return True\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a06a9285b6bd0cd57a53320cc21de47bf7e15443c689fb3b5d30ef97cda06112",
+        "01103caa53c7a4f97796d05b3d8d3929358693c93932c8af156ecfee7f11d8b4"
+      ],
+      "vulnHash": "419e9811fbe97cffa78c6d10ada13ab927829050b222310490325111d28fbfa6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B607",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_git.py",
+    "line": "27",
+    "message": "(1/2) * Possible vulnerability detected: Starting a process with a partial executable path\n         \n(2/2) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "26     \"\"\"Get the SHA-1 of the HEAD of a git repository.\"\"\"\n27     return subprocess.check_output(['",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "057eb903c16618943375fc96fa1578cce5c06a2cb9bb03431a89f7290ff1a212",
+        "b68c19d14ccced5880a7cabd4df0b76cac9a75d6c88b436b9500c8de1c1d92d0"
+      ],
+      "vulnHash": "02fe72238f5859e493a1279252c0d34de879061f35a773083883f126adddf668"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_typing_extra.py",
+    "line": "436",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "435         # Thus we assert here for type checking purposes:\n436         assert isinstance(value, t",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4c889ae905f30d9f18cbb3427365be81e442a71829f96f5045ae648a54cc4015",
+        "0ab2eb461681d6f0e12d3099591469736fb5c9164cb038dad68cf10bee1924ce"
+      ],
+      "vulnHash": "a374bd4976a614f9c0a58948b1f4156a9bb368c5d9539937c3263b0e7ff7d3f1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/_internal/_validators.py",
+    "line": "359",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "358 \n359         assert isinstance(decimal_tuple.exponent, int)\n360 \n361         exponent = decimal_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b4c57e5c65e3087946137ee920ab98b42c66bc8ff12ec5239a937c9162df4de1",
+        "19bbec26027b1c08af2a1a1c78b68094ab66bc65202b5aeecabb54c660acd96c"
+      ],
+      "vulnHash": "e9f5f5ecd13364b4a0d36053eebc3247a9a6ab8cefb7cdf82cdcc539c4d61e22"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/dataclasses.py",
+    "line": "144",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "143     \"\"\"\n144     assert init is False, 'pydantic.dataclasses.dataclass only supports init=False'\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d1c7efa921f9a8256d2b0f17927435c081cbff6fe99be509ec3ae259ee2c9178",
+        "60191522ed4edb1b38a210b1bdb4e4c02068d8bc41e060c1478489f236194dbb"
+      ],
+      "vulnHash": "baf297a7663d0f7f2d9b516698c155d235b2b0c518f061c967805104093f462e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/dataclasses.py",
+    "line": "145",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "144     assert init is False, 'pydantic.dataclasses.dataclass only supports init=False'\n145     asse",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0d8256e54b1debcde254a5270fcb33ee4c4838810cccc4062f1c01d0b7b04edf",
+        "1df4dbaff5f7c1d5a886effd4cfffc85c4d17c2588e5ff8c6c4dee420c38c285"
+      ],
+      "vulnHash": "664ee74f346727adcdcef89736b55a3daa025bf5ba3af44d1606b47e2e64e16e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/decorator.py",
+    "line": "122",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "121             else:\n122                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n123        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "821a17eb5b4818d98a4c21e2dc115f5d74fa1eae8a3d5a477a8ddd5e09d50886",
+        "fca46e2fcd1b4bbf23f051d9ba343840271dbb5bbbc1d16acbb0e76e36273a83"
+      ],
+      "vulnHash": "0f67b27d76e41d7cbc11fbab678373884853fca0a619d7978d3d88e68dc7136c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/deprecated/parse.py",
+    "line": "4",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with pickle module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3 import json\n4 import pickle\n5 import warnings\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "93c8c7cb4ae42613913055e9467726b99f89321023e210d46d4f4692f783989a",
+        "e78968733283ac4a92471e18c8da1164f638c58c2b063019650fd64191f245ad"
+      ],
+      "vulnHash": "a2cab84526e587827aa8edf0d01044c2ebec44584e055068c5eb17d9427777b3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "391",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "390     else:\n391         assert isinstance(step, _PipelineAnd)\n392         s = cs.chain_schema([han",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f3061c217fd8d7e4b4b57e9c4439c99f1835fed0db60833abb6e3fc108953cb2",
+        "a76a274266e172f141cd3814e86aa3612ae4a31adf7dc610ccc46a9a1d6eebd2"
+      ],
+      "vulnHash": "ab84759300f9179c09f99562eef6555bce6e5befd67461d3b3618c170f8e6392"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "514",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "513         if s and s['type'] in {'str', 'list', 'tuple', 'set', 'frozenset', 'dict'}:\n514         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dd1c3969d380f2163fa509a1a2febea8a6452a86a892c7d4c549ab738b047555",
+        "2dc646e44152d97df7edd479be6be20eb144931d7ae166e892c8b9d7f5bfdaee"
+      ],
+      "vulnHash": "95d16e2b7615aa91923b765e313978c657c2d1d0f31208c6dcbf712596be373c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "559",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "558                 def check_tz_aware(v: object) -> bool:\n559                     assert isinstance",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "72f3a74571419a0965cb4e6ca3747ec05bd493fa59f54c93ed8042f4f533c7e8",
+        "7e75ec2351fe90dab0676eb279ae02f92da69191526e0546fa2acf2eb855a3d5"
+      ],
+      "vulnHash": "349d8857f522723675b81e9abb37e0a0a5b86f00e0d0576555cb2ba82d0fbe2a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "570",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "569                 def check_tz_naive(v: object) -> bool:\n570                     assert isinstance",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b17abb46b0867cfeed739c5b39adf03d86853578a50a90e096e2adef5ef29bd3",
+        "2eca8e35239c0dcc48b6908e1cd509a87460ce315e779f26474dfcd9c7f6eaf6"
+      ],
+      "vulnHash": "a7b3ce0a2bbeefd38d798c951035f93c60af8c6c1e25b52d7419793405a8f6de"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "585",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "584             s = _apply_constraint(s, annotated_types.Lt(constraint.lt))\n585         assert s is ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "19a32d21ce67adfcbe381bd82cfc906740922246e486372c0787ae769abd57d3",
+        "2e10b9e1f79684525b048aa97032fdaf16ccfb76f54ff31c40de041a7970bf18"
+      ],
+      "vulnHash": "8b25bbc6acef4ad759b67228e1937aab0e25ed3311bff028230a4c61909d3d3d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "635",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "634     else:\n635         assert isinstance(constraint, Pattern)\n636         if s and s['type'] == '",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9ea30e996a8e155729603b687452cfbbb0a19bed408ec9fd98b5ea7ee3991803",
+        "e6e1a245027fbf2660fc4f0b9aa80f34a5f46773b9021bb0404603cc895c1019"
+      ],
+      "vulnHash": "7aba062d1d842080ea15f4236a26b3aa70895f18cc26233c7d64092e2f5faa90"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/experimental/pipeline.py",
+    "line": "642",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "641             def check_pattern(v: object) -> bool:\n642                 assert isinstance(v, str)\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "05dc0fb2440e318c559382b6452be4a5f67aef901e435a474a1d1c2f9b436b30",
+        "3c81f78479f250b312418ae94c8c3190ffb0df8da35f463aa31c49edccc0beb6"
+      ],
+      "vulnHash": "3b7bc5de7726e0d7062a444ea8e604e28226bb459cbf90869c23221fe6afbe76"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/json_schema.py",
+    "line": "2360",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2359 \n2360     assert not isinstance(cls.__pydantic_core_schema__, _mock_val_ser.MockCoreSchema), 't",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "709fe049156b63191045e8a7eb3db1de1fd0c494139da5ae713c543e9ff163e8",
+        "9b7cf08e5897f899ac88423dd2d7bbbb41ec478de24d14d2c1874d57eeeb522b"
+      ],
+      "vulnHash": "f69a647f2a2df557a662edc47490331b47e1ce6a41a49b83a515f44257fd1d2a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/main.py",
+    "line": "648",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "647 \n648             assert cls.__pydantic_fields_complete__\n649 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f661e534355b0598cab5be7fa31081d7ffd1d1fe6df78f850853cee14df8c17e",
+        "6090afd7f3d8e38ac7abf7a2b1a6a54490b11bf61e7971dcf84cd115184f1a71"
+      ],
+      "vulnHash": "c3013a8d19d6298256246190878c19fd046cbdde096a4d3418fe158fd42d8bc0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "173",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "172         info_metaclass = ctx.cls.info.declared_metaclass\n173         assert info_metaclass, \"cal",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5e02e0cb01b03a896b94ce2b6ff9ac289744b3dad202d57153795083751290de",
+        "85831d66473d51c035409799f22f8447f806d0f9d96950a576a3dee49a5535c1"
+      ],
+      "vulnHash": "b2565d85fbab251b757c6c9e8b696700e86f24e78c81a79bc0b61766bfb9c9f8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "328",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "327                 # Cannot be TupleType as current_info represents a Pydantic model:\n328          ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1ef31216d485211b31521f6e8d81a31bd57089b91fce67f7b1d94b7391b31040",
+        "e9fc39644ef180e13f91076b9012f74a6b2e0b230c089bd3b54e9173a94dfe66"
+      ],
+      "vulnHash": "9bd51dc0c4d8adf290fb64f61b3af44aaf9f9eb506949211b51a4467b184d6bc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "361",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "360         \"\"\"Based on mypy.plugins.dataclasses.DataclassAttribute.serialize.\"\"\"\n361         assert",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f4d8978cb29a1e72e456ecd9ccdee42308cd2dfa57449de0f2d0777e33179aee",
+        "ab63fd22c5a97b34076ac453f3a5dffb282bd3698c1107c596705fafb5ee3c00"
+      ],
+      "vulnHash": "270363020f46fa8677cc4108b7eb076a12fb8502bda46dc92e29f2ea6502ca3c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "640",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "639             lhs = stmt.lvalues[0]\n640             assert isinstance(lhs, NameExpr)  # collect_fi",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2ee6e52dbbab5e68c96cf1582baa207821aaea143631b2f20ccda89cd7b02c62",
+        "3207224bf96713835a5160256cce70e0e1e36db7045d0a52b4ae611cd25efdee"
+      ],
+      "vulnHash": "8447338321b7233f8b0555290587be10e6b4d4f42236b5dec3259a6c42458781"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "824",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "823                 super_info = t.type.get_containing_type_info('__set__')\n824                 asse",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7b45a0e4a128dca58acc69d5405beeebc0c4b3b83dd25f9b5ca507302af07aa0",
+        "1a9e7cdb175ad86711853516356ec5e480e557c862a5a3b5cb676206a9d7d521"
+      ],
+      "vulnHash": "bdc5df0b3ab87442b2a21584517a8a66778abe0fa4f7af5ce624895ba15d748c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "869",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "868             base_settings_node = self._api.lookup_fully_qualified(BASESETTINGS_FULLNAME).node\n86",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "591201a8689dc488a1978cb56463160851c400d983fd6646d14d5c4eb7f50469",
+        "7af634e1977441c3780882ab25e5803f28c48658cb4d96e6a9b389f3f9689a0b"
+      ],
+      "vulnHash": "1c8cb6672f60e5a1412697569cee86b2d611422a0d93989397fb7dd4e689b085"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "872",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "871                 base_settings_init_node = base_settings_node.names['__init__'].node\n872         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "befcec09367c269eaf61491e91f1a85039266d4cb65bb31aac07070260226c65",
+        "ed07c1943122f2565b643b2f7a93a007c60e8d4cc6741586490933605cec401d"
+      ],
+      "vulnHash": "8fe0fc19e07103751b9ea115f46b4eae292204e8345b5c815a5f28077e300491"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "875",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "874                     func_type = base_settings_init_node.type\n875                     assert isin",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "eee2bf4125599a8b317ca1600f49a8648a1a41302340e9a0ea0362543d2df48b",
+        "960a5670265c255e04c711302ab4379c1848875617aa749c6c4ff4b0e2fedbcb"
+      ],
+      "vulnHash": "fa00bf881e3112a0ea5450a16e18cc587d5cad1ae3b5090113d26c21f72d5294"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/mypy.py",
+    "line": "1310",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1309     for arg in args:\n1310         assert arg.type_annotation, 'All arguments must be fully type",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7b8006a23248ab487e40e450278a28edaba8dafac4cd8c3e6c6820c38d501f9b",
+        "55a9a3009e3e9b6923fa303a11e137085829e63deb8090730c1ff42a03731d90"
+      ],
+      "vulnHash": "034e537728fe2a340470fe584cd016d8e8e8c5af449c0213c1056a5e05feb8fb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/networks.py",
+    "line": "1293",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1292     email = parts.normalized\n1293     assert email is not None\n1294     name = name or parts.lo",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d830df1fb060abe42b33d86ef627bba0545b9cd77e1cde23b00bfdf1daef35ce",
+        "23ae81d8b1ebce18091e7a367cba3a72170590d0f34a22fdc1322af5c00ffe6b"
+      ],
+      "vulnHash": "4f1c7e0add2545ac497cd7f2d4f7bf0bdb12f4c5efa644609e7372f15f1ca134"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/type_adapter.py",
+    "line": "669",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "668             self.core_schema.rebuild()\n669             assert not isinstance(self.core_schema, _",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2f2b11bc12842f81c909c8ae68968e3815344e085534ba3b28d993a41af81b3e",
+        "62ff4a964c51e0ac93d8073ef5f89ba6288a15931fd7ed1b5c909c1c09f26fd8"
+      ],
+      "vulnHash": "3ab4996cd4e754c28aa2520014e97221f764c20a5f49050e613ab6ed42c00bc5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/type_adapter.py",
+    "line": "712",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "711                 adapter.core_schema.rebuild()\n712                 assert not isinstance(adapter.",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9058beddd32aafbc2a8e4c87bb87b8e39031471bc85d93c5f8605abe6d6ed5e1",
+        "21fa0f336008abae16877f21f410fb3f24be9bb271cb4d7adacd1e2755cbeb78"
+      ],
+      "vulnHash": "7e5ea1718b9e9b42dcc165ceff98a5ec572bc4ae8f3e949c9281e4aa531265b6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "212",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "211     def inner(f):  # type: ignore\n212         assert f not in RESOLVERS\n213         RESOLVERS[ty",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "77fffe703929db5cce9bd1b85f33e81495a8f96906d02997364827f0b8e4b34b",
+        "91405d3c19b67686d03f8f64c421a511841722ed106f56c32ec532904e51f991"
+      ],
+      "vulnHash": "cf5b5ab01fb392d54cec6c98ca3efeff40dd7c42b585eea7cfe76a351efee43b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "258",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "257     else:\n258         assert min_size == 0\n259         pattern = rf'(\\W(.{repeats}\\W)?)?'\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3e6ca063feb4df6768a0f9296f47a11fc5d1972962dd1b3fee4aacad253a0e90",
+        "fd3a96cce60fefc52a5cdd9a3dcaded84620ac247a02359f555c0142d64eb99b"
+      ],
+      "vulnHash": "66dd29ff57a246a1a64897bd310024b626c1490e3c59cf2f9928c69a3cc76ef9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "268",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "267     if cls.gt is not None:\n268         assert min_value is None, 'Set `gt` or `ge`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "38b3ef21e5f26c051a9957be558f50c1b5a941d0bd728c57e3799e97aa1dfca0",
+        "3433aa4a82d2fae40944882f186decb34f62a4dda860bd93ca10e9ba89783f02"
+      ],
+      "vulnHash": "411f3a92e1d99d3dffc0e201ebeb7960f2832204ffa473d18e0a9e17ec76a445"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "271",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "270     if cls.lt is not None:\n271         assert max_value is None, 'Set `lt` or `le`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a5fdfbb2797c68167a32d89793a163e0fae5e2ae0bbe1ffeb54f3a228958c14e",
+        "99070c8362489f7dfcdb4748e4776680bd8d869bbfad1b0eae71303abfc48963"
+      ],
+      "vulnHash": "24fb331727cbc0c1faccf735b8f36e9b7a13e1d3406d86aa4b0803cdef9b79f0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "289",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "288     if cls.gt is not None:\n289         assert min_value is None, 'Set `gt` or `ge`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3e2f3bf4e7b8cb286996b2704595558de4d3a28ad1d4457019e101235a43a236",
+        "72625b373a4543965deb2ea695eed87aa5dc6ab1c3340fce4ddffb66b4c17b46"
+      ],
+      "vulnHash": "acb9af56c900638402bad42dbd4c6d996a46f9134af262f377af263e3dfd223c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "293",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "292     if cls.lt is not None:\n293         assert max_value is None, 'Set `lt` or `le`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "00bb431e13986aed415a2070a4bee9688254ce2405d79ec23daf109ae6467c3f",
+        "41b4cef6199dfe9fb388ce0d0f26888de2b3018a4d2b540d5b67c81b5b3f231e"
+      ],
+      "vulnHash": "432f71225e2cb76473de38a49a79fc3fa1d29bd1efa628a6c15948fd23ac9a50"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "305",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "304     if max_value is not None:\n305         assert max_value >= cls.multiple_of, 'Cannot build mod",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5be39d2e4b3c70c124016d8620a330212d072dc2682cc108796f8535237e0060",
+        "45a67de8e4b9da0486d107a1e87c1abf5d08d7109c12450fc198c2be114d9565"
+      ],
+      "vulnHash": "8f193268148c1c3e4d009ecff60adb84eb1db4b1127d8ab522fd9567d02c40d7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "318",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "317     if cls.gt is not None:\n318         assert min_value is None, 'Set `gt` or `ge`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ff11d851b5a9578b0613b1d9dc841bdc3edb5c8b769bae6c0f4d42c63e31fca0",
+        "a4796e9013cc058881ffc4e15340ae4ebefea11ebaba8daed69946fd9c2c15db"
+      ],
+      "vulnHash": "ed605935dc39bdac81a7c029d770b02d6d4dc946f3dd46f177f6f7030bfd2b6a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "321",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "320     if cls.lt is not None:\n321         assert max_value is None, 'Set `lt` or `le`, but not both",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "87caaf7d1425899cf6d1493d5fb1bf884a550163c4f05ef21f008eb50ce999a4",
+        "68bd6c60750165d9d1a0d919e153d15d19d06bfedacf095462c339b0be4a1114"
+      ],
+      "vulnHash": "ad877a9017405fbbdccf218bdd1499db1f43f0e91a96785bb9beb1b94c4168a2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "339",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "338     if cls.ge is not None:\n339         assert cls.gt is None, 'Set `gt` or `ge`, but not both'\n3",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3144818e456d10d9dfb3d60dd166aaca24b3e135bbf8c9df3b00c403bf87af52",
+        "329d8025b2733fba49430f8a9279bf43a0262c096be66bb37f49795a8cfadb1a"
+      ],
+      "vulnHash": "cec10f2291894769e7c7ce31211fa21eb650020c264d4cfb3da3f16a310a7c54"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "346",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "345     if cls.le is not None:\n346         assert cls.lt is None, 'Set `lt` or `le`, but not both'\n3",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "74cdcea49db0c3bb03cfe5ba2f134bcb16aecae716846e9265bc9c4288bdac59",
+        "de85bfbe6ac979410f9185141c1c2bc03ac24d9f28f0fc6fc8f44ef604d21c2d"
+      ],
+      "vulnHash": "3cfe65076de29184c508a1cfe2f04d0017d0202b1bca87d02000b84e6a7e52a7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/_hypothesis_plugin.py",
+    "line": "377",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "376         else:\n377             assert min_size == 0\n378             strategy = st.from_regex(rf'(",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "12574cf55b16bddadc2ec0d7313578bb6d0cdfb9c63a9a0d7700cd8883661eab",
+        "b26332990708ad5e9b5c02015c405e1f0ecb0cf96e480758bbd892f67e64630c"
+      ],
+      "vulnHash": "bed1bb5b2fb7352625d3f5f0d158497dbba42789eda7d88756681b46ee5e632d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/class_validators.py",
+    "line": "89",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "88         )\n89         assert each_item is False, '\"each_item\" and \"whole\" conflict, remove \"whole\"",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ee2f9adfc103d4b3693c65c291f02d69dad8726dc664c26383a531c3dd14d130",
+        "0566f7a58e7eb8de73f4264b22230eb3c293b69b5242ec7fab41e59cb8e3762c"
+      ],
+      "vulnHash": "30484b2536c9c1f7016aaca3e03fbc4cbf29f3b64c1fdc5a92d0754bda36f6d3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/decorator.py",
+    "line": "105",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "104             else:\n105                 assert p.kind == Parameter.VAR_KEYWORD, p.kind\n106        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4ad8b3da1440285cd345129a48126d4a33439475da4e9e4cc92d7e0ab03b7112",
+        "6df44bb850f002bf2237a8722b8d30f37691cdc4777992080c0fded6a54b813d"
+      ],
+      "vulnHash": "177c0320f60d2465134e533542000fe081ce751e2f2840f35b58e68f8e33d06a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "763",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "762         \"\"\"\n763         assert self.discriminator_key is not None\n764 \n765         if self.type_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f56e2f29b6acb10e19d301798ff7dc395581481c236ae6668487cf77039e038e",
+        "7420d45d17dc26366bd513aa31626de58eaa771e58f07c62a2c6023bc70b9cf3"
+      ],
+      "vulnHash": "3d4eb634f1f15f4ede9d71f1a407adbf87a5affd8a1275dde7c5752778f343fb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "768",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "767 \n768         assert self.sub_fields is not None\n769         sub_fields_mapping: Dict[str, 'Model",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a4e58276c82e9d4042024759db6204155117100d6d10c0b0afb705bb344f28e6",
+        "a9ebfcda3d26acbc882abb2a7378b13774cd7a783e8d00e14c28e3f94fb7e595"
+      ],
+      "vulnHash": "d39d67020c3e96d563bf10508ab72f6dafadc2ee543c273ccf7b3b368696967c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "853",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "852     ) -> 'ValidateReturn':\n853         assert self.type_.__class__ is not DeferredType\n854 \n855 ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6498a9aab16e611570cb6b6b684d0e4c7c4c09703219e360b6ea914318a14b3f",
+        "c22496065edefbce5e9aa4670ebb718e1c4407a646404384e41df32f7ec64220"
+      ],
+      "vulnHash": "db48656023cf653b6d127aeab6127dd5c42b0ad8a4e75cacf3707b2bcb041d64"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "856",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "855         if self.type_.__class__ is ForwardRef:\n856             assert cls is not None\n857       ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5dc12fd4caeefd1ec02a2fdfcba86f2100ef622029bd5fedc42eb39678eb58a2",
+        "cb693034df0bd476ebae7cda4fbcd5414f7b104ce9b6a4ae59bb743db1f988bf"
+      ],
+      "vulnHash": "892fd401e4840af1cf771f35bf57b98aeafaafb056606172d05c2d1233e60ad1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "1103",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1102     ) -> 'ValidateReturn':\n1103         assert self.discriminator_key is not None\n1104         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2416de2b55689fb55f52767f82dbc89f4c0ed4f6de9c56cf5ebbc9cf19e7b879",
+        "96d51895860437b2264540352f5b72fedd2bd962f985e594ed42c9b9ced50435"
+      ],
+      "vulnHash": "2d5786bd7dbe7e4722cb44ec82abe106be170183184e931077c3ac14604d1e11"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "1104",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1103         assert self.discriminator_key is not None\n1104         assert self.discriminator_alias ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5c48b3fc9fab35c7f22bba3f36c3c8bbc381a10af17b0a9d315e1e1a8eb122ba",
+        "d6a61c5e7ce2d3d9382c8f04a166c0956dad40e4e33061dae9f43ccd6bd464fe"
+      ],
+      "vulnHash": "5123590eebdcba7a725b156c0f5e027d9dec812ce74e118c0f9dbd38fc4430ed"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "1124",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1123         if self.sub_fields_mapping is None:\n1124             assert cls is not None\n1125       ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "43b7939fe909287ad9dcff10142dadd1f5c6638eeb5b9f957434c044aef51fb4",
+        "88ffb3e6a122bd115b1a4098820b52a25ebdce9f855d1ac5c6f74791cd49f105"
+      ],
+      "vulnHash": "11a713516e3b7dae225f2145f87a8ccc4f4656c36eafae2c7ca3cfffffa436ea"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "1135",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1134             # TypeError: `discriminator_value` is unhashable.\n1135             assert self.sub_",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "98298c113fd594ceb3c8558adccfc718267da1c586a792898e65c601037d7bb2",
+        "04438893c2751d82812e5525e4f68e528a3c3ef56f678f9542820d0d6e3f8964"
+      ],
+      "vulnHash": "08024c3fa341e31b07eedcb94c903b2181608b144b8330bdbe55396a2963971a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/fields.py",
+    "line": "1179",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1178         elif self.shape == SHAPE_GENERIC:\n1179             assert self.sub_fields\n1180         ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3cebbac564cc5abea53086f0fe4b18806f50702a07c926faad534c196f0e1312",
+        "9b959e5b2ebc0a9f94468f8dd56f128b0f414b898b80144614a00bfde6aa5fb8"
+      ],
+      "vulnHash": "66a7fbcf44ad27e77e08d1188028d382bb92ad04e82971a5b9cf1ee5ddefacc8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": "293",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "292             origin_type = getattr(typing, type_._name)\n293         assert origin_type is not Non",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cf1373da84d03e31a8172d396a106040773edac3501ce475c94ae70eeeea5aab",
+        "72fa6082f55141aa1b7aaaf5446dc233807c1aaeafc668192f06fdcf0678833b"
+      ],
+      "vulnHash": "65b565407d8745cf8c0d6d9c114faeed362471487ddb9f9838e452364db38fcb"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": "389",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "388         if key not in fields:\n389             assert field.type_.__class__ is not DeferredType\n3",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6f827f5821d24f13d5fedfce8d2432678840ff0682f85d135669c4a32fd05b57",
+        "98f45648026b223ea8805e241cc651e2a2b691a05eca5b7e63c8c6749fede37a"
+      ],
+      "vulnHash": "b2134e903a5b86f409ac47fa0e08850266b91c26bd446cf32df09dc6b246289d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/generics.py",
+    "line": "393",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "392 \n393         assert field.type_.__class__ is DeferredType, field.type_.__class__\n394 \n395       ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2358c9a1036cfd71dc9bef335e1fc6ab9a90781bab34949276e697ea135ab1bb",
+        "4930db176eb332083382a2f3f544d33a02d109c18293458e4357a500243ea9bd"
+      ],
+      "vulnHash": "16309d55120667986a47214ffcd5f2458465c455e9ee7c5ccab1d5ba5ffb8e6a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": "167",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "166         info_metaclass = ctx.cls.info.declared_metaclass\n167         assert info_metaclass, \"cal",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1080cceaa42f4f0b441bd73678687bef283fdeccf25e91e2e5e5e36faca8edcf",
+        "e78e614236995b5cde3789d927e319a63c7df3b82f50c8c0d8ac72b08347a67e"
+      ],
+      "vulnHash": "43b7a9f9722db797cbe44aec64f28aeafe0536a3a709e417b847c33be1d66d4a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": "182",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "181 \n182         assert ctx.callee_arg_names[0] == 'default', '\"default\" is no longer first argument",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d20b5a2721a4a2bb46d031a443df04272eb3d5a59b7f93e3074d7f4e702bab3d",
+        "7d148f2244f413b36f91840dcd3b1804e8ef3b3e5412af35ad3f31d88c60fd49"
+      ],
+      "vulnHash": "af79ccb71aaee5fc8d87233fa1cc4fd5fe8b15f53ee67ec93d48cee349a1d3c3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": "183",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "182         assert ctx.callee_arg_names[0] == 'default', '\"default\" is no longer first argument in F",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f55d941b6c22ffebfa6eb68295cfc35d73347949c7722a3353bac07b0d1369cf",
+        "5d5effd3e5868af17f65ffe5cec1b2673dde869398f4e6fde8e78905aa63fa7c"
+      ],
+      "vulnHash": "7135027c9e5ad595e5760f8febe426b102e339f0d635d9e9fa12a0e57cfea893"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/mypy.py",
+    "line": "860",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "859     for arg in args:\n860         assert arg.type_annotation, 'All arguments must be fully typed.",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "476512fe8e597672bd0634a81c4ead43e71a2c31110ec0415d96b8228cf4c8c7",
+        "c3dbee33a71cc5d090dff1b46544c2e2c7f3dcf033d95d9521d702d687383360"
+      ],
+      "vulnHash": "f086064a0d03f3dd17a50363987d44adde6bd68b73dba8d06e3dbbea3995168e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": "277",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "276         # the regex should always match, if it doesn't please report with details of the URL tri",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0941d128d4bcf42d46db7cd2450534f8287b13b964448a42a19007acb789f6bb",
+        "b6a9c7ebf2c1e622052b6f12c51fde5f28a749aa511d98309a1004f9c289c68d"
+      ],
+      "vulnHash": "cbbe9d35e358d1babe062faa1c376d85ab82842533cd37e3e57ea2216b01a604"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": "365",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "364                 d = int_domain_regex().fullmatch(host)\n365                 assert d is not None\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7e995c9e67d6b5cb413048b6dd9868bb87e9ab9b3e15d5529394f47395121231",
+        "2bec767b019f762faee1812ec4746de6c2dff563f7d7653d2b997abefb4c8d89"
+      ],
+      "vulnHash": "422f216c1e1542bf12f655d0bfacf7d56ee1010b9240d37cac41ddd07073c961"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/networks.py",
+    "line": "738",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "737         email = parts.normalized\n738         assert email is not None\n739         name = name or",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e7eda3e9cdf98f8c18db89a77efb3b145e5d9018f2479506854d5f9329f7c3fc",
+        "9fc152efccf1ac435759db2e02f1b3377352ec8b643d37b25d1f2d75005142b5"
+      ],
+      "vulnHash": "3fc20c1859712729708580021b56b647ca382e5d8d5b263049d0b66fd279efb9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/parse.py",
+    "line": "2",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with pickle module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1 import json\n2 import pickle\n3 from enum import Enum\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "efbf33c354dd7212e689d5999b9e0d5a269d859f1475d6564c70ef139af20332",
+        "87a48061e25295d6331640f4a5613424ddfd0250c11ecb26aaeb21247bb3dc2f"
+      ],
+      "vulnHash": "f42b921005c9b58a55b6640d48a936493b14551c5813e2199f90394b08eb98b7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/schema.py",
+    "line": "526",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "525     else:\n526         assert field.shape in {SHAPE_SINGLETON, SHAPE_GENERIC}, field.shape\n527   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7f5b2f31b5ff54cb2331d88361c3877d785e18dacd80f91b259274e58d4333ba",
+        "ff37a240e7bc6f6021e75d921a6040e257f3d3d083df95d31a9a141caa18cf21"
+      ],
+      "vulnHash": "0a537b61341a1e70fbbb6a6997a0267e9b3bfe071476bdd81a67610eaddc57e3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/schema.py",
+    "line": "715",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "714         if field_has_discriminator:\n715             assert field.sub_fields_mapping is not None\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2d47864b6f31cc0ead59b301c2df091303b1188c30d4293fe5706fba315e2b88",
+        "f50efe61f3c6432765c93683518b7d2721db4b6f0798b17801b58e1288809087"
+      ],
+      "vulnHash": "55e9714e0c78c5f0520f185b5a6feef503890bfa5574d0bf9dde86212211a9ad"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/v1/utils.py",
+    "line": "665",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "664     \"\"\"\n665     assert p.exists(), 'path does not exist'\n666     for method, name in path_types.",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5820255a44a07d9057cc75d75e06e42e98676149cb5704ed18dd3c1050289e30",
+        "b86c205752edb756600ba6babb731f62c13a3556b28a58ee8c69c80d48e84449"
+      ],
+      "vulnHash": "506bdd6c4ea5d58af91195e97c1423525ebf0417062c43a5bd455d28b0854ba0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "pydantic/validate_call_decorator.py",
+    "line": "36",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "35             try:\n36                 assert not isinstance(partial.func, partial), 'Partial of par",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "455163e1b75dfcac28226ee54e6ea8412060b074ed3fe8b258303185f83a6ec2",
+        "1a24c738b407c9651a37ed1986f43b25c49ac7495392f30973dc8776bf19cbc0"
+      ],
+      "vulnHash": "53c33fc1b695ca7bd30629c15379f1e0acc40866b2eff573473a59d6d37c8afc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/push.py",
+    "line": "6",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "5 from pathlib import Path\n6 from subprocess import CalledProcessError\n7 \n8 import requests\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ff4a1b35b21f6b034b72f31c2197bdbbbbceb274aca28ff8fdf0a5b8044eccb8",
+        "f656189f1b4346ad357d8eb8eba3e65b9676d6406194fff4cc50187b1e006958"
+      ],
+      "vulnHash": "9339938a3518c6f7cb1843bb5d36016cf62cd977e66ed623402a028c767a3e88"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/shared.py",
+    "line": "3",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2 \n3 import subprocess\n4 \n5 \n6 def run_command(*args: str) -> str:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "408fa4a534648658348551e0aa19e54c7af918f5ce206ece87680c97cf151a23",
+        "8465166d122d7a127f3c055fa76f1a78b7d3d5cf4f705ac51a41d1644c2a84ce"
+      ],
+      "vulnHash": "738c423af5c5720352f4af42c0daa30a3a69f8ea6662799be3d6c161a5ed3b55"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "pydantic",
+    "project_version": "2.11.0b1",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "release/shared.py",
+    "line": "8",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "7     \"\"\"Run a shell command and return the output.\"\"\"\n8     p = subprocess.run(args, stdout=subproc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9bc8c6dde2deabf324a906ade8671b7895a79a059bd07c9d099aa1071e30a2a5",
+        "c485d75fbd2ee292ba1001b906d3b0d486721abe6e3baae06bb46b91b6afcf95"
+      ],
+      "vulnHash": "0f3e3a494e589991b20e578e3636613fda54e462632867b68da0d85047dce0cb"
+    }
+  }
+]

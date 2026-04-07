@@ -1,0 +1,5285 @@
+[
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/catch-base-exception",
+    "rule_name": "py/catch-base-exception",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_continue.py",
+    "line": 5,
+    "message": "Except block directly handles BaseException.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a47e17c3f42e1205:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 12,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/manager.py",
+    "line": 320,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2bde91550220f222:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 13,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 4,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f891aca28bd34a04:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 11,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6397744fbf0fe8cf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 18,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fd6d902e20c6bc19:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/call-to-non-callable",
+    "rule_name": "py/call-to-non-callable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mktemp.py",
+    "line": 9,
+    "message": "Call to a [non-callable](1) of [builtin-class module](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d7033b499bde5923:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/mktemp.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 3
+            },
+            "region": {
+              "startLine": 2,
+              "startColumn": 8,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "non-callable"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 4
+            }
+          },
+          "message": {
+            "text": "builtin-class module"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/call-to-non-callable",
+    "rule_name": "py/call-to-non-callable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/random_module.py",
+    "line": 18,
+    "message": "Call to a [non-callable](1) of [builtin-class module](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f97e7484f7553df5:1",
+        "primaryLocationStartColumnFingerprint": "10"
+      },
+      "startColumn": 11,
+      "endColumn": 19,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/random_module.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 5
+            },
+            "region": {
+              "startLine": 1,
+              "startColumn": 8,
+              "endColumn": 14
+            }
+          },
+          "message": {
+            "text": "non-callable"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 4
+            }
+          },
+          "message": {
+            "text": "builtin-class module"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/call/wrong-arguments",
+    "rule_name": "py/call/wrong-arguments",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_statements.py",
+    "line": 43,
+    "message": "Call to [function a.b](1) with too many arguments; should be no more than 0.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4694468f94ed9506:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/sql_statements.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 6
+            },
+            "region": {
+              "startLine": 39,
+              "startColumn": 5,
+              "endColumn": 13
+            }
+          },
+          "message": {
+            "text": "function a.b"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/call/wrong-arguments",
+    "rule_name": "py/call/wrong-arguments",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_multiline_statements.py",
+    "line": 122,
+    "message": "Call to [function a.b](1) with too many arguments; should be no more than 0.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "615c0dbf70bd2335:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 19,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/sql_multiline_statements.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 116,
+              "startColumn": 5,
+              "endColumn": 13
+            }
+          },
+          "message": {
+            "text": "function a.b"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/app_debug.py",
+    "line": 51,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "541f58a26c16a36c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/asserts.py",
+    "line": 62,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "527f4bf5a4c20f9d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/blacklisting.py",
+    "line": 22,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1d6fd94ce3d855a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/context.py",
+    "line": 226,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9f018f2e54d7a8ca:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 49,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/crypto_request_no_cert_validation.py",
+    "line": 56,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "13673025b3c9c37b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 46,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/context.py",
+    "line": 258,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "12b44e7167050b2c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 54,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/django_sql_injection.py",
+    "line": 22,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9bd77fe17094786c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/django_sql_injection.py",
+    "line": 102,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "32c4c68d5de42756:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/django_xss.py",
+    "line": 167,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "34782bcdc7944b8b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/django_xss.py",
+    "line": 187,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e1f74cb4dc49c9be:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/exec.py",
+    "line": 53,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "19cd5367c7579361:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/django_xss.py",
+    "line": 234,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "71cc3fc2d2ad8e19:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_bad_file_permissions.py",
+    "line": 74,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fa00f3642fbcb91a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_bind_all_interfaces.py",
+    "line": 45,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e27de51b4dbc9a11:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 44,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_hardcoded_tmp.py",
+    "line": 60,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aca8d0dfe9c59860:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_hardcoded_password.py",
+    "line": 29,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9e80370169e565c0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_hardcoded_tmp.py",
+    "line": 68,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d435bb7c06bf729d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 46,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/general_hardcoded_password.py",
+    "line": 129,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f0a302e6918f7508:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 41,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/hashlib_insecure_functions.py",
+    "line": 61,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "90e4dfe37ab6388b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/hashlib_insecure_functions.py",
+    "line": 89,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "30f9eaed12da3cc7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/hashlib_insecure_functions.py",
+    "line": 132,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5319d68f7a9b5b4c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_paramiko.py",
+    "line": 50,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e8e8e1f3aa34def5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 26,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6277abab4eeb0be3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_wildcard.py",
+    "line": 113,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e5c547640999d26c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 104,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "870c3a1a4e2a6b41:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 62,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_sql.py",
+    "line": 130,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4dcbbf684c5a069a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 40,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 231,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a3cae44e4e38f1ac:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 59,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 317,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f65f894537cfb5fe:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 64,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 402,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fcda425b11f13088:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 49,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 505,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6ed522673df95f04:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 50,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/injection_shell.py",
+    "line": 599,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4bb38f36fb2e4703:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 54,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/insecure_ssl_tls.py",
+    "line": 14,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8790869f3769de5b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/insecure_ssl_tls.py",
+    "line": 34,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "51c54bf4e2cf7e5f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/insecure_ssl_tls.py",
+    "line": 160,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5a9fac5523d3b65:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 44,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/insecure_ssl_tls.py",
+    "line": 225,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4a8b46432c202ef6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 34,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/jinja2_templates.py",
+    "line": 75,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7f8c7f88787049ad:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/logging_config_insecure_listen.py",
+    "line": 48,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fee2e029789674f4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 45,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/mako_templates.py",
+    "line": 52,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4d5baa81e3833a08:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/cli/main.py",
+    "line": 104,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4220adc068a73fdc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/node_visitor.py",
+    "line": 114,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a1080768e0502b30:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/request_without_timeout.py",
+    "line": 53,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "85c93854fe0d27:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/snmp_security_check.py",
+    "line": 12,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "610abdba47c5669f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/snmp_security_check.py",
+    "line": 63,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "78df60d826719deb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/ssh_no_host_key_verification.py",
+    "line": 47,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "60897e93ea9518c9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 43,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/tarfile_unsafe_members.py",
+    "line": 86,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "12a4b494d574d99:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/tarfile_unsafe_members.py",
+    "line": 97,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6992ebf6cfedf107:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/tarfile_unsafe_members.py",
+    "line": 106,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cf1573f6de7124c5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 37,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/try_except_continue.py",
+    "line": 84,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ef2bca9b83a7804:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/try_except_continue.py",
+    "line": 92,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c48e1e65ac3501a6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 42,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/try_except_pass.py",
+    "line": 82,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "eda6cd927318e8d8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/try_except_pass.py",
+    "line": 90,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e5e2381ec28aff2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/weak_cryptographic_key.py",
+    "line": 47,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "54c8564385b8da1d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/weak_cryptographic_key.py",
+    "line": 59,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "68085ccc75766a4c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 52,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/weak_cryptographic_key.py",
+    "line": 90,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bb82d9ad8d8503bd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 60,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/weak_cryptographic_key.py",
+    "line": 142,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4df32fbce8b2b89a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 53,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/mixed-returns",
+    "rule_name": "py/mixed-returns",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/plugins/yaml_load.py",
+    "line": 51,
+    "message": "Mixing implicit and explicit returns may indicate an error as implicit returns always return None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bacc6c5611179b00:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 24,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/procedure-return-value-used",
+    "rule_name": "py/procedure-return-value-used",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/subprocess_shell.py",
+    "line": 50,
+    "message": "The result of [Popen](1) is used even though it is always None.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fc677320a7ee00cd:1",
+        "primaryLocationStartColumnFingerprint": "31"
+      },
+      "startColumn": 32,
+      "endColumn": 39,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/subprocess_shell.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 39
+            },
+            "region": {
+              "startLine": 5,
+              "endColumn": 28
+            }
+          },
+          "message": {
+            "text": "Popen"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/encoding-error",
+    "rule_name": "py/encoding-error",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/nonsense2.py",
+    "line": 1,
+    "message": "'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7c712cce0e32161c:1",
+        "primaryLocationStartColumnFingerprint": "1"
+      },
+      "startColumn": 2,
+      "endColumn": 3,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/syntax-error",
+    "rule_name": "py/syntax-error",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/nonsense.py",
+    "line": 1,
+    "message": "Syntax Error (in Python 3).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7256d214a5a3162e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 2,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/__init__.py",
+    "line": 15,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.constants](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "848355222a15d230:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/constants.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            }
+          },
+          "message": {
+            "text": "bandit.core.constants"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/__init__.py",
+    "line": 16,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.issue](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8fdeb3ca62161c0b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/issue.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 44
+            }
+          },
+          "message": {
+            "text": "bandit.core.issue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/__init__.py",
+    "line": 17,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.test_properties](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d5c0144082978e54:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 42,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/test_properties.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 45
+            }
+          },
+          "message": {
+            "text": "bandit.core.test_properties"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/__init__.py",
+    "line": 13,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.constants](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "848355222a15d230:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 36,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/constants.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 43
+            }
+          },
+          "message": {
+            "text": "bandit.core.constants"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/__init__.py",
+    "line": 14,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.issue](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9ddbda6dde6cce44:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/issue.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 44
+            }
+          },
+          "message": {
+            "text": "bandit.core.issue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/polluting-import",
+    "rule_name": "py/polluting-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/core/__init__.py",
+    "line": 15,
+    "message": "Import pollutes the enclosing namespace, as the imported module [bandit.core.test_properties](1) does not define '__all__'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b99130c2d334e7f7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 42,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "bandit/core/test_properties.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 45
+            }
+          },
+          "message": {
+            "text": "bandit.core.test_properties"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 16,
+    "message": "Import of 'modes' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6d5505aa6d847709:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 57,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/eval.py",
+    "line": 1,
+    "message": "Import of 'os' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6be4ae6762a566fd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports-aliases.py",
+    "line": 7,
+    "message": "Import of 'p' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f63948b4f3478d08:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 19,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports-from.py",
+    "line": 1,
+    "message": "Import of 'Popen' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1dfab65b8dbb7aca:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports.py",
+    "line": 1,
+    "message": "Import of 'os' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e5766b89f74fb69d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports.py",
+    "line": 2,
+    "message": "Import of 'pickle' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9c6503e62bd2b76e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 14,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports.py",
+    "line": 3,
+    "message": "Import of 'sys' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6f1c8178c2d900e5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 11,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/imports.py",
+    "line": 4,
+    "message": "Import of 'subprocess' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ed2394efdddf9ebd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_statements.py",
+    "line": 1,
+    "message": "Import of 'sqlalchemy' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9d6c58d26e5559df:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_multiline_statements.py",
+    "line": 1,
+    "message": "Import of 'sqlalchemy' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "923f7d3370ef309b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_lxml.py",
+    "line": 3,
+    "message": "Import of 'etree' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "21c75bbba6164efd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_lxml.py",
+    "line": 5,
+    "message": "Import of 'potatoe' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3e49bd0bfcdd331:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 39,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_xmlrpc.py",
+    "line": 1,
+    "message": "Import of 'xmlrpc' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "470f799f7028df67:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 14,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/bind-socket-all-network-interfaces",
+    "rule_name": "py/bind-socket-all-network-interfaces",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/binding.py",
+    "line": 4,
+    "message": "'0.0.0.0' binds a socket to all interfaces.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "af2a97785cffce9e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/flask-debug",
+    "rule_name": "py/flask-debug",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/flask_debug.py",
+    "line": 10,
+    "message": "A Flask app appears to be run in debug mode. This may allow an attacker to run arbitrary code through the debugger.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "66fbc37c2393393:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 6,
+    "message": "Setting missing host key policy to AutoAddPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6e0e4cb9c443ad34:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 61,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 7,
+    "message": "Setting missing host key policy to WarningPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "43b2179b2e23e074:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 61,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 8,
+    "message": "Setting missing host key policy to AutoAddPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7c4c19c1dde79094:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 63,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 9,
+    "message": "Setting missing host key policy to WarningPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "738a2d3799240faf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 63,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 11,
+    "message": "Setting missing host key policy to AutoAddPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4a0a239b3703bd15:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 54,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 12,
+    "message": "Setting missing host key policy to WarningPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fad9cc5b2a1e7f15:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 54,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 13,
+    "message": "Setting missing host key policy to AutoAddPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e70c680dd2ae0cb9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/paramiko-missing-host-key-validation",
+    "rule_name": "py/paramiko-missing-host-key-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/no_host_key_verification.py",
+    "line": 14,
+    "message": "Setting missing host key policy to WarningPolicy may be unsafe.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "329d1f7b4f05e044:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 56,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/clear-text-logging-sensitive-data",
+    "rule_name": "py/clear-text-logging-sensitive-data",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/hardcoded-passwords.py",
+    "line": 34,
+    "message": "This expression logs [sensitive data (password)](1) as clear text.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "361357a3cc381c66:1",
+        "primaryLocationStartColumnFingerprint": "6"
+      },
+      "startColumn": 15,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/hardcoded-passwords.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 57
+            },
+            "region": {
+              "startLine": 34,
+              "startColumn": 15,
+              "endColumn": 27
+            }
+          },
+          "message": {
+            "text": "sensitive data (password)"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 38,
+    "message": "Creation of an DSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "75e05b0ca2f627e1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 38,
+              "startColumn": 35,
+              "endColumn": 39
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 40,
+    "message": "Creation of an ECC key uses [163](1) bits, which is below 256 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "bfef526063780391:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 60,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 40,
+              "startColumn": 31,
+              "endColumn": 43
+            }
+          },
+          "message": {
+            "text": "163"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 42,
+    "message": "Creation of an RSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "43b73f92bf542f1c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 43,
+              "startColumn": 35,
+              "endColumn": 39
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 45,
+    "message": "Creation of an DSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f1288cc8c38260cf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 45,
+              "startColumn": 28,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 46,
+    "message": "Creation of an RSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "da41735b71112999:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 46,
+              "startColumn": 28,
+              "endColumn": 32
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 47,
+    "message": "Creation of an DSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "249a2b82177919b0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 47,
+              "startColumn": 33,
+              "endColumn": 37
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 48,
+    "message": "Creation of an RSA key uses [1024](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1d266180ffea512:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 38,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 48,
+              "startColumn": 33,
+              "endColumn": 37
+            }
+          },
+          "message": {
+            "text": "1024"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 51,
+    "message": "Creation of an DSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "26010460cffcfb5b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 53,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 51,
+              "startColumn": 26,
+              "endColumn": 29
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 53,
+    "message": "Creation of an ECC key uses [163](1) bits, which is below 256 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4e4f819c5988a88f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 52,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 53,
+              "startColumn": 25,
+              "endColumn": 37
+            }
+          },
+          "message": {
+            "text": "163"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 55,
+    "message": "Creation of an RSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6dc5f59bce2b0859:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 53,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 56,
+              "startColumn": 26,
+              "endColumn": 29
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 58,
+    "message": "Creation of an DSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9cbafe877aa6ff9c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 58,
+              "startColumn": 23,
+              "endColumn": 26
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 59,
+    "message": "Creation of an RSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4919a270c07c42cf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 59,
+              "startColumn": 23,
+              "endColumn": 26
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 60,
+    "message": "Creation of an DSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8fd2a99aaa55cf2b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 60,
+              "startColumn": 28,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-crypto-key",
+    "rule_name": "py/weak-crypto-key",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/weak_cryptographic_key_sizes.py",
+    "line": 61,
+    "message": "Creation of an RSA key uses [512](1) bits, which is below 2048 and considered breakable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "945b81e0fc20f1c4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 32,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/weak_cryptographic_key_sizes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 58
+            },
+            "region": {
+              "startLine": 61,
+              "startColumn": 28,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "512"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-cryptographic-algorithm",
+    "rule_name": "py/weak-cryptographic-algorithm",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 23,
+    "message": "[The cryptographic algorithm ARC2](1) is broken or weak, and should not be used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aee04123b7a86844:1",
+        "primaryLocationStartColumnFingerprint": "11"
+      },
+      "startColumn": 12,
+      "endColumn": 45,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 22,
+              "startColumn": 10,
+              "endColumn": 60
+            }
+          },
+          "message": {
+            "text": "The cryptographic algorithm ARC2"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-cryptographic-algorithm",
+    "rule_name": "py/weak-cryptographic-algorithm",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 31,
+    "message": "[The cryptographic algorithm ARC4](1) is broken or weak, and should not be used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9c8cc7a66a0cebfe:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 15,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 30,
+              "startColumn": 10,
+              "endColumn": 36
+            }
+          },
+          "message": {
+            "text": "The cryptographic algorithm ARC4"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-cryptographic-algorithm",
+    "rule_name": "py/weak-cryptographic-algorithm",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 53,
+    "message": "[The cryptographic algorithm DES](1) is broken or weak, and should not be used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c7944a199b44c1d0:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 15,
+      "endColumn": 40,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 52,
+              "startColumn": 10,
+              "endColumn": 67
+            }
+          },
+          "message": {
+            "text": "The cryptographic algorithm DES"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/weak-cryptographic-algorithm",
+    "rule_name": "py/weak-cryptographic-algorithm",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 68,
+    "message": "[The cryptographic algorithm ARC4](1) is broken or weak, and should not be used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "adad588a050120bf:1",
+        "primaryLocationStartColumnFingerprint": "5"
+      },
+      "startColumn": 6,
+      "endColumn": 43,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 67,
+              "startColumn": 13,
+              "endColumn": 31
+            }
+          },
+          "message": {
+            "text": "The cryptographic algorithm ARC4"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-default-protocol",
+    "rule_name": "py/insecure-default-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 30,
+    "message": "Call to deprecated method ssl.wrap_socket does not specify a protocol, which may result in an insecure default being used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7f7cc0508ec81a74:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-protocol",
+    "rule_name": "py/insecure-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 4,
+    "message": "Insecure SSL/TLS protocol version SSLv2 specified by [call to ssl.wrap_socket](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a4d4655637395327:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ssl-insecure-version.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 4,
+              "endColumn": 48
+            }
+          },
+          "message": {
+            "text": "call to ssl.wrap_socket"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-protocol",
+    "rule_name": "py/insecure-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 13,
+    "message": "Insecure SSL/TLS protocol version SSLv3 specified by [call to ssl.wrap_socket](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8b35a9eab5a8ebf9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ssl-insecure-version.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 13,
+              "endColumn": 48
+            }
+          },
+          "message": {
+            "text": "call to ssl.wrap_socket"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-protocol",
+    "rule_name": "py/insecure-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 14,
+    "message": "Insecure SSL/TLS protocol version TLSv1 specified by [call to ssl.wrap_socket](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "cf4f085cc91bf7bc:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ssl-insecure-version.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 14,
+              "endColumn": 48
+            }
+          },
+          "message": {
+            "text": "call to ssl.wrap_socket"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-protocol",
+    "rule_name": "py/insecure-protocol",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 23,
+    "message": "Insecure SSL/TLS protocol version TLSv1_1 specified by [call to ssl.wrap_socket](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "dfe21e2ae818a69b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 50,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ssl-insecure-version.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 23,
+              "endColumn": 50
+            }
+          },
+          "message": {
+            "text": "call to ssl.wrap_socket"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-temporary-file",
+    "rule_name": "py/insecure-temporary-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mktemp.py",
+    "line": 7,
+    "message": "Call to deprecated function tempfile.mktemp may be insecure.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "288d851d4718c25b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 12,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-temporary-file",
+    "rule_name": "py/insecure-temporary-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mktemp.py",
+    "line": 9,
+    "message": "Call to deprecated function tempfile.mktemp may be insecure.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d7033b499bde5923:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/insecure-temporary-file",
+    "rule_name": "py/insecure-temporary-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mktemp.py",
+    "line": 10,
+    "message": "Call to deprecated function tempfile.mktemp may be insecure.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2ce49bacfa7f9b37:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unnecessary-pass",
+    "rule_name": "py/unnecessary-pass",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 35,
+    "message": "Unnecessary 'pass' statement.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a23232691f6522:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 9,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mark_safe_insecure.py",
+    "line": 28,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e36889b7ec763daf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mark_safe_secure.py",
+    "line": 23,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "27c224ff144ff256:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_continue.py",
+    "line": 13,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c41e51c28a35efe4:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_continue.py",
+    "line": 29,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d5ad146b0baf854a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 9,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 4,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f891aca28bd34a04:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 11,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6397744fbf0fe8cf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 18,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "fd6d902e20c6bc19:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 26,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/cipher-modes.py",
+    "line": 6,
+    "message": "This assignment to 'mode' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "336365d80278ce6a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 5,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/cipher-modes.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 63
+            },
+            "region": {
+              "startLine": 12,
+              "endColumn": 5
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 23,
+    "message": "This assignment to 'msg' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "aee04123b7a86844:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 4,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 25,
+              "endColumn": 4
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 41,
+    "message": "This assignment to 'bs' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9b36f17f6c328625:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 3,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 44,
+              "endColumn": 3
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ciphers.py",
+    "line": 68,
+    "message": "This assignment to 'ct' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "adad588a050120bf:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 3,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ciphers.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 47
+            },
+            "region": {
+              "startLine": 72,
+              "endColumn": 3
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/jinja2_templating.py",
+    "line": 7,
+    "message": "This assignment to 'templateEnv' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ffe94ef77a61e74a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 12,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/jinja2_templating.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 64
+            },
+            "region": {
+              "startLine": 10,
+              "endColumn": 12
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/mark_safe_secure.py",
+    "line": 22,
+    "message": "This assignment to 'my_secure_str' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8689a96c20a83896:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 22,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/mark_safe_secure.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 61
+            },
+            "region": {
+              "startLine": 26,
+              "startColumn": 9,
+              "endColumn": 22
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/new_candidates-all.py",
+    "line": 15,
+    "message": "This assignment to 'y' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b42e47c2faf611e1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/new_candidates-all.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 65
+            },
+            "region": {
+              "startLine": 17,
+              "startColumn": 5,
+              "endColumn": 6
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/random_module.py",
+    "line": 5,
+    "message": "This assignment to 'bad' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f024273512e1a49d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 4,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/random_module.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 5
+            },
+            "region": {
+              "startLine": 6,
+              "endColumn": 4
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/random_module.py",
+    "line": 15,
+    "message": "This assignment to 'good' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "d537be446612c930:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 5,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/random_module.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 5
+            },
+            "region": {
+              "startLine": 16,
+              "endColumn": 5
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/random_module.py",
+    "line": 18,
+    "message": "This assignment to 'unknown' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f97e7484f7553df5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/random_module.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 5
+            },
+            "region": {
+              "startLine": 19,
+              "endColumn": 8
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_multiline_statements.py",
+    "line": 4,
+    "message": "This assignment to 'query' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3993cfe990a5d57a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 6,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/sql_multiline_statements.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 7
+            },
+            "region": {
+              "startLine": 6,
+              "endColumn": 6
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/sql_statements.py",
+    "line": 4,
+    "message": "This assignment to 'query' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "af2273e293619aed:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 6,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/sql_statements.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 6
+            },
+            "region": {
+              "startLine": 5,
+              "endColumn": 6
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/ssl-insecure-version.py",
+    "line": 32,
+    "message": "This assignment to 'open_ssl_socket' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b43bef50dee9fe94:1",
+        "primaryLocationStartColumnFingerprint": "4"
+      },
+      "startColumn": 5,
+      "endColumn": 20,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/ssl-insecure-version.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 59
+            },
+            "region": {
+              "startLine": 35,
+              "startColumn": 5,
+              "endColumn": 20
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/try_except_pass.py",
+    "line": 3,
+    "message": "This assignment to 'a' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7f4e6a3f0cdf42bb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/try_except_pass.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 2
+            },
+            "region": {
+              "startLine": 10,
+              "startColumn": 5,
+              "endColumn": 6
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/unverified_context.py",
+    "line": 4,
+    "message": "This assignment to 'context' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "35d7e180f18125db:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 8,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/unverified_context.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 66
+            },
+            "region": {
+              "startLine": 7,
+              "endColumn": 8
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_etree_celementtree.py",
+    "line": 11,
+    "message": "This assignment to 'a' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4cfa2a26d132ea3a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 2,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/xml_etree_celementtree.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 67
+            },
+            "region": {
+              "startLine": 18,
+              "endColumn": 2
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_etree_elementtree.py",
+    "line": 11,
+    "message": "This assignment to 'a' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4cfa2a26d132ea3a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 2,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/xml_etree_elementtree.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 68
+            },
+            "region": {
+              "startLine": 18,
+              "endColumn": 2
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/multiple-definition",
+    "rule_name": "py/multiple-definition",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/xml_lxml.py",
+    "line": 8,
+    "message": "This assignment to 'root' is unnecessary as it is [redefined](1) before this value is used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3a1d63756f752ca3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 5,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/xml_lxml.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 52
+            },
+            "region": {
+              "startLine": 9,
+              "endColumn": 5
+            }
+          },
+          "message": {
+            "text": "redefined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/cli/baseline.py",
+    "line": 206,
+    "message": "Variable valid is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ded0a28718ae60f7:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 14,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/new_candidates-all.py",
+    "line": 17,
+    "message": "Variable y is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "460da21148ffc7b5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/new_candidates-nosec.py",
+    "line": 13,
+    "message": "Variable y is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "460da21148ffc7b5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/new_candidates-some.py",
+    "line": 15,
+    "message": "Variable y is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "460da21148ffc7b5:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/pycrypto.py",
+    "line": 10,
+    "message": "Variable cipher is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "eb7f0462102eb632:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 11,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/pycrypto.py",
+    "line": 11,
+    "message": "Variable factory is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2fbd7bbf348c350c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 12,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/pycryptodome.py",
+    "line": 10,
+    "message": "Variable cipher is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "eb7f0462102eb632:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 11,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/pycryptodome.py",
+    "line": 11,
+    "message": "Variable factory is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2fbd7bbf348c350c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 12,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/yaml_load.py",
+    "line": 12,
+    "message": "Variable y is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "3202b51a6a7c224e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/unused-local-variable",
+    "rule_name": "py/unused-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/yaml_load.py",
+    "line": 20,
+    "message": "Variable j is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "efa06558f841c3f3:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 6,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/tarslip",
+    "rule_name": "py/tarslip",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/tarfile_extractall.py",
+    "line": 8,
+    "message": "This file extraction depends on a [potentially untrusted source](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "25cf93d7a21454b1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 8,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/tarfile_extractall.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 85
+            },
+            "region": {
+              "startLine": 7,
+              "startColumn": 11,
+              "endColumn": 33
+            }
+          },
+          "message": {
+            "text": "potentially untrusted source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/jinja2/autoescape-false",
+    "rule_name": "py/jinja2/autoescape-false",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/jinja2_templating.py",
+    "line": 9,
+    "message": "Using jinja2 templates with autoescape=False can potentially allow XSS attacks.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b6312b085b0a24b6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 78,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/jinja2/autoescape-false",
+    "rule_name": "py/jinja2/autoescape-false",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/jinja2_templating.py",
+    "line": 10,
+    "message": "Using jinja2 templates with autoescape=False can potentially allow XSS attacks.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "badc0f85c3357f4b:1",
+        "primaryLocationStartColumnFingerprint": "14"
+      },
+      "startColumn": 15,
+      "endColumn": 75,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/jinja2/autoescape-false",
+    "rule_name": "py/jinja2/autoescape-false",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/jinja2_templating.py",
+    "line": 11,
+    "message": "Using jinja2 templates with autoescape=False can potentially allow XSS attacks.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1de6625e9054a7ff:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/jinja2/autoescape-false",
+    "rule_name": "py/jinja2/autoescape-false",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/jinja2_templating.py",
+    "line": 15,
+    "message": "Using jinja2 templates with autoescape=False can potentially allow XSS attacks.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9051fd38977583e8:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 5,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "b0f03f35266a59e9:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 60,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 5,
+              "startColumn": 54,
+              "endColumn": 59
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 7,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "95844ec0e5dad15a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 61,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 7,
+              "startColumn": 55,
+              "endColumn": 60
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 11,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "def4234479b2c50d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 63,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 11,
+              "startColumn": 57,
+              "endColumn": 62
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 13,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e5af6f4e8e21ed6d:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 62,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 13,
+              "startColumn": 56,
+              "endColumn": 61
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 15,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8f564888a78fcb10:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 64,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 15,
+              "startColumn": 58,
+              "endColumn": 63
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 20,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2f0798122374bd84:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 56,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 20,
+              "startColumn": 50,
+              "endColumn": 55
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 22,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "5c05b991fd4a163e:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 45,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 22,
+              "startColumn": 39,
+              "endColumn": 44
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 24,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c5b30412721d63b6:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 49,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 24,
+              "startColumn": 43,
+              "endColumn": 48
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 26,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1444911840ce2941:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 46,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 26,
+              "startColumn": 40,
+              "endColumn": 45
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 32,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "e29c7d5d4431185f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 47,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 32,
+              "startColumn": 41,
+              "endColumn": 46
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/request-without-cert-validation",
+    "rule_name": "py/request-without-cert-validation",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/requests-ssl-verify-disabled.py",
+    "line": 34,
+    "message": "This request may run without certificate validation because [it is disabled](1).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "11c5d4848cbb46c1:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 48,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "examples/requests-ssl-verify-disabled.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 86
+            },
+            "region": {
+              "startLine": 34,
+              "startColumn": 42,
+              "endColumn": 47
+            }
+          },
+          "message": {
+            "text": "it is disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 6,
+    "message": "Overly permissive mask in chmod sets file to world writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a9496e2102b84cbd:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 7,
+    "message": "Overly permissive mask in chmod sets file to world writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2ecd04ca3e2d821b:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 29,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 8,
+    "message": "Overly permissive mask in chmod sets file to world readable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "82e811ee2b9d9d36:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 10,
+    "message": "Overly permissive mask in chmod sets file to group writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "8a11e0588d75eb82:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 31,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 13,
+    "message": "Overly permissive mask in chmod sets file to world writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "441185fc38945ae0:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 27,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 14,
+    "message": "Overly permissive mask in chmod sets file to world writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "16a71d37cbe33091:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 30,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/overly-permissive-file",
+    "rule_name": "py/overly-permissive-file",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/os-chmod.py",
+    "line": 17,
+    "message": "Overly permissive mask in chmod sets file to world writable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f7a6d22fd394e63c:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/cli/baseline.py",
+    "line": 77,
+    "message": "Local variable 'output_format' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c242d591f5ba34c9:1",
+        "primaryLocationStartColumnFingerprint": "3"
+      },
+      "startColumn": 12,
+      "endColumn": 25,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/cli/baseline.py",
+    "line": 78,
+    "message": "Local variable 'report_fname' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "a510eac4d32b7767:1",
+        "primaryLocationStartColumnFingerprint": "12"
+      },
+      "startColumn": 21,
+      "endColumn": 33,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "bandit",
+    "project_version": "1.7.8",
+    "rule_id": "py/uninitialized-local-variable",
+    "rule_name": "py/uninitialized-local-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "bandit/cli/baseline.py",
+    "line": 245,
+    "message": "Local variable 'repo' may be used before it is initialized.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6541c973131ac798:1",
+        "primaryLocationStartColumnFingerprint": "23"
+      },
+      "startColumn": 28,
+      "endColumn": 32,
+      "relatedLocations": null
+    }
+  }
+]

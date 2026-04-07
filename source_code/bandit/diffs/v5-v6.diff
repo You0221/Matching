@@ -1,0 +1,1298 @@
+diff --git a/.github/ISSUE_TEMPLATE/bug-report.yml b/.github/ISSUE_TEMPLATE/bug-report.yml
+index c968cc475..1e1baed2e 100644
+--- a/.github/ISSUE_TEMPLATE/bug-report.yml
++++ b/.github/ISSUE_TEMPLATE/bug-report.yml
+@@ -44,7 +44,8 @@ body:
+       label: Bandit version
+       description: Run "bandit --version" if unsure of version number
+       options:
+-        - 1.8.2 (Default)
++        - 1.8.3 (Default)
++        - 1.8.2
+         - 1.8.1
+         - 1.8.0
+         - 1.7.10
+diff --git a/.github/workflows/build-publish-image.yml b/.github/workflows/build-publish-image.yml
+index 69eec16ff..f0bfb52bc 100644
+--- a/.github/workflows/build-publish-image.yml
++++ b/.github/workflows/build-publish-image.yml
+@@ -31,17 +31,17 @@ jobs:
+         ref: ${{ github.event_name == 'release' && github.ref || env.RELEASE_TAG }}
+ 
+     - name: Set up Docker Buildx
+-      uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3
++      uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
+ 
+     - name: Log in to GitHub Container Registry
+-      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
++      uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
+       with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+ 
+     - name: Install Cosign
+-      uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
++      uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3.9.1
+       with:
+         cosign-release: 'v2.2.2'
+ 
+@@ -51,7 +51,7 @@ jobs:
+ 
+     - name: Build and push Docker image
+       id: build-and-push
+-      uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6
++      uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
+       with:
+         context: .
+         file: ./docker/Dockerfile
+diff --git a/.github/workflows/publish-to-pypi.yml b/.github/workflows/publish-to-pypi.yml
+index a295a9c36..02372bf48 100644
+--- a/.github/workflows/publish-to-pypi.yml
++++ b/.github/workflows/publish-to-pypi.yml
+@@ -19,7 +19,13 @@ jobs:
+         python-version: 3.9
+ 
+     - name: Install dependencies
+-      run: pip install wheel
++      run: pip install tox wheel
++
++    - name: Build man page if not present
++      run: |
++        if [ ! -f doc/build/man/bandit.1 ]; then
++          tox run -e manpage
++        fi
+ 
+     - name: Build a binary wheel and a source tarball
+       run: |
+diff --git a/.github/workflows/publish-to-test-pypi.yml b/.github/workflows/publish-to-test-pypi.yml
+index 252ad5b88..b21102514 100644
+--- a/.github/workflows/publish-to-test-pypi.yml
++++ b/.github/workflows/publish-to-test-pypi.yml
+@@ -19,7 +19,13 @@ jobs:
+         python-version: 3.9
+ 
+     - name: Install dependencies
+-      run: pip install wheel
++      run: pip install tox wheel
++
++    - name: Build man page if not present
++      run: |
++        if [ ! -f doc/build/man/bandit.1 ]; then
++          tox run -e manpage
++        fi
+ 
+     - name: Build a binary wheel and a source tarball
+       run: |
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index f4d2ac9a8..98346827c 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -8,7 +8,7 @@ repos:
+   - id: end-of-file-fixer
+   - id: trailing-whitespace
+ - repo: https://github.com/asottile/reorder-python-imports
+-  rev: v3.14.0
++  rev: v3.15.0
+   hooks:
+   - id: reorder-python-imports
+     args: [--application-directories, '.:src', --py38-plus]
+@@ -18,7 +18,7 @@ repos:
+   - id: black
+     args: [--line-length=79, --target-version=py38]
+ - repo: https://github.com/asottile/pyupgrade
+-  rev: v3.19.1
++  rev: v3.20.0
+   hooks:
+   - id: pyupgrade
+     args: [--py38-plus]
+diff --git a/.readthedocs.yaml b/.readthedocs.yaml
+index 15fc1366e..46e591193 100644
+--- a/.readthedocs.yaml
++++ b/.readthedocs.yaml
+@@ -1,7 +1,7 @@
+ version: 2
+ 
+ build:
+-  os: ubuntu-22.04
++  os: ubuntu-lts-latest
+   tools:
+     python: "3.9"
+ 
+diff --git a/bandit/blacklists/calls.py b/bandit/blacklists/calls.py
+index 86f08a61d..024e873a7 100644
+--- a/bandit/blacklists/calls.py
++++ b/bandit/blacklists/calls.py
+@@ -205,6 +205,9 @@
+ |      |                     | - random.uniform                   |           |
+ |      |                     | - random.triangular                |           |
+ |      |                     | - random.randbytes                 |           |
++|      |                     | - random.randrange                 |           |
++|      |                     | - random.sample                    |           |
++|      |                     | - random.getrandbits               |           |
+ +------+---------------------+------------------------------------+-----------+
+ 
+ B312: telnetlib
+@@ -515,6 +518,9 @@ def gen_blacklist():
+                 "random.uniform",
+                 "random.triangular",
+                 "random.randbytes",
++                "random.sample",
++                "random.randrange",
++                "random.getrandbits",
+             ],
+             "Standard pseudo-random generators are not suitable for "
+             "security/cryptographic purposes.",
+diff --git a/bandit/core/issue.py b/bandit/core/issue.py
+index bfa583356..b2d901542 100644
+--- a/bandit/core/issue.py
++++ b/bandit/core/issue.py
+@@ -26,6 +26,7 @@ class Cwe:
+     INSUFFICIENT_RANDOM_VALUES = 330
+     INSECURE_TEMP_FILE = 377
+     UNCONTROLLED_RESOURCE_CONSUMPTION = 400
++    DOWNLOAD_OF_CODE_WITHOUT_INTEGRITY_CHECK = 494
+     DESERIALIZATION_OF_UNTRUSTED_DATA = 502
+     MULTIPLE_BINDS = 605
+     IMPROPER_CHECK_OF_EXCEPT_COND = 703
+diff --git a/bandit/core/tester.py b/bandit/core/tester.py
+index 6d41877cb..e92c29fb0 100644
+--- a/bandit/core/tester.py
++++ b/bandit/core/tester.py
+@@ -65,7 +65,8 @@ def run_tests(self, raw_context, checktype):
+ 
+                     if result.lineno is None:
+                         result.lineno = temp_context["lineno"]
+-                    result.linerange = temp_context["linerange"]
++                    if result.linerange == []:
++                        result.linerange = temp_context["linerange"]
+                     if result.col_offset == -1:
+                         result.col_offset = temp_context["col_offset"]
+                     result.end_col_offset = temp_context.get(
+diff --git a/bandit/plugins/general_hardcoded_tmp.py b/bandit/plugins/general_hardcoded_tmp.py
+index 2855c9c6d..ecf899527 100644
+--- a/bandit/plugins/general_hardcoded_tmp.py
++++ b/bandit/plugins/general_hardcoded_tmp.py
+@@ -14,7 +14,6 @@
+  - /tmp
+  - /var/tmp
+  - /dev/shm
+- - etc
+ 
+ **Config Options:**
+ 
+diff --git a/bandit/plugins/huggingface_unsafe_download.py b/bandit/plugins/huggingface_unsafe_download.py
+new file mode 100644
+index 000000000..e51181a41
+--- /dev/null
++++ b/bandit/plugins/huggingface_unsafe_download.py
+@@ -0,0 +1,153 @@
++# SPDX-License-Identifier: Apache-2.0
++r"""
++================================================
++B615: Test for unsafe Hugging Face Hub downloads
++================================================
++
++This plugin checks for unsafe downloads from Hugging Face Hub without proper
++integrity verification. Downloading models, datasets, or files without
++specifying a revision based on an immmutable revision (commit) can
++lead to supply chain attacks where malicious actors could
++replace model files and use an existing tag or branch name
++to serve malicious content.
++
++The secure approach is to:
++
++1. Pin to specific revisions/commits when downloading models, files or datasets
++
++Common unsafe patterns:
++- ``AutoModel.from_pretrained("org/model-name")``
++- ``AutoModel.from_pretrained("org/model-name", revision="main")``
++- ``AutoModel.from_pretrained("org/model-name", revision="v1.0.0")``
++- ``load_dataset("org/dataset-name")`` without revision
++- ``load_dataset("org/dataset-name", revision="main")``
++- ``load_dataset("org/dataset-name", revision="v1.0")``
++- ``AutoTokenizer.from_pretrained("org/model-name")``
++- ``AutoTokenizer.from_pretrained("org/model-name", revision="main")``
++- ``AutoTokenizer.from_pretrained("org/model-name", revision="v3.3.0")``
++- ``hf_hub_download(repo_id="org/model_name", filename="file_name")``
++- ``hf_hub_download(repo_id="org/model_name",
++        filename="file_name",
++        revision="main"
++        )``
++- ``hf_hub_download(repo_id="org/model_name",
++        filename="file_name",
++        revision="v2.0.0"
++    )``
++- ``snapshot_download(repo_id="org/model_name")``
++- ``snapshot_download(repo_id="org/model_name", revision="main")``
++- ``snapshot_download(repo_id="org/model_name", revision="refs/pr/1")``
++
++
++:Example:
++
++.. code-block:: none
++
++        >> Issue: Unsafe Hugging Face Hub download without revision pinning
++        Severity: Medium   Confidence: High
++        CWE: CWE-494 (https://cwe.mitre.org/data/definitions/494.html)
++        Location: examples/huggingface_unsafe_download.py:8
++        7    # Unsafe: no revision specified
++        8    model = AutoModel.from_pretrained("org/model_name")
++        9
++
++.. seealso::
++
++     - https://cwe.mitre.org/data/definitions/494.html
++     - https://huggingface.co/docs/huggingface_hub/en/guides/download
++
++.. versionadded:: 1.8.6
++
++"""
++import string
++
++import bandit
++from bandit.core import issue
++from bandit.core import test_properties as test
++
++
++@test.checks("Call")
++@test.test_id("B615")
++def huggingface_unsafe_download(context):
++    """
++    This plugin checks for unsafe artifact download from Hugging Face Hub
++    without immutable/reproducible revision pinning.
++    """
++    # Check if any HuggingFace-related modules are imported
++    hf_modules = [
++        "transformers",
++        "datasets",
++        "huggingface_hub",
++    ]
++
++    # Check if any HF modules are imported
++    hf_imported = any(
++        context.is_module_imported_like(module) for module in hf_modules
++    )
++
++    if not hf_imported:
++        return
++
++    qualname = context.call_function_name_qual
++    if not isinstance(qualname, str):
++        return
++
++    unsafe_patterns = {
++        # transformers library patterns
++        "from_pretrained": ["transformers"],
++        # datasets library patterns
++        "load_dataset": ["datasets"],
++        # huggingface_hub patterns
++        "hf_hub_download": ["huggingface_hub"],
++        "snapshot_download": ["huggingface_hub"],
++        "repository_id": ["huggingface_hub"],
++    }
++
++    qualname_parts = qualname.split(".")
++    func_name = qualname_parts[-1]
++
++    if func_name not in unsafe_patterns:
++        return
++
++    required_modules = unsafe_patterns[func_name]
++    if not any(module in qualname_parts for module in required_modules):
++        return
++
++    # Check for revision parameter (the key security control)
++    revision_value = context.get_call_arg_value("revision")
++    commit_id_value = context.get_call_arg_value("commit_id")
++
++    # Check if a revision or commit_id is specified
++    revision_to_check = revision_value or commit_id_value
++
++    if revision_to_check is not None:
++        # Check if it's a secure revision (looks like a commit hash)
++        # Commit hashes: 40 chars (full SHA) or 7+ chars (short SHA)
++        if isinstance(revision_to_check, str):
++            # Remove quotes if present
++            revision_str = str(revision_to_check).strip("\"'")
++
++            # Check if it looks like a commit hash (hexadecimal string)
++            # Must be at least 7 characters and all hexadecimal
++            is_hex = all(c in string.hexdigits for c in revision_str)
++            if len(revision_str) >= 7 and is_hex:
++                # This looks like a commit hash, which is secure
++                return
++
++    # Edge case: check if this is a local path (starts with ./ or /)
++    first_arg = context.get_call_arg_at_position(0)
++    if first_arg and isinstance(first_arg, str):
++        if first_arg.startswith(("./", "/", "../")):
++            # Local paths are generally safer
++            return
++
++    return bandit.Issue(
++        severity=bandit.MEDIUM,
++        confidence=bandit.HIGH,
++        text=(
++            f"Unsafe Hugging Face Hub download without revision pinning "
++            f"in {func_name}()"
++        ),
++        cwe=issue.Cwe.DOWNLOAD_OF_CODE_WITHOUT_INTEGRITY_CHECK,
++        lineno=context.get_lineno_for_call_arg(func_name),
++    )
+diff --git a/bandit/plugins/jinja2_templates.py b/bandit/plugins/jinja2_templates.py
+index 667b79d62..3374205fe 100644
+--- a/bandit/plugins/jinja2_templates.py
++++ b/bandit/plugins/jinja2_templates.py
+@@ -51,7 +51,7 @@
+ 
+ .. seealso::
+ 
+- - `OWASP XSS <https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)>`_
++ - `OWASP XSS <https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)>`__
+  - https://realpython.com/primer-on-jinja-templating/
+  - https://jinja.palletsprojects.com/en/2.11.x/api/#autoescaping
+  - https://security.openstack.org/guidelines/dg_cross-site-scripting-xss.html
+diff --git a/bandit/plugins/mako_templates.py b/bandit/plugins/mako_templates.py
+index 26fa9de76..21e815105 100644
+--- a/bandit/plugins/mako_templates.py
++++ b/bandit/plugins/mako_templates.py
+@@ -32,7 +32,7 @@
+ .. seealso::
+ 
+  - https://www.makotemplates.org/
+- - `OWASP XSS <https://owasp.org/www-community/attacks/xss/>`_
++ - `OWASP XSS <https://owasp.org/www-community/attacks/xss/>`__
+  - https://security.openstack.org/guidelines/dg_cross-site-scripting-xss.html
+  - https://cwe.mitre.org/data/definitions/80.html
+ 
+diff --git a/bandit/plugins/pytorch_load.py b/bandit/plugins/pytorch_load.py
+index 8be5e3451..ef3e49fca 100644
+--- a/bandit/plugins/pytorch_load.py
++++ b/bandit/plugins/pytorch_load.py
+@@ -9,6 +9,7 @@
+ This plugin checks for unsafe use of `torch.load`. Using `torch.load` with
+ untrusted data can lead to arbitrary code execution. There are two safe
+ alternatives:
++
+ 1. Use `torch.load` with `weights_only=True` where only tensor data is
+    extracted, and no arbitrary Python objects are deserialized
+ 2. Use the `safetensors` library from huggingface, which provides a safe
+diff --git a/bandit/plugins/trojansource.py b/bandit/plugins/trojansource.py
+index e57ce40c8..ddf244839 100755
+--- a/bandit/plugins/trojansource.py
++++ b/bandit/plugins/trojansource.py
+@@ -24,8 +24,8 @@
+ 
+ .. seealso::
+ 
+- .. [1] https://trojansource.codes/
+- .. [2] https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-42574
++ - https://trojansource.codes/
++ - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-42574
+ 
+ .. versionadded:: 1.7.10
+ 
+@@ -67,7 +67,7 @@ def trojansource(context):
+                     "A Python source file contains bidirectional"
+                     " control characters (%r)." % char
+                 )
+-                return bandit.Issue(
++                b_issue = bandit.Issue(
+                     severity=bandit.HIGH,
+                     confidence=bandit.MEDIUM,
+                     cwe=issue.Cwe.INAPPROPRIATE_ENCODING_FOR_OUTPUT_CONTEXT,
+@@ -75,3 +75,5 @@ def trojansource(context):
+                     lineno=lineno,
+                     col_offset=col_offset,
+                 )
++                b_issue.linerange = [lineno]
++                return b_issue
+diff --git a/doc/source/blacklists/blacklist_calls.rst b/doc/source/blacklists/blacklist_calls.rst
+index 0897b6d31..f565c840a 100644
+--- a/doc/source/blacklists/blacklist_calls.rst
++++ b/doc/source/blacklists/blacklist_calls.rst
+@@ -3,3 +3,4 @@ blacklist_calls
+ ---------------
+ 
+ .. automodule:: bandit.blacklists.calls
++   :no-index:
+diff --git a/doc/source/blacklists/blacklist_imports.rst b/doc/source/blacklists/blacklist_imports.rst
+index 3242cf885..3a817d62f 100644
+--- a/doc/source/blacklists/blacklist_imports.rst
++++ b/doc/source/blacklists/blacklist_imports.rst
+@@ -3,3 +3,4 @@ blacklist_imports
+ -----------------
+ 
+ .. automodule:: bandit.blacklists.imports
++   :no-index:
+diff --git a/doc/source/ci-cd/github-actions.rst b/doc/source/ci-cd/github-actions.rst
+new file mode 100644
+index 000000000..a210b38be
+--- /dev/null
++++ b/doc/source/ci-cd/github-actions.rst
+@@ -0,0 +1,90 @@
++GitHub Actions Workflow for Bandit
++==================================
++
++This document provides a minimal complete example workflow for 
++setting up a Code Scanning action using Bandit through GitHub 
++Actions. It leverages PyCQA's `bandit-action  
++<https://github.com/PyCQA/bandit-action>`_ for seamless 
++integration.  
++
++Example YAML Code for GitHub Actions Pipeline
++---------------------------------------------
++
++Below is an example configuration for the GitHub Actions pipeline:
++
++.. code-block:: yaml
++
++    name: Bandit
++
++    on:
++        workflow_dispatch:
++
++    jobs:
++        analyze:
++            runs-on: ubuntu-latest
++            permissions:
++                # Required for all workflows
++                security-events: write
++                # Only required for workflows in private repositories
++                actions: read
++                contents: read
++            steps:
++                - name: Perform Bandit Analysis
++                  uses: PyCQA/bandit-action@v1
++
++Inputs
++======
++
++Below is a list of available inputs for the `bandit-action` and 
++their descriptions:  
++
++.. list-table::
++   :header-rows: 1
++   :widths: 20 50 10 20
++
++   * - Name
++     - Description
++     - Required
++     - Default Value
++   * - ``configfile``
++     - Config file to use for selecting plugins and overriding defaults.
++     - False
++     - ``DEFAULT``
++   * - ``profile``
++     - Profile to use (defaults to executing all tests).
++     - False
++     - ``DEFAULT``
++   * - ``tests``
++     - Comma-separated list of test IDs to run.
++     - False
++     - ``DEFAULT``
++   * - ``skips``
++     - Comma-separated list of test IDs to skip.
++     - False
++     - ``DEFAULT``
++   * - ``severity``
++     - Report only issues of a given severity level or higher. Options include ``all``, ``high``, ``medium``, ``low``. 
++       Note: ``all`` and ``low`` may produce similar results, but undefined rules will not be listed under ``low``.
++     - False
++     - ``DEFAULT``
++   * - ``confidence``
++     - Report only issues of a given confidence level or higher. Options include ``all``, ``high``, ``medium``, ``low``. 
++       Note: ``all`` and ``low`` may produce similar results, but undefined rules will not be listed under ``low``.
++     - False
++     - ``DEFAULT``
++   * - ``exclude``
++     - Comma-separated list of paths (glob patterns supported) to exclude from the scan. These are in addition to excluded paths provided in the config file.
++     - False
++     - ``.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg``
++   * - ``baseline``
++     - Path of a baseline report to compare against (only JSON-formatted files are accepted).
++     - False
++     - ``DEFAULT``
++   * - ``ini``
++     - Path to a ``.bandit`` file that supplies command-line arguments.
++     - False
++     - ``DEFAULT``
++   * - ``targets``
++     - Source file(s) or directory(s) to be tested.
++     - False
++     - ``.``
+\ No newline at end of file
+diff --git a/doc/source/ci-cd/index.rst b/doc/source/ci-cd/index.rst
+new file mode 100644
+index 000000000..7eea55ff1
+--- /dev/null
++++ b/doc/source/ci-cd/index.rst
+@@ -0,0 +1,27 @@
++.. _ci-cd:
++
++Continuous Integration and Deployment (CI/CD)
++=============================================
++
++This section provides documentation for setting up Continuous 
++Integration and Deployment (CI/CD) pipelines for automated 
++security scanning and quality assurance in this project.
++
++Supported CI/CD Platforms
++-------------------------  
++
++The following CI/CD platforms are covered:
++
++- **GitHub Actions**: Example workflows for security scanning and quality checks.
++
++Available Documentation
++-----------------------
++
++.. toctree::
++   :maxdepth: 1
++
++   github-actions
++
++More CI/CD platforms and configurations may be added over time. 
++Contributions and improvements to these configurations are 
++welcome.
+diff --git a/doc/source/formatters/csv.rst b/doc/source/formatters/csv.rst
+index 6f5db9777..5001ccbfe 100644
+--- a/doc/source/formatters/csv.rst
++++ b/doc/source/formatters/csv.rst
+@@ -3,3 +3,4 @@ csv
+ ---
+ 
+ .. automodule:: bandit.formatters.csv
++   :no-index:
+diff --git a/doc/source/formatters/custom.rst b/doc/source/formatters/custom.rst
+index ae3fad6f2..7c11963f6 100644
+--- a/doc/source/formatters/custom.rst
++++ b/doc/source/formatters/custom.rst
+@@ -3,3 +3,4 @@ custom
+ ------
+ 
+ .. automodule:: bandit.formatters.custom
++   :no-index:
+diff --git a/doc/source/formatters/html.rst b/doc/source/formatters/html.rst
+index d700f5b5f..e28154cf7 100644
+--- a/doc/source/formatters/html.rst
++++ b/doc/source/formatters/html.rst
+@@ -3,3 +3,4 @@ html
+ ----
+ 
+ .. automodule:: bandit.formatters.html
++   :no-index:
+diff --git a/doc/source/formatters/json.rst b/doc/source/formatters/json.rst
+index d32187e44..4eb5b87a6 100644
+--- a/doc/source/formatters/json.rst
++++ b/doc/source/formatters/json.rst
+@@ -3,3 +3,4 @@ json
+ ----
+ 
+ .. automodule:: bandit.formatters.json
++   :no-index:
+diff --git a/doc/source/formatters/sarif.rst b/doc/source/formatters/sarif.rst
+index 58b9633a7..95b8934b4 100644
+--- a/doc/source/formatters/sarif.rst
++++ b/doc/source/formatters/sarif.rst
+@@ -3,3 +3,4 @@ sarif
+ -----
+ 
+ .. automodule:: bandit.formatters.sarif
++   :no-index:
+diff --git a/doc/source/formatters/screen.rst b/doc/source/formatters/screen.rst
+index dc214139c..82186af14 100644
+--- a/doc/source/formatters/screen.rst
++++ b/doc/source/formatters/screen.rst
+@@ -3,3 +3,4 @@ screen
+ ------
+ 
+ .. automodule:: bandit.formatters.screen
++   :no-index:
+diff --git a/doc/source/formatters/text.rst b/doc/source/formatters/text.rst
+index a1a724ee5..7a07df926 100644
+--- a/doc/source/formatters/text.rst
++++ b/doc/source/formatters/text.rst
+@@ -3,3 +3,4 @@ text
+ ----
+ 
+ .. automodule:: bandit.formatters.text
++   :no-index:
+diff --git a/doc/source/formatters/xml.rst b/doc/source/formatters/xml.rst
+index e84edf5d2..8b20282d0 100644
+--- a/doc/source/formatters/xml.rst
++++ b/doc/source/formatters/xml.rst
+@@ -3,3 +3,4 @@ xml
+ ---
+ 
+ .. automodule:: bandit.formatters.xml
++   :no-index:
+diff --git a/doc/source/formatters/yaml.rst b/doc/source/formatters/yaml.rst
+index 020feae21..3de2169ae 100644
+--- a/doc/source/formatters/yaml.rst
++++ b/doc/source/formatters/yaml.rst
+@@ -3,3 +3,4 @@ yaml
+ ----
+ 
+ .. automodule:: bandit.formatters.yaml
++   :no-index:
+diff --git a/doc/source/index.rst b/doc/source/index.rst
+index fbf3e205e..4f4202bb0 100644
+--- a/doc/source/index.rst
++++ b/doc/source/index.rst
+@@ -13,9 +13,11 @@ Using and Extending Bandit
+ 
+    start
+    config
++   integrations
+    plugins/index
+    blacklists/index
+    formatters/index
++   ci-cd/index
+    faq
+ 
+ Contributing
+diff --git a/doc/source/integrations.rst b/doc/source/integrations.rst
+new file mode 100644
+index 000000000..83ead901d
+--- /dev/null
++++ b/doc/source/integrations.rst
+@@ -0,0 +1,63 @@
++Integrations
++============
++
++Bandit can be integrated into a wide variety of developer tools, editors,
++CI/CD systems, and code quality pipelines. This page outlines popular
++integrations to help you seamlessly incorporate Bandit into your development
++workflow.
++
++IDE Integrations
++----------------
++
++.. list-table::
++   :widths: 30 70
++
++   * - Visual Studio Code
++     - `Bandit by PyCQA <https://marketplace.visualstudio.com/items?itemName=pycqa.bandit-pycqa>`_
++   * - Sublime Text
++     - `SublimeLinter-bandit <https://github.com/SublimeLinter/SublimeLinter-bandit>`_
++   * - Vim/Neovim
++     - `Asynchronous Lint Engine <https://github.com/dense-analysis/ale>`_
++   * - Emacs
++     - `flycheck-pycheckers <https://github.com/msherry/flycheck-pycheckers>`_
++
++CI/CD Integrations
++------------------
++
++.. list-table::
++   :widths: 30 70
++
++   * - GitHub Action
++     - `Bandit by PyCQA <https://github.com/marketplace/actions/bandit-by-pycqa>`_
++   * - Hudson/Jenkins
++     - `Bandit Plugin <https://github.com/mewz/bandit-plugin->`_
++
++Linters
++-------
++
++.. list-table::
++   :widths: 30 70
++
++   * - Ruff
++     - `flake8-bandit (S) <https://docs.astral.sh/ruff/rules/#flake8-bandit-s>`_
++   * - Flake8
++     - `flake8-bandit <https://github.com/tylerwince/flake8-bandit>`_
++
++Packages
++--------
++
++.. list-table::
++   :widths: 30 70
++
++   * - Ubuntu
++     - `bandit <https://packages.ubuntu.com/search?keywords=bandit&searchon=names&section=all>`_
++   * - Homebrew
++     - `bandit <https://formulae.brew.sh/formula/bandit>`_
++   * - FreeBSD
++     - `py-bandit <https://www.freshports.org/devel/py-bandit/>`_
++
++
++🙌 Contributions Welcome
++
++If you’ve integrated Bandit into another platform or tool, feel free to open
++a PR and update this page!
+diff --git a/doc/source/man/bandit.rst b/doc/source/man/bandit.rst
+index eef10d271..23215f85f 100644
+--- a/doc/source/man/bandit.rst
++++ b/doc/source/man/bandit.rst
+@@ -42,8 +42,16 @@ OPTIONS
+                         comma-separated list of test IDs to skip
+   -l, --level           report only issues of a given severity level or higher
+                         (-l for LOW, -ll for MEDIUM, -lll for HIGH)
++  -l, --severity-level={all,high,medium,low}
++                        report only issues of a given severity level or higher.
++                        "all" and "low" are likely to produce the same results, but it
++                        is possible for rules to be undefined which will not be listed in "low".
+   -i, --confidence      report only issues of a given confidence level or
+                         higher (-i for LOW, -ii for MEDIUM, -iii for HIGH)
++  -l, --confidence-level={all,high,medium,low}
++                        report only issues of a given confidence level or higher.
++                        "all" and "low" are likely to produce the same results, but it
++                        is possible for rules to be undefined which will not be listed in "low".
+   -f {csv,custom,html,json,sarif,screen,txt,xml,yaml}, --format {csv,custom,html,json,sarif,screen,txt,xml,yaml}
+                         specify output format
+   --msg-template MSG_TEMPLATE
+@@ -52,8 +60,7 @@ OPTIONS
+                         of available values
+   -o OUTPUT_FILE, --output OUTPUT_FILE
+                         write report to filename
+-  -v, --verbose         output extra information like excluded and included
+-                        files
++  -v, --verbose         output extra information like excluded and included files
+   -d, --debug           turn on debug mode
+   -q, --quiet, --silent
+                         only show output in the case of an error
+@@ -67,8 +74,7 @@ OPTIONS
+   -b BASELINE, --baseline BASELINE
+                         path of a baseline report to compare against (only
+                         JSON-formatted files are accepted)
+-  --ini INI_PATH        path to a .bandit file that supplies command line
+-                        arguments
++  --ini INI_PATH        path to a .bandit file that supplies command line arguments
+   --exit-zero           exit with 0, even with results found
+   --version             show program's version number and exit
+ 
+@@ -115,7 +121,7 @@ Example usage across a code tree::
+ Example usage across the ``examples/`` directory, showing three lines of
+ context and only reporting on the high-severity issues::
+ 
+-    bandit examples/*.py -n 3 -lll
++    bandit examples/*.py -n 3 --severity-level=high
+ 
+ Bandit can be run with profiles.  To run Bandit against the examples directory
+ using only the plugins listed in the ShellInjection profile::
+diff --git a/doc/source/plugins/b101_assert_used.rst b/doc/source/plugins/b101_assert_used.rst
+index 1904a81a5..97077bff9 100644
+--- a/doc/source/plugins/b101_assert_used.rst
++++ b/doc/source/plugins/b101_assert_used.rst
+@@ -3,3 +3,4 @@ B101: assert_used
+ -----------------
+ 
+ .. automodule:: bandit.plugins.asserts
++   :no-index:
+\ No newline at end of file
+diff --git a/doc/source/plugins/b102_exec_used.rst b/doc/source/plugins/b102_exec_used.rst
+index 331976407..f13982875 100644
+--- a/doc/source/plugins/b102_exec_used.rst
++++ b/doc/source/plugins/b102_exec_used.rst
+@@ -3,3 +3,4 @@ B102: exec_used
+ ---------------
+ 
+ .. automodule:: bandit.plugins.exec
++   :no-index:
+diff --git a/doc/source/plugins/b103_set_bad_file_permissions.rst b/doc/source/plugins/b103_set_bad_file_permissions.rst
+index d77826c94..5b51f4d2a 100644
+--- a/doc/source/plugins/b103_set_bad_file_permissions.rst
++++ b/doc/source/plugins/b103_set_bad_file_permissions.rst
+@@ -3,3 +3,4 @@ B103: set_bad_file_permissions
+ ------------------------------
+ 
+ .. automodule:: bandit.plugins.general_bad_file_permissions
++   :no-index:
+diff --git a/doc/source/plugins/b104_hardcoded_bind_all_interfaces.rst b/doc/source/plugins/b104_hardcoded_bind_all_interfaces.rst
+index df56095a4..5306f8814 100644
+--- a/doc/source/plugins/b104_hardcoded_bind_all_interfaces.rst
++++ b/doc/source/plugins/b104_hardcoded_bind_all_interfaces.rst
+@@ -3,3 +3,4 @@ B104: hardcoded_bind_all_interfaces
+ -----------------------------------
+ 
+ .. automodule:: bandit.plugins.general_bind_all_interfaces
++   :no-index:
+diff --git a/doc/source/plugins/b108_hardcoded_tmp_directory.rst b/doc/source/plugins/b108_hardcoded_tmp_directory.rst
+index 96754c5f5..166e4bf52 100644
+--- a/doc/source/plugins/b108_hardcoded_tmp_directory.rst
++++ b/doc/source/plugins/b108_hardcoded_tmp_directory.rst
+@@ -3,3 +3,4 @@ B108: hardcoded_tmp_directory
+ -----------------------------
+ 
+ .. automodule:: bandit.plugins.general_hardcoded_tmp
++   :no-index:
+diff --git a/doc/source/plugins/b110_try_except_pass.rst b/doc/source/plugins/b110_try_except_pass.rst
+index d35ce06a6..7eddf08ce 100644
+--- a/doc/source/plugins/b110_try_except_pass.rst
++++ b/doc/source/plugins/b110_try_except_pass.rst
+@@ -3,3 +3,4 @@ B110: try_except_pass
+ ---------------------
+ 
+ .. automodule:: bandit.plugins.try_except_pass
++   :no-index:
+diff --git a/doc/source/plugins/b112_try_except_continue.rst b/doc/source/plugins/b112_try_except_continue.rst
+index 62508c65e..580c08425 100644
+--- a/doc/source/plugins/b112_try_except_continue.rst
++++ b/doc/source/plugins/b112_try_except_continue.rst
+@@ -3,3 +3,4 @@ B112: try_except_continue
+ -------------------------
+ 
+ .. automodule:: bandit.plugins.try_except_continue
++   :no-index:
+diff --git a/doc/source/plugins/b113_request_without_timeout.rst b/doc/source/plugins/b113_request_without_timeout.rst
+index 42a5f2510..2be183a8c 100644
+--- a/doc/source/plugins/b113_request_without_timeout.rst
++++ b/doc/source/plugins/b113_request_without_timeout.rst
+@@ -3,3 +3,4 @@ B113: request_without_timeout
+ -----------------------------
+ 
+ .. automodule:: bandit.plugins.request_without_timeout
++   :no-index:
+diff --git a/doc/source/plugins/b201_flask_debug_true.rst b/doc/source/plugins/b201_flask_debug_true.rst
+index 1fa0cc770..2f18aca45 100644
+--- a/doc/source/plugins/b201_flask_debug_true.rst
++++ b/doc/source/plugins/b201_flask_debug_true.rst
+@@ -3,3 +3,4 @@ B201: flask_debug_true
+ ----------------------
+ 
+ .. automodule:: bandit.plugins.app_debug
++   :no-index:
+diff --git a/doc/source/plugins/b202_tarfile_unsafe_members.rst b/doc/source/plugins/b202_tarfile_unsafe_members.rst
+index 3b99055e3..40b03925d 100644
+--- a/doc/source/plugins/b202_tarfile_unsafe_members.rst
++++ b/doc/source/plugins/b202_tarfile_unsafe_members.rst
+@@ -3,3 +3,4 @@ B202: tarfile_unsafe_members
+ ----------------------------
+ 
+ .. automodule:: bandit.plugins.tarfile_unsafe_members
++   :no-index:
+diff --git a/doc/source/plugins/b324_hashlib.rst b/doc/source/plugins/b324_hashlib.rst
+index 9210ee510..b13f12b89 100644
+--- a/doc/source/plugins/b324_hashlib.rst
++++ b/doc/source/plugins/b324_hashlib.rst
+@@ -3,3 +3,4 @@ B324: hashlib
+ -------------
+ 
+ .. automodule:: bandit.plugins.hashlib_insecure_functions
++   :no-index:
+diff --git a/doc/source/plugins/b501_request_with_no_cert_validation.rst b/doc/source/plugins/b501_request_with_no_cert_validation.rst
+index 4fbd418c2..d26ee074e 100644
+--- a/doc/source/plugins/b501_request_with_no_cert_validation.rst
++++ b/doc/source/plugins/b501_request_with_no_cert_validation.rst
+@@ -3,3 +3,4 @@ B501: request_with_no_cert_validation
+ -------------------------------------
+ 
+ .. automodule:: bandit.plugins.crypto_request_no_cert_validation
++   :no-index:
+diff --git a/doc/source/plugins/b505_weak_cryptographic_key.rst b/doc/source/plugins/b505_weak_cryptographic_key.rst
+index cb0def8e5..366e6658a 100644
+--- a/doc/source/plugins/b505_weak_cryptographic_key.rst
++++ b/doc/source/plugins/b505_weak_cryptographic_key.rst
+@@ -3,3 +3,4 @@ B505: weak_cryptographic_key
+ ----------------------------
+ 
+ .. automodule:: bandit.plugins.weak_cryptographic_key
++   :no-index:
+diff --git a/doc/source/plugins/b506_yaml_load.rst b/doc/source/plugins/b506_yaml_load.rst
+index c5e880dde..e9822c72e 100644
+--- a/doc/source/plugins/b506_yaml_load.rst
++++ b/doc/source/plugins/b506_yaml_load.rst
+@@ -3,3 +3,4 @@ B506: yaml_load
+ ---------------
+ 
+ .. automodule:: bandit.plugins.yaml_load
++   :no-index:
+diff --git a/doc/source/plugins/b507_ssh_no_host_key_verification.rst b/doc/source/plugins/b507_ssh_no_host_key_verification.rst
+index ff26bf366..b28587c59 100644
+--- a/doc/source/plugins/b507_ssh_no_host_key_verification.rst
++++ b/doc/source/plugins/b507_ssh_no_host_key_verification.rst
+@@ -3,3 +3,4 @@ B507: ssh_no_host_key_verification
+ ----------------------------------
+ 
+ .. automodule:: bandit.plugins.ssh_no_host_key_verification
++   :no-index:
+diff --git a/doc/source/plugins/b601_paramiko_calls.rst b/doc/source/plugins/b601_paramiko_calls.rst
+index a02a73822..98dfdbdab 100644
+--- a/doc/source/plugins/b601_paramiko_calls.rst
++++ b/doc/source/plugins/b601_paramiko_calls.rst
+@@ -3,3 +3,4 @@ B601: paramiko_calls
+ --------------------
+ 
+ .. automodule:: bandit.plugins.injection_paramiko
++   :no-index:
+diff --git a/doc/source/plugins/b608_hardcoded_sql_expressions.rst b/doc/source/plugins/b608_hardcoded_sql_expressions.rst
+index 89c132811..d817078a6 100644
+--- a/doc/source/plugins/b608_hardcoded_sql_expressions.rst
++++ b/doc/source/plugins/b608_hardcoded_sql_expressions.rst
+@@ -3,3 +3,4 @@ B608: hardcoded_sql_expressions
+ -------------------------------
+ 
+ .. automodule:: bandit.plugins.injection_sql
++   :no-index:
+diff --git a/doc/source/plugins/b609_linux_commands_wildcard_injection.rst b/doc/source/plugins/b609_linux_commands_wildcard_injection.rst
+index 8a33fc375..a83c18b0c 100644
+--- a/doc/source/plugins/b609_linux_commands_wildcard_injection.rst
++++ b/doc/source/plugins/b609_linux_commands_wildcard_injection.rst
+@@ -3,3 +3,4 @@ B609: linux_commands_wildcard_injection
+ ---------------------------------------
+ 
+ .. automodule:: bandit.plugins.injection_wildcard
++   :no-index:
+diff --git a/doc/source/plugins/b612_logging_config_insecure_listen.rst b/doc/source/plugins/b612_logging_config_insecure_listen.rst
+index 471c2763d..c426f7d0b 100644
+--- a/doc/source/plugins/b612_logging_config_insecure_listen.rst
++++ b/doc/source/plugins/b612_logging_config_insecure_listen.rst
+@@ -3,3 +3,4 @@ B612: logging_config_insecure_listen
+ ------------------------------------
+ 
+ .. automodule:: bandit.plugins.logging_config_insecure_listen
++   :no-index:
+diff --git a/doc/source/plugins/b613_trojansource.rst b/doc/source/plugins/b613_trojansource.rst
+index 8fa0bc47b..1de4803ce 100644
+--- a/doc/source/plugins/b613_trojansource.rst
++++ b/doc/source/plugins/b613_trojansource.rst
+@@ -3,3 +3,4 @@ B613: trojansource
+ ------------------
+ 
+ .. automodule:: bandit.plugins.trojansource
++   :no-index:
+diff --git a/doc/source/plugins/b614_pytorch_load.rst b/doc/source/plugins/b614_pytorch_load.rst
+index 808383e6a..f87400ae5 100644
+--- a/doc/source/plugins/b614_pytorch_load.rst
++++ b/doc/source/plugins/b614_pytorch_load.rst
+@@ -3,3 +3,4 @@ B614: pytorch_load
+ ------------------
+ 
+ .. automodule:: bandit.plugins.pytorch_load
++   :no-index:
+diff --git a/doc/source/plugins/b615_huggingface_unsafe_download.rst b/doc/source/plugins/b615_huggingface_unsafe_download.rst
+new file mode 100644
+index 000000000..9b8f882cc
+--- /dev/null
++++ b/doc/source/plugins/b615_huggingface_unsafe_download.rst
+@@ -0,0 +1,6 @@
++---------------------------------
++B615: huggingface_unsafe_download
++---------------------------------
++
++.. automodule:: bandit.plugins.huggingface_unsafe_download
++   :no-index:
+diff --git a/doc/source/plugins/b701_jinja2_autoescape_false.rst b/doc/source/plugins/b701_jinja2_autoescape_false.rst
+index 6cc7eeb57..2c40053c0 100644
+--- a/doc/source/plugins/b701_jinja2_autoescape_false.rst
++++ b/doc/source/plugins/b701_jinja2_autoescape_false.rst
+@@ -3,3 +3,4 @@ B701: jinja2_autoescape_false
+ -----------------------------
+ 
+ .. automodule:: bandit.plugins.jinja2_templates
++   :no-index:
+diff --git a/doc/source/plugins/b702_use_of_mako_templates.rst b/doc/source/plugins/b702_use_of_mako_templates.rst
+index a9c1796fe..3db4d2000 100644
+--- a/doc/source/plugins/b702_use_of_mako_templates.rst
++++ b/doc/source/plugins/b702_use_of_mako_templates.rst
+@@ -3,3 +3,4 @@ B702: use_of_mako_templates
+ ---------------------------
+ 
+ .. automodule:: bandit.plugins.mako_templates
++   :no-index:
+diff --git a/doc/source/plugins/b704_markupsafe_markup_xss.rst b/doc/source/plugins/b704_markupsafe_markup_xss.rst
+index 47eb69953..b7b039097 100644
+--- a/doc/source/plugins/b704_markupsafe_markup_xss.rst
++++ b/doc/source/plugins/b704_markupsafe_markup_xss.rst
+@@ -3,3 +3,4 @@ B704: markupsafe_markup_xss
+ ---------------------------
+ 
+ .. automodule:: bandit.plugins.markupsafe_markup_xss
++   :no-index:
+diff --git a/doc/source/start.rst b/doc/source/start.rst
+index 928e45a6b..b3408f1cb 100644
+--- a/doc/source/start.rst
++++ b/doc/source/start.rst
+@@ -12,6 +12,7 @@ Create a virtual environment and activate it using `virtualenv` (optional):
+ 
+     virtualenv bandit-env
+     source bandit-env/bin/activate
++
+ Alternatively, use `venv` instead of `virtualenv` (optional):
+ 
+ .. code-block:: console
+@@ -73,9 +74,13 @@ Example usage across a code tree:
+ 
+     bandit -r ~/your_repos/project
+ 
+-Example usage across the ``examples/`` directory, showing three lines of
++Two examples of usage across the ``examples/`` directory, showing three lines of
+ context and only reporting on the high-severity issues:
+ 
++.. code-block:: console
++
++    bandit examples/*.py -n 3 --severity-level=high
++
+ .. code-block:: console
+ 
+     bandit examples/*.py -n 3 -lll
+diff --git a/examples/huggingface_unsafe_download.py b/examples/huggingface_unsafe_download.py
+new file mode 100644
+index 000000000..61f768b59
+--- /dev/null
++++ b/examples/huggingface_unsafe_download.py
+@@ -0,0 +1,149 @@
++from datasets import load_dataset
++from huggingface_hub import hf_hub_download, snapshot_download
++from transformers import AutoModel, AutoTokenizer
++
++# UNSAFE USAGE
++
++# AutoModel (Model Loading)
++
++# Example #1: No revision (defaults to floating 'main')
++unsafe_model_no_revision = AutoModel.from_pretrained("org/model_name")
++
++# Example #2: Floating revision: 'main'
++unsafe_model_main = AutoModel.from_pretrained(
++    "org/model_name",
++    revision="main"
++)
++
++# Example #3: Floating tag revision: 'v1.0.0'
++unsafe_model_tag = AutoModel.from_pretrained(
++    "org/model_name",
++    revision="v1.0.0"
++)
++
++
++# AutoTokenizer (Tokenizer Loading)
++
++# Example #4: No revision
++unsafe_tokenizer_no_revision = AutoTokenizer.from_pretrained("org/model_name")
++
++# Example #5: Floating revision: 'main'
++unsafe_tokenizer_main = AutoTokenizer.from_pretrained(
++    "org/model_name",
++    revision="main"
++)
++
++# Example #6: Floating tag revision: 'v1.0.0'
++unsafe_tokenizer_tag = AutoTokenizer.from_pretrained(
++    "org/model_name",
++    revision="v1.0.0"
++)
++
++
++# Example #7: load_dataset (Dataset Loading)
++
++# Example #8: No revision
++unsafe_dataset_no_revision = load_dataset("org_dataset")
++
++# Example #9: Floating revision: 'main'
++unsafe_dataset_main = load_dataset("org_dataset", revision="main")
++
++# Example #10: Floating tag revision: 'v1.0.0'
++unsafe_dataset_tag = load_dataset("org_dataset", revision="v1.0.0")
++
++
++# f_hub_download (File Download)
++
++# Example #11: No revision
++unsafe_file_no_revision = hf_hub_download(
++    repo_id="org/model_name",
++    filename="config.json"
++)
++
++# Example #12: Floating revision: 'main'
++unsafe_file_main = hf_hub_download(
++    repo_id="org/model_name",
++    filename="config.json",
++    revision="main"
++)
++
++# Example #13: Floating tag revision: 'v1.0.0'
++unsafe_file_tag = hf_hub_download(
++    repo_id="org/model_name",
++    filename="config.json",
++    revision="v1.0.0"
++)
++
++
++# snapshot_download (Repo Snapshot)
++
++# Example #14: No revision
++unsafe_snapshot_no_revision = snapshot_download(repo_id="org/model_name")
++
++# Example #15: Floating revision: 'main'
++unsafe_snapshot_main = snapshot_download(
++    repo_id="org/model_name",
++    revision="main"
++)
++
++# Example #16: Floating tag revision: 'v1.0.0'
++unsafe_snapshot_tag = snapshot_download(
++    repo_id="org/model_name",
++    revision="v1.0.0"
++)
++
++
++# -------------------------------
++# SAFE USAGE
++# -------------------------------
++
++# AutoModel
++
++# Example #17: Pinned commit hash
++safe_model_commit = AutoModel.from_pretrained(
++    "org/model_name",
++    revision="5d0f2e8a7f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
++)
++
++# Example #18: Local path
++safe_model_local = AutoModel.from_pretrained("./local_model")
++safe_model_local_abs = AutoModel.from_pretrained("/path/to/model")
++
++# AutoTokenizer
++
++# Example #19: Pinned commit hash
++safe_tokenizer_commit = AutoTokenizer.from_pretrained(
++    "org/model_name",
++    revision="5d0f2e8a7f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
++)
++
++# Example #20: Local path
++safe_tokenizer_local = AutoTokenizer.from_pretrained("./local_tokenizer")
++
++
++# load_dataset
++
++# Example #21: Pinned commit hash
++safe_dataset_commit = load_dataset(
++    "org_dataset",
++    revision="5d0f2e8a7f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
++)
++
++
++# hf_hub_download
++
++# Example #22: Pinned commit hash
++safe_file_commit = hf_hub_download(
++    repo_id="org/model_name",
++    filename="config.json",
++    revision="5d0f2e8a7f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
++)
++
++
++# snapshot_download
++
++# Example #23: Pinned commit hash
++safe_snapshot_commit = snapshot_download(
++    repo_id="org/model_name",
++    revision="5d0f2e8a7f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
++)
+diff --git a/examples/random_module.py b/examples/random_module.py
+index 224f2513c..f0b6d010a 100644
+--- a/examples/random_module.py
++++ b/examples/random_module.py
+@@ -11,6 +11,9 @@
+ bad = random.uniform()
+ bad = random.triangular()
+ bad = random.randbytes()
++bad = random.sample()
++bad = random.randrange()
++bad = random.getrandbits()
+ 
+ good = os.urandom()
+ good = random.SystemRandom()
+diff --git a/setup.cfg b/setup.cfg
+index e0288e600..e1bab07f5 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -6,14 +6,13 @@ description_file =
+ author = PyCQA
+ author_email = code-quality@python.org
+ home_page = https://bandit.readthedocs.io/
+-license = Apache-2.0 license
+-classifier =
++license = Apache-2.0
++classifiers =
+     Development Status :: 5 - Production/Stable
+     Environment :: Console
+     Intended Audience :: Information Technology
+     Intended Audience :: System Administrators
+     Intended Audience :: Developers
+-    License :: OSI Approved :: Apache Software License
+     Operating System :: POSIX :: Linux
+     Operating System :: MacOS :: MacOS X
+     Programming Language :: Python
+@@ -164,6 +163,9 @@ bandit.plugins =
+     # bandit/plugins/markupsafe_markup_xss.py
+     markupsafe_markup_xss = bandit.plugins.markupsafe_markup_xss:markupsafe_markup_xss
+ 
++    # bandit/plugins/huggingface_unsafe_download.py
++    huggingface_unsafe_download = bandit.plugins.huggingface_unsafe_download:huggingface_unsafe_download
++
+ [build_sphinx]
+ all_files = 1
+ build-dir = doc/build
+diff --git a/setup.py b/setup.py
+index 4930fc245..f70f2366a 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,8 +1,20 @@
+ # Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
+ #
+ # SPDX-License-Identifier: Apache-2.0
++import os
++
+ import setuptools
+ 
++
++data_files = []
++man_path = "doc/build/man/bandit.1"
++if os.path.isfile(man_path):
++    data_files.append(("share/man/man1", [man_path]))
++
++
+ setuptools.setup(
+-    python_requires=">=3.9", setup_requires=["pbr>=2.0.0"], pbr=True
++    python_requires=">=3.9",
++    setup_requires=["pbr>=2.0.0"],
++    pbr=True,
++    data_files=data_files,
+ )
+diff --git a/tests/functional/test_functional.py b/tests/functional/test_functional.py
+index 660b65f94..5f21e2d6b 100644
+--- a/tests/functional/test_functional.py
++++ b/tests/functional/test_functional.py
+@@ -365,8 +365,8 @@ def test_popen_wrappers(self):
+     def test_random_module(self):
+         """Test for the `random` module."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 9, "MEDIUM": 0, "HIGH": 0},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 9},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 12, "MEDIUM": 0, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 12},
+         }
+         self.check_example("random_module.py", expect)
+ 
+@@ -926,3 +926,10 @@ def test_markupsafe_markup_xss_allowed_calls(self):
+             self.check_example(
+                 "markupsafe_markup_xss_allowed_calls.py", expect
+             )
++
++    def test_huggingface_unsafe_download(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 15, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 15},
++        }
++        self.check_example("huggingface_unsafe_download.py", expect)
+diff --git a/tox.ini b/tox.ini
+index b52833d40..60b8b8588 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -68,6 +68,11 @@ deps = -r{toxinidir}/doc/requirements.txt
+ commands=
+     sphinx-build doc/source doc/build
+ 
++[testenv:manpage]
++deps = -r{toxinidir}/doc/requirements.txt
++commands=
++    sphinx-build -b man doc/source doc/build/man
++
+ [flake8]
+ # [H106] Don't put vim configuration in source files.
+ # [H203] Use assertIs(Not)None to check for None.

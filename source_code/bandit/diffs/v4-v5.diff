@@ -1,0 +1,891 @@
+diff --git a/.github/ISSUE_TEMPLATE/bug-report.yml b/.github/ISSUE_TEMPLATE/bug-report.yml
+index 46b406ff2..c968cc475 100644
+--- a/.github/ISSUE_TEMPLATE/bug-report.yml
++++ b/.github/ISSUE_TEMPLATE/bug-report.yml
+@@ -44,7 +44,10 @@ body:
+       label: Bandit version
+       description: Run "bandit --version" if unsure of version number
+       options:
+-        - 1.7.10 (Default)
++        - 1.8.2 (Default)
++        - 1.8.1
++        - 1.8.0
++        - 1.7.10
+         - 1.7.9
+         - 1.7.8
+         - 1.7.7
+diff --git a/.github/workflows/build-publish-image.yml b/.github/workflows/build-publish-image.yml
+index c478777d2..69eec16ff 100644
+--- a/.github/workflows/build-publish-image.yml
++++ b/.github/workflows/build-publish-image.yml
+@@ -31,7 +31,7 @@ jobs:
+         ref: ${{ github.event_name == 'release' && github.ref || env.RELEASE_TAG }}
+ 
+     - name: Set up Docker Buildx
+-      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
++      uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3
+ 
+     - name: Log in to GitHub Container Registry
+       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+@@ -41,7 +41,7 @@ jobs:
+         password: ${{ secrets.GITHUB_TOKEN }}
+ 
+     - name: Install Cosign
+-      uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
++      uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
+       with:
+         cosign-release: 'v2.2.2'
+ 
+@@ -51,7 +51,7 @@ jobs:
+ 
+     - name: Build and push Docker image
+       id: build-and-push
+-      uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6
++      uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6
+       with:
+         context: .
+         file: ./docker/Dockerfile
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index cf10789d8..f4d2ac9a8 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -13,12 +13,12 @@ repos:
+   - id: reorder-python-imports
+     args: [--application-directories, '.:src', --py38-plus]
+ - repo: https://github.com/psf/black-pre-commit-mirror
+-  rev: 24.10.0
++  rev: 25.1.0
+   hooks:
+   - id: black
+     args: [--line-length=79, --target-version=py38]
+ - repo: https://github.com/asottile/pyupgrade
+-  rev: v3.19.0
++  rev: v3.19.1
+   hooks:
+   - id: pyupgrade
+     args: [--py38-plus]
+diff --git a/README.rst b/README.rst
+index 6842127a4..79615fffc 100644
+--- a/README.rst
++++ b/README.rst
+@@ -127,7 +127,12 @@ The development of Bandit is made possible by the following sponsors:
+    :width: 100%
+    :class: borderless
+ 
+-   * - .. image:: https://github.githubassets.com/assets/tidelift-8cea37dea8fc.svg
++   * - .. image:: https://avatars.githubusercontent.com/u/34240465?s=200&v=4
++          :target: https://opensource.mercedes-benz.com/
++          :alt: Mercedes-Benz
++          :width: 88
++
++     - .. image:: https://github.githubassets.com/assets/tidelift-8cea37dea8fc.svg
+           :target: https://tidelift.com/lifter/search/pypi/bandit
+           :alt: Tidelift
+           :width: 88
+diff --git a/bandit/blacklists/calls.py b/bandit/blacklists/calls.py
+index 60656b12f..86f08a61d 100644
+--- a/bandit/blacklists/calls.py
++++ b/bandit/blacklists/calls.py
+@@ -219,7 +219,7 @@
+ | B312 | telnetlib           | - telnetlib.\*                     | High      |
+ +------+---------------------+------------------------------------+-----------+
+ 
+-B313 - B320: XML
++B313 - B319: XML
+ ----------------
+ 
+ Most of this is based off of Christian Heimes' work on defusedxml:
+@@ -256,6 +256,15 @@
+ | B319 | xml_bad_pulldom     | - xml.dom.pulldom.parse            | Medium    |
+ |      |                     | - xml.dom.pulldom.parseString      |           |
+ +------+---------------------+------------------------------------+-----------+
++
++B320: xml_bad_etree
++-------------------
++
++The check for this call has been removed.
++
+++------+---------------------+------------------------------------+-----------+
++| ID   |  Name               |  Calls                             |  Severity |
+++======+=====================+====================================+===========+
+ | B320 | xml_bad_etree       | - lxml.etree.parse                 | Medium    |
+ |      |                     | - lxml.etree.fromstring            |           |
+ |      |                     | - lxml.etree.RestrictedElement     |           |
+@@ -615,26 +624,7 @@ def gen_blacklist():
+         )
+     )
+ 
+-    sets.append(
+-        utils.build_conf_dict(
+-            "xml_bad_etree",
+-            "B320",
+-            issue.Cwe.IMPROPER_INPUT_VALIDATION,
+-            [
+-                "lxml.etree.parse",
+-                "lxml.etree.fromstring",
+-                "lxml.etree.RestrictedElement",
+-                "lxml.etree.GlobalParserTLS",
+-                "lxml.etree.getDefaultParser",
+-                "lxml.etree.check_docinfo",
+-            ],
+-            (
+-                "Using {name} to parse untrusted XML data is known to be "
+-                "vulnerable to XML attacks. Replace {name} with its "
+-                "defusedxml equivalent function."
+-            ),
+-        )
+-    )
++    # skipped B320 as the check for a call to lxml.etree has been removed
+ 
+     # end of XML tests
+ 
+diff --git a/bandit/blacklists/imports.py b/bandit/blacklists/imports.py
+index 58dfcb3c7..b15155b65 100644
+--- a/bandit/blacklists/imports.py
++++ b/bandit/blacklists/imports.py
+@@ -133,6 +133,9 @@
+ B410: import_lxml
+ -----------------
+ 
++This import blacklist has been removed. The information here has been
++left for historical purposes.
++
+ Using various methods to parse untrusted XML data is known to be vulnerable to
+ XML attacks. Replace vulnerable imports with the equivalent defusedxml package.
+ 
+@@ -297,11 +300,6 @@ def gen_blacklist():
+         "defusedxml package, or make sure defusedxml.defuse_stdlib() "
+         "is called."
+     )
+-    lxml_msg = (
+-        "Using {name} to parse untrusted XML data is known to be "
+-        "vulnerable to XML attacks. Replace {name} with the "
+-        "equivalent defusedxml package."
+-    )
+ 
+     sets.append(
+         utils.build_conf_dict(
+@@ -358,16 +356,7 @@ def gen_blacklist():
+         )
+     )
+ 
+-    sets.append(
+-        utils.build_conf_dict(
+-            "import_lxml",
+-            "B410",
+-            issue.Cwe.IMPROPER_INPUT_VALIDATION,
+-            ["lxml"],
+-            lxml_msg,
+-            "LOW",
+-        )
+-    )
++    # skipped B410 as the check for import_lxml has been removed
+ 
+     sets.append(
+         utils.build_conf_dict(
+diff --git a/bandit/core/context.py b/bandit/core/context.py
+index 8a2d4fbbc..57f293c8e 100644
+--- a/bandit/core/context.py
++++ b/bandit/core/context.py
+@@ -318,3 +318,7 @@ def filename(self):
+     @property
+     def file_data(self):
+         return self._context.get("file_data")
++
++    @property
++    def import_aliases(self):
++        return self._context.get("import_aliases")
+diff --git a/bandit/core/extension_loader.py b/bandit/core/extension_loader.py
+index 05fd9fbfc..ec28a0ab9 100644
+--- a/bandit/core/extension_loader.py
++++ b/bandit/core/extension_loader.py
+@@ -1,11 +1,14 @@
+ #
+ # SPDX-License-Identifier: Apache-2.0
++import logging
+ import sys
+ 
+ from stevedore import extension
+ 
+ from bandit.core import utils
+ 
++LOG = logging.getLogger(__name__)
++
+ 
+ class Manager:
+     # These IDs are for bandit built in tests
+@@ -84,11 +87,11 @@ def validate_profile(self, profile):
+         """Validate that everything in the configured profiles looks good."""
+         for inc in profile["include"]:
+             if not self.check_id(inc):
+-                raise ValueError(f"Unknown test found in profile: {inc}")
++                LOG.warning(f"Unknown test found in profile: {inc}")
+ 
+         for exc in profile["exclude"]:
+             if not self.check_id(exc):
+-                raise ValueError(f"Unknown test found in profile: {exc}")
++                LOG.warning(f"Unknown test found in profile: {exc}")
+ 
+         union = set(profile["include"]) & set(profile["exclude"])
+         if len(union) > 0:
+diff --git a/bandit/plugins/general_hardcoded_password.py b/bandit/plugins/general_hardcoded_password.py
+index cc3e7d09d..9196bebd0 100644
+--- a/bandit/plugins/general_hardcoded_password.py
++++ b/bandit/plugins/general_hardcoded_password.py
+@@ -201,7 +201,9 @@ def hardcoded_password_default(context):
+     - "token"
+     - "secrete"
+ 
+-    Note: this can be noisy and may generate false positives.
++    Note: this can be noisy and may generate false positives.  We do not
++    report on None values which can be legitimately used as a default value,
++    when initializing a function or class.
+ 
+     **Config Options:**
+ 
+@@ -242,5 +244,11 @@ def hardcoded_password_default(context):
+     # go through all (param, value)s and look for candidates
+     for key, val in zip(context.node.args.args, defs):
+         if isinstance(key, (ast.Name, ast.arg)):
++            # Skip if the default value is None
++            if val is None or (
++                isinstance(val, (ast.Constant, ast.NameConstant))
++                and val.value is None
++            ):
++                continue
+             if isinstance(val, ast.Str) and RE_CANDIDATES.search(key.arg):
+                 return _report(val.s)
+diff --git a/bandit/plugins/markupsafe_markup_xss.py b/bandit/plugins/markupsafe_markup_xss.py
+new file mode 100644
+index 000000000..7eae90509
+--- /dev/null
++++ b/bandit/plugins/markupsafe_markup_xss.py
+@@ -0,0 +1,118 @@
++# Copyright (c) 2025 David Salvisberg
++#
++# SPDX-License-Identifier: Apache-2.0
++r"""
++============================================
++B704: Potential XSS on markupsafe.Markup use
++============================================
++
++``markupsafe.Markup`` does not perform any escaping, so passing dynamic
++content, like f-strings, variables or interpolated strings will potentially
++lead to XSS vulnerabilities, especially if that data was submitted by users.
++
++Instead you should interpolate the resulting ``markupsafe.Markup`` object,
++which will perform escaping, or use ``markupsafe.escape``.
++
++
++**Config Options:**
++
++This plugin allows you to specify additional callable that should be treated
++like ``markupsafe.Markup``. By default we recognize ``flask.Markup`` as
++an alias, but there are other subclasses or similar classes in the wild
++that you may wish to treat the same.
++
++Additionally there is a whitelist for callable names, whose result may
++be safely passed into ``markupsafe.Markup``. This is useful for escape
++functions like e.g. ``bleach.clean`` which don't themselves return
++``markupsafe.Markup``, so they need to be wrapped. Take care when using
++this setting, since incorrect use may introduce false negatives.
++
++These two options can be set in a shared configuration section
++`markupsafe_xss`.
++
++
++.. code-block:: yaml
++
++    markupsafe_xss:
++        # Recognize additional aliases
++        extend_markup_names:
++            - webhelpers.html.literal
++            - my_package.Markup
++
++        # Allow the output of these functions to pass into Markup
++        allowed_calls:
++            - bleach.clean
++            - my_package.sanitize
++
++
++:Example:
++
++.. code-block:: none
++
++    >> Issue: [B704:markupsafe_markup_xss] Potential XSS with
++       ``markupsafe.Markup`` detected. Do not use ``Markup``
++       on untrusted data.
++       Severity: Medium   Confidence: High
++       CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
++       Location: ./examples/markupsafe_markup_xss.py:5:0
++    4       content = "<script>alert('Hello, world!')</script>"
++    5       Markup(f"unsafe {content}")
++    6       flask.Markup("unsafe {}".format(content))
++
++.. seealso::
++
++ - https://pypi.org/project/MarkupSafe/
++ - https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup
++ - https://cwe.mitre.org/data/definitions/79.html
++
++.. versionadded:: 1.8.3
++
++"""
++import ast
++
++import bandit
++from bandit.core import issue
++from bandit.core import test_properties as test
++from bandit.core.utils import get_call_name
++
++
++def gen_config(name):
++    if name == "markupsafe_xss":
++        return {
++            "extend_markup_names": [],
++            "allowed_calls": [],
++        }
++
++
++@test.takes_config("markupsafe_xss")
++@test.checks("Call")
++@test.test_id("B704")
++def markupsafe_markup_xss(context, config):
++
++    qualname = context.call_function_name_qual
++    if qualname not in ("markupsafe.Markup", "flask.Markup"):
++        if qualname not in config.get("extend_markup_names", []):
++            # not a Markup call
++            return None
++
++    args = context.node.args
++    if not args or isinstance(args[0], ast.Constant):
++        # both no arguments and a constant are fine
++        return None
++
++    allowed_calls = config.get("allowed_calls", [])
++    if (
++        allowed_calls
++        and isinstance(args[0], ast.Call)
++        and get_call_name(args[0], context.import_aliases) in allowed_calls
++    ):
++        # the argument contains a whitelisted call
++        return None
++
++    return bandit.Issue(
++        severity=bandit.MEDIUM,
++        confidence=bandit.HIGH,
++        cwe=issue.Cwe.XSS,
++        text=f"Potential XSS with ``{qualname}`` detected. Do "
++        f"not use ``{context.call_function_name}`` on untrusted data.",
++    )
+diff --git a/bandit/plugins/pytorch_load_save.py b/bandit/plugins/pytorch_load.py
+similarity index 54%
+rename from bandit/plugins/pytorch_load_save.py
+rename to bandit/plugins/pytorch_load.py
+index 77522da22..8be5e3451 100644
+--- a/bandit/plugins/pytorch_load_save.py
++++ b/bandit/plugins/pytorch_load.py
+@@ -2,21 +2,26 @@
+ #
+ # SPDX-License-Identifier: Apache-2.0
+ r"""
+-==========================================
+-B614: Test for unsafe PyTorch load or save
+-==========================================
++==================================
++B614: Test for unsafe PyTorch load
++==================================
+ 
+-This plugin checks for the use of `torch.load` and `torch.save`. Using
+-`torch.load` with untrusted data can lead to arbitrary code execution, and
+-improper use of `torch.save` might expose sensitive data or lead to data
+-corruption. A safe alternative is to use `torch.load` with the `safetensors`
+-library from hugingface, which provides a safe deserialization mechanism.
++This plugin checks for unsafe use of `torch.load`. Using `torch.load` with
++untrusted data can lead to arbitrary code execution. There are two safe
++alternatives:
++1. Use `torch.load` with `weights_only=True` where only tensor data is
++   extracted, and no arbitrary Python objects are deserialized
++2. Use the `safetensors` library from huggingface, which provides a safe
++   deserialization mechanism
++
++With `weights_only=True`, PyTorch enforces a strict type check, ensuring
++that only torch.Tensor objects are loaded.
+ 
+ :Example:
+ 
+ .. code-block:: none
+ 
+-        >> Issue: Use of unsafe PyTorch load or save
++        >> Issue: Use of unsafe PyTorch load
+         Severity: Medium   Confidence: High
+         CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+         Location: examples/pytorch_load_save.py:8
+@@ -42,12 +47,11 @@
+ 
+ @test.checks("Call")
+ @test.test_id("B614")
+-def pytorch_load_save(context):
++def pytorch_load(context):
+     """
+-    This plugin checks for the use of `torch.load` and `torch.save`. Using
+-    `torch.load` with untrusted data can lead to arbitrary code execution,
+-    and improper use of `torch.save` might expose sensitive data or lead
+-    to data corruption.
++    This plugin checks for unsafe use of `torch.load`. Using `torch.load`
++    with untrusted data can lead to arbitrary code execution. The safe
++    alternative is to use `weights_only=True` or the safetensors library.
+     """
+     imported = context.is_module_imported_exact("torch")
+     qualname = context.call_function_name_qual
+@@ -59,14 +63,18 @@ def pytorch_load_save(context):
+     if all(
+         [
+             "torch" in qualname_list,
+-            func in ["load", "save"],
+-            not context.check_call_arg_value("map_location", "cpu"),
++            func == "load",
+         ]
+     ):
++        # For torch.load, check if weights_only=True is specified
++        weights_only = context.get_call_arg_value("weights_only")
++        if weights_only == "True" or weights_only is True:
++            return
++
+         return bandit.Issue(
+             severity=bandit.MEDIUM,
+             confidence=bandit.HIGH,
+-            text="Use of unsafe PyTorch load or save",
++            text="Use of unsafe PyTorch load",
+             cwe=issue.Cwe.DESERIALIZATION_OF_UNTRUSTED_DATA,
+             lineno=context.get_lineno_for_call_arg("load"),
+         )
+diff --git a/bandit/plugins/trojansource.py b/bandit/plugins/trojansource.py
+index 5c0eae5eb..e57ce40c8 100755
+--- a/bandit/plugins/trojansource.py
++++ b/bandit/plugins/trojansource.py
+@@ -38,16 +38,16 @@
+ 
+ 
+ BIDI_CHARACTERS = (
+-    "\u202A",
+-    "\u202B",
+-    "\u202C",
+-    "\u202D",
+-    "\u202E",
++    "\u202a",
++    "\u202b",
++    "\u202c",
++    "\u202d",
++    "\u202e",
+     "\u2066",
+     "\u2067",
+     "\u2068",
+     "\u2069",
+-    "\u200F",
++    "\u200f",
+ )
+ 
+ 
+diff --git a/doc/source/plugins/b614_pytorch_load.rst b/doc/source/plugins/b614_pytorch_load.rst
+new file mode 100644
+index 000000000..808383e6a
+--- /dev/null
++++ b/doc/source/plugins/b614_pytorch_load.rst
+@@ -0,0 +1,5 @@
++------------------
++B614: pytorch_load
++------------------
++
++.. automodule:: bandit.plugins.pytorch_load
+diff --git a/doc/source/plugins/b614_pytorch_load_save.rst b/doc/source/plugins/b614_pytorch_load_save.rst
+deleted file mode 100644
+index dcc1ae3a0..000000000
+--- a/doc/source/plugins/b614_pytorch_load_save.rst
++++ /dev/null
+@@ -1,5 +0,0 @@
+------------------------
+-B614: pytorch_load_save
+------------------------
+-
+-.. automodule:: bandit.plugins.pytorch_load_save
+diff --git a/doc/source/plugins/b704_markupsafe_markup_xss.rst b/doc/source/plugins/b704_markupsafe_markup_xss.rst
+new file mode 100644
+index 000000000..47eb69953
+--- /dev/null
++++ b/doc/source/plugins/b704_markupsafe_markup_xss.rst
+@@ -0,0 +1,5 @@
++---------------------------
++B704: markupsafe_markup_xss
++---------------------------
++
++.. automodule:: bandit.plugins.markupsafe_markup_xss
+diff --git a/doc/source/start.rst b/doc/source/start.rst
+index cd8f3dadf..928e45a6b 100644
+--- a/doc/source/start.rst
++++ b/doc/source/start.rst
+@@ -6,17 +6,17 @@ Installation
+ 
+ Bandit is distributed on PyPI. The best way to install it is with pip.
+ 
+-Create a virtual environment (optional):
++Create a virtual environment and activate it using `virtualenv` (optional):
+ 
+ .. code-block:: console
+ 
+     virtualenv bandit-env
+-    python3 -m venv bandit-env
+-
+-And activate it:
++    source bandit-env/bin/activate
++Alternatively, use `venv` instead of `virtualenv` (optional):
+ 
+ .. code-block:: console
+ 
++    python3 -m venv bandit-env
+     source bandit-env/bin/activate
+ 
+ Install Bandit:
+diff --git a/examples/hardcoded-passwords.py b/examples/hardcoded-passwords.py
+index 2b501c725..acae7ad37 100644
+--- a/examples/hardcoded-passwords.py
++++ b/examples/hardcoded-passwords.py
+@@ -51,7 +51,7 @@ def NoMatch3(a, b):
+ 
+ # Possible hardcoded password: 'blerg'
+ # Severity: Low   Confidence: Medium
+-d["password"] = "blerg"
++password["password"] = "blerg"
+ 
+ # Possible hardcoded password: 'secret'
+ # Severity: Low   Confidence: Medium
+@@ -68,3 +68,13 @@ def NoMatch3(a, b):
+ # Possible hardcoded password: '1234'
+ # Severity: Low   Confidence: Medium
+ passphrase='1234'
++
++# Possible hardcoded password: None
++# Severity: High   Confidence: High
++def __init__(self, auth_scheme, auth_token=None, auth_username=None, auth_password=None, auth_link=None, **kwargs):
++    self.auth_scheme = auth_scheme
++    self.auth_token = auth_token
++    self.auth_username = auth_username
++    self.auth_password = auth_password
++    self.auth_link = auth_link
++    self.kwargs = kwargs
+diff --git a/examples/markupsafe_markup_xss.py b/examples/markupsafe_markup_xss.py
+new file mode 100644
+index 000000000..23ee14705
+--- /dev/null
++++ b/examples/markupsafe_markup_xss.py
+@@ -0,0 +1,13 @@
++import flask
++from markupsafe import Markup, escape
++
++content = "<script>alert('Hello, world!')</script>"
++Markup(f"unsafe {content}")  # B704
++flask.Markup("unsafe {}".format(content))  # B704
++Markup("safe {}").format(content)
++flask.Markup(b"safe {}", encoding='utf-8').format(content)
++escape(content)
++Markup(content)  # B704
++flask.Markup("unsafe %s" % content)  # B704
++Markup(object="safe")
++Markup(object="unsafe {}".format(content))  # Not currently detected
+diff --git a/examples/markupsafe_markup_xss_allowed_calls.py b/examples/markupsafe_markup_xss_allowed_calls.py
+new file mode 100644
+index 000000000..95519ece8
+--- /dev/null
++++ b/examples/markupsafe_markup_xss_allowed_calls.py
+@@ -0,0 +1,9 @@
++from bleach import clean
++from markupsafe import Markup
++
++content = "<script>alert('Hello, world!')</script>"
++Markup(clean(content))
++
++# indirect assignments are currently not supported
++cleaned = clean(content)
++Markup(cleaned)
+diff --git a/examples/markupsafe_markup_xss_extend_markup_names.py b/examples/markupsafe_markup_xss_extend_markup_names.py
+new file mode 100644
+index 000000000..2ae44c000
+--- /dev/null
++++ b/examples/markupsafe_markup_xss_extend_markup_names.py
+@@ -0,0 +1,6 @@
++from markupsafe import Markup
++from webhelpers.html import literal
++
++content = "<script>alert('Hello, world!')</script>"
++Markup(f"unsafe {content}")
++literal(f"unsafe {content}")
+diff --git a/examples/pytorch_load.py b/examples/pytorch_load.py
+new file mode 100644
+index 000000000..c5129a035
+--- /dev/null
++++ b/examples/pytorch_load.py
+@@ -0,0 +1,26 @@
++import torch
++import torchvision.models as models
++
++# Example of saving a model
++model = models.resnet18(pretrained=True)
++torch.save(model.state_dict(), 'model_weights.pth')
++
++# Example of loading the model weights in an insecure way (should trigger B614)
++loaded_model = models.resnet18()
++loaded_model.load_state_dict(torch.load('model_weights.pth'))
++
++# Example of loading with weights_only=True (should NOT trigger B614)
++safe_model = models.resnet18()
++safe_model.load_state_dict(torch.load('model_weights.pth', weights_only=True))
++
++# Example of loading with weights_only=False (should trigger B614)
++unsafe_model = models.resnet18()
++unsafe_model.load_state_dict(torch.load('model_weights.pth', weights_only=False))
++
++# Example of loading with map_location but no weights_only (should trigger B614)
++cpu_model = models.resnet18()
++cpu_model.load_state_dict(torch.load('model_weights.pth', map_location='cpu'))
++
++# Example of loading with both map_location and weights_only=True (should NOT trigger B614)
++safe_cpu_model = models.resnet18()
++safe_cpu_model.load_state_dict(torch.load('model_weights.pth', map_location='cpu', weights_only=True))
+diff --git a/examples/pytorch_load_save.py b/examples/pytorch_load_save.py
+deleted file mode 100644
+index e1f912022..000000000
+--- a/examples/pytorch_load_save.py
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import torch
+-import torchvision.models as models
+-
+-# Example of saving a model
+-model = models.resnet18(pretrained=True)
+-torch.save(model.state_dict(), 'model_weights.pth')
+-
+-# Example of loading the model weights in an insecure way
+-loaded_model = models.resnet18()
+-loaded_model.load_state_dict(torch.load('model_weights.pth'))
+-
+-# Save the model
+-torch.save(loaded_model.state_dict(), 'model_weights.pth')
+-
+-# Another example using torch.load with more parameters
+-another_model = models.resnet18()
+-another_model.load_state_dict(torch.load('model_weights.pth', map_location='cpu'))
+-
+-# Save the model
+-torch.save(another_model.state_dict(), 'model_weights.pth')
+-
+diff --git a/examples/xml_lxml.py b/examples/xml_lxml.py
+deleted file mode 100644
+index dd12e5384..000000000
+--- a/examples/xml_lxml.py
++++ /dev/null
+@@ -1,9 +0,0 @@
+-import lxml.etree
+-import lxml
+-from lxml import etree
+-from defusedxml.lxml import fromstring
+-from defuxedxml import lxml as potatoe
+-
+-xmlString = "<note>\n<to>Tove</to>\n<from>Jani</from>\n<heading>Reminder</heading>\n<body>Don't forget me this weekend!</body>\n</note>"
+-root = lxml.etree.fromstring(xmlString)
+-root = fromstring(xmlString)
+diff --git a/setup.cfg b/setup.cfg
+index e7868e5b4..e0288e600 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -155,12 +155,15 @@ bandit.plugins =
+     #bandit/plugins/tarfile_unsafe_members.py
+     tarfile_unsafe_members = bandit.plugins.tarfile_unsafe_members:tarfile_unsafe_members
+ 
+-    #bandit/plugins/pytorch_load_save.py
+-    pytorch_load_save = bandit.plugins.pytorch_load_save:pytorch_load_save
++    #bandit/plugins/pytorch_load.py
++    pytorch_load = bandit.plugins.pytorch_load:pytorch_load
+ 
+     # bandit/plugins/trojansource.py
+     trojansource = bandit.plugins.trojansource:trojansource
+ 
++    # bandit/plugins/markupsafe_markup_xss.py
++    markupsafe_markup_xss = bandit.plugins.markupsafe_markup_xss:markupsafe_markup_xss
++
+ [build_sphinx]
+ all_files = 1
+ build-dir = doc/build
+diff --git a/tests/functional/test_functional.py b/tests/functional/test_functional.py
+index a89c152e7..660b65f94 100644
+--- a/tests/functional/test_functional.py
++++ b/tests/functional/test_functional.py
+@@ -3,6 +3,7 @@
+ #
+ # SPDX-License-Identifier: Apache-2.0
+ import os
++from contextlib import contextmanager
+ 
+ import testtools
+ 
+@@ -33,6 +34,18 @@ def setUp(self):
+         self.b_mgr.b_conf._settings["plugins_dir"] = path
+         self.b_mgr.b_ts = b_test_set.BanditTestSet(config=b_conf)
+ 
++    @contextmanager
++    def with_test_set(self, ts):
++        """A helper context manager to change the test set without
++        side-effects for any follow-up tests.
++        """
++        orig_ts = self.b_mgr.b_ts
++        self.b_mgr.b_ts = ts
++        try:
++            yield
++        finally:
++            self.b_mgr.b_ts = orig_ts
++
+     def run_example(self, example_script, ignore_nosec=False):
+         """A helper method to run the specified test
+ 
+@@ -526,10 +539,12 @@ def test_django_xss_secure(self):
+             "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0},
+             "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0},
+         }
+-        self.b_mgr.b_ts = b_test_set.BanditTestSet(
+-            config=self.b_mgr.b_conf, profile={"exclude": ["B308"]}
+-        )
+-        self.check_example("mark_safe_secure.py", expect)
++        with self.with_test_set(
++            b_test_set.BanditTestSet(
++                config=self.b_mgr.b_conf, profile={"exclude": ["B308"]}
++            )
++        ):
++            self.check_example("mark_safe_secure.py", expect)
+ 
+     def test_django_xss_insecure(self):
+         """Test for Django XSS via django.utils.safestring"""
+@@ -537,10 +552,12 @@ def test_django_xss_insecure(self):
+             "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 29, "HIGH": 0},
+             "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 29},
+         }
+-        self.b_mgr.b_ts = b_test_set.BanditTestSet(
+-            config=self.b_mgr.b_conf, profile={"exclude": ["B308"]}
+-        )
+-        self.check_example("mark_safe_insecure.py", expect)
++        with self.with_test_set(
++            b_test_set.BanditTestSet(
++                config=self.b_mgr.b_conf, profile={"exclude": ["B308"]}
++            )
++        ):
++            self.check_example("mark_safe_insecure.py", expect)
+ 
+     def test_xml(self):
+         """Test xml vulnerabilities."""
+@@ -556,12 +573,6 @@ def test_xml(self):
+         }
+         self.check_example("xml_expatbuilder.py", expect)
+ 
+-        expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 3, "MEDIUM": 1, "HIGH": 0},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
+-        }
+-        self.check_example("xml_lxml.py", expect)
+-
+         expect = {
+             "SEVERITY": {"UNDEFINED": 0, "LOW": 2, "MEDIUM": 2, "HIGH": 0},
+             "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
+@@ -861,13 +872,13 @@ def test_tarfile_unsafe_members(self):
+         }
+         self.check_example("tarfile_extractall.py", expect)
+ 
+-    def test_pytorch_load_save(self):
+-        """Test insecure usage of torch.load and torch.save."""
++    def test_pytorch_load(self):
++        """Test insecure usage of torch.load."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 4, "HIGH": 0},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 3, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 3},
+         }
+-        self.check_example("pytorch_load_save.py", expect)
++        self.check_example("pytorch_load.py", expect)
+ 
+     def test_trojansource(self):
+         expect = {
+@@ -882,3 +893,36 @@ def test_trojansource_latin1(self):
+             "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0},
+         }
+         self.check_example("trojansource_latin1.py", expect)
++
++    def test_markupsafe_markup_xss(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 4, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
++        }
++        self.check_example("markupsafe_markup_xss.py", expect)
++
++    def test_markupsafe_markup_xss_extend_markup_names(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 2, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 2},
++        }
++        b_conf = b_config.BanditConfig()
++        b_conf.config["markupsafe_xss"] = {
++            "extend_markup_names": ["webhelpers.html.literal"]
++        }
++        with self.with_test_set(b_test_set.BanditTestSet(config=b_conf)):
++            self.check_example(
++                "markupsafe_markup_xss_extend_markup_names.py", expect
++            )
++
++    def test_markupsafe_markup_xss_allowed_calls(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 1, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 1},
++        }
++        b_conf = b_config.BanditConfig()
++        b_conf.config["markupsafe_xss"] = {"allowed_calls": ["bleach.clean"]}
++        with self.with_test_set(b_test_set.BanditTestSet(config=b_conf)):
++            self.check_example(
++                "markupsafe_markup_xss_allowed_calls.py", expect
++            )
+diff --git a/tests/unit/cli/test_main.py b/tests/unit/cli/test_main.py
+index 0852db7de..98b95ec01 100644
+--- a/tests/unit/cli/test_main.py
++++ b/tests/unit/cli/test_main.py
+@@ -215,33 +215,9 @@ def test_main_handle_ini_options(self):
+                 self.assertRaisesRegex(SystemExit, "2", bandit.main)
+                 self.assertEqual(
+                     str(err_mock.call_args[0][0]),
+-                    "Unknown test found in profile: some_test",
++                    "No tests would be run, please check the profile.",
+                 )
+ 
+-    @mock.patch(
+-        "sys.argv", ["bandit", "-c", "bandit.yaml", "-t", "badID", "test"]
+-    )
+-    def test_main_unknown_tests(self):
+-        # Test that bandit exits when an invalid test ID is provided
+-        temp_directory = self.useFixture(fixtures.TempDir()).path
+-        os.chdir(temp_directory)
+-        with open("bandit.yaml", "w") as fd:
+-            fd.write(bandit_config_content)
+-        # assert a SystemExit with code 2
+-        self.assertRaisesRegex(SystemExit, "2", bandit.main)
+-
+-    @mock.patch(
+-        "sys.argv", ["bandit", "-c", "bandit.yaml", "-s", "badID", "test"]
+-    )
+-    def test_main_unknown_skip_tests(self):
+-        # Test that bandit exits when an invalid test ID is provided to skip
+-        temp_directory = self.useFixture(fixtures.TempDir()).path
+-        os.chdir(temp_directory)
+-        with open("bandit.yaml", "w") as fd:
+-            fd.write(bandit_config_content)
+-        # assert a SystemExit with code 2
+-        self.assertRaisesRegex(SystemExit, "2", bandit.main)
+-
+     @mock.patch(
+         "sys.argv", ["bandit", "-c", "bandit.yaml", "-p", "bad", "test"]
+     )

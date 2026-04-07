@@ -1,0 +1,1421 @@
+diff --git a/.github/ISSUE_TEMPLATE/bug-report.yml b/.github/ISSUE_TEMPLATE/bug-report.yml
+index 99399f2d6..46b406ff2 100644
+--- a/.github/ISSUE_TEMPLATE/bug-report.yml
++++ b/.github/ISSUE_TEMPLATE/bug-report.yml
+@@ -44,7 +44,10 @@ body:
+       label: Bandit version
+       description: Run "bandit --version" if unsure of version number
+       options:
+-        - 1.7.7 (Default)
++        - 1.7.10 (Default)
++        - 1.7.9
++        - 1.7.8
++        - 1.7.7
+         - 1.7.6
+         - 1.7.5
+         - 1.7.4
+@@ -61,11 +64,11 @@ body:
+       label: Python version
+       description: Run "bandit --version" if unsure of version number
+       options:
+-        - "3.12 (Default)"
++        - "3.13 (Default)"
++        - "3.12"
+         - "3.11"
+         - "3.10"
+         - "3.9"
+-        - "3.8"
+     validations:
+       required: true
+ 
+diff --git a/.github/workflows/build-publish-image.yml b/.github/workflows/build-publish-image.yml
+index f69c1625a..c478777d2 100644
+--- a/.github/workflows/build-publish-image.yml
++++ b/.github/workflows/build-publish-image.yml
+@@ -31,17 +31,17 @@ jobs:
+         ref: ${{ github.event_name == 'release' && github.ref || env.RELEASE_TAG }}
+ 
+     - name: Set up Docker Buildx
+-      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3
++      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
+ 
+     - name: Log in to GitHub Container Registry
+-      uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3
++      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+       with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+ 
+     - name: Install Cosign
+-      uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
++      uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
+       with:
+         cosign-release: 'v2.2.2'
+ 
+@@ -51,7 +51,7 @@ jobs:
+ 
+     - name: Build and push Docker image
+       id: build-and-push
+-      uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
++      uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6
+       with:
+         context: .
+         file: ./docker/Dockerfile
+diff --git a/.github/workflows/publish-to-pypi.yml b/.github/workflows/publish-to-pypi.yml
+index 7f72c66e8..a295a9c36 100644
+--- a/.github/workflows/publish-to-pypi.yml
++++ b/.github/workflows/publish-to-pypi.yml
+@@ -13,10 +13,10 @@ jobs:
+     - uses: actions/checkout@v4
+       with:
+         fetch-depth: 0
+-    - name: Set up Python 3.8
++    - name: Set up Python 3.9
+       uses: actions/setup-python@v5
+       with:
+-        python-version: 3.8
++        python-version: 3.9
+ 
+     - name: Install dependencies
+       run: pip install wheel
+diff --git a/.github/workflows/publish-to-test-pypi.yml b/.github/workflows/publish-to-test-pypi.yml
+index 89153cf8f..252ad5b88 100644
+--- a/.github/workflows/publish-to-test-pypi.yml
++++ b/.github/workflows/publish-to-test-pypi.yml
+@@ -13,10 +13,10 @@ jobs:
+     - uses: actions/checkout@v4
+       with:
+         fetch-depth: 0
+-    - name: Set up Python 3.8
++    - name: Set up Python 3.9
+       uses: actions/setup-python@v5
+       with:
+-        python-version: 3.8
++        python-version: 3.9
+ 
+     - name: Install dependencies
+       run: pip install wheel
+diff --git a/.github/workflows/pythonpackage.yml b/.github/workflows/pythonpackage.yml
+index 5de6d3725..edfd03ac3 100644
+--- a/.github/workflows/pythonpackage.yml
++++ b/.github/workflows/pythonpackage.yml
+@@ -7,7 +7,7 @@ jobs:
+     runs-on: ubuntu-latest
+     strategy:
+       matrix:
+-        python-version: [3.8]
++        python-version: [3.9]
+     steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+@@ -26,7 +26,7 @@ jobs:
+     runs-on: ubuntu-latest
+     strategy:
+       matrix:
+-        python-version: [3.8]
++        python-version: [3.9]
+     steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+@@ -47,12 +47,11 @@ jobs:
+     strategy:
+       matrix:
+         python-version: [
+-          ["3.8", "38"],
+           ["3.9", "39"],
+           ["3.10", "310"],
+           ["3.11", "311"],
+           ["3.12", "312"],
+-          ["3.13.0-a - 3.13", "313"],
++          ["3.13", "313"],
+         ]
+         os: [ubuntu-latest, macos-latest]
+     runs-on: ${{ matrix.os }}
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 8ecd3b911..cf10789d8 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -1,24 +1,24 @@
+ exclude: ^(examples|tools|doc)
+ repos:
+ - repo: https://github.com/pre-commit/pre-commit-hooks
+-  rev: v4.6.0
++  rev: v5.0.0
+   hooks:
+   - id: check-yaml
+   - id: debug-statements
+   - id: end-of-file-fixer
+   - id: trailing-whitespace
+ - repo: https://github.com/asottile/reorder-python-imports
+-  rev: v3.13.0
++  rev: v3.14.0
+   hooks:
+   - id: reorder-python-imports
+     args: [--application-directories, '.:src', --py38-plus]
+ - repo: https://github.com/psf/black-pre-commit-mirror
+-  rev: 24.4.2
++  rev: 24.10.0
+   hooks:
+   - id: black
+     args: [--line-length=79, --target-version=py38]
+ - repo: https://github.com/asottile/pyupgrade
+-  rev: v3.16.0
++  rev: v3.19.0
+   hooks:
+   - id: pyupgrade
+     args: [--py38-plus]
+diff --git a/.readthedocs.yaml b/.readthedocs.yaml
+index 6588cd197..15fc1366e 100644
+--- a/.readthedocs.yaml
++++ b/.readthedocs.yaml
+@@ -3,7 +3,7 @@ version: 2
+ build:
+   os: ubuntu-22.04
+   tools:
+-    python: "3.8"
++    python: "3.9"
+ 
+ sphinx:
+   configuration: doc/source/conf.py
+diff --git a/.stestr.conf b/.stestr.conf
+index 126bb41fa..ebc11d4c9 100644
+--- a/.stestr.conf
++++ b/.stestr.conf
+@@ -1,4 +1,4 @@
+ [DEFAULT]
+-test_path=${OS_TEST_PATH:-./tests}
++test_path=./tests
+ top_dir=./
+-group_regex=.*(test_cert_setup)
++parallel_class=True
+diff --git a/README.rst b/README.rst
+index 861f09db1..6842127a4 100644
+--- a/README.rst
++++ b/README.rst
+@@ -137,9 +137,4 @@ The development of Bandit is made possible by the following sponsors:
+           :alt: Stacklok
+           :width: 88
+ 
+-     - .. image:: https://avatars.githubusercontent.com/u/1396951?s=70&v=4
+-          :target: https://sentry.io/
+-          :alt: Sentry
+-          :width: 88
+-
+ If you also â¤ï¸ Bandit, please consider sponsoring.
+diff --git a/bandit/blacklists/calls.py b/bandit/blacklists/calls.py
+index d69f5dd3c..60656b12f 100644
+--- a/bandit/blacklists/calls.py
++++ b/bandit/blacklists/calls.py
+@@ -96,6 +96,12 @@
+ |      |                     |   .ciphers.algorithms.Blowfish     |           |
+ |      |                     | - cryptography.hazmat.primitives   |           |
+ |      |                     |   .ciphers.algorithms.IDEA         |           |
++|      |                     | - cryptography.hazmat.primitives   |           |
++|      |                     |   .ciphers.algorithms.CAST5        |           |
++|      |                     | - cryptography.hazmat.primitives   |           |
++|      |                     |   .ciphers.algorithms.SEED         |           |
++|      |                     | - cryptography.hazmat.primitives   |           |
++|      |                     |   .ciphers.algorithms.TripleDES    |           |
+ +------+---------------------+------------------------------------+-----------+
+ | B305 | cipher_modes        | - cryptography.hazmat.primitives   | Medium    |
+ |      |                     |   .ciphers.modes.ECB               |           |
+@@ -321,8 +327,6 @@
+ +------+---------------------+------------------------------------+-----------+
+ 
+ """
+-import sys
+-
+ from bandit.blacklists import utils
+ from bandit.core import issue
+ 
+@@ -373,52 +377,26 @@ def gen_blacklist():
+         )
+     )
+ 
+-    if sys.version_info >= (3, 9):
+-        sets.append(
+-            utils.build_conf_dict(
+-                "md5",
+-                "B303",
+-                issue.Cwe.BROKEN_CRYPTO,
+-                [
+-                    "Crypto.Hash.MD2.new",
+-                    "Crypto.Hash.MD4.new",
+-                    "Crypto.Hash.MD5.new",
+-                    "Crypto.Hash.SHA.new",
+-                    "Cryptodome.Hash.MD2.new",
+-                    "Cryptodome.Hash.MD4.new",
+-                    "Cryptodome.Hash.MD5.new",
+-                    "Cryptodome.Hash.SHA.new",
+-                    "cryptography.hazmat.primitives.hashes.MD5",
+-                    "cryptography.hazmat.primitives.hashes.SHA1",
+-                ],
+-                "Use of insecure MD2, MD4, MD5, or SHA1 hash function.",
+-            )
+-        )
+-    else:
+-        sets.append(
+-            utils.build_conf_dict(
+-                "md5",
+-                "B303",
+-                issue.Cwe.BROKEN_CRYPTO,
+-                [
+-                    "hashlib.md4",
+-                    "hashlib.md5",
+-                    "hashlib.sha",
+-                    "hashlib.sha1",
+-                    "Crypto.Hash.MD2.new",
+-                    "Crypto.Hash.MD4.new",
+-                    "Crypto.Hash.MD5.new",
+-                    "Crypto.Hash.SHA.new",
+-                    "Cryptodome.Hash.MD2.new",
+-                    "Cryptodome.Hash.MD4.new",
+-                    "Cryptodome.Hash.MD5.new",
+-                    "Cryptodome.Hash.SHA.new",
+-                    "cryptography.hazmat.primitives.hashes.MD5",
+-                    "cryptography.hazmat.primitives.hashes.SHA1",
+-                ],
+-                "Use of insecure MD2, MD4, MD5, or SHA1 hash function.",
+-            )
++    sets.append(
++        utils.build_conf_dict(
++            "md5",
++            "B303",
++            issue.Cwe.BROKEN_CRYPTO,
++            [
++                "Crypto.Hash.MD2.new",
++                "Crypto.Hash.MD4.new",
++                "Crypto.Hash.MD5.new",
++                "Crypto.Hash.SHA.new",
++                "Cryptodome.Hash.MD2.new",
++                "Cryptodome.Hash.MD4.new",
++                "Cryptodome.Hash.MD5.new",
++                "Cryptodome.Hash.SHA.new",
++                "cryptography.hazmat.primitives.hashes.MD5",
++                "cryptography.hazmat.primitives.hashes.SHA1",
++            ],
++            "Use of insecure MD2, MD4, MD5, or SHA1 hash function.",
+         )
++    )
+ 
+     sets.append(
+         utils.build_conf_dict(
+@@ -438,7 +416,10 @@ def gen_blacklist():
+                 "Cryptodome.Cipher.XOR.new",
+                 "cryptography.hazmat.primitives.ciphers.algorithms.ARC4",
+                 "cryptography.hazmat.primitives.ciphers.algorithms.Blowfish",
++                "cryptography.hazmat.primitives.ciphers.algorithms.CAST5",
+                 "cryptography.hazmat.primitives.ciphers.algorithms.IDEA",
++                "cryptography.hazmat.primitives.ciphers.algorithms.SEED",
++                "cryptography.hazmat.primitives.ciphers.algorithms.TripleDES",
+             ],
+             "Use of insecure cipher {name}. Replace with a known secure"
+             " cipher such as AES.",
+@@ -537,7 +518,7 @@ def gen_blacklist():
+             "telnetlib",
+             "B312",
+             issue.Cwe.CLEARTEXT_TRANSMISSION,
+-            ["telnetlib.*"],
++            ["telnetlib.Telnet"],
+             "Telnet-related functions are being called. Telnet is considered "
+             "insecure. Use SSH or some other encrypted protocol.",
+             "HIGH",
+@@ -662,7 +643,7 @@ def gen_blacklist():
+             "ftplib",
+             "B321",
+             issue.Cwe.CLEARTEXT_TRANSMISSION,
+-            ["ftplib.*"],
++            ["ftplib.FTP"],
+             "FTP-related functions are being called. FTP is considered "
+             "insecure. Use SSH/SFTP/SCP or some other encrypted protocol.",
+             "HIGH",
+diff --git a/bandit/core/blacklisting.py b/bandit/core/blacklisting.py
+index 2f84ae023..2bbb093d5 100644
+--- a/bandit/core/blacklisting.py
++++ b/bandit/core/blacklisting.py
+@@ -3,7 +3,6 @@
+ #
+ # SPDX-License-Identifier: Apache-2.0
+ import ast
+-import fnmatch
+ 
+ from bandit.core import issue
+ 
+@@ -55,7 +54,7 @@ def blacklist(context, config):
+                     name = context.call_keywords["name"]
+         for check in blacklists[node_type]:
+             for qn in check["qualnames"]:
+-                if name is not None and fnmatch.fnmatch(name, qn):
++                if name is not None and name == qn:
+                     return report_issue(check, name)
+ 
+     if node_type.startswith("Import"):
+diff --git a/bandit/core/context.py b/bandit/core/context.py
+index 76b50923a..8a2d4fbbc 100644
+--- a/bandit/core/context.py
++++ b/bandit/core/context.py
+@@ -193,7 +193,7 @@ def _get_literal_value(self, literal):
+         elif isinstance(literal, ast.Tuple):
+             return_tuple = tuple()
+             for ti in literal.elts:
+-                return_tuple = return_tuple + (self._get_literal_value(ti),)
++                return_tuple += (self._get_literal_value(ti),)
+             literal_value = return_tuple
+ 
+         elif isinstance(literal, ast.Set):
+diff --git a/bandit/core/issue.py b/bandit/core/issue.py
+index 875e5e418..bfa583356 100644
+--- a/bandit/core/issue.py
++++ b/bandit/core/issue.py
+@@ -30,6 +30,7 @@ class Cwe:
+     MULTIPLE_BINDS = 605
+     IMPROPER_CHECK_OF_EXCEPT_COND = 703
+     INCORRECT_PERMISSION_ASSIGNMENT = 732
++    INAPPROPRIATE_ENCODING_FOR_OUTPUT_CONTEXT = 838
+ 
+     MITRE_URL_PATTERN = "https://cwe.mitre.org/data/definitions/%s.html"
+ 
+@@ -84,7 +85,7 @@ def __init__(
+         ident=None,
+         lineno=None,
+         test_id="",
+-        col_offset=0,
++        col_offset=-1,
+         end_col_offset=0,
+     ):
+         self.severity = severity
+diff --git a/bandit/core/node_visitor.py b/bandit/core/node_visitor.py
+index 26cdb2471..938e8733b 100644
+--- a/bandit/core/node_visitor.py
++++ b/bandit/core/node_visitor.py
+@@ -19,7 +19,6 @@ def __init__(
+     ):
+         self.debug = debug
+         self.nosec_lines = nosec_lines
+-        self.seen = 0
+         self.scores = {
+             "SEVERITY": [0] * len(constants.RANKING),
+             "CONFIDENCE": [0] * len(constants.RANKING),
+@@ -209,7 +208,6 @@ def pre_visit(self, node):
+         self.context["filename"] = self.fname
+         self.context["file_data"] = self.fdata
+ 
+-        self.seen += 1
+         LOG.debug(
+             "entering: %s %s [%s]", hex(id(node)), type(node), self.depth
+         )
+@@ -286,4 +284,14 @@ def process(self, data):
+         """
+         f_ast = ast.parse(data)
+         self.generic_visit(f_ast)
++        # Run tests that do not require access to the AST,
++        # but only to the whole file source:
++        self.context = {
++            "file_data": self.fdata,
++            "filename": self.fname,
++            "lineno": 0,
++            "linerange": [0, 1],
++            "col_offset": 0,
++        }
++        self.update_scores(self.tester.run_tests(self.context, "File"))
+         return self.scores
+diff --git a/bandit/core/test_properties.py b/bandit/core/test_properties.py
+index cf969952f..f6d4da1a7 100644
+--- a/bandit/core/test_properties.py
++++ b/bandit/core/test_properties.py
+@@ -15,7 +15,11 @@ def checks(*args):
+     def wrapper(func):
+         if not hasattr(func, "_checks"):
+             func._checks = []
+-        func._checks.extend(utils.check_ast_node(a) for a in args)
++        for arg in args:
++            if arg == "File":
++                func._checks.append("File")
++            else:
++                func._checks.append(utils.check_ast_node(arg))
+ 
+         LOG.debug("checks() decorator executed")
+         LOG.debug("  func._checks: %s", func._checks)
+diff --git a/bandit/core/tester.py b/bandit/core/tester.py
+index af5ffdae9..6d41877cb 100644
+--- a/bandit/core/tester.py
++++ b/bandit/core/tester.py
+@@ -43,7 +43,7 @@ def run_tests(self, raw_context, checktype):
+         tests = self.testset.get_tests(checktype)
+         for test in tests:
+             name = test.__name__
+-            # execute test with the an instance of the context class
++            # execute test with an instance of the context class
+             temp_context = copy.copy(raw_context)
+             context = b_context.Context(temp_context)
+             try:
+@@ -66,7 +66,8 @@ def run_tests(self, raw_context, checktype):
+                     if result.lineno is None:
+                         result.lineno = temp_context["lineno"]
+                     result.linerange = temp_context["linerange"]
+-                    result.col_offset = temp_context["col_offset"]
++                    if result.col_offset == -1:
++                        result.col_offset = temp_context["col_offset"]
+                     result.end_col_offset = temp_context.get(
+                         "end_col_offset", 0
+                     )
+diff --git a/bandit/formatters/xml.py b/bandit/formatters/xml.py
+index 6e196d92f..d2b2067ff 100644
+--- a/bandit/formatters/xml.py
++++ b/bandit/formatters/xml.py
+@@ -65,7 +65,7 @@ def report(manager, fileobj, sev_level, conf_level, lines=-1):
+             "Test ID: %s Severity: %s Confidence: %s\nCWE: %s\n%s\n"
+             "Location %s:%s"
+         )
+-        text = text % (
++        text %= (
+             issue.test_id,
+             issue.severity,
+             issue.confidence,
+diff --git a/bandit/plugins/crypto_request_no_cert_validation.py b/bandit/plugins/crypto_request_no_cert_validation.py
+index 223d421ff..11791ed1e 100644
+--- a/bandit/plugins/crypto_request_no_cert_validation.py
++++ b/bandit/plugins/crypto_request_no_cert_validation.py
+@@ -54,8 +54,8 @@
+ @test.checks("Call")
+ @test.test_id("B501")
+ def request_with_no_cert_validation(context):
+-    HTTP_VERBS = ("get", "options", "head", "post", "put", "patch", "delete")
+-    HTTPX_ATTRS = ("request", "stream", "Client", "AsyncClient") + HTTP_VERBS
++    HTTP_VERBS = {"get", "options", "head", "post", "put", "patch", "delete"}
++    HTTPX_ATTRS = {"request", "stream", "Client", "AsyncClient"} | HTTP_VERBS
+     qualname = context.call_function_name_qual.split(".")[0]
+ 
+     if (
+diff --git a/bandit/plugins/hashlib_insecure_functions.py b/bandit/plugins/hashlib_insecure_functions.py
+index 710800a72..626c8edec 100644
+--- a/bandit/plugins/hashlib_insecure_functions.py
++++ b/bandit/plugins/hashlib_insecure_functions.py
+@@ -48,8 +48,6 @@
+     Added check for the crypt module weak hashes
+ 
+ """  # noqa: E501
+-import sys
+-
+ import bandit
+ from bandit.core import issue
+ from bandit.core import test_properties as test
+@@ -86,21 +84,6 @@ def _hashlib_func(context, func):
+                 )
+ 
+ 
+-def _hashlib_new(context, func):
+-    if func == "new":
+-        args = context.call_args
+-        keywords = context.call_keywords
+-        name = args[0] if args else keywords.get("name", None)
+-        if isinstance(name, str) and name.lower() in WEAK_HASHES:
+-            return bandit.Issue(
+-                severity=bandit.MEDIUM,
+-                confidence=bandit.HIGH,
+-                cwe=issue.Cwe.BROKEN_CRYPTO,
+-                text=f"Use of insecure {name.upper()} hash function.",
+-                lineno=context.node.lineno,
+-            )
+-
+-
+ def _crypt_crypt(context, func):
+     args = context.call_args
+     keywords = context.call_keywords
+@@ -135,10 +118,7 @@ def hashlib(context):
+         func = qualname_list[-1]
+ 
+         if "hashlib" in qualname_list:
+-            if sys.version_info >= (3, 9):
+-                return _hashlib_func(context, func)
+-            else:
+-                return _hashlib_new(context, func)
++            return _hashlib_func(context, func)
+ 
+         elif "crypt" in qualname_list and func in ("crypt", "mksalt"):
+             return _crypt_crypt(context, func)
+diff --git a/bandit/plugins/injection_wildcard.py b/bandit/plugins/injection_wildcard.py
+index 94d03b30a..46f6b5b6c 100644
+--- a/bandit/plugins/injection_wildcard.py
++++ b/bandit/plugins/injection_wildcard.py
+@@ -124,7 +124,7 @@ def linux_commands_wildcard_injection(context, config):
+             argument_string = ""
+             if isinstance(call_argument, list):
+                 for li in call_argument:
+-                    argument_string = argument_string + f" {li}"
++                    argument_string += f" {li}"
+             elif isinstance(call_argument, str):
+                 argument_string = call_argument
+ 
+diff --git a/bandit/plugins/pytorch_load_save.py b/bandit/plugins/pytorch_load_save.py
+new file mode 100644
+index 000000000..77522da22
+--- /dev/null
++++ b/bandit/plugins/pytorch_load_save.py
+@@ -0,0 +1,72 @@
++# Copyright (c) 2024 Stacklok, Inc.
++#
++# SPDX-License-Identifier: Apache-2.0
++r"""
++==========================================
++B614: Test for unsafe PyTorch load or save
++==========================================
++
++This plugin checks for the use of `torch.load` and `torch.save`. Using
++`torch.load` with untrusted data can lead to arbitrary code execution, and
++improper use of `torch.save` might expose sensitive data or lead to data
++corruption. A safe alternative is to use `torch.load` with the `safetensors`
++library from hugingface, which provides a safe deserialization mechanism.
++
++:Example:
++
++.. code-block:: none
++
++        >> Issue: Use of unsafe PyTorch load or save
++        Severity: Medium   Confidence: High
++        CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
++        Location: examples/pytorch_load_save.py:8
++        7    loaded_model.load_state_dict(torch.load('model_weights.pth'))
++        8    another_model.load_state_dict(torch.load('model_weights.pth',
++                map_location='cpu'))
++        9
++        10   print("Model loaded successfully!")
++
++.. seealso::
++
++     - https://cwe.mitre.org/data/definitions/94.html
++     - https://pytorch.org/docs/stable/generated/torch.load.html#torch.load
++     - https://github.com/huggingface/safetensors
++
++.. versionadded:: 1.7.10
++
++"""
++import bandit
++from bandit.core import issue
++from bandit.core import test_properties as test
++
++
++@test.checks("Call")
++@test.test_id("B614")
++def pytorch_load_save(context):
++    """
++    This plugin checks for the use of `torch.load` and `torch.save`. Using
++    `torch.load` with untrusted data can lead to arbitrary code execution,
++    and improper use of `torch.save` might expose sensitive data or lead
++    to data corruption.
++    """
++    imported = context.is_module_imported_exact("torch")
++    qualname = context.call_function_name_qual
++    if not imported and isinstance(qualname, str):
++        return
++
++    qualname_list = qualname.split(".")
++    func = qualname_list[-1]
++    if all(
++        [
++            "torch" in qualname_list,
++            func in ["load", "save"],
++            not context.check_call_arg_value("map_location", "cpu"),
++        ]
++    ):
++        return bandit.Issue(
++            severity=bandit.MEDIUM,
++            confidence=bandit.HIGH,
++            text="Use of unsafe PyTorch load or save",
++            cwe=issue.Cwe.DESERIALIZATION_OF_UNTRUSTED_DATA,
++            lineno=context.get_lineno_for_call_arg("load"),
++        )
+diff --git a/bandit/plugins/request_without_timeout.py b/bandit/plugins/request_without_timeout.py
+index a418b6cc0..c6439001b 100644
+--- a/bandit/plugins/request_without_timeout.py
++++ b/bandit/plugins/request_without_timeout.py
+@@ -4,7 +4,8 @@
+ B113: Test for missing requests timeout
+ =======================================
+ 
+-This plugin test checks for ``requests`` calls without a timeout specified.
++This plugin test checks for ``requests`` or ``httpx`` calls without a timeout
++specified.
+ 
+ Nearly all production code should use this parameter in nearly all requests,
+ Failure to do so can cause your program to hang indefinitely.
+@@ -17,7 +18,7 @@
+ 
+ .. code-block:: none
+ 
+-    >> Issue: [B113:request_without_timeout] Requests call without timeout
++    >> Issue: [B113:request_without_timeout] Call to requests without timeout
+        Severity: Medium   Confidence: Low
+        CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+        More Info: https://bandit.readthedocs.io/en/latest/plugins/b113_request_without_timeout.html
+@@ -27,7 +28,7 @@
+     4	requests.get('https://gmail.com', timeout=None)
+ 
+     --------------------------------------------------
+-    >> Issue: [B113:request_without_timeout] Requests call with timeout set to None
++    >> Issue: [B113:request_without_timeout] Call to requests with timeout set to None
+        Severity: Medium   Confidence: Low
+        CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+        More Info: https://bandit.readthedocs.io/en/latest/plugins/b113_request_without_timeout.html
+@@ -42,6 +43,9 @@
+ 
+ .. versionadded:: 1.7.5
+ 
++.. versionchanged:: 1.7.10
++    Added check for httpx module
++
+ """  # noqa: E501
+ import bandit
+ from bandit.core import issue
+@@ -51,23 +55,30 @@
+ @test.checks("Call")
+ @test.test_id("B113")
+ def request_without_timeout(context):
+-    http_verbs = ("get", "options", "head", "post", "put", "patch", "delete")
++    HTTP_VERBS = {"get", "options", "head", "post", "put", "patch", "delete"}
++    HTTPX_ATTRS = {"request", "stream", "Client", "AsyncClient"} | HTTP_VERBS
+     qualname = context.call_function_name_qual.split(".")[0]
+ 
+-    if qualname == "requests" and context.call_function_name in http_verbs:
++    if qualname == "requests" and context.call_function_name in HTTP_VERBS:
+         # check for missing timeout
+         if context.check_call_arg_value("timeout") is None:
+             return bandit.Issue(
+                 severity=bandit.MEDIUM,
+                 confidence=bandit.LOW,
+                 cwe=issue.Cwe.UNCONTROLLED_RESOURCE_CONSUMPTION,
+-                text="Requests call without timeout",
++                text=f"Call to {qualname} without timeout",
+             )
++    if (
++        qualname == "requests"
++        and context.call_function_name in HTTP_VERBS
++        or qualname == "httpx"
++        and context.call_function_name in HTTPX_ATTRS
++    ):
+         # check for timeout=None
+         if context.check_call_arg_value("timeout", "None"):
+             return bandit.Issue(
+                 severity=bandit.MEDIUM,
+                 confidence=bandit.LOW,
+                 cwe=issue.Cwe.UNCONTROLLED_RESOURCE_CONSUMPTION,
+-                text="Requests call with timeout set to None",
++                text=f"Call to {qualname} with timeout set to None",
+             )
+diff --git a/bandit/plugins/trojansource.py b/bandit/plugins/trojansource.py
+new file mode 100755
+index 000000000..5c0eae5eb
+--- /dev/null
++++ b/bandit/plugins/trojansource.py
+@@ -0,0 +1,77 @@
++#
++# SPDX-License-Identifier: Apache-2.0
++r"""
++=====================================================
++B613: TrojanSource - Bidirectional control characters
++=====================================================
++
++This plugin checks for the presence of unicode bidirectional control characters
++in Python source files. Those characters can be embedded in comments and strings
++to reorder source code characters in a way that changes its logic.
++
++:Example:
++
++.. code-block:: none
++
++    >> Issue: [B613:trojansource] A Python source file contains bidirectional control characters ('\u202e').
++       Severity: High   Confidence: Medium
++       CWE: CWE-838 (https://cwe.mitre.org/data/definitions/838.html)
++       More Info: https://bandit.readthedocs.io/en/1.7.5/plugins/b113_trojansource.html
++       Location: examples/trojansource.py:4:25
++     3  	access_level = "user"
++     4	    if access_level != 'noneâ€®â¦': # Check if admin â©â¦' and access_level != 'user
++     5	        print("You are an admin.\n")
++
++.. seealso::
++
++ .. [1] https://trojansource.codes/
++ .. [2] https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-42574
++
++.. versionadded:: 1.7.10
++
++"""  # noqa: E501
++from tokenize import detect_encoding
++
++import bandit
++from bandit.core import issue
++from bandit.core import test_properties as test
++
++
++BIDI_CHARACTERS = (
++    "\u202A",
++    "\u202B",
++    "\u202C",
++    "\u202D",
++    "\u202E",
++    "\u2066",
++    "\u2067",
++    "\u2068",
++    "\u2069",
++    "\u200F",
++)
++
++
++@test.test_id("B613")
++@test.checks("File")
++def trojansource(context):
++    with open(context.filename, "rb") as src_file:
++        encoding, _ = detect_encoding(src_file.readline)
++    with open(context.filename, encoding=encoding) as src_file:
++        for lineno, line in enumerate(src_file.readlines(), start=1):
++            for char in BIDI_CHARACTERS:
++                try:
++                    col_offset = line.index(char) + 1
++                except ValueError:
++                    continue
++                text = (
++                    "A Python source file contains bidirectional"
++                    " control characters (%r)." % char
++                )
++                return bandit.Issue(
++                    severity=bandit.HIGH,
++                    confidence=bandit.MEDIUM,
++                    cwe=issue.Cwe.INAPPROPRIATE_ENCODING_FOR_OUTPUT_CONTEXT,
++                    text=text,
++                    lineno=lineno,
++                    col_offset=col_offset,
++                )
+diff --git a/doc/source/faq.rst b/doc/source/faq.rst
+index a344f5fab..16fe25fe4 100644
+--- a/doc/source/faq.rst
++++ b/doc/source/faq.rst
+@@ -5,10 +5,10 @@ Under Which Version of Python Should I Install Bandit?
+ ------------------------------------------------------
+ 
+ The answer to this question depends on the project(s) you will be running
+-Bandit against. If your project is only compatible with Python 3.8, you
+-should install Bandit to run under Python 3.8. If your project is only
+-compatible with Python 3.9, then use 3.9 respectively. If your project supports
+-both, you *could* run Bandit with both versions but you don't have to.
++Bandit against. If your project is only compatible with Python 3.9, you
++should install Bandit to run under Python 3.9. If your project is only
++compatible with Python 3.10, then use 3.10 respectively. If your project
++supports both, you *could* run Bandit with both versions but you don't have to.
+ 
+ Bandit uses the `ast` module from Python's standard library in order to
+ analyze your Python code. The `ast` module is only able to parse Python code
+diff --git a/doc/source/plugins/b613_trojansource.rst b/doc/source/plugins/b613_trojansource.rst
+new file mode 100644
+index 000000000..8fa0bc47b
+--- /dev/null
++++ b/doc/source/plugins/b613_trojansource.rst
+@@ -0,0 +1,5 @@
++------------------
++B613: trojansource
++------------------
++
++.. automodule:: bandit.plugins.trojansource
+diff --git a/doc/source/plugins/b614_pytorch_load_save.rst b/doc/source/plugins/b614_pytorch_load_save.rst
+new file mode 100644
+index 000000000..dcc1ae3a0
+--- /dev/null
++++ b/doc/source/plugins/b614_pytorch_load_save.rst
+@@ -0,0 +1,5 @@
++-----------------------
++B614: pytorch_load_save
++-----------------------
++
++.. automodule:: bandit.plugins.pytorch_load_save
+diff --git a/examples/ciphers.py b/examples/ciphers.py
+index 7e0762d8f..af3080111 100644
+--- a/examples/ciphers.py
++++ b/examples/ciphers.py
+@@ -71,6 +71,18 @@
+ encryptor = cipher.encryptor()
+ ct = encryptor.update(b"a secret message")
+ 
++cipher = Cipher(algorithms.CAST5(key), mode=None, backend=default_backend())
++encryptor = cipher.encryptor()
++ct = encryptor.update(b"a secret message")
++
+ cipher = Cipher(algorithms.IDEA(key), mode=None, backend=default_backend())
+ encryptor = cipher.encryptor()
+ ct = encryptor.update(b"a secret message")
++
++cipher = Cipher(algorithms.SEED(key), mode=None, backend=default_backend())
++encryptor = cipher.encryptor()
++ct = encryptor.update(b"a secret message")
++
++cipher = Cipher(algorithms.TripleDES(key), mode=None, backend=default_backend())
++encryptor = cipher.encryptor()
++ct = encryptor.update(b"a secret message")
+diff --git a/examples/ftplib.py b/examples/ftplib.py
+index beaeb74af..6664ed001 100644
+--- a/examples/ftplib.py
++++ b/examples/ftplib.py
+@@ -1,9 +1,24 @@
+ from ftplib import FTP
++from ftplib import FTP_TLS
+ 
++
++# bad
+ ftp = FTP('ftp.debian.org')
+ ftp.login()
+ 
+ ftp.cwd('debian')
+ ftp.retrlines('LIST')
+ 
+-ftp.quit()
+\ No newline at end of file
++ftp.quit()
++
++# okay
++ftp = ftplib.FTP_TLS(
++    "ftp.us.debian.org",
++    context=ssl.create_default_context(),
++)
++ftp.login()
++
++ftp.cwd("debian")
++ftp.retrlines("LIST")
++
++ftp.quit()
+diff --git a/examples/pytorch_load_save.py b/examples/pytorch_load_save.py
+new file mode 100644
+index 000000000..e1f912022
+--- /dev/null
++++ b/examples/pytorch_load_save.py
+@@ -0,0 +1,21 @@
++import torch
++import torchvision.models as models
++
++# Example of saving a model
++model = models.resnet18(pretrained=True)
++torch.save(model.state_dict(), 'model_weights.pth')
++
++# Example of loading the model weights in an insecure way
++loaded_model = models.resnet18()
++loaded_model.load_state_dict(torch.load('model_weights.pth'))
++
++# Save the model
++torch.save(loaded_model.state_dict(), 'model_weights.pth')
++
++# Another example using torch.load with more parameters
++another_model = models.resnet18()
++another_model.load_state_dict(torch.load('model_weights.pth', map_location='cpu'))
++
++# Save the model
++torch.save(another_model.state_dict(), 'model_weights.pth')
++
+diff --git a/examples/requests-missing-timeout.py b/examples/requests-missing-timeout.py
+index 38f24440a..fa71c4b0e 100644
+--- a/examples/requests-missing-timeout.py
++++ b/examples/requests-missing-timeout.py
+@@ -1,27 +1,68 @@
++import httpx
+ import requests
+ import not_requests
+ 
++# Errors
+ requests.get('https://gmail.com')
+ requests.get('https://gmail.com', timeout=None)
+-requests.get('https://gmail.com', timeout=5)
+ requests.post('https://gmail.com')
+ requests.post('https://gmail.com', timeout=None)
+-requests.post('https://gmail.com', timeout=5)
+ requests.put('https://gmail.com')
+ requests.put('https://gmail.com', timeout=None)
+-requests.put('https://gmail.com', timeout=5)
+ requests.delete('https://gmail.com')
+ requests.delete('https://gmail.com', timeout=None)
+-requests.delete('https://gmail.com', timeout=5)
+ requests.patch('https://gmail.com')
+ requests.patch('https://gmail.com', timeout=None)
+-requests.patch('https://gmail.com', timeout=5)
+ requests.options('https://gmail.com')
+ requests.options('https://gmail.com', timeout=None)
+-requests.options('https://gmail.com', timeout=5)
+ requests.head('https://gmail.com')
+ requests.head('https://gmail.com', timeout=None)
+-requests.head('https://gmail.com', timeout=5)
++httpx.get('https://gmail.com')
++httpx.get('https://gmail.com', timeout=None)
++httpx.post('https://gmail.com')
++httpx.post('https://gmail.com', timeout=None)
++httpx.put('https://gmail.com')
++httpx.put('https://gmail.com', timeout=None)
++httpx.delete('https://gmail.com')
++httpx.delete('https://gmail.com', timeout=None)
++httpx.patch('https://gmail.com')
++httpx.patch('https://gmail.com', timeout=None)
++httpx.options('https://gmail.com')
++httpx.options('https://gmail.com', timeout=None)
++httpx.head('https://gmail.com')
++httpx.head('https://gmail.com', timeout=None)
++httpx.Client()
++httpx.Client(timeout=None)
++httpx.AsyncClient()
++httpx.AsyncClient(timeout=None)
++with httpx.Client() as client:
++    client.get('https://gmail.com')
++with httpx.Client(timeout=None) as client:
++    client.get('https://gmail.com')
++async with httpx.AsyncClient() as client:
++    await client.get('https://gmail.com')
++async with httpx.AsyncClient(timeout=None) as client:
++    await client.get('https://gmail.com')
+ 
+ # Okay
+ not_requests.get('https://gmail.com')
++requests.get('https://gmail.com', timeout=5)
++requests.post('https://gmail.com', timeout=5)
++requests.put('https://gmail.com', timeout=5)
++requests.delete('https://gmail.com', timeout=5)
++requests.patch('https://gmail.com', timeout=5)
++requests.options('https://gmail.com', timeout=5)
++requests.head('https://gmail.com', timeout=5)
++httpx.get('https://gmail.com', timeout=5)
++httpx.post('https://gmail.com', timeout=5)
++httpx.put('https://gmail.com', timeout=5)
++httpx.delete('https://gmail.com', timeout=5)
++httpx.patch('https://gmail.com', timeout=5)
++httpx.options('https://gmail.com', timeout=5)
++httpx.head('https://gmail.com', timeout=5)
++httpx.Client(timeout=5)
++httpx.AsyncClient(timeout=5)
++with httpx.Client(timeout=5) as client:
++    client.get('https://gmail.com')
++async with httpx.AsyncClient(timeout=5) as client:
++    await client.get('https://gmail.com')
+diff --git a/examples/requests-ssl-verify-disabled.py b/examples/requests-ssl-verify-disabled.py
+index 25f5ef41f..c45b9e944 100644
+--- a/examples/requests-ssl-verify-disabled.py
++++ b/examples/requests-ssl-verify-disabled.py
+@@ -1,6 +1,7 @@
+ import httpx
+ import requests
+ 
++# Errors
+ requests.get('https://gmail.com', timeout=30, verify=True)
+ requests.get('https://gmail.com', timeout=30, verify=False)
+ requests.post('https://gmail.com', timeout=30, verify=True)
+@@ -16,25 +17,26 @@
+ requests.head('https://gmail.com', timeout=30, verify=True)
+ requests.head('https://gmail.com', timeout=30, verify=False)
+ 
+-httpx.request('GET', 'https://gmail.com', verify=True)
+-httpx.request('GET', 'https://gmail.com', verify=False)
+-httpx.get('https://gmail.com', verify=True)
+-httpx.get('https://gmail.com', verify=False)
+-httpx.options('https://gmail.com', verify=True)
+-httpx.options('https://gmail.com', verify=False)
+-httpx.head('https://gmail.com', verify=True)
+-httpx.head('https://gmail.com', verify=False)
+-httpx.post('https://gmail.com', verify=True)
+-httpx.post('https://gmail.com', verify=False)
+-httpx.put('https://gmail.com', verify=True)
+-httpx.put('https://gmail.com', verify=False)
+-httpx.patch('https://gmail.com', verify=True)
+-httpx.patch('https://gmail.com', verify=False)
+-httpx.delete('https://gmail.com', verify=True)
+-httpx.delete('https://gmail.com', verify=False)
+-httpx.stream('https://gmail.com', verify=True)
+-httpx.stream('https://gmail.com', verify=False)
+-httpx.Client()
+-httpx.Client(verify=False)
+-httpx.AsyncClient()
+-httpx.AsyncClient(verify=False)
++# Okay
++httpx.request('GET', 'https://gmail.com', timeout=30, verify=True)
++httpx.request('GET', 'https://gmail.com', timeout=30, verify=False)
++httpx.get('https://gmail.com', timeout=30, verify=True)
++httpx.get('https://gmail.com', timeout=30, verify=False)
++httpx.options('https://gmail.com', timeout=30, verify=True)
++httpx.options('https://gmail.com', timeout=30, verify=False)
++httpx.head('https://gmail.com', timeout=30, verify=True)
++httpx.head('https://gmail.com', timeout=30, verify=False)
++httpx.post('https://gmail.com', timeout=30, verify=True)
++httpx.post('https://gmail.com', timeout=30, verify=False)
++httpx.put('https://gmail.com', timeout=30, verify=True)
++httpx.put('https://gmail.com', timeout=30, verify=False)
++httpx.patch('https://gmail.com', timeout=30, verify=True)
++httpx.patch('https://gmail.com', timeout=30, verify=False)
++httpx.delete('https://gmail.com', timeout=30, verify=True)
++httpx.delete('https://gmail.com', timeout=30, verify=False)
++httpx.stream('https://gmail.com', timeout=30, verify=True)
++httpx.stream('https://gmail.com', timeout=30, verify=False)
++httpx.Client(timeout=30)
++httpx.Client(timeout=30, verify=False)
++httpx.AsyncClient(timeout=30)
++httpx.AsyncClient(timeout=30, verify=False)
+diff --git a/examples/trojansource.py b/examples/trojansource.py
+new file mode 100644
+index 000000000..40c605579
+--- /dev/null
++++ b/examples/trojansource.py
+@@ -0,0 +1,5 @@
++#!/usr/bin/env python3
++# cf. https://trojansource.codes/ & https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-42574
++access_level = "user"
++if access_level != 'noneâ€®â¦': # Check if admin â©â¦' and access_level != 'user
++    print("You are an admin.\n")
+diff --git a/examples/trojansource_latin1.py b/examples/trojansource_latin1.py
+new file mode 100644
+index 000000000..dee24e07c
+--- /dev/null
++++ b/examples/trojansource_latin1.py
+@@ -0,0 +1,7 @@
++#!/usr/bin/env python3
++# -*- coding: latin-1 -*-
++# cf. https://trojansource.codes & https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-42574
++# Some special characters: àçéêèù
++access_level = "user"
++if access_level != 'none??': # Check if admin ??' and access_level != 'user
++    print("You are an admin.\n")
+diff --git a/funding.json b/funding.json
+new file mode 100644
+index 000000000..a7831ac3a
+--- /dev/null
++++ b/funding.json
+@@ -0,0 +1,65 @@
++{
++    "version": "v1.0.0",
++    "entity": {
++        "type": "individual",
++        "role": "maintainer",
++        "name": "Eric Brown",
++        "email": "eric_wade_brown@yahoo.com",
++        "phone": "",
++        "description": "Iâ€™m passionate about developing tools that empower engineers to produce secure, hardened code, reducing vulnerabilities and strengthening software integrity. With a focus on security automation, I aim to make secure coding practices more accessible and integrated into development workflows.",
++        "webpageUrl": {
++            "url": "https://github.com"
++        }
++    },
++    "projects": [{
++        "guid": "bandit",
++        "name": "Bandit",
++        "description": " Bandit is a tool designed to find common security issues in Python code.",
++        "webpageUrl": {
++            "url": "https://github.com/PyCQA/bandit"
++        },
++        "repositoryUrl": {
++            "url": "https://github.com/PyCQA/bandit"
++        },
++        "licenses": ["spdx:Apache-2.0"],
++        "tags": ["python", "static-code-analysis", "security", "security-tools"]
++    }],
++    "funding": {
++        "channels": [
++            {
++                "guid": "github",
++                "type": "payment-provider",
++                "address": "https://github.com/sponsors/ericwb",
++                "description": "Pay with your credit card through this gateway and setup recurring subscriptions."
++            },
++            {
++                "guid": "psf",
++                "type": "payment-provider",
++                "address": "https://psfmember.org/civicrm/contribute/transact/?reset=1&id=42",
++                "description": "Pay with your credit card through this gateway and setup recurring subscriptions."
++            }
++        ],
++        "plans": [
++            {
++                "guid": "developer-time",
++                "status": "active",
++                "name": "Developer compensation",
++                "description": "This will cover the cost of one developer working part-time on the projects.",
++                "amount": 1000,
++                "currency": "USD",
++                "frequency": "monthly",
++                "channels": ["github", "psf"]
++            },
++            {
++                "guid": "angel-plan",
++                "status": "active",
++                "name": "Goodwill plan",
++                "description": "Pay anything you wish to show your goodwill for the project.",
++                "amount": 0,
++                "currency": "USD",
++                "frequency": "one-time",
++                "channels": ["psf"]
++            }
++        ]
++    }
++}
+diff --git a/setup.cfg b/setup.cfg
+index 2dbee597c..e7868e5b4 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -18,17 +18,20 @@ classifier =
+     Operating System :: MacOS :: MacOS X
+     Programming Language :: Python
+     Programming Language :: Python :: 3
+-    Programming Language :: Python :: 3.8
+     Programming Language :: Python :: 3.9
+     Programming Language :: Python :: 3.10
+     Programming Language :: Python :: 3.11
+     Programming Language :: Python :: 3.12
++    Programming Language :: Python :: 3.13
+     Programming Language :: Python :: 3 :: Only
+     Topic :: Security
+ project_urls =
++    Documentation = https://bandit.readthedocs.io/
+     Release Notes = https://github.com/PyCQA/bandit/releases
+     Source Code = https://github.com/PyCQA/bandit
+     Issue Tracker = https://github.com/PyCQA/bandit/issues
++    Discord = https://discord.gg/qYxpadCgkx
++    Sponsor = https://psfmember.org/civicrm/contribute/transact/?reset=1&id=42
+ 
+ [extras]
+ yaml =
+@@ -152,6 +155,12 @@ bandit.plugins =
+     #bandit/plugins/tarfile_unsafe_members.py
+     tarfile_unsafe_members = bandit.plugins.tarfile_unsafe_members:tarfile_unsafe_members
+ 
++    #bandit/plugins/pytorch_load_save.py
++    pytorch_load_save = bandit.plugins.pytorch_load_save:pytorch_load_save
++
++    # bandit/plugins/trojansource.py
++    trojansource = bandit.plugins.trojansource:trojansource
++
+ [build_sphinx]
+ all_files = 1
+ build-dir = doc/build
+diff --git a/setup.py b/setup.py
+index 8400e38ec..4930fc245 100644
+--- a/setup.py
++++ b/setup.py
+@@ -4,5 +4,5 @@
+ import setuptools
+ 
+ setuptools.setup(
+-    python_requires=">=3.8", setup_requires=["pbr>=2.0.0"], pbr=True
++    python_requires=">=3.9", setup_requires=["pbr>=2.0.0"], pbr=True
+ )
+diff --git a/tests/functional/test_functional.py b/tests/functional/test_functional.py
+index fd96796f8..a89c152e7 100644
+--- a/tests/functional/test_functional.py
++++ b/tests/functional/test_functional.py
+@@ -3,7 +3,6 @@
+ #
+ # SPDX-License-Identifier: Apache-2.0
+ import os
+-import sys
+ 
+ import testtools
+ 
+@@ -107,43 +106,17 @@ def test_binding(self):
+ 
+     def test_crypto_md5(self):
+         """Test the `hashlib.md5` example."""
+-        if sys.version_info >= (3, 9):
+-            expect = {
+-                "SEVERITY": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 16,
+-                    "HIGH": 9,
+-                },
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 25,
+-                },
+-            }
+-        else:
+-            expect = {
+-                "SEVERITY": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 22,
+-                    "HIGH": 4,
+-                },
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 26,
+-                },
+-            }
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 16, "HIGH": 9},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 25},
++        }
+         self.check_example("crypto-md5.py", expect)
+ 
+     def test_ciphers(self):
+         """Test the `Crypto.Cipher` example."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 1, "HIGH": 21},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 22},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 1, "HIGH": 24},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 25},
+         }
+         self.check_example("ciphers.py", expect)
+ 
+@@ -197,26 +170,10 @@ def test_hardcoded_tmp(self):
+ 
+     def test_imports_aliases(self):
+         """Test the `import X as Y` syntax."""
+-        if sys.version_info >= (3, 9):
+-            expect = {
+-                "SEVERITY": {"UNDEFINED": 0, "LOW": 4, "MEDIUM": 1, "HIGH": 4},
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 9,
+-                },
+-            }
+-        else:
+-            expect = {
+-                "SEVERITY": {"UNDEFINED": 0, "LOW": 4, "MEDIUM": 5, "HIGH": 0},
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 9,
+-                },
+-            }
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 4, "MEDIUM": 1, "HIGH": 4},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 9},
++        }
+         self.check_example("imports-aliases.py", expect)
+ 
+     def test_imports_from(self):
+@@ -246,8 +203,8 @@ def test_telnet_usage(self):
+     def test_ftp_usage(self):
+         """Test for `import ftplib` and FTP.* calls."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 2},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 2},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 3},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 3},
+         }
+         self.check_example("ftplib.py", expect)
+ 
+@@ -411,8 +368,8 @@ def test_requests_ssl_verify_disabled(self):
+     def test_requests_without_timeout(self):
+         """Test for the `requests` library missing timeouts."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 14, "HIGH": 0},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 14, "MEDIUM": 0, "HIGH": 0},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 25, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 25, "MEDIUM": 0, "HIGH": 0},
+         }
+         self.check_example("requests-missing-timeout.py", expect)
+ 
+@@ -855,36 +812,10 @@ def test_unverified_context(self):
+ 
+     def test_hashlib_new_insecure_functions(self):
+         """Test insecure hash functions created by `hashlib.new`."""
+-        if sys.version_info >= (3, 9):
+-            expect = {
+-                "SEVERITY": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 9,
+-                },
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 9,
+-                },
+-            }
+-        else:
+-            expect = {
+-                "SEVERITY": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 10,
+-                    "HIGH": 0,
+-                },
+-                "CONFIDENCE": {
+-                    "UNDEFINED": 0,
+-                    "LOW": 0,
+-                    "MEDIUM": 0,
+-                    "HIGH": 10,
+-                },
+-            }
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 9},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 9},
++        }
+         self.check_example("hashlib_new_insecure_functions.py", expect)
+ 
+     def test_blacklist_pycrypto(self):
+@@ -929,3 +860,25 @@ def test_tarfile_unsafe_members(self):
+             "CONFIDENCE": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 2},
+         }
+         self.check_example("tarfile_extractall.py", expect)
++
++    def test_pytorch_load_save(self):
++        """Test insecure usage of torch.load and torch.save."""
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 4, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
++        }
++        self.check_example("pytorch_load_save.py", expect)
++
++    def test_trojansource(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 1},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 1, "HIGH": 0},
++        }
++        self.check_example("trojansource.py", expect)
++
++    def test_trojansource_latin1(self):
++        expect = {
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0},
++        }
++        self.check_example("trojansource_latin1.py", expect)
+diff --git a/tox.ini b/tox.ini
+index 13e3458de..b52833d40 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -1,6 +1,6 @@
+ [tox]
+ minversion = 3.2.0
+-envlist = py38,pep8
++envlist = py39,pep8
+ 
+ [testenv]
+ usedevelop = True
+@@ -28,9 +28,6 @@ passenv =
+     no_proxy
+     NO_PROXY
+ 
+-[testenv:debug]
+-commands = oslo_debug_helper -t tests {posargs}
+-
+ [testenv:linters]
+ deps = {[testenv:pep8]deps}
+ usedevelop = False
+@@ -87,20 +84,3 @@ deps =
+     pre-commit
+ commands =
+     pre-commit run --all-files --show-diff-on-failure
+-
+-[testenv:lower-constraints]
+-basepython = python3
+-deps =
+-  -c{toxinidir}/lower-constraints.txt
+-  -r{toxinidir}/test-requirements.txt
+-  -r{toxinidir}/requirements.txt
+-
+-# This environment can be used to quickly validate that all needed system
+-# packages required to successfully execute test targets are installed
+-[testenv:bindep]
+-# Do not install any requirements. We want this to be fast and work even if
+-# system dependencies are missing, since it's used to tell you what system
+-# dependencies are missing! This also means that bindep must be installed
+-# separately, outside of the requirements files.
+-deps = bindep
+-commands = bindep test

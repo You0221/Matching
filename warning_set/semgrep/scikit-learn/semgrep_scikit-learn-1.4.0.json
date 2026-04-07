@@ -1,0 +1,1465 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "yaml.github-actions.security.pull-request-target-code-checkout.pull-request-target-code-checkout",
+    "rule_name": "yaml.github-actions.security.pull-request-target-code-checkout.pull-request-target-code-checkout",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": ".github/workflows/lint.yml",
+    "line": 22,
+    "message": "This GitHub Actions workflow file uses `pull_request_target` and checks out code from the incoming pull request. When using `pull_request_target`, the Action runs in the context of the target repository, which includes access to all repository secrets. Normally, this is safe because the Action only runs code from the target repository, not the incoming PR. However, by checking out the incoming PR code, you're now using the incoming code for the rest of the action. You may be inadvertently executing arbitrary code from the incoming PR with access to repository secrets, which would let an attacker steal repository secrets. This normally happens by running build scripts (e.g., `npm build` and `make`) or dependency installation scripts (e.g., `python setup.py install`). Audit your workflow file to make sure no code from the incoming PR is executed. Please see https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ for additional mitigations.",
+    "cwe": [
+      913
+    ],
+    "extra": {
+      "end_line": 25,
+      "start_col": 9,
+      "end_col": 57,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "github-actions"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://securitylab.github.com/research/github-actions-preventing-pwn-requests/",
+        "https://github.com/justinsteven/advisories/blob/master/2021_github_actions_checkspelling_token_leak_via_advice_symlink.md"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "yaml.github-actions.security.run-shell-injection.run-shell-injection",
+    "rule_name": "yaml.github-actions.security.run-shell-injection.run-shell-injection",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": ".github/workflows/update_tracking_issue.yml",
+    "line": 34,
+    "message": "Using variable interpolation `${{...}}` with `github` context data in a `run:` step could allow an attacker to inject their own code into the runner. This would allow them to steal secrets and code. `github` context data can have arbitrary user input and should be treated as untrusted. Instead, use an intermediate environment variable with `env:` to store the data and use the environment variable in the `run:` script. Be sure to use double-quotes the environment variable, like this: \"$ENVVAR\".",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 48,
+      "start_col": 9,
+      "end_col": 42,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "github-actions"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.github.com/en/actions/learn-github-actions/security-hardening-for-github-actions#understanding-the-risk-of-script-injections",
+        "https://securitylab.github.com/research/github-actions-untrusted-input/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.eval-detected.eval-detected",
+    "rule_name": "python.lang.security.audit.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "asv_benchmarks/benchmarks/common.py",
+    "line": 26,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 26,
+      "start_col": 23,
+      "end_col": 44,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "asv_benchmarks/benchmarks/common.py",
+    "line": 160,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 160,
+      "start_col": 17,
+      "end_col": 42,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "asv_benchmarks/benchmarks/common.py",
+    "line": 176,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 176,
+      "start_col": 30,
+      "end_col": 44,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "asv_benchmarks/benchmarks/common.py",
+    "line": 217,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 217,
+      "start_col": 38,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "asv_benchmarks/benchmarks/common.py",
+    "line": 246,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 246,
+      "start_col": 38,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "benchmarks/bench_hist_gradient_boosting_higgsboson.py",
+    "line": 48,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 48,
+      "start_col": 9,
+      "end_col": 35,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "benchmarks/bench_plot_randomized_svd.py",
+    "line": 136,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 136,
+      "start_col": 16,
+      "end_col": 50,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "build_tools/circle/list_versions.py",
+    "line": 14,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 14,
+      "start_col": 27,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "build_tools/circle/list_versions.py",
+    "line": 80,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 80,
+      "start_col": 16,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "build_tools/update_environments_and_lock_files.py",
+    "line": 444,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 444,
+      "start_col": 15,
+      "end_col": 64,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "doc/themes/scikit-learn-modern/javascript.html",
+    "line": 12,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 13,
+      "start_col": 1,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "doc/themes/scikit-learn-modern/layout.html",
+    "line": 23,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 23,
+      "start_col": 3,
+      "end_col": 83,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.insecure-transport.urllib.insecure-urlopen.insecure-urlopen",
+    "rule_name": "python.lang.security.audit.insecure-transport.urllib.insecure-urlopen.insecure-urlopen",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 9,
+    "message": "Detected 'urllib.urlopen()' using 'http://'. This request will not be encrypted. Use 'https://' instead.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 33,
+      "start_col": 1,
+      "end_col": 30,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "urllib"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.insecure-transport.urllib.insecure-urlopen.insecure-urlopen",
+    "rule_name": "python.lang.security.audit.insecure-transport.urllib.insecure-urlopen.insecure-urlopen",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 20,
+    "message": "Detected 'urllib.urlopen()' using 'http://'. This request will not be encrypted. Use 'https://' instead.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 20,
+      "start_col": 18,
+      "end_col": 30,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "urllib"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "rule_name": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "doc/tutorial/text_analytics/data/movie_reviews/fetch_data.py",
+    "line": 29,
+    "message": "Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled by an attacker",
+    "cwe": [],
+    "extra": {
+      "end_line": 30,
+      "start_col": 14,
+      "end_col": 41,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "--no-technology--"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.insecure-transport.urllib.insecure-urlretrieve.insecure-urlretrieve",
+    "rule_name": "python.lang.security.audit.insecure-transport.urllib.insecure-urlretrieve.insecure-urlretrieve",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 146,
+    "message": "Detected 'urllib.urlretrieve()' using 'http://'. This request will not be encrypted. Use 'https://' instead.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 179,
+      "start_col": 5,
+      "end_col": 23,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "urllib"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/urllib.request.html#urllib.request.urlretrieve"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 170,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 170,
+      "start_col": 9,
+      "end_col": 78,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.insecure-transport.urllib.insecure-urlretrieve.insecure-urlretrieve",
+    "rule_name": "python.lang.security.audit.insecure-transport.urllib.insecure-urlretrieve.insecure-urlretrieve",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 170,
+    "message": "Detected 'urllib.urlretrieve()' using 'http://'. This request will not be encrypted. Use 'https://' instead.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 170,
+      "start_col": 9,
+      "end_col": 78,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "urllib"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/urllib.request.html#urllib.request.urlretrieve"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "rule_name": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/applications/plot_out_of_core_classification.py",
+    "line": 178,
+    "message": "Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled by an attacker",
+    "cwe": [],
+    "extra": {
+      "end_line": 178,
+      "start_col": 9,
+      "end_col": 65,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "--no-technology--"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "examples/applications/wikipedia_principal_eigenvector.py",
+    "line": 65,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 65,
+      "start_col": 18,
+      "end_col": 30,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "setup.py",
+    "line": 161,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 161,
+      "start_col": 18,
+      "end_col": 50,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "rule_name": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/datasets/__init__.py",
+    "line": 159,
+    "message": "Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.",
+    "cwe": [
+      96
+    ],
+    "extra": {
+      "end_line": 159,
+      "start_col": 16,
+      "end_col": 31,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/mpirnat/lets-be-bad-guys/blob/d92768fb3ade32956abd53bd6bb06e19d634a084/badguys/vulnerable/views.py#L181-L186"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "rule_name": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "sklearn/datasets/_base.py",
+    "line": 15,
+    "message": "Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older Python versions.",
+    "cwe": [],
+    "extra": {
+      "end_line": 15,
+      "start_col": 1,
+      "end_col": 32,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/datasets/_base.py",
+    "line": 1418,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 1418,
+      "start_col": 5,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "rule_name": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "sklearn/datasets/_lfw.py",
+    "line": 112,
+    "message": "Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled by an attacker",
+    "cwe": [],
+    "extra": {
+      "end_line": 112,
+      "start_col": 9,
+      "end_col": 69,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "--no-technology--"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "rule_name": "trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 79,
+    "message": "Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled by an attacker",
+    "cwe": [],
+    "extra": {
+      "end_line": 79,
+      "start_col": 5,
+      "end_col": 67,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "--no-technology--"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 89,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 89,
+      "start_col": 40,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/datasets/_twenty_newsgroups.py",
+    "line": 276,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 276,
+      "start_col": 21,
+      "end_col": 55,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/_set_output.py",
+    "line": 15,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 15,
+      "start_col": 16,
+      "end_col": 48,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/_testing.py",
+    "line": 1039,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1039,
+      "start_col": 29,
+      "end_col": 69,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/_testing.py",
+    "line": 1041,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1041,
+      "start_col": 25,
+      "end_col": 65,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/discovery.py",
+    "line": 103,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 103,
+      "start_col": 22,
+      "end_col": 48,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/discovery.py",
+    "line": 194,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 194,
+      "start_col": 22,
+      "end_col": 48,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/discovery.py",
+    "line": 253,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 253,
+      "start_col": 22,
+      "end_col": 48,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2083,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 2083,
+      "start_col": 29,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 2091,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 2091,
+      "start_col": 31,
+      "end_col": 62,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3333,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 3333,
+      "start_col": 11,
+      "end_col": 42,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "scikit-learn",
+    "project_version": "1.4.0",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "sklearn/utils/estimator_checks.py",
+    "line": 3333,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 3333,
+      "start_col": 24,
+      "end_col": 41,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

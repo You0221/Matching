@@ -1,0 +1,698 @@
+[
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/tutorial/deploy.rst",
+    "line": "73",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "SECRET_KEY = '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'",
+      "column": "4",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "71e437d9cb71890eef1ccbe982187e9b44273794d86443692e100b7ffa015375",
+        "cde3ac23878d8f6ac63906547152bd77f8f5d1f33d039374b03198cb7dbad521"
+      ],
+      "vulnHash": "8330c52aca1c3a25fde6046d142b864a0a573fc6f99b90e911034507b8ffc3ba"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/patterns/flashing.rst",
+    "line": "23",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "app.secret_key = b'_5#y2L\"F4Q8z\\n\\xec]/'",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1da2b2fd6fdba1402e6829083d1901489cee1c8e3fe4571701cee59a56400e0f",
+        "71daaa2bb2c1c040dde35d84a760b6b186a777115861d0c287239fb8ea1f174b"
+      ],
+      "vulnHash": "78450e19185c61ca916f47adf2ce437f5f8523d3e5ea641888fcbe3743f315a4"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "41",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "SECRET_KEY='192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a5cd427ab709b9e9e2c7b6cf0caa3e24af2b2c33b056f79f729c9408bff97cc7",
+        "db9dc31f388eb76a88b3d60336e2893ee6c3cdbb61a152ee0c35f0950d19d6f4"
+      ],
+      "vulnHash": "f90823bb9fe0d6951645d720d2f2e66efc586e42b1434c4fa86d2a24c68695d3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "513",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "SECRET_KEY = '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'",
+      "column": "4",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "76bbde965b95d483abe479cb1b07f4da0c65e4cd59261a347f1bcca0a5eaccb9",
+        "86b17d092ecfa81c1a58dcebacc74eeae6091ceb9463c9accf8dbfddfffaa94e"
+      ],
+      "vulnHash": "13ee85fe0f2c8762003606507e4fa20de03c98984ae22639eb67e3a84ac7dd21"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "560",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "$ export FLASK_SECRET_KEY=\"5f352379324c22463451387a0aec5d2f\"",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9ca8e4b1dc4f20f7df2d26b48d5df8d84466bc2ae3afb810952f666a669a8bd2",
+        "d8ee65374d89e76d024177c110553e48270f28f8d439901d692cc4dad12961e0"
+      ],
+      "vulnHash": "ff4ed17c13a0c7b78ef5dca01afe4ea8feaf53dd936f96077893244519ac5e99"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "569",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "$ set -x FLASK_SECRET_KEY \"5f352379324c22463451387a0aec5d2f\"",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8e928d7ec5bfe4a403407aa9745c9d933e02682b1cd57af8e51a2e97930b3a08",
+        "2f373eb5075afcda127cf6b76c850f4f03bb831df4a33ad32e3f39fdac6a7fac"
+      ],
+      "vulnHash": "2d8ad601216512a61651b7be409cc5542a847988cfe3c17ca146962fda91c59c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "578",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "> set FLASK_SECRET_KEY=\"5f352379324c22463451387a0aec5d2f\"",
+      "column": "21",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5bde6f69bc73d6a9535747a932be88357b91315853cad9ee59dfdec9c768a18a",
+        "c4ef788847d0333fd1f21c880bb479ee0a51f63793b9d5a93eceb1653a4b939c"
+      ],
+      "vulnHash": "2d3243f84df7cc2d8b51b2515de334c058bcc61340d7f74e1e5ec3475b36416c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "587",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "> $env:FLASK_SECRET_KEY = \"5f352379324c22463451387a0aec5d2f\"",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e86e74c329f41cc7a4373f82a8cf6a2ab827e208563fc27b3032e05ca3755533",
+        "7526775d385d9076c1b95fc03d09de9269caf42de293f7fa7eb395ee6d66d2cc"
+      ],
+      "vulnHash": "4bd8026f5294d1e736e09b66c73c55580c4dc048393dee4caeb02273c07637b6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/config.rst",
+    "line": "598",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "app.config[\"SECRET_KEY\"]  # Is \"5f352379324c22463451387a0aec5d2f\"",
+      "column": "16",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dbfc6c29b280d540c5c53bf70da400edf33049e2365cc77ab1f6b3576b6e7284",
+        "3e30ed38657a22e0b9356ab8d1e1d893096fd744db849f6f1189e6a10efc0412"
+      ],
+      "vulnHash": "c7c7b76c4004c2e46df2f091d4090948d3bac668768caa69113aee1d642ef80c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/tutorial/tests.rst",
+    "line": "233",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "def login(self, username='test', password='test'):",
+      "column": "41",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "edf0e59df19a8a0bd59e9e86766c0f91f423301e6aee9062b86d738565ce0b04",
+        "c0f2c0cfc3d2c022d539989847caceb1e3ee02cc1c2d52ca52efb6cfe0305854"
+      ],
+      "vulnHash": "dc9926d9844368dffd81bdadcaceb0c5414bfe1239d505d96dd84a6142251b80"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/tutorial/tests.rst",
+    "line": "267",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'/auth/register', data={'username': 'a', 'password': 'a'}",
+      "column": "54",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c0481ad892c5964b1e865a15e302d89b514919f9ee245a72146c6dc51d434454",
+        "a6e78583d86bbd2f73f9a77b9b3b03f21717a40eaff753811f0748d0ee44c418"
+      ],
+      "vulnHash": "ec31c1c8044ec31be4ef9b177435593a6cf4bef1997e33f3f2332ee5e01541d3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/quickstart.rst",
+    "line": "784",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "app.secret_key = b'_5#y2L\"F4Q8z\\n\\xec]/'",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4f8a9e7c9f1616afcb309f06923cf215f83d50fb2cfa331db995d66cf0f8d31c",
+        "f418ad676eed94c87337726daa6e8933544459d557d349a52e5fd36d9f74a7d0"
+      ],
+      "vulnHash": "435df1dfd87039f20374113d95338f6cade5a9ec9cc3cc435c842eecf93442b0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B324",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "src/flask/sessions.py",
+    "line": "295",
+    "message": "(1/1) * Possible vulnerability detected: Use of weak MD4, MD5, or SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "294     \"\"\"\n295     return hashlib.sha1(string)\n296 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f9d40751ed9ea3843477095930807a22ac3c466d519c4c41863d00b325dfb49c",
+        "facea7f55dddf3b5adc8f3a4ae9235f745c2ce53beb4fb696b92a7c83aed25e6"
+      ],
+      "vulnHash": "5a01c894a520d783e20c51b86d2f41763e41c761de4659564dcfe39ad0984f81"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "64227",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/celery/requirements.txt",
+    "line": "34",
+    "message": "(1/5) * Possible vulnerability detected:  Versions Unsafes: <3.1.3\nMore Information: Jinja is an extensible templating engine. Special placeholders in the template allow writing code similar to Python syntax. It is possible to inject arbitrary HTML attributes into the rendered HTML template, potentially leading to Cross-Site Scripting (XSS). The Jinja `xmlattr` filter can be abused to inject arbitrary HTML attribute keys and values, bypassing the auto escaping mechanism and potentially leading to XSS. It may also be possible to bypass attribute validation checks if they are blacklist-based.\n         \n(2/5) * Possible vulnerability detected:  Versions Unsafes: <3.1.4\nMore Information: Jinja is an extensible templating engine. The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `>`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. The fix for CVE-2024-22195 only addressed spaces but not other characters. Accepting keys as user input is now explicitly considered an unintended use case of the `xmlattr` filter, and code that does so without otherwise validating the input should be flagged as insecure, regardless of Jinja version. Accepting _values_ as user input continues to be safe.\n         \n(3/5) * Possible vulnerability detected:  Versions Unsafes: <3.1.5\nMore Information: An oversight in how the Jinja sandboxed environment detects calls to str.format allows an attacker who controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates. Jinja's sandbox does catch calls to str.format and ensures they don't escape the sandbox. However, it's possible to store a reference to a malicious string's format method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.\n         \n(4/5) * Possible vulnerability detected:  Versions Unsafes: <3.1.6\nMore Information: Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates. Jinja's sandbox does catch calls to str.format and ensures they don't escape the sandbox. However, it's possible to use the |attr filter to get a reference to a string's plain format method, bypassing the sandbox. After the fix, the |attr filter no longer bypasses the environment's attribute lookup. This vulnerability is fixed in 3.1.6.\n         \n(5/5) * Possible vulnerability detected:  Versions Unsafes: >=3.0.0a1,<3.1.5\nMore Information: A vulnerability in the Jinja compiler allows an attacker who can control both the content and filename of a template to execute arbitrary Python code, bypassing Jinja's sandbox protections. To exploit this vulnerability, an attacker must have the ability to manipulate both the template's filename and its contents. The risk depends on the application's specific use case. This issue affects applications that render untrusted templates where the attacker can determine the template filename, potentially leading to severe security breaches.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "jinja2==3.1.2",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Safety",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "997ca23462662c089b17fb0b8f52312c792dfd456532f46871dcd848581d6cae",
+        "93a9715b9caf323021d1969bde0e159fc0fb5e2874be903f498d6f2c45adb1b8"
+      ],
+      "vulnHash": "6e7df08900a4e56717886f8745675c4eb0fd8fd66aa9263cbf9c697b1f27bd1b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "62019",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/celery/requirements.txt",
+    "line": "57",
+    "message": "(1/5) * Possible vulnerability detected:  Versions Unsafes: <2.3.8\nMore Information: Werkzeug 3.0.1 and 2.3.8 include a security fix: Slow multipart parsing for large parts potentially enabling DoS attacks.\r\nhttps://github.com/pallets/werkzeug/commit/b1916c0c083e0be1c9d887ee2f3d696922bfc5c1\n         \n(2/5) * Possible vulnerability detected:  Versions Unsafes: <3.0.3\nMore Information: Werkzeug is a comprehensive WSGI web application library. The debugger in affected versions of Werkzeug can allow an attacker to execute code on a developer's machine under some circumstances. This requires the attacker to get the developer to interact with a domain and subdomain they control, and enter the debugger PIN, but if they are successful it allows access to the debugger even if it is only running on localhost. This also requires the attacker to guess a URL in the developer's application that will trigger the debugger.\n         \n(3/5) * Possible vulnerability detected:  Versions Unsafes: <3.0.6\nMore Information: Affected versions of Werkzeug are vulnerable to Path Traversal (CWE-22) on Windows systems running Python versions below 3.11. The safe_join() function failed to properly detect certain absolute paths on Windows, allowing attackers to potentially access files outside the intended directory. An attacker could craft special paths starting with \"/\" that bypass the directory restrictions on Windows systems. The vulnerability exists in the safe_join() function which relied solely on os.path.isabs() for path validation. This is exploitable on Windows systems by passing paths starting with \"/\" to safe_join(). To remediate, upgrade to the latest version which includes additional path validation checks. \r\nNOTE: This vulnerability specifically affects Windows systems running Python versions below 3.11 where ntpath.isabs() behavior differs.\n         \n(4/5) * Possible vulnerability detected:  Versions Unsafes: <3.0.6\nMore Information: Affected versions of Werkzeug are potentially vulnerable to resource exhaustion when parsing file data in forms. Applications using 'werkzeug.formparser.MultiPartParser' to parse 'multipart/form-data' requests (e.g. all flask applications) are vulnerable to a relatively simple but effective resource exhaustion (denial of service) attack. A specifically crafted form submission request can cause the parser to allocate and block 3 to 8 times the upload size in main memory. There is no upper limit; a single upload at 1 Gbit/s can exhaust 32 GB of RAM in less than 60 seconds.\n         \n(5/5) * Possible vulnerability detected:  Versions Unsafes: <=2.3.7\nMore Information: Werkzeug is a comprehensive WSGI web application library. If an upload of a file that starts with CR or LF and then is followed by megabytes of data without these characters: all of these bytes are appended chunk by chunk into internal bytearray and lookup for boundary is performed on growing buffer. This allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "werkzeug==2.3.3",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Safety",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8a5bdfce5536105d0c9b8887f5868e291f1f8eb01ffddcdfbff144225fc203af",
+        "af86cf246ca43988db0fd2d24e5f90c99440b3a009e5c0c0df6f8f1338228538"
+      ],
+      "vulnHash": "cbf0c4454921c5fae2257e896babfb19d12d6ad32eecbad09fd29283bbdc55a9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B307",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "src/flask/cli.py",
+    "line": "1031",
+    "message": "(1/1) * Possible vulnerability detected: Use of possibly insecure function - consider using safer ast.literal_eval.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1030         with open(startup) as f:\n1031             eval(compile(f.read(), startup, \"exec\"), ctx)",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7ee07e9acdb22e168b0985ba6f5c9e3e37b6fa1462eb4912272140d28157cd9e",
+        "d488684ed5902406be49470d81f43d41ed098c33deb46c05939286c194179891"
+      ],
+      "vulnHash": "2a4220383149d9187596e6368d45cbe25e70b0f42edc4f4805dc58742423c7ba"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B102",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "src/flask/config.py",
+    "line": "209",
+    "message": "(1/1) * Possible vulnerability detected: Use of exec detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "208             with open(filename, mode=\"rb\") as config_file:\n209                 exec(compile(conf",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c12d422acc7377b3ed8407f7dd6349c2f2e192887b95cb8218e3c4002c40c6d6",
+        "9b35aec19c5c732098b63ed74458e6917aeee20a6babc00d96a649d06b535169"
+      ],
+      "vulnHash": "889cc5cbd2b78b36b490dd44020edb5de868c45179c0b49dba112c4fd8c265f8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B106",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/__init__.py",
+    "line": "9",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'dev'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "8     app = Flask(__name__, instance_relative_config=True)\n9     app.config.from_mapping(\n10        ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "48aa7f1ec3a6bf1f3bd2323cc722554521634ac5223fac7d68d420fa5b6fca2c",
+        "42770d166db2bec6591a1c3a6aea5e8d7523f19f42b06db8258745090c2fac80"
+      ],
+      "vulnHash": "ae634dfec20061383c3dfb5f8bac82c28a786fe5c4d58aab8e5bbaa316e6c7ec"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/app.py",
+    "line": "268",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "267         if self.has_static_folder:\n268             assert bool(static_host) == host_matching, (\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "209cbdd1b5c13cd6f06184f4731642a53f2065e59ac4358a5a47cc9193af0e30",
+        "061a206acdec9191dfad559c19f41aef984928cce0ef0a448a222f562ba1fb64"
+      ],
+      "vulnHash": "f7339b6e59a9388af27ede09b416ed905e67d6eda1c1fd66c24e1cd2dc57d8b1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/config.py",
+    "line": "163",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "162                 value = loads(value)\n163             except Exception:\n164                 # Kee",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4fd15212061b686ade0de08b1e1a9400e988a73f8405c4d63212159aaaf3c8d2",
+        "022c5d543bcb0779d07b07c2b6985e6e5cb1f3c03e6dae5b263a7f0cb2947670"
+      ],
+      "vulnHash": "c2990ea2a2672f408f354191b6ce4f9ab3cf0fcd30e57b6b79325b39fa12341d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/debughelpers.py",
+    "line": "59",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "58         exc = request.routing_exception\n59         assert isinstance(exc, RequestRedirect)\n60    ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "58a3ef3b44a0e91a26391a82e9e89e7745fe21f1cf331decacc29420d226e223",
+        "f7a0a536cd67bd5982c440710e3c34576268f4fd1070bb85a7a9b1263996f216"
+      ],
+      "vulnHash": "87c348ef3a431833e885edd1d71f06b0b441313f09f97c5dab4b11caefa1bc69"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/sansio/scaffold.py",
+    "line": "705",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "704     \"\"\"\n705     assert view_func is not None, \"expected view func if endpoint is not provided.\"\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "62530b7d23f0091296c59f91e560e94dfdaa70cd3e0cd418452e96d4d016fbcc",
+        "00f74fba74c45d95052fcf343691894b76d2a3228eebbe38d3c2772b542b8650"
+      ],
+      "vulnHash": "9020b6d735c72e9ddf821342d94cba41ed376c14c247e37559ffec5ffc5f815d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/testing.py",
+    "line": "59",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "58     ) -> None:\n59         assert not (base_url or subdomain or url_scheme) or (\n60             ba",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0681dfa17671550b54cb9c9f0d96231026d661222cce2f7aadd03555f0f5d036",
+        "d247e696a8f2ba9e848a780d14dae02f45926477c3f6fb89699f8ad145b92d9f"
+      ],
+      "vulnHash": "6ed02b26e4b6b51c5483fc3dc1bda686b02641ea49bc2734a21f8533b4e586c8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/views.py",
+    "line": "190",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "189 \n190         assert meth is not None, f\"Unimplemented method {request.method!r}\"\n191         ret",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "82d1baf77f0d54077f1c0cfbec5cd3b8537d51ce848e9e223ab8b854c089ef21",
+        "d2be5d56e8aa5e65249f4e5ea8117706a54b7f2a8d8fd6aa3dfdaceb34e29e7c"
+      ],
+      "vulnHash": "ab8350dd3129fd69d06beaacf66e19eb5932def010198a66ca45a08cdc0d441a"
+    }
+  }
+]

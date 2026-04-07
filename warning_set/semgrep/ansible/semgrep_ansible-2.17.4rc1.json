@@ -1,0 +1,2208 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": ".azure-pipelines/scripts/publish-codecov.py",
+    "line": 82,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 82,
+      "start_col": 10,
+      "end_col": 37,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "rule_name": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "hacking/report.py",
+    "line": 199,
+    "message": "Detected possible formatted SQL query. Use parameterized queries instead.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 199,
+      "start_col": 5,
+      "end_col": 53,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/775296/mysql-parameterized-queries"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "hacking/report.py",
+    "line": 199,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 199,
+      "start_col": 5,
+      "end_col": 53,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "rule_name": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "hacking/report.py",
+    "line": 200,
+    "message": "Detected possible formatted SQL query. Use parameterized queries instead.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 200,
+      "start_col": 5,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/775296/mysql-parameterized-queries"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "hacking/report.py",
+    "line": 200,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 200,
+      "start_col": 5,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "hacking/report.py",
+    "line": 209,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 209,
+      "start_col": 9,
+      "end_col": 75,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "hacking/test-module.py",
+    "line": 232,
+    "message": "Found 'subprocess' function 'Popen' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 232,
+      "start_col": 42,
+      "end_col": 46,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "hacking/test-module.py",
+    "line": 261,
+    "message": "Found 'subprocess' function 'call' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 261,
+      "start_col": 75,
+      "end_col": 79,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "hacking/test-module.py",
+    "line": 263,
+    "message": "Found 'subprocess' function 'call' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 263,
+      "start_col": 62,
+      "end_col": 66,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/cli/__init__.py",
+    "line": 523,
+    "message": "Found 'subprocess' function 'Popen' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 523,
+      "start_col": 53,
+      "end_col": 57,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/cli/doc.py",
+    "line": 723,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 723,
+      "start_col": 40,
+      "end_col": 74,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/cli/scripts/ansible_connection_cli_stub.py",
+    "line": 44,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 44,
+      "start_col": 21,
+      "end_col": 39,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/cli/scripts/ansible_connection_cli_stub.py",
+    "line": 251,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 251,
+      "start_col": 19,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/cli/scripts/ansible_connection_cli_stub.py",
+    "line": 252,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 252,
+      "start_col": 19,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "rule_name": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "lib/ansible/compat/importlib_resources.py",
+    "line": 18,
+    "message": "Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older Python versions.",
+    "cwe": [],
+    "extra": {
+      "end_line": 18,
+      "start_col": 5,
+      "end_col": 42,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/executor/powershell/module_manifest.py",
+    "line": 197,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 197,
+      "start_col": 31,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.compatibility.python36.python36-compatibility-Popen2",
+    "rule_name": "python.lang.compatibility.python36.python36-compatibility-Popen2",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "lib/ansible/galaxy/collection/gpg.py",
+    "line": 75,
+    "message": "the `encoding` argument to Popen is only available on Python 3.6+",
+    "cwe": [],
+    "extra": {
+      "end_line": 82,
+      "start_col": 13,
+      "end_col": 10,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/connection.py",
+    "line": 57,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 57,
+      "start_col": 11,
+      "end_col": 41,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/module_utils/connection.py",
+    "line": 62,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 62,
+      "start_col": 26,
+      "end_col": 43,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-cPickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/connection.py",
+    "line": 179,
+    "message": "Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 179,
+      "start_col": 34,
+      "end_col": 77,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/service.py",
+    "line": 228,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 228,
+      "start_col": 23,
+      "end_col": 139,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/service.py",
+    "line": 256,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 256,
+      "start_col": 16,
+      "end_col": 66,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers",
+    "rule_name": "python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/urls.py",
+    "line": 496,
+    "message": "The 'ssl' module disables insecure cipher suites by default. Therefore, use of 'set_ciphers()' should only be used when you have very specialized requirements. Otherwise, you risk lowering the security of the SSL channel.",
+    "cwe": [
+      326
+    ],
+    "extra": {
+      "end_line": 496,
+      "start_col": 9,
+      "end_col": 63,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "ssl"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/ssl.html#cipher-selection",
+        "https://docs.python.org/3/library/ssl.html#ssl.SSLContext.set_ciphers"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/module_utils/urls.py",
+    "line": 899,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 899,
+      "start_col": 13,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.compatibility.python36.python36-compatibility-Popen1",
+    "rule_name": "python.lang.compatibility.python36.python36-compatibility-Popen1",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "line": 169,
+    "message": "the `errors` argument to Popen is only available on Python 3.6+",
+    "cwe": [],
+    "extra": {
+      "end_line": 178,
+      "start_col": 18,
+      "end_col": 10,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.compatibility.python36.python36-compatibility-Popen2",
+    "rule_name": "python.lang.compatibility.python36.python36-compatibility-Popen2",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "line": 169,
+    "message": "the `encoding` argument to Popen is only available on Python 3.6+",
+    "cwe": [],
+    "extra": {
+      "end_line": 178,
+      "start_col": 18,
+      "end_col": 10,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "rule_name": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/modules/hostname.py",
+    "line": 628,
+    "message": "Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.",
+    "cwe": [
+      96
+    ],
+    "extra": {
+      "end_line": 628,
+      "start_col": 21,
+      "end_col": 63,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/mpirnat/lets-be-bad-guys/blob/d92768fb3ade32956abd53bd6bb06e19d634a084/badguys/vulnerable/views.py#L181-L186"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/connection/ssh.py",
+    "line": 607,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 607,
+      "start_col": 13,
+      "end_col": 27,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/inventory/__init__.py",
+    "line": 312,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 312,
+      "start_col": 13,
+      "end_col": 27,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/inventory/__init__.py",
+    "line": 316,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 316,
+      "start_col": 13,
+      "end_col": 27,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/loader.py",
+    "line": 440,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 440,
+      "start_col": 26,
+      "end_col": 77,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/loader.py",
+    "line": 447,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 447,
+      "start_col": 13,
+      "end_col": 101,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/loader.py",
+    "line": 545,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 545,
+      "start_col": 23,
+      "end_col": 63,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/loader.py",
+    "line": 1272,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1272,
+      "start_col": 19,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/lookup/lines.py",
+    "line": 56,
+    "message": "Found 'subprocess' function 'Popen' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 56,
+      "start_col": 78,
+      "end_col": 82,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/lookup/password.py",
+    "line": 270,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 270,
+      "start_col": 54,
+      "end_col": 74,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "rule_name": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/plugins/lookup/pipe.py",
+    "line": 68,
+    "message": "Found 'subprocess' function 'Popen' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "end_line": 68,
+      "start_col": 78,
+      "end_col": 82,
+      "category": "security",
+      "subcategory": [
+        "secure default"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/3172470/actual-meaning-of-shell-true-in-subprocess",
+        "https://docs.python.org/3/library/subprocess.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "rule_name": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/lookup/sequence.py",
+    "line": 163,
+    "message": "Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.",
+    "cwe": [
+      96
+    ],
+    "extra": {
+      "end_line": 163,
+      "start_col": 21,
+      "end_col": 44,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/mpirnat/lets-be-bad-guys/blob/d92768fb3ade32956abd53bd6bb06e19d634a084/badguys/vulnerable/views.py#L181-L186"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.eval-detected.eval-detected",
+    "rule_name": "python.lang.security.audit.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "line": 1195,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 1195,
+      "start_col": 20,
+      "end_col": 53,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "line": 1218,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 1218,
+      "start_col": 13,
+      "end_col": 46,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "rule_name": "python.lang.compatibility.python37.python37-compatibility-importlib2",
+    "severity": "HIGH",
+    "confidence": "UNKNOWN",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 46,
+    "message": "Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older Python versions.",
+    "cwe": [],
+    "extra": {
+      "end_line": 46,
+      "start_col": 9,
+      "end_col": 65,
+      "category": "compatibility",
+      "subcategory": null,
+      "technology": [
+        "python"
+      ],
+      "owasp": null,
+      "references": null,
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 593,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 593,
+      "start_col": 13,
+      "end_col": 44,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 624,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 624,
+      "start_col": 17,
+      "end_col": 48,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 861,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 861,
+      "start_col": 37,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 919,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 919,
+      "start_col": 45,
+      "end_col": 74,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 934,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 934,
+      "start_col": 15,
+      "end_col": 44,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 1130,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1130,
+      "start_col": 26,
+      "end_col": 81,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 1143,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1143,
+      "start_col": 19,
+      "end_col": 70,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 1193,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1193,
+      "start_col": 19,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 1235,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1235,
+      "start_col": 64,
+      "end_col": 129,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "line": 1314,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1314,
+      "start_col": 26,
+      "end_col": 81,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/utils/jsonrpc.py",
+    "line": 86,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 86,
+      "start_col": 30,
+      "end_col": 62,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/vars/manager.py",
+    "line": 83,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 83,
+      "start_col": 56,
+      "end_col": 76,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "lib/ansible/vars/manager.py",
+    "line": 126,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 126,
+      "start_col": 79,
+      "end_col": 99,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "rule_name": "python.lang.security.dangerous-globals-use.dangerous-globals-use",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "lib/ansible/vars/manager.py",
+    "line": 295,
+    "message": "Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.",
+    "cwe": [
+      96
+    ],
+    "extra": {
+      "end_line": 295,
+      "start_col": 61,
+      "end_col": 76,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/mpirnat/lets-be-bad-guys/blob/d92768fb3ade32956abd53bd6bb06e19d634a084/badguys/vulnerable/views.py#L181-L186"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "packaging/cli-doc/build.py",
+    "line": 106,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 106,
+      "start_col": 15,
+      "end_col": 87,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "packaging/cli-doc/build.py",
+    "line": 108,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 108,
+      "start_col": 29,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "packaging/cli-doc/build.py",
+    "line": 141,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 141,
+      "start_col": 18,
+      "end_col": 57,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "ansible",
+    "project_version": "2.17.4rc1",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "packaging/release.py",
+    "line": 1013,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 1013,
+      "start_col": 11,
+      "end_col": 31,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

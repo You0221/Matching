@@ -1,0 +1,956 @@
+diff --git a/.flake8 b/.flake8
+index 18c72168cb..3a7da2c652 100644
+--- a/.flake8
++++ b/.flake8
+@@ -13,5 +13,7 @@ ignore =
+     # flake8 and black disagree about
+     # W503 line break before binary operator
+     # E203 whitespace before ':'
+-    W503,E203
++    # E701/E704 multiple statements on one line
++    # https://black.readthedocs.io/en/latest/guides/using_black_with_other_tools.html#labels-why-pycodestyle-warnings
++    W503,E203,E701,E704
+ doctests = true
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 73bd458bc4..d58a50757d 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -25,8 +25,8 @@ jobs:
+     name: Build sdist
+     runs-on: ubuntu-22.04
+     steps:
+-      - uses: actions/checkout@v3
+-      - uses: actions/setup-python@v4
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
+         name: Install Python
+         with:
+           python-version: ${{ env.python-version }}
+@@ -36,8 +36,9 @@ jobs:
+       - name: Build sdist
+         run: "python setup.py sdist && ls -l dist"
+ 
+-      - uses: actions/upload-artifact@v3
++      - uses: actions/upload-artifact@v4
+         with:
++          name: artifacts-sdist
+           path: ./dist/tornado-*.tar.gz
+ 
+   build_wheels:
+@@ -49,22 +50,23 @@ jobs:
+         os: [ubuntu-22.04, windows-2022, macos-12]
+ 
+     steps:
+-      - uses: actions/checkout@v3
+-      - uses: actions/setup-python@v4
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
+         name: Install Python
+         with:
+           python-version: ${{ env.python-version }}
+       - name: Set up QEMU
+         if: runner.os == 'Linux'
+-        uses: docker/setup-qemu-action@v2
++        uses: docker/setup-qemu-action@v3
+         with:
+           platforms: all
+ 
+       - name: Build wheels
+-        uses: pypa/cibuildwheel@v2.12.1
++        uses: pypa/cibuildwheel@v2.18
+ 
+-      - uses: actions/upload-artifact@v3
++      - uses: actions/upload-artifact@v4
+         with:
++          name: artifacts-${{ matrix.os }}
+           path: ./wheelhouse/*.whl
+ 
+   upload_pypi_test:
+@@ -72,31 +74,34 @@ jobs:
+     needs: [build_wheels, build_sdist]
+     runs-on: ubuntu-22.04
+     if: github.repository == 'tornadoweb/tornado' && github.event_name == 'workflow_dispatch'
++    permissions:
++      # This permission is required for pypi's "trusted publisher" feature
++      id-token: write
+     steps:
+-      - uses: actions/download-artifact@v3
++      - uses: actions/download-artifact@v4
+         with:
+-          name: artifact
++          pattern: artifacts-*
+           path: dist
++          merge-multiple: true
+ 
+-      - uses: pypa/gh-action-pypi-publish@v1.5.0
++      - uses: pypa/gh-action-pypi-publish@release/v1
+         with:
+-          user: __token__
+-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+-          repository_url: https://test.pypi.org/legacy/
+-          skip_existing: true
++          repository-url: https://test.pypi.org/legacy/
++          skip-existing: true
+ 
+   upload_pypi:
+     name: Upload to PyPI (prod)
+     needs: [build_wheels, build_sdist]
+     runs-on: ubuntu-22.04
+     if: github.repository == 'tornadoweb/tornado' && github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
++    permissions:
++      # This permission is required for pypi's "trusted publisher" feature
++      id-token: write
+     steps:
+-      - uses: actions/download-artifact@v3
++      - uses: actions/download-artifact@v4
+         with:
+-          name: artifact
++          pattern: artifacts-*
+           path: dist
++          merge-multiple: true
+ 
+-      - uses: pypa/gh-action-pypi-publish@v1.5.0
+-        with:
+-          user: __token__
+-          password: ${{ secrets.PYPI_API_TOKEN }}
++      - uses: pypa/gh-action-pypi-publish@release/v1
+diff --git a/.github/workflows/test.yml b/.github/workflows/test.yml
+index b26d4ef902..93b87d5ef1 100644
+--- a/.github/workflows/test.yml
++++ b/.github/workflows/test.yml
+@@ -17,8 +17,8 @@ jobs:
+     name: Run quick tests
+     runs-on: ubuntu-22.04
+     steps:
+-      - uses: actions/checkout@v3
+-      - uses: actions/setup-python@v4
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
+         name: Install Python
+         with:
+           # Lint python version must be synced with tox.ini
+@@ -62,8 +62,8 @@ jobs:
+             tox_env: docs
+ 
+     steps:
+-      - uses: actions/checkout@v3
+-      - uses: actions/setup-python@v4
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
+         name: Install Python
+         with:
+           python-version: ${{ matrix.python}}
+@@ -85,8 +85,8 @@ jobs:
+     needs: test_quick
+     runs-on: windows-2022
+     steps:
+-      - uses: actions/checkout@v3
+-      - uses: actions/setup-python@v4
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
+         name: Install Python
+         with:
+           python-version: '3.11'
+diff --git a/demos/blog/blog.py b/demos/blog/blog.py
+index bd0c5b3f18..e6e23f85b4 100755
+--- a/demos/blog/blog.py
++++ b/demos/blog/blog.py
+@@ -40,13 +40,13 @@ class NoResultError(Exception):
+ 
+ async def maybe_create_tables(db):
+     try:
+-        with (await db.cursor()) as cur:
++        with await db.cursor() as cur:
+             await cur.execute("SELECT COUNT(*) FROM entries LIMIT 1")
+             await cur.fetchone()
+     except psycopg2.ProgrammingError:
+         with open("schema.sql") as f:
+             schema = f.read()
+-        with (await db.cursor()) as cur:
++        with await db.cursor() as cur:
+             await cur.execute(schema)
+ 
+ 
+@@ -89,7 +89,7 @@ async def execute(self, stmt, *args):
+ 
+         Must be called with ``await self.execute(...)``
+         """
+-        with (await self.application.db.cursor()) as cur:
++        with await self.application.db.cursor() as cur:
+             await cur.execute(stmt, args)
+ 
+     async def query(self, stmt, *args):
+@@ -103,7 +103,7 @@ async def query(self, stmt, *args):
+ 
+             for row in await self.query(...)
+         """
+-        with (await self.application.db.cursor()) as cur:
++        with await self.application.db.cursor() as cur:
+             await cur.execute(stmt, args)
+             return [self.row_to_obj(row, cur) for row in await cur.fetchall()]
+ 
+diff --git a/demos/google_auth/main.py b/demos/google_auth/main.py
+index 06dd3b5cdb..40cdd7a4fd 100644
+--- a/demos/google_auth/main.py
++++ b/demos/google_auth/main.py
+@@ -10,6 +10,7 @@
+ - Run this file with `python main.py --config_file=main.cfg`
+ - Visit "http://localhost:8888" in your browser.
+ """
++
+ import asyncio
+ import json
+ import tornado
+diff --git a/docs/releases.rst b/docs/releases.rst
+index da8dd597a8..8a0fad4c2f 100644
+--- a/docs/releases.rst
++++ b/docs/releases.rst
+@@ -4,6 +4,7 @@ Release notes
+ .. toctree::
+    :maxdepth: 2
+ 
++   releases/v6.4.1
+    releases/v6.4.0
+    releases/v6.3.3
+    releases/v6.3.2
+diff --git a/docs/releases/v6.4.1.rst b/docs/releases/v6.4.1.rst
+new file mode 100644
+index 0000000000..8d72b2b2f8
+--- /dev/null
++++ b/docs/releases/v6.4.1.rst
+@@ -0,0 +1,41 @@
++What's new in Tornado 6.4.1
++===========================
++
++Jun 6, 2024
++-----------
++
++Security Improvements
++~~~~~~~~~~~~~~~~~~~~~
++
++- Parsing of the ``Transfer-Encoding`` header is now stricter. Unexpected transfer-encoding values
++  were previously ignored and treated as the HTTP/1.0 default of read-until-close. This can lead to
++  framing issues with certain proxies. We now treat any unexpected value as an error.
++- Handling of whitespace in headers now matches the RFC more closely. Only space and tab characters
++  are treated as whitespace and stripped from the beginning and end of header values. Other unicode
++  whitespace characters are now left alone. This could also lead to framing issues with certain
++  proxies. 
++- ``tornado.curl_httpclient`` now prohibits carriage return and linefeed headers in HTTP headers
++  (matching the behavior of ``simple_httpclient``). These characters could be used for header
++  injection or request smuggling if untrusted data were used in headers.
++
++General Changes
++~~~~~~~~~~~~~~~
++
++`tornado.iostream`
++~~~~~~~~~~~~~~~~~~
++
++- `.SSLIOStream` now understands changes to error codes from OpenSSL 3.2. The main result of this
++  change is to reduce the noise in the logs for certain errors.
++
++``tornado.simple_httpclient``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++- ``simple_httpclient`` now prohibits carriage return characters in HTTP headers. It had previously
++  prohibited only linefeed characters.
++
++`tornado.testing`
++~~~~~~~~~~~~~~~~~
++
++- `.AsyncTestCase` subclasses can now be instantiated without being associated with a test
++  method. This improves compatibility with test discovery in Pytest 8.2.
++
+diff --git a/requirements.txt b/requirements.txt
+index ce09865efd..9118bdfde6 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -8,7 +8,7 @@ alabaster==0.7.13
+     # via sphinx
+ babel==2.11.0
+     # via sphinx
+-black==22.12.0
++black==24.4.2
+     # via -r requirements.in
+ build==0.10.0
+     # via pip-tools
+@@ -38,11 +38,11 @@ filelock==3.12.0
+     #   virtualenv
+ flake8==6.0.0
+     # via -r requirements.in
+-idna==3.4
++idna==3.7
+     # via requests
+ imagesize==1.4.1
+     # via sphinx
+-jinja2==3.1.2
++jinja2==3.1.4
+     # via sphinx
+ markupsafe==2.1.2
+     # via jinja2
+@@ -56,6 +56,7 @@ mypy-extensions==0.4.3
+     #   mypy
+ packaging==23.1
+     # via
++    #   black
+     #   build
+     #   pyproject-api
+     #   sphinx
+@@ -83,7 +84,7 @@ pyproject-hooks==1.0.0
+     # via build
+ pytz==2022.7.1
+     # via babel
+-requests==2.31.0
++requests==2.32.2
+     # via sphinx
+ snowballstemmer==2.2.0
+     # via sphinx
+diff --git a/tornado/__init__.py b/tornado/__init__.py
+index a0ae714d3e..f542de3558 100644
+--- a/tornado/__init__.py
++++ b/tornado/__init__.py
+@@ -22,8 +22,8 @@
+ # is zero for an official release, positive for a development branch,
+ # or negative for a release candidate or beta (after the base version
+ # number has been incremented)
+-version = "6.4"
+-version_info = (6, 4, 0, 0)
++version = "6.4.1"
++version_info = (6, 4, 0, 1)
+ 
+ import importlib
+ import typing
+diff --git a/tornado/concurrent.py b/tornado/concurrent.py
+index 86bbd703c1..5047c5389f 100644
+--- a/tornado/concurrent.py
++++ b/tornado/concurrent.py
+@@ -118,6 +118,7 @@ def foo(self):
+ 
+        The ``callback`` argument was removed.
+     """
++
+     # Fully type-checking decorators is tricky, and this one is
+     # discouraged anyway so it doesn't have all the generic magic.
+     def run_on_executor_decorator(fn: Callable) -> Callable[..., Future]:
+diff --git a/tornado/curl_httpclient.py b/tornado/curl_httpclient.py
+index 23320e4822..397c3a9752 100644
+--- a/tornado/curl_httpclient.py
++++ b/tornado/curl_httpclient.py
+@@ -19,6 +19,7 @@
+ import functools
+ import logging
+ import pycurl
++import re
+ import threading
+ import time
+ from io import BytesIO
+@@ -44,6 +45,8 @@
+ 
+ curl_log = logging.getLogger("tornado.curl_httpclient")
+ 
++CR_OR_LF_RE = re.compile(b"\r|\n")
++
+ 
+ class CurlAsyncHTTPClient(AsyncHTTPClient):
+     def initialize(  # type: ignore
+@@ -347,14 +350,15 @@ def _curl_setup_request(
+         if "Pragma" not in request.headers:
+             request.headers["Pragma"] = ""
+ 
+-        curl.setopt(
+-            pycurl.HTTPHEADER,
+-            [
+-                b"%s: %s"
+-                % (native_str(k).encode("ASCII"), native_str(v).encode("ISO8859-1"))
+-                for k, v in request.headers.get_all()
+-            ],
+-        )
++        encoded_headers = [
++            b"%s: %s"
++            % (native_str(k).encode("ASCII"), native_str(v).encode("ISO8859-1"))
++            for k, v in request.headers.get_all()
++        ]
++        for line in encoded_headers:
++            if CR_OR_LF_RE.search(line):
++                raise ValueError("Illegal characters in header (CR or LF): %r" % line)
++        curl.setopt(pycurl.HTTPHEADER, encoded_headers)
+ 
+         curl.setopt(
+             pycurl.HEADERFUNCTION,
+diff --git a/tornado/gen.py b/tornado/gen.py
+index dab4fd09db..0e3c7a6fc2 100644
+--- a/tornado/gen.py
++++ b/tornado/gen.py
+@@ -66,6 +66,7 @@ def get(self):
+    via ``singledispatch``.
+ 
+ """
++
+ import asyncio
+ import builtins
+ import collections
+@@ -165,13 +166,11 @@ def _fake_ctx_run(f: Callable[..., _T], *args: Any, **kw: Any) -> _T:
+ @overload
+ def coroutine(
+     func: Callable[..., "Generator[Any, Any, _T]"]
+-) -> Callable[..., "Future[_T]"]:
+-    ...
++) -> Callable[..., "Future[_T]"]: ...
+ 
+ 
+ @overload
+-def coroutine(func: Callable[..., _T]) -> Callable[..., "Future[_T]"]:
+-    ...
++def coroutine(func: Callable[..., _T]) -> Callable[..., "Future[_T]"]: ...
+ 
+ 
+ def coroutine(
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index ca50e8ff55..1a23f5c7fd 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -38,6 +38,8 @@
+ 
+ from typing import cast, Optional, Type, Awaitable, Callable, Union, Tuple
+ 
++CR_OR_LF_RE = re.compile(b"\r|\n")
++
+ 
+ class _QuietException(Exception):
+     def __init__(self) -> None:
+@@ -389,14 +391,11 @@ def write_headers(
+             self._request_start_line = start_line
+             lines.append(utf8("%s %s HTTP/1.1" % (start_line[0], start_line[1])))
+             # Client requests with a non-empty body must have either a
+-            # Content-Length or a Transfer-Encoding.
++            # Content-Length or a Transfer-Encoding. If Content-Length is not
++            # present we'll add our Transfer-Encoding below.
+             self._chunking_output = (
+                 start_line.method in ("POST", "PUT", "PATCH")
+                 and "Content-Length" not in headers
+-                and (
+-                    "Transfer-Encoding" not in headers
+-                    or headers["Transfer-Encoding"] == "chunked"
+-                )
+             )
+         else:
+             assert isinstance(start_line, httputil.ResponseStartLine)
+@@ -418,9 +417,6 @@ def write_headers(
+                 and (start_line.code < 100 or start_line.code >= 200)
+                 # No need to chunk the output if a Content-Length is specified.
+                 and "Content-Length" not in headers
+-                # Applications are discouraged from touching Transfer-Encoding,
+-                # but if they do, leave it alone.
+-                and "Transfer-Encoding" not in headers
+             )
+             # If connection to a 1.1 client will be closed, inform client
+             if (
+@@ -453,8 +449,8 @@ def write_headers(
+         )
+         lines.extend(line.encode("latin1") for line in header_lines)
+         for line in lines:
+-            if b"\n" in line:
+-                raise ValueError("Newline in header: " + repr(line))
++            if CR_OR_LF_RE.search(line):
++                raise ValueError("Illegal characters (CR or LF) in header: %r" % line)
+         future = None
+         if self.stream.closed():
+             future = self._write_future = Future()
+@@ -560,7 +556,7 @@ def _can_keep_alive(
+             return connection_header != "close"
+         elif (
+             "Content-Length" in headers
+-            or headers.get("Transfer-Encoding", "").lower() == "chunked"
++            or is_transfer_encoding_chunked(headers)
+             or getattr(start_line, "method", None) in ("HEAD", "GET")
+         ):
+             # start_line may be a request or response start line; only
+@@ -598,13 +594,6 @@ def _read_body(
+         delegate: httputil.HTTPMessageDelegate,
+     ) -> Optional[Awaitable[None]]:
+         if "Content-Length" in headers:
+-            if "Transfer-Encoding" in headers:
+-                # Response cannot contain both Content-Length and
+-                # Transfer-Encoding headers.
+-                # http://tools.ietf.org/html/rfc7230#section-3.3.3
+-                raise httputil.HTTPInputError(
+-                    "Response with both Transfer-Encoding and Content-Length"
+-                )
+             if "," in headers["Content-Length"]:
+                 # Proxies sometimes cause Content-Length headers to get
+                 # duplicated.  If all the values are identical then we can
+@@ -631,20 +620,22 @@ def _read_body(
+         else:
+             content_length = None
+ 
++        is_chunked = is_transfer_encoding_chunked(headers)
++
+         if code == 204:
+             # This response code is not allowed to have a non-empty body,
+             # and has an implicit length of zero instead of read-until-close.
+             # http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
+-            if "Transfer-Encoding" in headers or content_length not in (None, 0):
++            if is_chunked or content_length not in (None, 0):
+                 raise httputil.HTTPInputError(
+                     "Response with code %d should not have body" % code
+                 )
+             content_length = 0
+ 
++        if is_chunked:
++            return self._read_chunked_body(delegate)
+         if content_length is not None:
+             return self._read_fixed_body(content_length, delegate)
+-        if headers.get("Transfer-Encoding", "").lower() == "chunked":
+-            return self._read_chunked_body(delegate)
+         if self.is_client:
+             return self._read_body_until_close(delegate)
+         return None
+@@ -863,3 +854,33 @@ def parse_hex_int(s: str) -> int:
+     if HEXDIGITS.fullmatch(s) is None:
+         raise ValueError("not a hexadecimal integer: %r" % s)
+     return int(s, 16)
++
++
++def is_transfer_encoding_chunked(headers: httputil.HTTPHeaders) -> bool:
++    """Returns true if the headers specify Transfer-Encoding: chunked.
++
++    Raise httputil.HTTPInputError if any other transfer encoding is used.
++    """
++    # Note that transfer-encoding is an area in which postel's law can lead
++    # us astray. If a proxy and a backend server are liberal in what they accept,
++    # but accept slightly different things, this can lead to mismatched framing
++    # and request smuggling issues. Therefore we are as strict as possible here
++    # (even technically going beyond the requirements of the RFCs: a value of
++    # ",chunked" is legal but doesn't appear in practice for legitimate traffic)
++    if "Transfer-Encoding" not in headers:
++        return False
++    if "Content-Length" in headers:
++        # Message cannot contain both Content-Length and
++        # Transfer-Encoding headers.
++        # http://tools.ietf.org/html/rfc7230#section-3.3.3
++        raise httputil.HTTPInputError(
++            "Message with both Transfer-Encoding and Content-Length"
++        )
++    if headers["Transfer-Encoding"].lower() == "chunked":
++        return True
++    # We do not support any transfer-encodings other than chunked, and we do not
++    # expect to add any support because the concept of transfer-encoding has
++    # been removed in HTTP/2.
++    raise httputil.HTTPInputError(
++        "Unsupported Transfer-Encoding %s" % headers["Transfer-Encoding"]
++    )
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index b21d8046c4..9ce992d82b 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -62,6 +62,9 @@
+     from asyncio import Future  # noqa: F401
+     import unittest  # noqa: F401
+ 
++# To be used with str.strip() and related methods.
++HTTP_WHITESPACE = " \t"
++
+ 
+ @lru_cache(1000)
+ def _normalize_header(name: str) -> str:
+@@ -171,7 +174,7 @@ def parse_line(self, line: str) -> None:
+             # continuation of a multi-line header
+             if self._last_key is None:
+                 raise HTTPInputError("first header line cannot start with whitespace")
+-            new_part = " " + line.lstrip()
++            new_part = " " + line.lstrip(HTTP_WHITESPACE)
+             self._as_list[self._last_key][-1] += new_part
+             self._dict[self._last_key] += new_part
+         else:
+@@ -179,7 +182,7 @@ def parse_line(self, line: str) -> None:
+                 name, value = line.split(":", 1)
+             except ValueError:
+                 raise HTTPInputError("no colon in header line")
+-            self.add(name, value.strip())
++            self.add(name, value.strip(HTTP_WHITESPACE))
+ 
+     @classmethod
+     def parse(cls, headers: str) -> "HTTPHeaders":
+diff --git a/tornado/iostream.py b/tornado/iostream.py
+index bd001aeeb1..ee5775932e 100644
+--- a/tornado/iostream.py
++++ b/tornado/iostream.py
+@@ -1374,7 +1374,7 @@ def _do_ssl_handshake(self) -> None:
+                 return
+             elif err.args[0] in (ssl.SSL_ERROR_EOF, ssl.SSL_ERROR_ZERO_RETURN):
+                 return self.close(exc_info=err)
+-            elif err.args[0] == ssl.SSL_ERROR_SSL:
++            elif err.args[0] in (ssl.SSL_ERROR_SSL, ssl.SSL_ERROR_SYSCALL):
+                 try:
+                     peer = self.socket.getpeername()
+                 except Exception:
+diff --git a/tornado/simple_httpclient.py b/tornado/simple_httpclient.py
+index 2460863fc1..5b2d4dcd98 100644
+--- a/tornado/simple_httpclient.py
++++ b/tornado/simple_httpclient.py
+@@ -429,9 +429,9 @@ async def run(self) -> None:
+                 self.request.method == "POST"
+                 and "Content-Type" not in self.request.headers
+             ):
+-                self.request.headers[
+-                    "Content-Type"
+-                ] = "application/x-www-form-urlencoded"
++                self.request.headers["Content-Type"] = (
++                    "application/x-www-form-urlencoded"
++                )
+             if self.request.decompress_response:
+                 self.request.headers["Accept-Encoding"] = "gzip"
+             req_path = (self.parsed.path or "/") + (
+diff --git a/tornado/test/__main__.py b/tornado/test/__main__.py
+index 430c895fa2..890bd505b4 100644
+--- a/tornado/test/__main__.py
++++ b/tornado/test/__main__.py
+@@ -2,6 +2,7 @@
+ 
+ This only works in python 2.7+.
+ """
++
+ from tornado.test.runtests import all, main
+ 
+ # tornado.testing.main autodiscovery relies on 'all' being present in
+diff --git a/tornado/test/escape_test.py b/tornado/test/escape_test.py
+index 6bd2ae79e4..3115a19409 100644
+--- a/tornado/test/escape_test.py
++++ b/tornado/test/escape_test.py
+@@ -194,9 +194,11 @@
+     (
+         "www.external-link.com and www.internal-link.com/blogs extra",
+         {
+-            "extra_params": lambda href: 'class="internal"'
+-            if href.startswith("http://www.internal-link.com")
+-            else 'rel="nofollow" class="external"'
++            "extra_params": lambda href: (
++                'class="internal"'
++                if href.startswith("http://www.internal-link.com")
++                else 'rel="nofollow" class="external"'
++            )
+         },
+         '<a href="http://www.external-link.com" rel="nofollow" class="external">www.external-link.com</a>'  # noqa: E501
+         ' and <a href="http://www.internal-link.com/blogs" class="internal">www.internal-link.com/blogs</a> extra',  # noqa: E501
+diff --git a/tornado/test/httpclient_test.py b/tornado/test/httpclient_test.py
+index 31a1916199..17291f8f2e 100644
+--- a/tornado/test/httpclient_test.py
++++ b/tornado/test/httpclient_test.py
+@@ -725,6 +725,22 @@ def test_error_after_cancel(self):
+                 if el.logged_stack:
+                     break
+ 
++    def test_header_crlf(self):
++        # Ensure that the client doesn't allow CRLF injection in headers. RFC 9112 section 2.2
++        # prohibits a bare CR specifically and "a recipient MAY recognize a single LF as a line
++        # terminator" so we check each character separately as well as the (redundant) CRLF pair.
++        for header, name in [
++            ("foo\rbar:", "cr"),
++            ("foo\nbar:", "lf"),
++            ("foo\r\nbar:", "crlf"),
++        ]:
++            with self.subTest(name=name, position="value"):
++                with self.assertRaises(ValueError):
++                    self.fetch("/hello", headers={"foo": header})
++            with self.subTest(name=name, position="key"):
++                with self.assertRaises(ValueError):
++                    self.fetch("/hello", headers={header: "foo"})
++
+ 
+ class RequestProxyTest(unittest.TestCase):
+     def test_request_set(self):
+diff --git a/tornado/test/httpserver_test.py b/tornado/test/httpserver_test.py
+index 1faf63fabf..0b29a39ccf 100644
+--- a/tornado/test/httpserver_test.py
++++ b/tornado/test/httpserver_test.py
+@@ -581,6 +581,76 @@ def test_chunked_request_body_invalid_size(self):
+             )
+         self.assertEqual(400, start_line.code)
+ 
++    def test_chunked_request_body_duplicate_header(self):
++        # Repeated Transfer-Encoding headers should be an error (and not confuse
++        # the chunked-encoding detection to mess up framing).
++        self.stream.write(
++            b"""\
++POST /echo HTTP/1.1
++Transfer-Encoding: chunked
++Transfer-encoding: chunked
++
++2
++ok
++0
++
++"""
++        )
++        with ExpectLog(
++            gen_log,
++            ".*Unsupported Transfer-Encoding chunked,chunked",
++            level=logging.INFO,
++        ):
++            start_line, headers, response = self.io_loop.run_sync(
++                lambda: read_stream_body(self.stream)
++            )
++        self.assertEqual(400, start_line.code)
++
++    def test_chunked_request_body_unsupported_transfer_encoding(self):
++        # We don't support transfer-encodings other than chunked.
++        self.stream.write(
++            b"""\
++POST /echo HTTP/1.1
++Transfer-Encoding: gzip, chunked
++
++2
++ok
++0
++
++"""
++        )
++        with ExpectLog(
++            gen_log, ".*Unsupported Transfer-Encoding gzip, chunked", level=logging.INFO
++        ):
++            start_line, headers, response = self.io_loop.run_sync(
++                lambda: read_stream_body(self.stream)
++            )
++        self.assertEqual(400, start_line.code)
++
++    def test_chunked_request_body_transfer_encoding_and_content_length(self):
++        # Transfer-encoding and content-length are mutually exclusive
++        self.stream.write(
++            b"""\
++POST /echo HTTP/1.1
++Transfer-Encoding: chunked
++Content-Length: 2
++
++2
++ok
++0
++
++"""
++        )
++        with ExpectLog(
++            gen_log,
++            ".*Message with both Transfer-Encoding and Content-Length",
++            level=logging.INFO,
++        ):
++            start_line, headers, response = self.io_loop.run_sync(
++                lambda: read_stream_body(self.stream)
++            )
++        self.assertEqual(400, start_line.code)
++
+     @gen_test
+     def test_invalid_content_length(self):
+         # HTTP only allows decimal digits in content-length. Make sure we don't
+diff --git a/tornado/test/httputil_test.py b/tornado/test/httputil_test.py
+index aa9b6ee253..6d618839e0 100644
+--- a/tornado/test/httputil_test.py
++++ b/tornado/test/httputil_test.py
+@@ -334,6 +334,25 @@ def test_unicode_newlines(self):
+                     gen_log.warning("failed while trying %r in %s", newline, encoding)
+                     raise
+ 
++    def test_unicode_whitespace(self):
++        # Only tabs and spaces are to be stripped according to the HTTP standard.
++        # Other unicode whitespace is to be left as-is. In the context of headers,
++        # this specifically means the whitespace characters falling within the
++        # latin1 charset.
++        whitespace = [
++            (" ", True),  # SPACE
++            ("\t", True),  # TAB
++            ("\u00a0", False),  # NON-BREAKING SPACE
++            ("\u0085", False),  # NEXT LINE
++        ]
++        for c, stripped in whitespace:
++            headers = HTTPHeaders.parse("Transfer-Encoding: %schunked" % c)
++            if stripped:
++                expected = [("Transfer-Encoding", "chunked")]
++            else:
++                expected = [("Transfer-Encoding", "%schunked" % c)]
++            self.assertEqual(expected, list(headers.get_all()))
++
+     def test_optional_cr(self):
+         # Both CRLF and LF should be accepted as separators. CR should not be
+         # part of the data when followed by LF, but it is a normal char
+diff --git a/tornado/test/ioloop_test.py b/tornado/test/ioloop_test.py
+index 9485afeaeb..d07438aa63 100644
+--- a/tornado/test/ioloop_test.py
++++ b/tornado/test/ioloop_test.py
+@@ -261,6 +261,7 @@ def test_close_file_object(self):
+         the object should be closed (by IOLoop.close(all_fds=True),
+         not just the fd.
+         """
++
+         # Use a socket since they are supported by IOLoop on all platforms.
+         # Unfortunately, sockets don't support the .closed attribute for
+         # inspecting their close status, so we must use a wrapper.
+diff --git a/tornado/test/simple_httpclient_test.py b/tornado/test/simple_httpclient_test.py
+index 62bd4830c8..593f81fd34 100644
+--- a/tornado/test/simple_httpclient_test.py
++++ b/tornado/test/simple_httpclient_test.py
+@@ -828,7 +828,7 @@ def test_chunked_with_content_length(self):
+         with ExpectLog(
+             gen_log,
+             (
+-                "Malformed HTTP message from None: Response "
++                "Malformed HTTP message from None: Message "
+                 "with both Transfer-Encoding and Content-Length"
+             ),
+             level=logging.INFO,
+diff --git a/tornado/test/testing_test.py b/tornado/test/testing_test.py
+index 0429feee83..4432bb1758 100644
+--- a/tornado/test/testing_test.py
++++ b/tornado/test/testing_test.py
+@@ -5,7 +5,6 @@
+ from tornado.web import Application
+ import asyncio
+ import contextlib
+-import inspect
+ import gc
+ import os
+ import platform
+@@ -118,7 +117,11 @@ def tearDown(self):
+         super().tearDown()
+ 
+ 
+-class AsyncTestCaseWrapperTest(unittest.TestCase):
++class AsyncTestCaseReturnAssertionsTest(unittest.TestCase):
++    # These tests verify that tests that return non-None values (without being decorated with
++    # @gen_test) raise errors instead of incorrectly succeeding. These tests should be removed or
++    # updated when the _callTestMethod method is removed from AsyncTestCase (the same checks will
++    # still happen, but they'll be performed in the stdlib as DeprecationWarnings)
+     def test_undecorated_generator(self):
+         class Test(AsyncTestCase):
+             def test_gen(self):
+@@ -135,7 +138,10 @@ def test_gen(self):
+         "pypy destructor warnings cannot be silenced",
+     )
+     @unittest.skipIf(
+-        sys.version_info >= (3, 12), "py312 has its own check for test case returns"
++        # This check actually exists in 3.11 but it changed in 3.12 in a way that breaks
++        # this test.
++        sys.version_info >= (3, 12),
++        "py312 has its own check for test case returns",
+     )
+     def test_undecorated_coroutine(self):
+         class Test(AsyncTestCase):
+@@ -176,17 +182,6 @@ def test_other_return(self):
+         self.assertEqual(len(result.errors), 1)
+         self.assertIn("Return value from test method ignored", result.errors[0][1])
+ 
+-    def test_unwrap(self):
+-        class Test(AsyncTestCase):
+-            def test_foo(self):
+-                pass
+-
+-        test = Test("test_foo")
+-        self.assertIs(
+-            inspect.unwrap(test.test_foo),
+-            test.test_foo.orig_method,  # type: ignore[attr-defined]
+-        )
+-
+ 
+ class SetUpTearDownTest(unittest.TestCase):
+     def test_set_up_tear_down(self):
+diff --git a/tornado/testing.py b/tornado/testing.py
+index bdbff87bc3..4c33b3e22f 100644
+--- a/tornado/testing.py
++++ b/tornado/testing.py
+@@ -84,39 +84,6 @@ def get_async_test_timeout() -> float:
+     return 5
+ 
+ 
+-class _TestMethodWrapper(object):
+-    """Wraps a test method to raise an error if it returns a value.
+-
+-    This is mainly used to detect undecorated generators (if a test
+-    method yields it must use a decorator to consume the generator),
+-    but will also detect other kinds of return values (these are not
+-    necessarily errors, but we alert anyway since there is no good
+-    reason to return a value from a test).
+-    """
+-
+-    def __init__(self, orig_method: Callable) -> None:
+-        self.orig_method = orig_method
+-        self.__wrapped__ = orig_method
+-
+-    def __call__(self, *args: Any, **kwargs: Any) -> None:
+-        result = self.orig_method(*args, **kwargs)
+-        if isinstance(result, Generator) or inspect.iscoroutine(result):
+-            raise TypeError(
+-                "Generator and coroutine test methods should be"
+-                " decorated with tornado.testing.gen_test"
+-            )
+-        elif result is not None:
+-            raise ValueError("Return value from test method ignored: %r" % result)
+-
+-    def __getattr__(self, name: str) -> Any:
+-        """Proxy all unknown attributes to the original method.
+-
+-        This is important for some of the decorators in the `unittest`
+-        module, such as `unittest.skipIf`.
+-        """
+-        return getattr(self.orig_method, name)
+-
+-
+ class AsyncTestCase(unittest.TestCase):
+     """`~unittest.TestCase` subclass for testing `.IOLoop`-based
+     asynchronous code.
+@@ -173,12 +140,6 @@ def __init__(self, methodName: str = "runTest") -> None:
+         self.__stop_args = None  # type: Any
+         self.__timeout = None  # type: Optional[object]
+ 
+-        # It's easy to forget the @gen_test decorator, but if you do
+-        # the test will silently be ignored because nothing will consume
+-        # the generator.  Replace the test method with a wrapper that will
+-        # make sure it's not an undecorated generator.
+-        setattr(self, methodName, _TestMethodWrapper(getattr(self, methodName)))
+-
+         # Not used in this class itself, but used by @gen_test
+         self._test_generator = None  # type: Optional[Union[Generator, Coroutine]]
+ 
+@@ -289,6 +250,30 @@ def run(
+         self.__rethrow()
+         return ret
+ 
++    def _callTestMethod(self, method: Callable) -> None:
++        """Run the given test method, raising an error if it returns non-None.
++
++        Failure to decorate asynchronous test methods with ``@gen_test`` can lead to tests
++        incorrectly passing.
++
++        Remove this override when Python 3.10 support is dropped. This check (in the form of a
++        DeprecationWarning) became a part of the standard library in 3.11.
++
++        Note that ``_callTestMethod`` is not documented as a public interface. However, it is
++        present in all supported versions of Python (3.8+), and if it goes away in the future that's
++        OK because we can just remove this override as noted above.
++        """
++        # Calling super()._callTestMethod would hide the return value, even in python 3.8-3.10
++        # where the check isn't being done for us.
++        result = method()
++        if isinstance(result, Generator) or inspect.iscoroutine(result):
++            raise TypeError(
++                "Generator and coroutine test methods should be"
++                " decorated with tornado.testing.gen_test"
++            )
++        elif result is not None:
++            raise ValueError("Return value from test method ignored: %r" % result)
++
+     def stop(self, _arg: Any = None, **kwargs: Any) -> None:
+         """Stops the `.IOLoop`, causing one pending (or future) call to `wait()`
+         to return.
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index fbfd700887..8f0e0aefe8 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -1392,9 +1392,9 @@ def __init__(
+             # from the server).
+             # TODO: set server parameters for deflate extension
+             # if requested in self.compression_options.
+-            request.headers[
+-                "Sec-WebSocket-Extensions"
+-            ] = "permessage-deflate; client_max_window_bits"
++            request.headers["Sec-WebSocket-Extensions"] = (
++                "permessage-deflate; client_max_window_bits"
++            )
+ 
+         # Websocket connection is currently unable to follow redirects
+         request.follow_redirects = False

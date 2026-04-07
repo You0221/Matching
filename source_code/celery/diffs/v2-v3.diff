@@ -1,0 +1,4584 @@
+diff --git a/.bumpversion.cfg b/.bumpversion.cfg
+index c037934602a..149c341155a 100644
+--- a/.bumpversion.cfg
++++ b/.bumpversion.cfg
+@@ -1,5 +1,5 @@
+ [bumpversion]
+-current_version = 5.5.0rc1
++current_version = 5.5.0rc4
+ commit = True
+ tag = True
+ parse = (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?P<releaselevel>[a-z\d]+)?
+diff --git a/.github/workflows/docker.yml b/.github/workflows/docker.yml
+index ba9d6c6ae41..4f04a34cc2c 100644
+--- a/.github/workflows/docker.yml
++++ b/.github/workflows/docker.yml
+@@ -9,7 +9,8 @@ on:
+           - '**.toml'
+           - '/docker/**'
+           - '.github/workflows/docker.yml'
+-          - 'Dockerfile'
++          - 'docker/Dockerfile'
++          - 't/smoke/workers/docker/**'
+     push:
+       branches: [ 'main']
+       paths:
+@@ -18,6 +19,8 @@ on:
+           - '**.toml'
+           - '/docker/**'
+           - '.github/workflows/docker.yml'
++          - 'docker/Dockerfile'
++          - 't/smoke/workers/docker/**'
+     workflow_dispatch:
+ 
+ 
+@@ -30,14 +33,6 @@ jobs:
+     - name: Build Docker container
+       run: make docker-build
+ 
+-  docker-docs:
+-    runs-on: blacksmith-4vcpu-ubuntu-2204
+-    timeout-minutes: 5
+-    steps:
+-    - uses: actions/checkout@v4
+-    - name: Build Documentation
+-      run: make docker-docs
+-
+   smoke-tests_dev:
+     runs-on: blacksmith-4vcpu-ubuntu-2204
+     timeout-minutes: 10
+diff --git a/.github/workflows/python-package.yml b/.github/workflows/python-package.yml
+index 6a5124ee59a..794788269fd 100644
+--- a/.github/workflows/python-package.yml
++++ b/.github/workflows/python-package.yml
+@@ -70,7 +70,7 @@ jobs:
+       run: |
+         tox --verbose --verbose
+ 
+-    - uses: codecov/codecov-action@v4
++    - uses: codecov/codecov-action@v5
+       with:
+         flags: unittests # optional
+         fail_ci_if_error: true # optional (default = false)
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 2f994896bc8..779461c2657 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -1,6 +1,6 @@
+ repos:
+   - repo: https://github.com/asottile/pyupgrade
+-    rev: v3.17.0
++    rev: v3.19.0
+     hooks:
+       - id: pyupgrade
+         args: ["--py38-plus"]
+@@ -39,7 +39,7 @@ repos:
+       - id: isort
+ 
+   - repo: https://github.com/pre-commit/mirrors-mypy
+-    rev: v1.11.2
++    rev: v1.13.0
+     hooks:
+     -   id: mypy
+         pass_filenames: false
+diff --git a/Changelog.rst b/Changelog.rst
+index e74f9b62b2f..9357c597f9c 100644
+--- a/Changelog.rst
++++ b/Changelog.rst
+@@ -8,6 +8,441 @@ This document contains change notes for bugfix & new features
+ in the main branch & 5.5.x series, please see :ref:`whatsnew-5.5` for
+ an overview of what's new in Celery 5.5.
+ 
++.. _version-5.5.0rc4:
++
++5.5.0rc4
++========
++
++:release-date: 2024-12-19
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 4 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Bugfix: SIGQUIT not initiating cold shutdown when `task_acks_late=False` (#9461)
++- Fixed pycurl dep with Python 3.8 (#9471)
++- Update elasticsearch requirement from <=8.16.0 to <=8.17.0 (#9469)
++- Bump pytest-subtests from 0.13.1 to 0.14.1 (#9459)
++- documentation: Added a type annotation to the periodic task example (#9473)
++- Prepare for (pre) release: v5.5.0rc4 (#9474)
++
++.. _version-5.5.0rc3:
++
++5.5.0rc3
++========
++
++:release-date: 2024-12-03
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 3 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Document usage of broker_native_delayed_delivery_queue_type (#9419)
++- Adjust section in what's new document regarding quorum queues support (#9420)
++- Update pytest-rerunfailures to 15.0 (#9422)
++- Document group unrolling (#9421)
++- fix small typo acces -> access (#9434)
++- Update cryptography to 44.0.0 (#9437)
++- Added pypy to Dockerfile (#9438)
++- Skipped flaky tests on pypy (all pass after ~10 reruns) (#9439)
++- Allowing managed credentials for azureblockblob (#9430)
++- Allow passing Celery objects to the Click entry point (#9426)
++- support Request termination for gevent (#9440)
++- Prevent event_mask from being overwritten. (#9432)
++- Update pytest to 8.3.4 (#9444)
++- Prepare for (pre) release: v5.5.0rc3 (#9450)
++
++.. _version-5.5.0rc2:
++
++5.5.0rc2
++========
++
++:release-date: 2024-11-18
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 2 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Previous Pre-release Highlights
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Python 3.13 Initial Support
++---------------------------
++
++This release introduces the initial support for Python 3.13 with Celery.
++
++After upgrading to this version, please share your feedback on the Python 3.13 support.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Fix: Treat dbm.error as a corrupted schedule file (#9331)
++- Pin pre-commit to latest version 4.0.1 (#9343)
++- Added Python 3.13 to Dockerfiles (#9350)
++- Skip test_pool_restart_import_modules on PyPy due to test issue (#9352)
++- Update elastic-transport requirement from <=8.15.0 to <=8.15.1 (#9347)
++- added dragonfly logo (#9353)
++- Update README.rst (#9354)
++- Update README.rst (#9355)
++- Update mypy to 1.12.0 (#9356)
++- Bump Kombu to v5.5.0rc1 (#9357)
++- Fix `celery --loader` option parsing (#9361)
++- Add support for Google Pub/Sub transport (#9351)
++- Add native incr support for GCSBackend (#9302)
++- fix(perform_pending_operations): prevent task duplication on shutdown… (#9348)
++- Update grpcio to 1.67.0 (#9365)
++- Update google-cloud-firestore to 2.19.0 (#9364)
++- Annotate celery/utils/timer2.py (#9362)
++- Update cryptography to 43.0.3 (#9366)
++- Update mypy to 1.12.1 (#9368)
++- Bump mypy from 1.12.1 to 1.13.0 (#9373)
++- Pass timeout and confirm_timeout to producer.publish() (#9374)
++- Bump Kombu to v5.5.0rc2 (#9382)
++- Bump pytest-cov from 5.0.0 to 6.0.0 (#9388)
++- default strict to False for pydantic tasks (#9393)
++- Only log that global QoS is disabled if using amqp (#9395)
++- chore: update sponsorship logo (#9398)
++- Allow custom hostname for celery_worker in celery.contrib.pytest / celery.contrib.testing.worker (#9405)
++- Removed docker-docs from CI (optional job, malfunctioning) (#9406)
++- Added a utility to format changelogs from the auto-generated GitHub release notes (#9408)
++- Bump codecov/codecov-action from 4 to 5 (#9412)
++- Update elasticsearch requirement from <=8.15.1 to <=8.16.0 (#9410)
++- Native Delayed Delivery in RabbitMQ (#9207)
++- Prepare for (pre) release: v5.5.0rc2 (#9416)
++
+ .. _version-5.5.0rc1:
+ 
+ 5.5.0rc1
+diff --git a/README.rst b/README.rst
+index b01ed8f0b0c..1acac3a69fd 100644
+--- a/README.rst
++++ b/README.rst
+@@ -2,7 +2,7 @@
+ 
+ |build-status| |coverage| |license| |wheel| |semgrep| |pyversion| |pyimp| |ocbackerbadge| |ocsponsorbadge|
+ 
+-:Version: 5.5.0rc1 (immunity)
++:Version: 5.5.0rc4 (immunity)
+ :Web: https://docs.celeryq.dev/en/stable/index.html
+ :Download: https://pypi.org/project/celery/
+ :Source: https://github.com/celery/celery/
+@@ -26,6 +26,21 @@ Available as part of the Tidelift Subscription.
+ 
+ The maintainers of ``celery`` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. `Learn more. <https://tidelift.com/subscription/pkg/pypi-celery?utm_source=pypi-celery&utm_medium=referral&utm_campaign=enterprise&utm_term=repo>`_
+ 
++
++Sponsor
++=======
++
++`Dragonfly <https://www.dragonflydb.io/>`_ is a drop-in Redis replacement that cuts costs and boosts performance. Designed to fully utilize the power of modern cloud hardware and deliver on the data demands of modern applications, Dragonfly frees developers from the limits of traditional in-memory data stores.
++
++
++.. image:: https://github.com/celery/celery/raw/main/docs/images/dragonfly.svg
++   :alt: Dragonfly logo
++   :width: 150px
++
++
++
++
++
+ What's a Task Queue?
+ ====================
+ 
+@@ -156,7 +171,7 @@ It supports...
+ 
+     - **Message Transports**
+ 
+-        - RabbitMQ_, Redis_, Amazon SQS
++        - RabbitMQ_, Redis_, Amazon SQS, Google Pub/Sub
+ 
+     - **Concurrency**
+ 
+@@ -168,6 +183,7 @@ It supports...
+         - memcached
+         - SQLAlchemy, Django ORM
+         - Apache Cassandra, IronCache, Elasticsearch
++        - Google Cloud Storage
+ 
+     - **Serialization**
+ 
+@@ -357,6 +373,10 @@ Transports and Backends
+     You should probably not use this in your requirements, it's here
+     for informational purposes only.
+ 
++:``celery[gcpubsub]``:
++    for using Google Pub/Sub as a message transport.
++
++
+ 
+ .. _celery-installing-from-source:
+ 
+diff --git a/celery/__init__.py b/celery/__init__.py
+index 1cfecdd6eab..0557678fc68 100644
+--- a/celery/__init__.py
++++ b/celery/__init__.py
+@@ -17,7 +17,7 @@
+ 
+ SERIES = 'immunity'
+ 
+-__version__ = '5.5.0rc1'
++__version__ = '5.5.0rc4'
+ __author__ = 'Ask Solem'
+ __contact__ = 'auvipy@gmail.com'
+ __homepage__ = 'https://docs.celeryq.dev/'
+diff --git a/celery/app/amqp.py b/celery/app/amqp.py
+index 575117d13e1..8dcec363053 100644
+--- a/celery/app/amqp.py
++++ b/celery/app/amqp.py
+@@ -467,7 +467,8 @@ def send_task_message(producer, name, message,
+                               retry=None, retry_policy=None,
+                               serializer=None, delivery_mode=None,
+                               compression=None, declare=None,
+-                              headers=None, exchange_type=None, **kwargs):
++                              headers=None, exchange_type=None,
++                              timeout=None, confirm_timeout=None, **kwargs):
+             retry = default_retry if retry is None else retry
+             headers2, properties, body, sent_event = message
+             if headers:
+@@ -528,6 +529,7 @@ def send_task_message(producer, name, message,
+                 retry=retry, retry_policy=_rp,
+                 delivery_mode=delivery_mode, declare=declare,
+                 headers=headers2,
++                timeout=timeout, confirm_timeout=confirm_timeout,
+                 **properties
+             )
+             if after_receivers:
+diff --git a/celery/app/base.py b/celery/app/base.py
+index 833818344de..27b0421763c 100644
+--- a/celery/app/base.py
++++ b/celery/app/base.py
+@@ -14,9 +14,10 @@
+ 
+ from click.exceptions import Exit
+ from dateutil.parser import isoparse
+-from kombu import pools
++from kombu import Exchange, pools
+ from kombu.clocks import LamportClock
+ from kombu.common import oid_from
++from kombu.transport.native_delayed_delivery import calculate_routing_key
+ from kombu.utils.compat import register_after_fork
+ from kombu.utils.objects import cached_property
+ from kombu.utils.uuid import uuid
+@@ -38,6 +39,7 @@
+ from celery.utils.time import maybe_make_aware, timezone, to_utc
+ 
+ from ..utils.annotations import annotation_is_class, annotation_issubclass, get_optional_arg
++from ..utils.quorum_queues import detect_quorum_queues
+ # Load all builtin tasks
+ from . import backends, builtins  # noqa
+ from .annotations import prepare as prepare_annotations
+@@ -513,6 +515,7 @@ def _create_task_cls(fun):
+                 if shared:
+                     def cons(app):
+                         return app._task_from_fun(fun, **opts)
++
+                     cons.__name__ = fun.__name__
+                     connect_on_app_finalize(cons)
+                 if not lazy or self.finalized:
+@@ -548,7 +551,7 @@ def _task_from_fun(
+         base=None,
+         bind=False,
+         pydantic: bool = False,
+-        pydantic_strict: bool = True,
++        pydantic_strict: bool = False,
+         pydantic_context: typing.Optional[typing.Dict[str, typing.Any]] = None,
+         pydantic_dump_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
+         **options,
+@@ -828,6 +831,33 @@ def send_task(self, name, args=None, kwargs=None, countdown=None,
+         ignore_result = options.pop('ignore_result', False)
+         options = router.route(
+             options, route_name or name, args, kwargs, task_type)
++
++        is_native_delayed_delivery = detect_quorum_queues(self,
++                                                          self.producer_pool.connections.connection.transport_cls)[0]
++        if is_native_delayed_delivery and options['queue'].exchange.type != 'direct':
++            if eta:
++                if isinstance(eta, str):
++                    eta = isoparse(eta)
++                countdown = (maybe_make_aware(eta) - self.now()).total_seconds()
++
++            if countdown:
++                if countdown > 0:
++                    routing_key = calculate_routing_key(int(countdown), options["queue"].routing_key)
++                    exchange = Exchange(
++                        'celery_delayed_27',
++                        type='topic',
++                    )
++                    del options['queue']
++                    options['routing_key'] = routing_key
++                    options['exchange'] = exchange
++        elif is_native_delayed_delivery and options['queue'].exchange.type == 'direct':
++            logger.warning(
++                'Direct exchanges are not supported with native delayed delivery.\n'
++                f'{options["queue"].exchange.name} is a direct exchange but should be a topic exchange or '
++                'a fanout exchange in order for native delayed delivery to work properly.\n'
++                'If quorum queues are used, this task may block the worker process until the ETA arrives.'
++            )
++
+         if expires is not None:
+             if isinstance(expires, datetime):
+                 expires_s = (maybe_make_aware(
+@@ -988,6 +1018,7 @@ def _connection(self, url, userid=None, password=None,
+                 'broker_connection_timeout', connect_timeout
+             ),
+         )
++
+     broker_connection = connection
+ 
+     def _acquire_connection(self, pool=True):
+@@ -1007,6 +1038,7 @@ def connection_or_acquire(self, connection=None, pool=True, *_, **__):
+                 will be acquired from the connection pool.
+         """
+         return FallbackContext(connection, self._acquire_connection, pool=pool)
++
+     default_connection = connection_or_acquire  # XXX compat
+ 
+     def producer_or_acquire(self, producer=None):
+@@ -1022,6 +1054,7 @@ def producer_or_acquire(self, producer=None):
+         return FallbackContext(
+             producer, self.producer_pool.acquire, block=True,
+         )
++
+     default_producer = producer_or_acquire  # XXX compat
+ 
+     def prepare_config(self, c):
+diff --git a/celery/app/defaults.py b/celery/app/defaults.py
+index 04bc1927944..f8e2511fd01 100644
+--- a/celery/app/defaults.py
++++ b/celery/app/defaults.py
+@@ -95,6 +95,7 @@ def __repr__(self):
+         heartbeat=Option(120, type='int'),
+         heartbeat_checkrate=Option(3.0, type='int'),
+         login_method=Option(None, type='string'),
++        native_delayed_delivery_queue_type=Option(default='quorum', type='string'),
+         pool_limit=Option(10, type='int'),
+         use_ssl=Option(False, type='bool'),
+ 
+diff --git a/celery/backends/azureblockblob.py b/celery/backends/azureblockblob.py
+index 862777b5fdb..3648cbe4172 100644
+--- a/celery/backends/azureblockblob.py
++++ b/celery/backends/azureblockblob.py
+@@ -1,4 +1,5 @@
+ """The Azure Storage Block Blob backend for Celery."""
++from kombu.transport.azurestoragequeues import Transport as AzureStorageQueuesTransport
+ from kombu.utils import cached_property
+ from kombu.utils.encoding import bytes_to_str
+ 
+@@ -28,6 +29,13 @@ def __init__(self,
+                  container_name=None,
+                  *args,
+                  **kwargs):
++        """
++        Supported URL formats:
++
++        azureblockblob://CONNECTION_STRING
++        azureblockblob://DefaultAzureCredential@STORAGE_ACCOUNT_URL
++        azureblockblob://ManagedIdentityCredential@STORAGE_ACCOUNT_URL
++        """
+         super().__init__(*args, **kwargs)
+ 
+         if azurestorage is None or azurestorage.__version__ < '12':
+@@ -65,11 +73,26 @@ def _blob_service_client(self):
+         the container is created if it doesn't yet exist.
+ 
+         """
+-        client = BlobServiceClient.from_connection_string(
+-            self._connection_string,
+-            connection_timeout=self._connection_timeout,
+-            read_timeout=self._read_timeout
+-        )
++        if (
++            "DefaultAzureCredential" in self._connection_string or
++            "ManagedIdentityCredential" in self._connection_string
++        ):
++            # Leveraging the work that Kombu already did for us
++            credential_, url = AzureStorageQueuesTransport.parse_uri(
++                self._connection_string
++            )
++            client = BlobServiceClient(
++                account_url=url,
++                credential=credential_,
++                connection_timeout=self._connection_timeout,
++                read_timeout=self._read_timeout,
++            )
++        else:
++            client = BlobServiceClient.from_connection_string(
++                self._connection_string,
++                connection_timeout=self._connection_timeout,
++                read_timeout=self._read_timeout,
++            )
+ 
+         try:
+             client.create_container(name=self._container_name)
+diff --git a/celery/backends/dynamodb.py b/celery/backends/dynamodb.py
+index d5159353b00..0423a468014 100644
+--- a/celery/backends/dynamodb.py
++++ b/celery/backends/dynamodb.py
+@@ -504,7 +504,7 @@ def _prepare_inc_count_request(self, key: str) -> Dict[str, Any]:
+             "ExpressionAttributeValues": {
+                 ":num": {"N": "1"},
+             },
+-            "ReturnValues" : "UPDATED_NEW",
++            "ReturnValues": "UPDATED_NEW",
+         }
+ 
+     def _item_to_dict(self, raw_response):
+diff --git a/celery/backends/elasticsearch.py b/celery/backends/elasticsearch.py
+index a97869bef52..9e6f2655639 100644
+--- a/celery/backends/elasticsearch.py
++++ b/celery/backends/elasticsearch.py
+@@ -97,7 +97,7 @@ def exception_safe_to_retry(self, exc):
+             # N/A: Low level exception (i.e. socket exception)
+             if exc.status_code in {401, 409, 500, 502, 504, 'N/A'}:
+                 return True
+-        if isinstance(exc , elasticsearch.exceptions.TransportError):
++        if isinstance(exc, elasticsearch.exceptions.TransportError):
+             return True
+         return False
+ 
+diff --git a/celery/backends/gcs.py b/celery/backends/gcs.py
+index c57c2e44960..d667a9ccced 100644
+--- a/celery/backends/gcs.py
++++ b/celery/backends/gcs.py
+@@ -8,35 +8,51 @@
+ from kombu.utils.functional import dictfilter
+ from kombu.utils.url import url_to_parts
+ 
+-from celery.exceptions import ImproperlyConfigured
++from celery.canvas import maybe_signature
++from celery.exceptions import ChordError, ImproperlyConfigured
++from celery.result import GroupResult, allow_join_result
++from celery.utils.log import get_logger
+ 
+ from .base import KeyValueStoreBackend
+ 
+ try:
+     import requests
++    from google.api_core import retry
++    from google.api_core.exceptions import Conflict
++    from google.api_core.retry import if_exception_type
+     from google.cloud import storage
+     from google.cloud.storage import Client
+     from google.cloud.storage.retry import DEFAULT_RETRY
+ except ImportError:
+     storage = None
+ 
++try:
++    from google.cloud import firestore, firestore_admin_v1
++except ImportError:
++    firestore = None
++    firestore_admin_v1 = None
++
++
+ __all__ = ('GCSBackend',)
+ 
+ 
+-class GCSBackend(KeyValueStoreBackend):
++logger = get_logger(__name__)
++
++
++class GCSBackendBase(KeyValueStoreBackend):
+     """Google Cloud Storage task result backend."""
+ 
+     def __init__(self, **kwargs):
++        if not storage:
++            raise ImproperlyConfigured(
++                'You must install google-cloud-storage to use gcs backend'
++            )
+         super().__init__(**kwargs)
+-        self._lock = RLock()
++        self._client_lock = RLock()
+         self._pid = getpid()
+         self._retry_policy = DEFAULT_RETRY
+         self._client = None
+ 
+-        if not storage:
+-            raise ImproperlyConfigured(
+-                'You must install google-cloud-storage to use gcs backend'
+-            )
+         conf = self.app.conf
+         if self.url:
+             url_params = self._params_from_url()
+@@ -96,7 +112,7 @@ def client(self):
+         """Returns a storage client."""
+ 
+         # make sure it's thread-safe, as creating a new client is expensive
+-        with self._lock:
++        with self._client_lock:
+             if self._client and self._pid == getpid():
+                 return self._client
+             # make sure each process gets its own connection after a fork
+@@ -139,3 +155,198 @@ def _params_from_url(self):
+             'gcs_base_path': url_parts.path,
+             **url_parts.query,
+         }
++
++
++class GCSBackend(GCSBackendBase):
++    """Google Cloud Storage task result backend.
++
++    Uses Firestore for chord ref count.
++    """
++
++    implements_incr = True
++    supports_native_join = True
++
++    # Firestore parameters
++    _collection_name = 'celery'
++    _field_count = 'chord_count'
++    _field_expires = 'expires_at'
++
++    def __init__(self, **kwargs):
++        if not (firestore and firestore_admin_v1):
++            raise ImproperlyConfigured(
++                'You must install google-cloud-firestore to use gcs backend'
++            )
++        super().__init__(**kwargs)
++
++        self._firestore_lock = RLock()
++        self._firestore_client = None
++
++        self.firestore_project = self.app.conf.get(
++            'firestore_project', self.project
++        )
++        if not self._is_firestore_ttl_policy_enabled():
++            raise ImproperlyConfigured(
++                f'Missing TTL policy to use gcs backend with ttl on '
++                f'Firestore collection: {self._collection_name} '
++                f'project: {self.firestore_project}'
++            )
++
++    @property
++    def firestore_client(self):
++        """Returns a firestore client."""
++
++        # make sure it's thread-safe, as creating a new client is expensive
++        with self._firestore_lock:
++            if self._firestore_client and self._pid == getpid():
++                return self._firestore_client
++            # make sure each process gets its own connection after a fork
++            self._firestore_client = firestore.Client(
++                project=self.firestore_project
++            )
++            self._pid = getpid()
++        return self._firestore_client
++
++    def _is_firestore_ttl_policy_enabled(self):
++        client = firestore_admin_v1.FirestoreAdminClient()
++
++        name = (
++            f"projects/{self.firestore_project}"
++            f"/databases/(default)/collectionGroups/{self._collection_name}"
++            f"/fields/{self._field_expires}"
++        )
++        request = firestore_admin_v1.GetFieldRequest(name=name)
++        field = client.get_field(request=request)
++
++        ttl_config = field.ttl_config
++        return ttl_config and ttl_config.state in {
++            firestore_admin_v1.Field.TtlConfig.State.ACTIVE,
++            firestore_admin_v1.Field.TtlConfig.State.CREATING,
++        }
++
++    def _apply_chord_incr(self, header_result_args, body, **kwargs):
++        key = self.get_key_for_chord(header_result_args[0]).decode()
++        self._expire_chord_key(key, 86400)
++        return super()._apply_chord_incr(header_result_args, body, **kwargs)
++
++    def incr(self, key: bytes) -> int:
++        doc = self._firestore_document(key)
++        resp = doc.set(
++            {self._field_count: firestore.Increment(1)},
++            merge=True,
++            retry=retry.Retry(
++                predicate=if_exception_type(Conflict),
++                initial=1.0,
++                maximum=180.0,
++                multiplier=2.0,
++                timeout=180.0,
++            ),
++        )
++        return resp.transform_results[0].integer_value
++
++    def on_chord_part_return(self, request, state, result, **kwargs):
++        """Chord part return callback.
++
++        Called for each task in the chord.
++        Increments the counter stored in Firestore.
++        If the counter reaches the number of tasks in the chord, the callback
++        is called.
++        If the callback raises an exception, the chord is marked as errored.
++        If the callback returns a value, the chord is marked as successful.
++        """
++        app = self.app
++        gid = request.group
++        if not gid:
++            return
++        key = self.get_key_for_chord(gid)
++        val = self.incr(key)
++        size = request.chord.get("chord_size")
++        if size is None:
++            deps = self._restore_deps(gid, request)
++            if deps is None:
++                return
++            size = len(deps)
++        if val > size:  # pragma: no cover
++            logger.warning(
++                'Chord counter incremented too many times for %r', gid
++            )
++        elif val == size:
++            # Read the deps once, to reduce the number of reads from GCS ($$)
++            deps = self._restore_deps(gid, request)
++            if deps is None:
++                return
++            callback = maybe_signature(request.chord, app=app)
++            j = deps.join_native
++            try:
++                with allow_join_result():
++                    ret = j(
++                        timeout=app.conf.result_chord_join_timeout,
++                        propagate=True,
++                    )
++            except Exception as exc:  # pylint: disable=broad-except
++                try:
++                    culprit = next(deps._failed_join_report())
++                    reason = 'Dependency {0.id} raised {1!r}'.format(
++                        culprit,
++                        exc,
++                    )
++                except StopIteration:
++                    reason = repr(exc)
++
++                logger.exception('Chord %r raised: %r', gid, reason)
++                self.chord_error_from_stack(callback, ChordError(reason))
++            else:
++                try:
++                    callback.delay(ret)
++                except Exception as exc:  # pylint: disable=broad-except
++                    logger.exception('Chord %r raised: %r', gid, exc)
++                    self.chord_error_from_stack(
++                        callback,
++                        ChordError(f'Callback error: {exc!r}'),
++                    )
++            finally:
++                deps.delete()
++                # Firestore doesn't have an exact ttl policy, so delete the key.
++                self._delete_chord_key(key)
++
++    def _restore_deps(self, gid, request):
++        app = self.app
++        try:
++            deps = GroupResult.restore(gid, backend=self)
++        except Exception as exc:  # pylint: disable=broad-except
++            callback = maybe_signature(request.chord, app=app)
++            logger.exception('Chord %r raised: %r', gid, exc)
++            self.chord_error_from_stack(
++                callback,
++                ChordError(f'Cannot restore group: {exc!r}'),
++            )
++            return
++        if deps is None:
++            try:
++                raise ValueError(gid)
++            except ValueError as exc:
++                callback = maybe_signature(request.chord, app=app)
++                logger.exception('Chord callback %r raised: %r', gid, exc)
++                self.chord_error_from_stack(
++                    callback,
++                    ChordError(f'GroupResult {gid} no longer exists'),
++                )
++        return deps
++
++    def _delete_chord_key(self, key):
++        doc = self._firestore_document(key)
++        doc.delete()
++
++    def _expire_chord_key(self, key, expires):
++        """Set TTL policy for a Firestore document.
++
++        Firestore ttl data is typically deleted within 24 hours after its
++        expiration date.
++        """
++        val_expires = datetime.utcnow() + timedelta(seconds=expires)
++        doc = self._firestore_document(key)
++        doc.set({self._field_expires: val_expires}, merge=True)
++
++    def _firestore_document(self, key):
++        return self.firestore_client.collection(
++            self._collection_name
++        ).document(bytes_to_str(key))
+diff --git a/celery/beat.py b/celery/beat.py
+index 9656493ecbe..86ad837f0d5 100644
+--- a/celery/beat.py
++++ b/celery/beat.py
+@@ -1,6 +1,7 @@
+ """The periodic task scheduler."""
+ 
+ import copy
++import dbm
+ import errno
+ import heapq
+ import os
+@@ -572,7 +573,7 @@ def _create_schedule(self):
+                 # new schedule db
+                 try:
+                     self._store['entries'] = {}
+-                except (KeyError, UnicodeDecodeError, TypeError) as exc:
++                except (KeyError, UnicodeDecodeError, TypeError) + dbm.error as exc:
+                     self._store = self._destroy_open_corrupted_schedule(exc)
+                     continue
+             else:
+diff --git a/celery/bin/base.py b/celery/bin/base.py
+index 073b86a7e91..61cc37a0291 100644
+--- a/celery/bin/base.py
++++ b/celery/bin/base.py
+@@ -173,6 +173,7 @@ def format_options(self, ctx, formatter):
+ 
+ class DaemonOption(CeleryOption):
+     """Common daemonization option"""
++
+     def __init__(self, *args, **kwargs):
+         super().__init__(args,
+                          help_group=kwargs.pop("help_group", "Daemonization Options"),
+diff --git a/celery/bin/celery.py b/celery/bin/celery.py
+index 4aeed42597f..4ddf9c7fc7a 100644
+--- a/celery/bin/celery.py
++++ b/celery/bin/celery.py
+@@ -11,7 +11,6 @@
+ 
+ import click
+ import click.exceptions
+-from click.types import ParamType
+ from click_didyoumean import DYMGroup
+ from click_plugins import with_plugins
+ 
+@@ -48,34 +47,6 @@
+ {0}""")
+ 
+ 
+-class App(ParamType):
+-    """Application option."""
+-
+-    name = "application"
+-
+-    def convert(self, value, param, ctx):
+-        try:
+-            return find_app(value)
+-        except ModuleNotFoundError as e:
+-            if e.name != value:
+-                exc = traceback.format_exc()
+-                self.fail(
+-                    UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(value, exc)
+-                )
+-            self.fail(UNABLE_TO_LOAD_APP_MODULE_NOT_FOUND.format(e.name))
+-        except AttributeError as e:
+-            attribute_name = e.args[0].capitalize()
+-            self.fail(UNABLE_TO_LOAD_APP_APP_MISSING.format(attribute_name))
+-        except Exception:
+-            exc = traceback.format_exc()
+-            self.fail(
+-                UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(value, exc)
+-            )
+-
+-
+-APP = App()
+-
+-
+ if sys.version_info >= (3, 10):
+     _PLUGINS = entry_points(group='celery.commands')
+ else:
+@@ -91,7 +62,11 @@ def convert(self, value, param, ctx):
+               '--app',
+               envvar='APP',
+               cls=CeleryOption,
+-              type=APP,
++              # May take either: a str when invoked from command line (Click),
++              # or a Celery object when invoked from inside Celery; hence the
++              # need to prevent Click from "processing" the Celery object and
++              # converting it into its str representation.
++              type=click.UNPROCESSED,
+               help_group="Global Options")
+ @click.option('-b',
+               '--broker',
+@@ -160,6 +135,26 @@ def celery(ctx, app, broker, result_backend, loader, config, workdir,
+         os.environ['CELERY_CONFIG_MODULE'] = config
+     if skip_checks:
+         os.environ['CELERY_SKIP_CHECKS'] = 'true'
++
++    if isinstance(app, str):
++        try:
++            app = find_app(app)
++        except ModuleNotFoundError as e:
++            if e.name != app:
++                exc = traceback.format_exc()
++                ctx.fail(
++                    UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(app, exc)
++                )
++            ctx.fail(UNABLE_TO_LOAD_APP_MODULE_NOT_FOUND.format(e.name))
++        except AttributeError as e:
++            attribute_name = e.args[0].capitalize()
++            ctx.fail(UNABLE_TO_LOAD_APP_APP_MISSING.format(attribute_name))
++        except Exception:
++            exc = traceback.format_exc()
++            ctx.fail(
++                UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(app, exc)
++            )
++
+     ctx.obj = CLIContext(app=app, no_color=no_color, workdir=workdir,
+                          quiet=quiet)
+ 
+diff --git a/celery/concurrency/asynpool.py b/celery/concurrency/asynpool.py
+index 7f51307c6c4..dd2f068a215 100644
+--- a/celery/concurrency/asynpool.py
++++ b/celery/concurrency/asynpool.py
+@@ -103,26 +103,35 @@ def _get_job_writer(job):
+         return writer()  # is a weakref
+ 
+ 
++def _ensure_integral_fd(fd):
++    return fd if isinstance(fd, Integral) else fd.fileno()
++
++
+ if hasattr(select, 'poll'):
+     def _select_imp(readers=None, writers=None, err=None, timeout=0,
+                     poll=select.poll, POLLIN=select.POLLIN,
+                     POLLOUT=select.POLLOUT, POLLERR=select.POLLERR):
+         poller = poll()
+         register = poller.register
++        fd_to_mask = {}
+ 
+         if readers:
+-            [register(fd, POLLIN) for fd in readers]
++            for fd in map(_ensure_integral_fd, readers):
++                fd_to_mask[fd] = fd_to_mask.get(fd, 0) | POLLIN
+         if writers:
+-            [register(fd, POLLOUT) for fd in writers]
++            for fd in map(_ensure_integral_fd, writers):
++                fd_to_mask[fd] = fd_to_mask.get(fd, 0) | POLLOUT
+         if err:
+-            [register(fd, POLLERR) for fd in err]
++            for fd in map(_ensure_integral_fd, err):
++                fd_to_mask[fd] = fd_to_mask.get(fd, 0) | POLLERR
++
++        for fd, event_mask in fd_to_mask.items():
++            register(fd, event_mask)
+ 
+         R, W = set(), set()
+         timeout = 0 if timeout and timeout < 0 else round(timeout * 1e3)
+         events = poller.poll(timeout)
+         for fd, event in events:
+-            if not isinstance(fd, Integral):
+-                fd = fd.fileno()
+             if event & POLLIN:
+                 R.add(fd)
+             if event & POLLOUT:
+diff --git a/celery/concurrency/gevent.py b/celery/concurrency/gevent.py
+index 4855ae6fce2..fd58e91be8f 100644
+--- a/celery/concurrency/gevent.py
++++ b/celery/concurrency/gevent.py
+@@ -1,5 +1,6 @@
+ """Gevent execution pool."""
+ import functools
++import types
+ from time import monotonic
+ 
+ from kombu.asynchronous import timer as _timer
+@@ -121,6 +122,7 @@ def on_apply(self, target, args=None, kwargs=None, callback=None,
+                                    target, args, kwargs, callback, accept_callback,
+                                    self.getpid, timeout=timeout, timeout_callback=timeout_callback)
+         self._add_to_pool_map(id(greenlet), greenlet)
++        greenlet.terminate = types.MethodType(_terminate, greenlet)
+         return greenlet
+ 
+     def grow(self, n=1):
+@@ -162,3 +164,8 @@ def _add_to_pool_map(self, pid, greenlet):
+     @staticmethod
+     def _cleanup_after_job_finish(greenlet, pool_map, pid):
+         del pool_map[pid]
++
++
++def _terminate(self, signal):
++    # Done in `TaskPool.terminate_job`
++    pass
+diff --git a/celery/contrib/testing/worker.py b/celery/contrib/testing/worker.py
+index b8d3fc06d87..cb418b8e87a 100644
+--- a/celery/contrib/testing/worker.py
++++ b/celery/contrib/testing/worker.py
+@@ -155,7 +155,7 @@ def _start_worker_thread(app: Celery,
+     worker = WorkController(
+         app=app,
+         concurrency=concurrency,
+-        hostname=anon_nodename(),
++        hostname=kwargs.pop("hostname", anon_nodename()),
+         pool=pool,
+         loglevel=loglevel,
+         logfile=logfile,
+diff --git a/celery/events/event.py b/celery/events/event.py
+index a05ed7071a5..fd2ee1ebe50 100644
+--- a/celery/events/event.py
++++ b/celery/events/event.py
+@@ -55,7 +55,7 @@ def get_exchange(conn, name=EVENT_EXCHANGE_NAME):
+         (from topic -> fanout).
+     """
+     ex = copy(event_exchange)
+-    if conn.transport.driver_type == 'redis':
++    if conn.transport.driver_type in {'redis', 'gcpubsub'}:
+         # quick hack for Issue #436
+         ex.type = 'fanout'
+     if name != ex.name:
+diff --git a/celery/utils/quorum_queues.py b/celery/utils/quorum_queues.py
+new file mode 100644
+index 00000000000..0eb058fa6b2
+--- /dev/null
++++ b/celery/utils/quorum_queues.py
+@@ -0,0 +1,20 @@
++from __future__ import annotations
++
++
++def detect_quorum_queues(app, driver_type: str) -> tuple[bool, str]:
++    """Detect if any of the queues are quorum queues.
++
++    Returns:
++        tuple[bool, str]: A tuple containing a boolean indicating if any of the queues are quorum queues
++        and the name of the first quorum queue found or an empty string if no quorum queues were found.
++    """
++    is_rabbitmq_broker = driver_type == 'amqp'
++
++    if is_rabbitmq_broker:
++        queues = app.amqp.queues
++        for qname in queues:
++            qarguments = queues[qname].queue_arguments or {}
++            if qarguments.get("x-queue-type") == "quorum":
++                return True, qname
++
++    return False, ""
+diff --git a/celery/utils/timer2.py b/celery/utils/timer2.py
+index 88d8ffd77ad..adfdb403a3a 100644
+--- a/celery/utils/timer2.py
++++ b/celery/utils/timer2.py
+@@ -10,6 +10,7 @@
+ from itertools import count
+ from threading import TIMEOUT_MAX as THREAD_TIMEOUT_MAX
+ from time import sleep
++from typing import Any, Callable, Iterator, Optional, Tuple
+ 
+ from kombu.asynchronous.timer import Entry
+ from kombu.asynchronous.timer import Timer as Schedule
+@@ -30,20 +31,23 @@ class Timer(threading.Thread):
+     Entry = Entry
+     Schedule = Schedule
+ 
+-    running = False
+-    on_tick = None
++    running: bool = False
++    on_tick: Optional[Callable[[float], None]] = None
+ 
+-    _timer_count = count(1)
++    _timer_count: count = count(1)
+ 
+     if TIMER_DEBUG:  # pragma: no cover
+-        def start(self, *args, **kwargs):
++        def start(self, *args: Any, **kwargs: Any) -> None:
+             import traceback
+             print('- Timer starting')
+             traceback.print_stack()
+             super().start(*args, **kwargs)
+ 
+-    def __init__(self, schedule=None, on_error=None, on_tick=None,
+-                 on_start=None, max_interval=None, **kwargs):
++    def __init__(self, schedule: Optional[Schedule] = None,
++                 on_error: Optional[Callable[[Exception], None]] = None,
++                 on_tick: Optional[Callable[[float], None]] = None,
++                 on_start: Optional[Callable[['Timer'], None]] = None,
++                 max_interval: Optional[float] = None, **kwargs: Any) -> None:
+         self.schedule = schedule or self.Schedule(on_error=on_error,
+                                                   max_interval=max_interval)
+         self.on_start = on_start
+@@ -60,8 +64,10 @@ def __init__(self, schedule=None, on_error=None, on_tick=None,
+         self.daemon = True
+         self.name = f'Timer-{next(self._timer_count)}'
+ 
+-    def _next_entry(self):
++    def _next_entry(self) -> Optional[float]:
+         with self.not_empty:
++            delay: Optional[float]
++            entry: Optional[Entry]
+             delay, entry = next(self.scheduler)
+             if entry is None:
+                 if delay is None:
+@@ -70,10 +76,10 @@ def _next_entry(self):
+         return self.schedule.apply_entry(entry)
+     __next__ = next = _next_entry  # for 2to3
+ 
+-    def run(self):
++    def run(self) -> None:
+         try:
+             self.running = True
+-            self.scheduler = iter(self.schedule)
++            self.scheduler: Iterator[Tuple[Optional[float], Optional[Entry]]] = iter(self.schedule)
+ 
+             while not self.__is_shutdown.is_set():
+                 delay = self._next_entry()
+@@ -94,61 +100,61 @@ def run(self):
+             sys.stderr.flush()
+             os._exit(1)
+ 
+-    def stop(self):
++    def stop(self) -> None:
+         self.__is_shutdown.set()
+         if self.running:
+             self.__is_stopped.wait()
+             self.join(THREAD_TIMEOUT_MAX)
+             self.running = False
+ 
+-    def ensure_started(self):
++    def ensure_started(self) -> None:
+         if not self.running and not self.is_alive():
+             if self.on_start:
+                 self.on_start(self)
+             self.start()
+ 
+-    def _do_enter(self, meth, *args, **kwargs):
++    def _do_enter(self, meth: str, *args: Any, **kwargs: Any) -> Entry:
+         self.ensure_started()
+         with self.mutex:
+             entry = getattr(self.schedule, meth)(*args, **kwargs)
+             self.not_empty.notify()
+             return entry
+ 
+-    def enter(self, entry, eta, priority=None):
++    def enter(self, entry: Entry, eta: float, priority: Optional[int] = None) -> Entry:
+         return self._do_enter('enter_at', entry, eta, priority=priority)
+ 
+-    def call_at(self, *args, **kwargs):
++    def call_at(self, *args: Any, **kwargs: Any) -> Entry:
+         return self._do_enter('call_at', *args, **kwargs)
+ 
+-    def enter_after(self, *args, **kwargs):
++    def enter_after(self, *args: Any, **kwargs: Any) -> Entry:
+         return self._do_enter('enter_after', *args, **kwargs)
+ 
+-    def call_after(self, *args, **kwargs):
++    def call_after(self, *args: Any, **kwargs: Any) -> Entry:
+         return self._do_enter('call_after', *args, **kwargs)
+ 
+-    def call_repeatedly(self, *args, **kwargs):
++    def call_repeatedly(self, *args: Any, **kwargs: Any) -> Entry:
+         return self._do_enter('call_repeatedly', *args, **kwargs)
+ 
+-    def exit_after(self, secs, priority=10):
++    def exit_after(self, secs: float, priority: int = 10) -> None:
+         self.call_after(secs, sys.exit, priority)
+ 
+-    def cancel(self, tref):
++    def cancel(self, tref: Entry) -> None:
+         tref.cancel()
+ 
+-    def clear(self):
++    def clear(self) -> None:
+         self.schedule.clear()
+ 
+-    def empty(self):
++    def empty(self) -> bool:
+         return not len(self)
+ 
+-    def __len__(self):
++    def __len__(self) -> int:
+         return len(self.schedule)
+ 
+-    def __bool__(self):
++    def __bool__(self) -> bool:
+         """``bool(timer)``."""
+         return True
+     __nonzero__ = __bool__
+ 
+     @property
+-    def queue(self):
++    def queue(self) -> list:
+         return self.schedule.queue
+diff --git a/celery/worker/consumer/consumer.py b/celery/worker/consumer/consumer.py
+index 8241a976021..3e6a66df532 100644
+--- a/celery/worker/consumer/consumer.py
++++ b/celery/worker/consumer/consumer.py
+@@ -169,6 +169,7 @@ class Blueprint(bootsteps.Blueprint):
+             'celery.worker.consumer.heart:Heart',
+             'celery.worker.consumer.control:Control',
+             'celery.worker.consumer.tasks:Tasks',
++            'celery.worker.consumer.delayed_delivery:DelayedDelivery',
+             'celery.worker.consumer.consumer:Evloop',
+             'celery.worker.consumer.agent:Agent',
+         ]
+@@ -412,6 +413,7 @@ def register_with_event_loop(self, hub):
+         )
+ 
+     def shutdown(self):
++        self.perform_pending_operations()
+         self.blueprint.shutdown(self)
+ 
+     def stop(self):
+@@ -476,9 +478,9 @@ def connection_for_read(self, heartbeat=None):
+         return self.ensure_connected(
+             self.app.connection_for_read(heartbeat=heartbeat))
+ 
+-    def connection_for_write(self, heartbeat=None):
++    def connection_for_write(self, url=None, heartbeat=None):
+         return self.ensure_connected(
+-            self.app.connection_for_write(heartbeat=heartbeat))
++            self.app.connection_for_write(url=url, heartbeat=heartbeat))
+ 
+     def ensure_connected(self, conn):
+         # Callback called for each retry while the connection
+@@ -732,10 +734,21 @@ def __repr__(self):
+         )
+ 
+     def cancel_all_unacked_requests(self):
+-        """Cancel all unacked requests with late acknowledgement enabled."""
++        """Cancel all active requests that either do not require late acknowledgments or,
++        if they do, have not been acknowledged yet.
++        """
+ 
+         def should_cancel(request):
+-            return request.task.acks_late and not request.acknowledged
++            if not request.task.acks_late:
++                # Task does not require late acknowledgment, cancel it.
++                return True
++
++            if not request.acknowledged:
++                # Task is late acknowledged, but it has not been acknowledged yet, cancel it.
++                return True
++
++            # Task is late acknowledged, but it has already been acknowledged.
++            return False  # Do not cancel and allow it to gracefully finish as it has already been acknowledged.
+ 
+         requests_to_cancel = tuple(filter(should_cancel, active_requests))
+ 
+diff --git a/celery/worker/consumer/delayed_delivery.py b/celery/worker/consumer/delayed_delivery.py
+new file mode 100644
+index 00000000000..d6672d32f5e
+--- /dev/null
++++ b/celery/worker/consumer/delayed_delivery.py
+@@ -0,0 +1,37 @@
++from kombu.transport.native_delayed_delivery import (bind_queue_to_native_delayed_delivery_exchange,
++                                                     declare_native_delayed_delivery_exchanges_and_queues)
++
++from celery import Celery, bootsteps
++from celery.utils.log import get_logger
++from celery.utils.quorum_queues import detect_quorum_queues
++from celery.worker.consumer import Consumer, Tasks
++
++__all__ = ('DelayedDelivery',)
++
++logger = get_logger(__name__)
++
++
++class DelayedDelivery(bootsteps.StartStopStep):
++    """This bootstep declares native delayed delivery queues and exchanges and binds all queues to them"""
++    requires = (Tasks,)
++
++    def include_if(self, c):
++        return detect_quorum_queues(c.app, c.app.connection_for_write().transport.driver_type)[0]
++
++    def start(self, c: Consumer):
++        app: Celery = c.app
++
++        for broker_url in app.conf.broker_url.split(';'):
++            try:
++                # We use connection for write directly to avoid using ensure_connection()
++                connection = c.app.connection_for_write(url=broker_url)
++                declare_native_delayed_delivery_exchanges_and_queues(
++                    connection,
++                    app.conf.broker_native_delayed_delivery_queue_type
++                )
++
++                for queue in app.amqp.queues.values():
++                    bind_queue_to_native_delayed_delivery_exchange(connection, queue)
++            except ConnectionRefusedError:
++                # We may receive this error if a fail-over occurs
++                continue
+diff --git a/celery/worker/consumer/mingle.py b/celery/worker/consumer/mingle.py
+index 532ab75ea8e..d3f626e702b 100644
+--- a/celery/worker/consumer/mingle.py
++++ b/celery/worker/consumer/mingle.py
+@@ -22,7 +22,7 @@ class Mingle(bootsteps.StartStopStep):
+ 
+     label = 'Mingle'
+     requires = (Events,)
+-    compatible_transports = {'amqp', 'redis'}
++    compatible_transports = {'amqp', 'redis', 'gcpubsub'}
+ 
+     def __init__(self, c, without_mingle=False, **kwargs):
+         self.enabled = not without_mingle and self.compatible_transport(c.app)
+diff --git a/celery/worker/consumer/tasks.py b/celery/worker/consumer/tasks.py
+index 0be966755af..67cbfc1207f 100644
+--- a/celery/worker/consumer/tasks.py
++++ b/celery/worker/consumer/tasks.py
+@@ -2,32 +2,21 @@
+ 
+ from __future__ import annotations
+ 
+-import warnings
+-
+ from kombu.common import QoS, ignore_errors
+ 
+ from celery import bootsteps
+-from celery.exceptions import CeleryWarning
+ from celery.utils.log import get_logger
++from celery.utils.quorum_queues import detect_quorum_queues
+ 
+ from .mingle import Mingle
+ 
+ __all__ = ('Tasks',)
+ 
++
+ logger = get_logger(__name__)
+ debug = logger.debug
+ 
+ 
+-ETA_TASKS_NO_GLOBAL_QOS_WARNING = """
+-Detected quorum queue "%r", disabling global QoS.
+-With global QoS disabled, ETA tasks may not function as expected. Instead of adjusting
+-the prefetch count dynamically, ETA tasks will occupy the prefetch buffer, potentially
+-blocking other tasks from being consumed. To mitigate this, either set a high prefetch
+-count or avoid using quorum queues until the ETA mechanism is updated to support a
+-disabled global QoS, which is required for quorum queues.
+-"""
+-
+-
+ class Tasks(bootsteps.StartStopStep):
+     """Bootstep starting the task message consumer."""
+ 
+@@ -42,8 +31,6 @@ def start(self, c):
+         c.update_strategies()
+ 
+         qos_global = self.qos_global(c)
+-        if qos_global is False:
+-            logger.info("Global QoS is disabled. Prefetch count in now static.")
+ 
+         # set initial prefetch count
+         c.connection.default_channel.basic_qos(
+@@ -92,30 +79,10 @@ def qos_global(self, c) -> bool:
+         qos_global = not c.connection.qos_semantics_matches_spec
+ 
+         if c.app.conf.worker_detect_quorum_queues:
+-            using_quorum_queues, qname = self.detect_quorum_queues(c)
++            using_quorum_queues, qname = detect_quorum_queues(c.app, c.connection.transport.driver_type)
++
+             if using_quorum_queues:
+                 qos_global = False
+-                # The ETA tasks mechanism requires additional work for Celery to fully support
+-                # quorum queues. Warn the user that ETA tasks may not function as expected until
+-                # this is done so we can at least support quorum queues partially for now.
+-                warnings.warn(ETA_TASKS_NO_GLOBAL_QOS_WARNING % (qname,), CeleryWarning)
++                logger.info("Global QoS is disabled. Prefetch count in now static.")
+ 
+         return qos_global
+-
+-    def detect_quorum_queues(self, c) -> tuple[bool, str]:
+-        """Detect if any of the queues are quorum queues.
+-
+-        Returns:
+-            tuple[bool, str]: A tuple containing a boolean indicating if any of the queues are quorum queues
+-            and the name of the first quorum queue found or an empty string if no quorum queues were found.
+-        """
+-        is_rabbitmq_broker = c.connection.transport.driver_type == 'amqp'
+-
+-        if is_rabbitmq_broker:
+-            queues = c.app.amqp.queues
+-            for qname in queues:
+-                qarguments = queues[qname].queue_arguments or {}
+-                if qarguments.get("x-queue-type") == "quorum":
+-                    return True, qname
+-
+-        return False, ""
+diff --git a/celery/worker/loops.py b/celery/worker/loops.py
+index 0630e679fdd..1f9e589eeef 100644
+--- a/celery/worker/loops.py
++++ b/celery/worker/loops.py
+@@ -119,8 +119,10 @@ def synloop(obj, connection, consumer, blueprint, hub, qos,
+ 
+     obj.on_ready()
+ 
+-    while blueprint.state == RUN and obj.connection:
+-        state.maybe_shutdown()
++    def _loop_cycle():
++        """
++        Perform one iteration of the blocking event loop.
++        """
+         if heartbeat_error[0] is not None:
+             raise heartbeat_error[0]
+         if qos.prev != qos.value:
+@@ -133,3 +135,9 @@ def synloop(obj, connection, consumer, blueprint, hub, qos,
+         except OSError:
+             if blueprint.state == RUN:
+                 raise
++
++    while blueprint.state == RUN and obj.connection:
++        try:
++            state.maybe_shutdown()
++        finally:
++            _loop_cycle()
+diff --git a/docker/Dockerfile b/docker/Dockerfile
+index 35b947cc483..3cc2a3aff38 100644
+--- a/docker/Dockerfile
++++ b/docker/Dockerfile
+@@ -65,16 +65,17 @@ USER $CELERY_USER
+ RUN curl https://pyenv.run | bash
+ 
+ # Install required Python versions
++RUN pyenv install 3.13
+ RUN pyenv install 3.12
+ RUN pyenv install 3.11
+ RUN pyenv install 3.10
+ RUN pyenv install 3.9
+ RUN pyenv install 3.8
+-
++RUN pyenv install pypy3.10
+ 
+ 
+ # Set global Python versions
+-RUN pyenv global 3.12 3.11 3.10 3.9 3.8
++RUN pyenv global 3.12 3.11 3.10 3.9 3.8 pypy3.10
+ 
+ # Install celery
+ WORKDIR $HOME
+@@ -83,24 +84,37 @@ COPY --chown=1000:1000 docker/entrypoint /entrypoint
+ RUN chmod gu+x /entrypoint
+ 
+ # Define the local pyenvs
+-RUN pyenv local 3.12 3.11 3.10 3.9 3.8
++RUN pyenv local 3.13 3.12 3.11 3.10 3.9 3.8 pypy3.10
+ 
+-RUN pyenv exec python3.12 -m pip install --upgrade pip setuptools wheel && \
++RUN pyenv exec python3.13 -m pip install --upgrade pip setuptools wheel && \
++    pyenv exec python3.12 -m pip install --upgrade pip setuptools wheel && \
+     pyenv exec python3.11 -m pip install --upgrade pip setuptools wheel && \
+     pyenv exec python3.10 -m pip install --upgrade pip setuptools wheel && \
+     pyenv exec python3.9 -m pip install --upgrade pip setuptools wheel && \
+-    pyenv exec python3.8 -m pip install --upgrade pip setuptools wheel
++    pyenv exec python3.8 -m pip install --upgrade pip setuptools wheel && \
++    pyenv exec pypy3.10 -m pip install --upgrade pip setuptools wheel
+ 
+ COPY --chown=1000:1000 . $HOME/celery
+ 
+-RUN pyenv exec python3.12 -m pip install -e $HOME/celery && \
++RUN pyenv exec python3.13 -m pip install -e $HOME/celery && \
++    pyenv exec python3.12 -m pip install -e $HOME/celery && \
+     pyenv exec python3.11 -m pip install -e $HOME/celery && \
+     pyenv exec python3.10 -m pip install -e $HOME/celery && \
+     pyenv exec python3.9 -m pip install -e $HOME/celery && \
+-    pyenv exec python3.8 -m pip install -e $HOME/celery
++    pyenv exec python3.8 -m pip install -e $HOME/celery && \
++    pyenv exec pypy3.10 -m pip install -e $HOME/celery
+ 
+ # Setup one celery environment for basic development use
+-RUN pyenv exec python3.12 -m pip install -r requirements/default.txt \
++RUN pyenv exec python3.13 -m pip install -r requirements/default.txt \
++    -r requirements/dev.txt \
++    -r requirements/docs.txt \
++    -r requirements/pkgutils.txt \
++    -r requirements/test-ci-base.txt \
++    -r requirements/test-ci-default.txt \
++    -r requirements/test-integration.txt \
++    -r requirements/test-pypy3.txt \
++    -r requirements/test.txt && \
++  pyenv exec python3.12 -m pip install -r requirements/default.txt \
+   -r requirements/dev.txt \
+   -r requirements/docs.txt \
+   -r requirements/pkgutils.txt \
+@@ -144,6 +158,15 @@ RUN pyenv exec python3.12 -m pip install -r requirements/default.txt \
+   -r requirements/test-ci-default.txt \
+   -r requirements/test-integration.txt \
+   -r requirements/test-pypy3.txt \
++  -r requirements/test.txt && \
++  pyenv exec pypy3.10 -m pip install -r requirements/default.txt \
++  -r requirements/dev.txt \
++  -r requirements/docs.txt \
++  -r requirements/pkgutils.txt \
++  -r requirements/test-ci-base.txt \
++  -r requirements/test-ci-default.txt \
++  -r requirements/test-integration.txt \
++  -r requirements/test-pypy3.txt \
+   -r requirements/test.txt
+ 
+ WORKDIR $HOME/celery
+diff --git a/docs/Makefile b/docs/Makefile
+index cfed0cb0fdf..f42e386e705 100644
+--- a/docs/Makefile
++++ b/docs/Makefile
+@@ -48,6 +48,7 @@ help:
+ 	@echo "  apicheck   to verify that all modules are present in autodoc"
+ 	@echo "  configcheck to verify that all modules are present in autodoc"
+ 	@echo "  spelling   to perform a spell check"
++	@echo "  changelog  to generate a changelog from GitHub auto-generated release notes"
+ 
+ .PHONY: clean
+ clean:
+@@ -237,4 +238,15 @@ pseudoxml:
+ 
+ .PHONY: livehtml
+ livehtml:
+-	sphinx-autobuild -b html --host 0.0.0.0 --port 7000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
+\ No newline at end of file
++	sphinx-autobuild -b html --host 0.0.0.0 --port 7000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
++
++.PHONY: changelog
++changelog:
++	@echo "Usage Instructions:"
++	@echo "1. Generate release notes using GitHub: https://github.com/celery/celery/releases/new"
++	@echo "   - Copy everything that's generated to your clipboard."
++	@echo "   - pre-commit lines will be removed automatically."
++	@echo "2. Run 'make -C docs changelog' from the root dir, to manually process the changes and output the formatted text."
++	@echo ""
++	@echo "Processing changelog from clipboard..."
++	python ./changelog_formatter.py --clipboard
+diff --git a/docs/changelog_formatter.py b/docs/changelog_formatter.py
+new file mode 100755
+index 00000000000..1d76ce88564
+--- /dev/null
++++ b/docs/changelog_formatter.py
+@@ -0,0 +1,130 @@
++#!/usr/bin/env python3
++
++import re
++import sys
++
++import click
++import pyperclip
++from colorama import Fore, init
++
++# Initialize colorama for color support in terminal
++init(autoreset=True)
++
++# Regular expression pattern to match the required lines
++PATTERN = re.compile(r"^\*\s*(.*?)\s+by\s+@[\w-]+\s+in\s+https://github\.com/[\w-]+/[\w-]+/pull/(\d+)")
++
++
++def read_changes_file(filename):
++    try:
++        with open(filename) as f:
++            return f.readlines()
++    except FileNotFoundError:
++        print(f"Error: {filename} file not found.")
++        sys.exit(1)
++
++
++def read_from_clipboard():
++    text = pyperclip.paste()
++    return text.splitlines()
++
++
++def process_line(line):
++    line = line.strip()
++
++    # Skip lines containing '[pre-commit.ci]'
++    if "[pre-commit.ci]" in line:
++        return None
++
++    # Skip lines starting with '## What's Changed'
++    if line.startswith("## What's Changed"):
++        return None
++
++    # Stop processing if '## New Contributors' is encountered
++    if line.startswith("## New Contributors"):
++        return "STOP_PROCESSING"
++
++    # Skip lines that don't start with '* '
++    if not line.startswith("* "):
++        return None
++
++    match = PATTERN.match(line)
++    if match:
++        description, pr_number = match.groups()
++        return f"- {description} (#{pr_number})"
++    return None
++
++
++@click.command()
++@click.option(
++    "--source",
++    "-s",
++    type=click.Path(exists=True),
++    help="Source file to read from. If not provided, reads from clipboard.",
++)
++@click.option(
++    "--dest",
++    "-d",
++    type=click.File("w"),
++    default="-",
++    help="Destination file to write to. Defaults to standard output.",
++)
++@click.option(
++    "--clipboard",
++    "-c",
++    is_flag=True,
++    help="Read input from clipboard explicitly.",
++)
++def main(source, dest, clipboard):
++    # Determine the source of input
++    if clipboard or (not source and not sys.stdin.isatty()):
++        # Read from clipboard
++        lines = read_from_clipboard()
++    elif source:
++        # Read from specified file
++        lines = read_changes_file(source)
++    else:
++        # Default: read from clipboard
++        lines = read_from_clipboard()
++
++    output_lines = []
++    for line in lines:
++        output_line = process_line(line)
++        if output_line == "STOP_PROCESSING":
++            break
++        if output_line:
++            output_lines.append(output_line)
++
++    output_text = "\n".join(output_lines)
++
++    # Prepare the header
++    version = "x.y.z"
++    underline = "=" * len(version)
++
++    header = f"""
++.. _version-{version}:
++
++{version}
++{underline}
++
++:release-date: <YYYY-MM-DD>
++:release-by: <FULL NAME>
++
++What's Changed
++~~~~~~~~~~~~~~
++"""
++
++    # Combine header and output
++    final_output = header + output_text
++
++    # Write output to destination
++    if dest.name == "<stdout>":
++        print(Fore.GREEN + "Copy the following text to Changelog.rst:")
++        print(Fore.YELLOW + header)
++        print(Fore.CYAN + output_text)
++    else:
++        dest.write(final_output + "\n")
++        dest.close()
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/docs/getting-started/backends-and-brokers/gcpubsub.rst b/docs/getting-started/backends-and-brokers/gcpubsub.rst
+new file mode 100644
+index 00000000000..9fe381ee509
+--- /dev/null
++++ b/docs/getting-started/backends-and-brokers/gcpubsub.rst
+@@ -0,0 +1,144 @@
++.. _broker-gcpubsub:
++
++=====================
++ Using Google Pub/Sub
++=====================
++
++.. versionadded:: 5.5
++
++.. _broker-gcpubsub-installation:
++
++Installation
++============
++
++For the Google Pub/Sub support you have to install additional dependencies.
++You can install both Celery and these dependencies in one go using
++the ``celery[gcpubsub]`` :ref:`bundle <bundles>`:
++
++.. code-block:: console
++
++    $ pip install "celery[gcpubsub]"
++
++.. _broker-gcpubsub-configuration:
++
++Configuration
++=============
++
++You have to specify gcpubsub and google project in the broker URL::
++
++    broker_url = 'gcpubsub://projects/project-id'
++
++where the URL format is:
++
++.. code-block:: text
++
++    gcpubsub://projects/project-id
++
++Please note that you must prefix the project-id with `projects/` in the URL.
++
++The login credentials will be your regular GCP credentials set in the environment.
++
++Options
++=======
++
++Resource expiry
++---------------
++
++The default settings are built to be as simple cost effective and intuitive as possible and to "just work".
++The pubsub messages and subscriptions are set to expire after 24 hours, and can be set
++by configuring the :setting:`expiration_seconds` setting::
++
++    expiration_seconds = 86400
++
++.. seealso::
++
++    An overview of Google Cloud Pub/Sub settings can be found here:
++
++        https://cloud.google.com/pubsub/docs
++
++.. _gcpubsub-ack_deadline_seconds:
++
++Ack Deadline Seconds
++--------------------
++
++The `ack_deadline_seconds` defines the number of seconds pub/sub infra shall wait
++for the worker to acknowledge the task before the message is redelivered
++to another worker.
++
++This option is set via the :setting:`broker_transport_options` setting::
++
++    broker_transport_options = {'ack_deadline_seconds': 60}  # 1 minute.
++
++The default visibility timeout is 240 seconds, and the worker takes care for
++automatically extending all pending messages it has.
++
++.. seealso::
++
++    An overview of Pub/Sub deadline can be found here:
++
++        https://cloud.google.com/pubsub/docs/lease-management
++
++
++
++Polling Interval
++----------------
++
++The polling interval decides the number of seconds to sleep between
++unsuccessful polls. This value can be either an int or a float.
++By default the value is *0.1 seconds*. However it doesn't mean
++that the worker will bomb the Pub/Sub API every 0.1 seconds when there's no
++more messages to read, since it will be blocked by a blocking call to
++the Pub/Sub API, which will only return when there's a new message to read
++or after 10 seconds.
++
++The polling interval can be set via the :setting:`broker_transport_options`
++setting::
++
++    broker_transport_options = {'polling_interval': 0.3}
++
++Very frequent polling intervals can cause *busy loops*, resulting in the
++worker using a lot of CPU time. If you need sub-millisecond precision you
++should consider using another transport, like `RabbitMQ <broker-amqp>`,
++or `Redis <broker-redis>`.
++
++Queue Prefix
++------------
++
++By default Celery will assign `kombu-` prefix to the queue names,
++If you have other services using Pub/Sub you can configure it do so
++using the :setting:`broker_transport_options` setting::
++
++    broker_transport_options = {'queue_name_prefix': 'kombu-'}
++
++.. _gcpubsub-results-configuration:
++
++Results
++-------
++
++Google Cloud Storage (GCS) could be a good candidate to store the results.
++See :ref:`gcs` for more information.
++
++
++Caveats
++=======
++
++- When using celery flower, an --inspect-timeout=10 option is required to
++  detect workers state correctly.
++
++- GCP Subscriptions idle subscriptions (no queued messages)
++  are configured to removal after 24hrs.
++  This aims at reducing costs.
++
++- Queued and unacked messages are set to auto cleanup after 24 hrs.
++  Same reason as above.
++
++- Channel queue size is approximation, and may not be accurate.
++  The reason is that the Pub/Sub API does not provide a way to get the
++  exact number of messages in a subscription.
++
++- Orphan (no subscriptions) Pub/Sub topics aren't being auto removed!!
++  Since GCP introduces a hard limit of 10k topics per project,
++  it is recommended to remove orphan topics manually in a periodic manner.
++
++- Max message size is limited to 10MB, as a workaround you can use GCS Backend to
++  store the message in GCS and pass the GCS URL to the task.
+diff --git a/docs/getting-started/backends-and-brokers/index.rst b/docs/getting-started/backends-and-brokers/index.rst
+index 0c5861fe0fb..ef4422246c3 100644
+--- a/docs/getting-started/backends-and-brokers/index.rst
++++ b/docs/getting-started/backends-and-brokers/index.rst
+@@ -21,6 +21,7 @@ Broker Instructions
+     redis
+     sqs
+     kafka
++    gcpubsub
+ 
+ .. _broker-overview:
+ 
+@@ -44,6 +45,8 @@ individual transport (see :ref:`broker_toc`).
+ +---------------+--------------+----------------+--------------------+
+ | *Kafka*       | Experimental | No             | No                 |
+ +---------------+--------------+----------------+--------------------+
++| *GC PubSub*   | Experimental | Yes            | Yes                |
+++---------------+--------------+----------------+--------------------+
+ 
+ Experimental brokers may be functional but they don't have
+ dedicated maintainers.
+@@ -104,3 +107,12 @@ SQLAlchemy is a backend.
+ It allows Celery to interface with MySQL, PostgreSQL, SQlite, and more. It is an ORM, and is the way Celery can use a SQL DB as a result backend.
+ 
+ :ref:`See documentation for details <conf-database-result-backend>`
++
++GCPubSub
++--------
++
++Google Cloud Pub/Sub is a broker.
++
++If you already integrate tightly with Google Cloud, and are familiar with Pub/Sub, it presents a great option as a broker. It is extremely scalable and completely managed, and manages task delegation similarly to RabbitMQ.
++
++:ref:`See documentation for details <broker-gcpubsub>`
+diff --git a/docs/getting-started/backends-and-brokers/rabbitmq.rst b/docs/getting-started/backends-and-brokers/rabbitmq.rst
+index a7f1bfbaba4..5a324ecdc35 100644
+--- a/docs/getting-started/backends-and-brokers/rabbitmq.rst
++++ b/docs/getting-started/backends-and-brokers/rabbitmq.rst
+@@ -172,3 +172,71 @@ but rather use the :command:`rabbitmqctl` command:
+     $ sudo rabbitmqctl stop
+ 
+ When the server is running, you can continue reading `Setting up RabbitMQ`_.
++
++.. _using-quorum-queues:
++
++Using Quorum Queues
++===================
++
++.. versionadded:: 5.5
++
++.. warning::
++
++    Quorum Queues require disabling global QoS which means some features won't work as expected.
++    See `limitations`_ for details.
++
++Celery supports `Quorum Queues`_ by setting the ``x-queue-type`` header to ``quorum` like so:
++
++.. code-block:: python
++
++    from kombu import Queue
++
++    task_queues = [Queue('my-queue', queue_arguments={'x-queue-type': 'quorum'})]
++    broker_transport_options = {"confirm_publish": True}
++
++If you'd like to change the type of the default queue, set the :setting:`task_default_queue_type` setting to ``quorum``.
++
++Celery automatically detects if quorum queues are used using the :setting:`worker_detect_quorum_queues` setting.
++We recommend to keep the default behavior turned on.
++
++To migrate from classic mirrored queues to quorum queues, please refer to RabbitMQ's `documentation <https://www.rabbitmq.com/blog/2023/03/02/quorum-queues-migration>`_ on the subject.
++
++.. _`Quorum Queues`: https://www.rabbitmq.com/docs/quorum-queues
++
++.. _limitations:
++
++Limitations
++-----------
++
++Disabling global QoS means that the the per-channel QoS is now static.
++This means that some Celery features won't work when using Quorum Queues.
++
++Autoscaling relies on increasing and decreasing the prefetch count whenever a new process is instantiated
++or terminated so it won't work when Quorum Queues are detected.
++
++Similarly, the :setting:`worker_enable_prefetch_count_reduction` setting will be a no-op even when set to ``True``
++when Quorum Queues are detected.
++
++In addition, :ref:`ETA/Countdown <calling-eta>` will block the worker when received until the ETA arrives since
++we can no longer increase the prefetch count and fetch another task from the queue.
++
++In order to properly schedule ETA/Countdown tasks we automatically detect if quorum queues are used
++and in case they are, Celery automatically enables :ref:`Native Delayed Delivery <native-delayed-delivery>`.
++
++.. _native-delayed-delivery:
++
++Native Delayed Delivery
++-----------------------
++
++Since tasks with ETA/Countdown will block the worker until they are scheduled for execution,
++we need to use RabbitMQ's native capabilities to schedule the execution of tasks.
++
++The design is borrowed from NServiceBus. If you are interested in the implementation details, refer to their `documentation`_.
++
++.. _documentation: https://docs.particular.net/transports/rabbitmq/delayed-delivery
++
++Native Delayed Delivery is automatically enabled when quorum queues are detected.
++
++By default the Native Delayed Delivery queues are quorum queues.
++If you'd like to change them to classic queues you can set the :setting:`broker_native_delayed_delivery_queue_type`
++to classic.
+diff --git a/docs/history/changelog-5.5.rst b/docs/history/changelog-5.5.rst
+index 1fa6db1aadd..e62f3997dbe 100644
+--- a/docs/history/changelog-5.5.rst
++++ b/docs/history/changelog-5.5.rst
+@@ -8,6 +8,441 @@ This document contains change notes for bugfix & new features
+ in the main branch & 5.5.x series, please see :ref:`whatsnew-5.5` for
+ an overview of what's new in Celery 5.5.
+ 
++.. _version-5.5.0rc4:
++
++5.5.0rc4
++========
++
++:release-date: 2024-12-19
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 4 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Bugfix: SIGQUIT not initiating cold shutdown when `task_acks_late=False` (#9461)
++- Fixed pycurl dep with Python 3.8 (#9471)
++- Update elasticsearch requirement from <=8.16.0 to <=8.17.0 (#9469)
++- Bump pytest-subtests from 0.13.1 to 0.14.1 (#9459)
++- documentation: Added a type annotation to the periodic task example (#9473)
++- Prepare for (pre) release: v5.5.0rc4 (#9474)
++
++.. _version-5.5.0rc3:
++
++5.5.0rc3
++========
++
++:release-date: 2024-12-03
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 3 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Document usage of broker_native_delayed_delivery_queue_type (#9419)
++- Adjust section in what's new document regarding quorum queues support (#9420)
++- Update pytest-rerunfailures to 15.0 (#9422)
++- Document group unrolling (#9421)
++- fix small typo acces -> access (#9434)
++- Update cryptography to 44.0.0 (#9437)
++- Added pypy to Dockerfile (#9438)
++- Skipped flaky tests on pypy (all pass after ~10 reruns) (#9439)
++- Allowing managed credentials for azureblockblob (#9430)
++- Allow passing Celery objects to the Click entry point (#9426)
++- support Request termination for gevent (#9440)
++- Prevent event_mask from being overwritten. (#9432)
++- Update pytest to 8.3.4 (#9444)
++- Prepare for (pre) release: v5.5.0rc3 (#9450)
++
++.. _version-5.5.0rc2:
++
++5.5.0rc2
++========
++
++:release-date: 2024-11-18
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 2 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc2
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is current at 5.5.0rc2.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Previous Pre-release Highlights
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Python 3.13 Initial Support
++---------------------------
++
++This release introduces the initial support for Python 3.13 with Celery.
++
++After upgrading to this version, please share your feedback on the Python 3.13 support.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Fix: Treat dbm.error as a corrupted schedule file (#9331)
++- Pin pre-commit to latest version 4.0.1 (#9343)
++- Added Python 3.13 to Dockerfiles (#9350)
++- Skip test_pool_restart_import_modules on PyPy due to test issue (#9352)
++- Update elastic-transport requirement from <=8.15.0 to <=8.15.1 (#9347)
++- added dragonfly logo (#9353)
++- Update README.rst (#9354)
++- Update README.rst (#9355)
++- Update mypy to 1.12.0 (#9356)
++- Bump Kombu to v5.5.0rc1 (#9357)
++- Fix `celery --loader` option parsing (#9361)
++- Add support for Google Pub/Sub transport (#9351)
++- Add native incr support for GCSBackend (#9302)
++- fix(perform_pending_operations): prevent task duplication on shutdown… (#9348)
++- Update grpcio to 1.67.0 (#9365)
++- Update google-cloud-firestore to 2.19.0 (#9364)
++- Annotate celery/utils/timer2.py (#9362)
++- Update cryptography to 43.0.3 (#9366)
++- Update mypy to 1.12.1 (#9368)
++- Bump mypy from 1.12.1 to 1.13.0 (#9373)
++- Pass timeout and confirm_timeout to producer.publish() (#9374)
++- Bump Kombu to v5.5.0rc2 (#9382)
++- Bump pytest-cov from 5.0.0 to 6.0.0 (#9388)
++- default strict to False for pydantic tasks (#9393)
++- Only log that global QoS is disabled if using amqp (#9395)
++- chore: update sponsorship logo (#9398)
++- Allow custom hostname for celery_worker in celery.contrib.pytest / celery.contrib.testing.worker (#9405)
++- Removed docker-docs from CI (optional job, malfunctioning) (#9406)
++- Added a utility to format changelogs from the auto-generated GitHub release notes (#9408)
++- Bump codecov/codecov-action from 4 to 5 (#9412)
++- Update elasticsearch requirement from <=8.15.1 to <=8.16.0 (#9410)
++- Native Delayed Delivery in RabbitMQ (#9207)
++- Prepare for (pre) release: v5.5.0rc2 (#9416)
++
+ .. _version-5.5.0rc1:
+ 
+ 5.5.0rc1
+diff --git a/docs/history/whatsnew-5.5.rst b/docs/history/whatsnew-5.5.rst
+index b9ea8689619..d2f5f9a7958 100644
+--- a/docs/history/whatsnew-5.5.rst
++++ b/docs/history/whatsnew-5.5.rst
+@@ -168,7 +168,7 @@ Minimum Dependencies
+ Kombu
+ ~~~~~
+ 
+-Starting from Celery v5.5, the minimum required version is Kombu 5.4.
++Starting from Celery v5.5, the minimum required version is Kombu 5.5.
+ 
+ Redis
+ ~~~~~
+@@ -285,15 +285,17 @@ Quorum Queues Initial Support
+ -----------------------------
+ 
+ This release introduces the initial support for Quorum Queues with Celery.
++See the documentation for :ref:`using-quorum-queues` for more details.
+ 
+-See new configuration options for more details:
++In addition, you can read about the new configuration options relevant for this feature:
+ 
+ - :setting:`task_default_queue_type`
+ - :setting:`worker_detect_quorum_queues`
++- :setting:`broker_native_delayed_delivery_queue_type`
+ 
+ REMAP_SIGTERM
+ -------------
+ 
+ The REMAP_SIGTERM "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
+ This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using TERM
+-instead of QUIT.
+\ No newline at end of file
++instead of QUIT.
+diff --git a/docs/images/dragonfly.svg b/docs/images/dragonfly.svg
+new file mode 100644
+index 00000000000..c1e58644230
+--- /dev/null
++++ b/docs/images/dragonfly.svg
+@@ -0,0 +1,89 @@
++<svg width="600" height="304" viewBox="0 0 600 304" fill="none" xmlns="http://www.w3.org/2000/svg">
++<path d="M293.371 120.52L295.001 143.333C295.001 143.333 295.834 146.667 300.001 146.667C304.167 146.667 305.001 143.333 305.001 143.333L306.63 120.52C306.57 120.545 306.509 120.57 306.447 120.595C304.969 121.186 302.877 121.667 300.001 121.667C297.125 121.667 295.033 121.186 293.555 120.595C293.492 120.57 293.431 120.545 293.371 120.52Z" fill="url(#paint0_linear_1356_82148)"/>
++<path d="M290.071 79.1411L293.334 116.667C293.334 116.667 295.001 118.333 300.001 118.333C305.001 118.333 306.668 116.667 306.668 116.667L309.931 79.1409C307.884 80.3319 304.562 81.6667 300.001 81.6667C295.438 81.6667 292.117 80.3315 290.071 79.1411Z" fill="url(#paint1_linear_1356_82148)"/>
++<path d="M288.725 42.2741C288.189 42.6515 287.764 43.187 287.523 43.8296L284.163 52.7901C283.626 54.2199 283.597 55.7904 284.08 57.2391L289.503 73.507C289.83 74.4888 290.378 75.3913 291.247 75.9534C292.77 76.9385 295.688 78.3333 300.001 78.3333C304.313 78.3333 307.231 76.9385 308.754 75.9534C309.623 75.3913 310.171 74.4888 310.498 73.507L315.921 57.2391C316.404 55.7904 316.375 54.2199 315.838 52.7901L312.478 43.8296C312.237 43.187 311.812 42.6515 311.276 42.2741C308.308 45.0015 304.349 46.6667 300.001 46.6667C295.652 46.6667 291.693 45.0015 288.725 42.2741Z" fill="url(#paint2_linear_1356_82148)"/>
++<path d="M286.667 30C286.667 28.0055 285.484 26.0403 283.724 25.1001C279.525 22.8554 276.667 18.428 276.667 13.3333C276.667 5.96954 282.637 0 290.001 0C291.287 0 292.531 0.182103 293.707 0.521932C297.56 1.63468 302.441 1.63467 306.294 0.52193C307.471 0.182102 308.715 0 310.001 0C317.365 0 323.334 5.96954 323.334 13.3333C323.334 18.428 320.477 22.8554 316.277 25.1001C314.518 26.0403 313.334 28.0055 313.334 30C313.334 37.3638 307.365 43.3333 300.001 43.3333C292.637 43.3333 286.667 37.3638 286.667 30Z" fill="url(#paint3_linear_1356_82148)"/>
++<path d="M215.001 50H281.334C278.334 55 280.509 58.193 281.667 61.6667L219.391 79.5014C215.414 80.6216 211.158 79.1811 208.679 75.876L204.76 70.6504C202.488 67.6202 202.122 63.5661 203.816 60.1782L206.141 55.5275C207.822 52.1671 211.244 50.032 215.001 50Z" fill="url(#paint4_linear_1356_82148)"/>
++<path d="M282.501 46.6667L206.667 44.8876C202.434 44.7111 198.73 42.2702 197.484 38.2209L193.777 26.2459C193.481 25.285 193.337 24.3042 193.334 23.3333C193.326 20.2745 194.724 17.3136 197.234 15.3814L204.884 9.49196C207.751 7.28419 211.588 6.79807 214.916 8.22088C223.481 11.7497 274.875 33.9566 283.709 37.7748C284.467 38.1024 284.844 38.9237 284.641 39.7242C284.498 40.2938 284.328 40.9799 284.167 41.6667C283.698 43.6708 282.501 46.6667 282.501 46.6667Z" fill="url(#paint5_linear_1356_82148)"/>
++<path d="M385.001 50H318.667C321.667 55 319.492 58.193 318.334 61.6667L380.61 79.5014C384.587 80.6216 388.843 79.1811 391.322 75.876L395.241 70.6504C397.514 67.6202 397.879 63.5661 396.185 60.1783L393.86 55.5275C392.18 52.1671 388.758 50.032 385.001 50Z" fill="url(#paint6_linear_1356_82148)"/>
++<path d="M317.501 46.6667L393.334 44.8876C397.567 44.7112 401.271 42.2702 402.517 38.2209L406.225 26.2459C406.52 25.285 406.665 24.3043 406.667 23.3333C406.676 20.2745 405.277 17.3136 402.767 15.3814L395.118 9.49198C392.25 7.28421 388.413 6.79809 385.086 8.22091C376.52 11.7497 325.126 33.9566 316.293 37.7748C315.535 38.1024 315.158 38.9237 315.36 39.7242C315.504 40.2938 315.673 40.9799 315.834 41.6667C316.303 43.6708 317.501 46.6667 317.501 46.6667Z" fill="url(#paint7_linear_1356_82148)"/>
++<path d="M465.582 176.493C464.604 179.329 464.115 182.36 464.115 185.587V196.733H452.822V209.347H464.115V273.88H479.369V209.347H493.742V196.733H479.369V186.173C479.369 183.924 479.907 182.213 480.982 181.04C482.155 179.867 483.915 179.28 486.262 179.28H493.742L497.076 168.573C496.098 168.182 494.973 167.84 493.702 167.547C492.431 167.253 491.062 167.058 489.595 166.96C488.227 166.764 486.858 166.667 485.489 166.667C480.698 166.667 473.649 167.596 471.009 169.453C468.467 171.311 466.658 173.658 465.582 176.493Z" fill="url(#paint8_linear_1356_82148)"/>
++<path fill-rule="evenodd" clip-rule="evenodd" d="M65.4133 268.6C58.08 272.12 49.2311 273.88 38.8667 273.88H0V173.267H38.8667C49.2311 173.267 58.08 175.076 65.4133 178.693C72.7467 182.213 78.3689 187.689 82.28 195.12C86.2889 202.453 88.2933 211.938 88.2933 223.573C88.2933 235.111 86.2889 244.596 82.28 252.027C78.3689 259.458 72.7467 264.982 65.4133 268.6ZM52.5067 189.4C48.4978 188.031 43.9022 187.347 38.72 187.347H16.4267V259.8H38.72C43.9022 259.8 48.4978 259.116 52.5067 257.747C56.6133 256.378 60.0356 254.276 62.7733 251.44C65.6089 248.604 67.7111 245.036 69.08 240.733C70.5467 236.333 71.28 231.151 71.28 225.187V222.107C71.28 216.044 70.5467 210.862 69.08 206.56C67.7111 202.16 65.6089 198.542 62.7733 195.707C60.0356 192.871 56.6133 190.769 52.5067 189.4Z" fill="url(#paint9_linear_1356_82148)"/>
++<path d="M112.947 223.28C112.262 226.018 111.92 229.098 111.92 232.52V273.88H96.6665V196.733H109.28L110.6 209.2H111.48C112.36 206.756 113.484 204.458 114.853 202.307C116.32 200.156 118.178 198.396 120.427 197.027C122.773 195.658 125.609 194.973 128.933 194.973C130.498 194.973 131.867 195.12 133.04 195.413C134.311 195.707 135.289 195.951 135.973 196.147V210.52H130.84C127.711 210.52 124.924 211.009 122.48 211.987C120.133 212.964 118.129 214.431 116.467 216.387C114.902 218.244 113.729 220.542 112.947 223.28Z" fill="url(#paint10_linear_1356_82148)"/>
++<path fill-rule="evenodd" clip-rule="evenodd" d="M157.256 274.76C160.092 275.347 162.732 275.64 165.176 275.64C169.185 275.64 172.803 275.151 176.03 274.173C179.256 273.293 182.092 272.022 184.536 270.36C187.078 268.6 189.23 266.596 190.99 264.347H191.87V275.64L205.8 275.627L205.803 218.733C205.803 213.747 204.678 209.493 202.43 205.973C200.181 202.453 196.807 199.764 192.31 197.907C187.91 195.951 182.385 194.973 175.736 194.973C169.576 194.973 164.15 195.804 159.456 197.467C154.763 199.129 151.096 201.573 148.456 204.8C145.914 207.929 144.643 211.791 144.643 216.387V218.147C144.643 218.636 144.692 219.124 144.79 219.613H159.456V217.413C159.456 215.653 159.896 214.04 160.776 212.573C161.754 211.009 163.367 209.738 165.616 208.76C167.963 207.684 171.19 207.147 175.296 207.147C179.403 207.147 182.532 207.684 184.683 208.76C186.932 209.836 188.447 211.351 189.23 213.307C190.11 215.262 190.55 217.511 190.55 220.053V227.68C183.314 227.68 176.616 228.071 170.456 228.853C164.394 229.636 159.163 231.004 154.763 232.96C150.363 234.916 146.941 237.604 144.496 241.027C142.052 244.449 140.83 248.8 140.83 254.08C140.83 258.578 141.612 262.244 143.176 265.08C144.741 267.818 146.745 269.969 149.19 271.533C151.732 273.098 154.421 274.173 157.256 274.76ZM177.79 261.707C175.247 262.587 172.461 263.027 169.43 263.027C166.79 263.027 164.492 262.636 162.536 261.853C160.581 261.071 159.114 259.947 158.136 258.48C157.158 256.916 156.67 255.009 156.67 252.76C156.67 249.044 158.087 246.16 160.923 244.107C163.758 241.956 167.718 240.489 172.803 239.707C177.887 238.924 183.803 238.533 190.55 238.533V243.667C190.55 246.502 190.012 249.142 188.936 251.587C187.861 253.933 186.394 255.987 184.536 257.747C182.678 259.409 180.43 260.729 177.79 261.707Z" fill="url(#paint11_linear_1356_82148)"/>
++<path fill-rule="evenodd" clip-rule="evenodd" d="M232.548 300.573C229.028 300.573 225.703 299.84 222.574 298.373C219.543 296.907 217.099 294.804 215.241 292.067C213.383 289.329 212.454 286.004 212.454 282.093C212.454 277.791 213.628 274.32 215.974 271.68C218.419 268.942 221.254 266.889 224.481 265.52C222.134 264.444 220.228 262.88 218.761 260.827C217.392 258.773 216.708 256.427 216.708 253.787C216.708 250.169 218.028 247.236 220.668 244.987C223.308 242.738 226.388 241.271 229.908 240.587C226.485 238.338 223.796 235.502 221.841 232.08C219.983 228.658 219.054 224.796 219.054 220.493C219.054 215.311 220.276 210.862 222.721 207.147C225.165 203.333 228.783 200.351 233.574 198.2C238.463 196.049 244.379 194.973 251.321 194.973H293.333L290 204.427H277.915C279.607 206.317 280.911 208.446 281.828 210.813C283.099 213.747 283.734 216.973 283.734 220.493C283.734 225.578 282.561 230.027 280.214 233.84C277.868 237.653 274.299 240.636 269.508 242.787C264.814 244.938 258.996 246.013 252.054 246.013H240.028C237.681 246.013 235.774 246.502 234.308 247.48C232.939 248.458 232.254 249.924 232.254 251.88C232.254 253.542 232.939 254.911 234.308 255.987C235.676 257.062 237.485 257.6 239.734 257.6H272.294C277.965 257.6 282.659 259.507 286.374 263.32C290.09 267.036 291.948 271.827 291.948 277.693C291.948 281.996 290.823 285.858 288.574 289.28C286.423 292.8 283.343 295.538 279.334 297.493C275.423 299.547 270.876 300.573 265.694 300.573H232.548ZM230.494 286.64C232.352 288.4 234.699 289.28 237.534 289.28H265.548C267.601 289.28 269.459 288.889 271.121 288.107C272.783 287.324 274.103 286.2 275.081 284.733C276.059 283.364 276.548 281.8 276.548 280.04C276.548 277.107 275.619 274.809 273.761 273.147C272.001 271.484 269.801 270.653 267.161 270.653H237.534C234.796 270.653 232.499 271.582 230.641 273.44C228.783 275.2 227.854 277.4 227.854 280.04C227.854 282.778 228.734 284.978 230.494 286.64ZM251.468 235.013C257.236 235.013 261.539 233.742 264.374 231.2C267.21 228.56 268.628 224.991 268.628 220.493C268.628 215.898 267.21 212.378 264.374 209.933C261.539 207.391 257.236 206.12 251.468 206.12C245.699 206.12 241.396 207.391 238.561 209.933C235.725 212.378 234.308 215.898 234.308 220.493C234.308 223.427 234.894 226.018 236.068 228.267C237.339 230.418 239.245 232.08 241.788 233.253C244.428 234.427 247.654 235.013 251.468 235.013Z" fill="url(#paint12_linear_1356_82148)"/>
++<path fill-rule="evenodd" clip-rule="evenodd" d="M311.573 271.387C317.147 274.222 323.942 275.64 331.96 275.64C340.173 275.64 347.018 274.222 352.493 271.387C357.969 268.453 362.075 264.004 364.813 258.04C367.649 252.076 369.067 244.498 369.067 235.307C369.067 226.018 367.649 218.44 364.813 212.573C362.075 206.609 357.969 202.209 352.493 199.373C347.018 196.44 340.173 194.973 331.96 194.973C323.942 194.973 317.147 196.44 311.573 199.373C306.098 202.209 301.942 206.609 299.107 212.573C296.369 218.44 295 226.018 295 235.307C295 244.498 296.369 252.076 299.107 258.04C301.942 264.004 306.098 268.453 311.573 271.387ZM343.987 260.24C340.858 262.098 336.849 263.027 331.96 263.027C327.169 263.027 323.209 262.098 320.08 260.24C316.951 258.284 314.604 255.351 313.04 251.44C311.573 247.529 310.84 242.591 310.84 236.627V233.987C310.84 228.022 311.573 223.084 313.04 219.173C314.604 215.262 316.951 212.378 320.08 210.52C323.209 208.564 327.169 207.587 331.96 207.587C336.849 207.587 340.858 208.564 343.987 210.52C347.115 212.378 349.413 215.262 350.88 219.173C352.444 223.084 353.227 228.022 353.227 233.987V236.627C353.227 242.591 352.444 247.529 350.88 251.44C349.413 255.351 347.115 258.284 343.987 260.24Z" fill="url(#paint13_linear_1356_82148)"/>
++<path d="M397.893 218C396.133 221.031 395.253 224.6 395.253 228.707V273.88H380V196.733H392.613L393.933 207.733H394.96C396.818 204.898 399.018 202.551 401.56 200.693C404.102 198.836 406.889 197.418 409.92 196.44C413.049 195.462 416.471 194.973 420.187 194.973C425.075 194.973 429.378 195.853 433.093 197.613C436.809 199.276 439.693 202.013 441.747 205.827C443.898 209.64 444.973 214.773 444.973 221.227V273.88H429.72V223.573C429.72 220.64 429.329 218.196 428.547 216.24C427.862 214.284 426.836 212.72 425.467 211.547C424.098 210.373 422.484 209.542 420.627 209.053C418.769 208.564 416.715 208.32 414.467 208.32C410.947 208.32 407.72 209.2 404.787 210.96C401.951 212.622 399.653 214.969 397.893 218Z" fill="url(#paint14_linear_1356_82148)"/>
++<path d="M600 196.592L564.8 300.952H549.25C549.25 300.952 556.733 276.47 557.907 273.244L526.96 196.592H542.947L557.907 231.685C558.591 233.445 559.324 235.645 560.107 238.285C560.987 240.925 561.818 243.614 562.6 246.352C563.48 249.09 564.213 251.534 564.8 253.685H565.533C566.022 252.219 566.511 250.557 567 248.699C567.587 246.743 568.173 244.739 568.76 242.685C569.347 240.632 569.933 238.677 570.52 236.819C571.107 234.863 571.596 233.201 571.987 231.832L584.453 196.592H600Z" fill="url(#paint15_linear_1356_82148)"/>
++<path d="M503.715 167.84V273.88H518.969V167.84H503.715Z" fill="url(#paint16_linear_1356_82148)"/>
++<defs>
++<linearGradient id="paint0_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint1_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint2_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint3_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint4_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint5_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint6_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint7_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint8_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint9_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint10_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint11_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint12_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint13_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint14_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint15_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++<linearGradient id="paint16_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
++<stop stop-color="#5A3EE0"/>
++<stop offset="1" stop-color="#3E74E0"/>
++</linearGradient>
++</defs>
++</svg>
+diff --git a/docs/includes/installation.txt b/docs/includes/installation.txt
+index 7422f16fc65..b96758b03cf 100644
+--- a/docs/includes/installation.txt
++++ b/docs/includes/installation.txt
+@@ -118,6 +118,9 @@ Transports and Backends
+ :``celery[gcs]``:
+     for using the Google Cloud Storage as a result backend (*experimental*).
+ 
++:``celery[gcpubsub]``:
++    for using the Google Cloud Pub/Sub as a message transport (*experimental*)..
++
+ 
+ 
+ .. _celery-installing-from-source:
+diff --git a/docs/includes/introduction.txt b/docs/includes/introduction.txt
+index a51a36756de..5bc0021d226 100644
+--- a/docs/includes/introduction.txt
++++ b/docs/includes/introduction.txt
+@@ -1,4 +1,4 @@
+-:Version: 5.5.0rc1 (immunity)
++:Version: 5.5.0rc4 (immunity)
+ :Web: https://docs.celeryq.dev/en/stable/index.html
+ :Download: https://pypi.org/project/celery/
+ :Source: https://github.com/celery/celery/
+diff --git a/docs/userguide/canvas.rst b/docs/userguide/canvas.rst
+index f9c8c1d323e..8b74e38b955 100644
+--- a/docs/userguide/canvas.rst
++++ b/docs/userguide/canvas.rst
+@@ -817,6 +817,48 @@ It supports the following operations:
+     Gather the results of all subtasks
+     and return them in the same order as they were called (as a list).
+ 
++.. _group-unrolling:
++
++Group Unrolling
++~~~~~~~~~~~~~~~
++
++A group with a single signature will be unrolled to a single signature when chained.
++This means that the following group may pass either a list of results or a single result to the chain
++depending on the number of items in the group.
++
++.. code-block:: pycon
++
++    >>> from celery import chain, group
++    >>> from tasks import add
++    >>> chain(add.s(2, 2), group(add.s(1)), add.s(1))
++    add(2, 2) | add(1) | add(1)
++    >>> chain(add.s(2, 2), group(add.s(1), add.s(2)), add.s(1))
++    add(2, 2) | %add((add(1), add(2)), 1)
++
++This means that you should be careful and make sure the ``add`` task can accept either a list or a single item as input
++if you plan to use it as part of a larger canvas.
++
++.. warning::
++
++    In Celery 4.x the following group below would not unroll into a chain due to a bug but instead the canvas would be
++    upgraded into a chord.
++
++    .. code-block:: pycon
++
++        >>> from celery import chain, group
++        >>> from tasks import add
++        >>> chain(group(add.s(1, 1)), add.s(2))
++        %add([add(1, 1)], 2)
++
++    In Celery 5.x this bug was fixed and the group is correctly unrolled into a single signature.
++
++    .. code-block:: pycon
++
++        >>> from celery import chain, group
++        >>> from tasks import add
++        >>> chain(group(add.s(1, 1)), add.s(2))
++        add(1, 1) | add(2)
++
+ .. _canvas-chord:
+ 
+ Chords
+diff --git a/docs/userguide/configuration.rst b/docs/userguide/configuration.rst
+index ab17540ae6b..01b276458ec 100644
+--- a/docs/userguide/configuration.rst
++++ b/docs/userguide/configuration.rst
+@@ -79,6 +79,7 @@ have been moved into a new  ``task_`` prefix.
+ ``BROKER_FAILOVER_STRATEGY``               :setting:`broker_failover_strategy`
+ ``BROKER_HEARTBEAT``                       :setting:`broker_heartbeat`
+ ``BROKER_LOGIN_METHOD``                    :setting:`broker_login_method`
++``BROKER_NATIVE_DELAYED_DELIVERY_QUEUE_TYPE`` :setting:`broker_native_delayed_delivery_queue_type`
+ ``BROKER_POOL_LIMIT``                      :setting:`broker_pool_limit`
+ ``BROKER_USE_SSL``                         :setting:`broker_use_ssl`
+ ``CELERY_CACHE_BACKEND``                   :setting:`cache_backend`
+@@ -1669,7 +1670,7 @@ Default: None.
+ 
+ The s3 access key id. For example::
+ 
+-    s3_access_key_id = 'acces_key_id'
++    s3_access_key_id = 'access_key_id'
+ 
+ .. setting:: s3_secret_access_key
+ 
+@@ -1680,7 +1681,7 @@ Default: None.
+ 
+ The s3 secret access key. For example::
+ 
+-    s3_secret_access_key = 'acces_secret_access_key'
++    s3_secret_access_key = 'access_secret_access_key'
+ 
+ .. setting:: s3_bucket
+ 
+@@ -1829,7 +1830,7 @@ GCS backend settings
+ 
+ .. note::
+ 
+-    This gcs backend driver requires :pypi:`google-cloud-storage`.
++    This gcs backend driver requires :pypi:`google-cloud-storage` and :pypi:`google-cloud-firestore`.
+ 
+     To install, use :command:`gcs`:
+ 
+@@ -1843,6 +1844,7 @@ GCS backend settings
+ GCS could be configured via the URL provided in :setting:`result_backend`, for example::
+ 
+     result_backend = 'gs://mybucket/some-prefix?gcs_project=myproject&ttl=600'
++    result_backend = 'gs://mybucket/some-prefix?gcs_project=myproject?firestore_project=myproject2&ttl=600'
+ 
+ This backend requires the following configuration directives to be set:
+ 
+@@ -1902,6 +1904,17 @@ Allows to control the number of concurrent operations. For example::
+ 
+     gcs_threadpool_maxsize = 20
+ 
++``firestore_project``
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: gcs_project.
++
++The Firestore project for Chord reference counting. Allows native chord ref counts.
++If not specified defaults to :setting:`gcs_project`.
++For example::
++
++    firestore_project = 'test-project2'
++
+ Example configuration
+ ~~~~~~~~~~~~~~~~~~~~~
+ 
+@@ -2642,14 +2655,6 @@ queue argument.
+ If the :setting:`worker_detect_quorum_queues` setting is enabled, the worker will
+ automatically detect the queue type and disable the global QoS accordingly.
+ 
+-.. warning::
+-
+-    When using quorum queues, ETA tasks may not function as expected. Instead of adjusting
+-    the prefetch count dynamically, ETA tasks will occupy the prefetch buffer, potentially
+-    blocking other tasks from being consumed. To mitigate this, either set a high prefetch
+-    count or avoid using quorum queues until the ETA mechanism is updated to support a
+-    disabled global QoS, which is required for quorum queues.
+-
+ .. warning::
+ 
+     Quorum queues require confirm publish to be enabled.
+@@ -2992,6 +2997,22 @@ Default: ``"AMQPLAIN"``.
+ 
+ Set custom amqp login method.
+ 
++.. setting:: broker_native_delayed_delivery_queue_type
++
++``broker_native_delayed_delivery_queue_type``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++.. versionadded:: 5.5
++
++:transports supported: ``pyamqp``
++
++Default: ``"quorum"``.
++
++This setting is used to allow changing the default queue type for the
++native delayed delivery queues. The other viable option is ``"classic"`` which
++is only supported by RabbitMQ and sets the queue type to ``classic`` using the ``x-queue-type``
++queue argument.
++
+ .. setting:: broker_transport_options
+ 
+ ``broker_transport_options``
+diff --git a/docs/userguide/periodic-tasks.rst b/docs/userguide/periodic-tasks.rst
+index 1928b1f9ac3..c185115e628 100644
+--- a/docs/userguide/periodic-tasks.rst
++++ b/docs/userguide/periodic-tasks.rst
+@@ -90,7 +90,7 @@ beat schedule list.
+     app = Celery()
+ 
+     @app.on_after_configure.connect
+-    def setup_periodic_tasks(sender, **kwargs):
++    def setup_periodic_tasks(sender: Celery, **kwargs):
+         # Calls test('hello') every 10 seconds.
+         sender.add_periodic_task(10.0, test.s('hello'), name='add every 10')
+ 
+diff --git a/docs/userguide/tasks.rst b/docs/userguide/tasks.rst
+index 505522b3cf5..60c5e89f259 100644
+--- a/docs/userguide/tasks.rst
++++ b/docs/userguide/tasks.rst
+@@ -893,7 +893,7 @@ There are a few more options influencing Pydantic behavior:
+ .. attribute:: Task.pydantic_strict
+ 
+    By default, `strict mode <https://docs.pydantic.dev/dev/concepts/strict_mode/>`_
+-   is enabled. You can pass ``False`` to disable strict model validation.
++   is disabled. You can pass ``True`` to enable strict model validation.
+ 
+ .. attribute:: Task.pydantic_context
+ 
+diff --git a/requirements/default.txt b/requirements/default.txt
+index 3711888032d..bed03e2bd56 100644
+--- a/requirements/default.txt
++++ b/requirements/default.txt
+@@ -1,5 +1,5 @@
+ billiard>=4.2.1,<5.0
+-kombu>=5.4.2,<6.0
++kombu>=5.5.0rc2,<6.0
+ vine>=5.1.0,<6.0
+ click>=8.1.2,<9.0
+ click-didyoumean>=0.3.0
+diff --git a/requirements/extras/auth.txt b/requirements/extras/auth.txt
+index ccb822680ef..afd08f7b18e 100644
+--- a/requirements/extras/auth.txt
++++ b/requirements/extras/auth.txt
+@@ -1 +1 @@
+-cryptography==43.0.1
++cryptography==44.0.0
+diff --git a/requirements/extras/azureblockblob.txt b/requirements/extras/azureblockblob.txt
+index f8329f38c8d..3ecebd5beb8 100644
+--- a/requirements/extras/azureblockblob.txt
++++ b/requirements/extras/azureblockblob.txt
+@@ -1 +1,2 @@
+ azure-storage-blob>=12.15.0
++azure-identity>=1.19.0
+\ No newline at end of file
+diff --git a/requirements/extras/elasticsearch.txt b/requirements/extras/elasticsearch.txt
+index 4a02b7374b7..a729c4ae794 100644
+--- a/requirements/extras/elasticsearch.txt
++++ b/requirements/extras/elasticsearch.txt
+@@ -1,2 +1,2 @@
+-elasticsearch<=8.15.1
+-elastic-transport<=8.15.0
++elasticsearch<=8.17.0
++elastic-transport<=8.15.1
+diff --git a/requirements/extras/gcs.txt b/requirements/extras/gcs.txt
+index 7f34beca1b6..363a19b8c8b 100644
+--- a/requirements/extras/gcs.txt
++++ b/requirements/extras/gcs.txt
+@@ -1 +1,3 @@
+ google-cloud-storage>=2.10.0
++google-cloud-firestore==2.19.0
++grpcio==1.67.0
+diff --git a/requirements/extras/sqs.txt b/requirements/extras/sqs.txt
+index 03d1687cfcd..43ee109e8c6 100644
+--- a/requirements/extras/sqs.txt
++++ b/requirements/extras/sqs.txt
+@@ -1,4 +1,5 @@
+ boto3>=1.26.143
+-pycurl>=7.43.0.5; sys_platform != 'win32' and platform_python_implementation=="CPython"
++pycurl>=7.43.0.5,<7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version < "3.9"
++pycurl>=7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version >= "3.9"
+ urllib3>=1.26.16
+ kombu[sqs]>=5.3.4
+diff --git a/requirements/pkgutils.txt b/requirements/pkgutils.txt
+index 652a4c801a5..fd180f53be3 100644
+--- a/requirements/pkgutils.txt
++++ b/requirements/pkgutils.txt
+@@ -9,3 +9,4 @@ sphinx2rst>=1.0
+ # Disable cyanide until it's fully updated.
+ # cyanide>=1.0.1
+ bumpversion==0.6.0
++pyperclip==1.9.0
+diff --git a/requirements/test-ci-base.txt b/requirements/test-ci-base.txt
+index 6238dd48914..05ee50df850 100644
+--- a/requirements/test-ci-base.txt
++++ b/requirements/test-ci-base.txt
+@@ -1,4 +1,5 @@
+-pytest-cov==5.0.0
++pytest-cov==5.0.0; python_version<"3.9"
++pytest-cov==6.0.0; python_version>="3.9"
+ pytest-github-actions-annotate-failures==0.2.0
+ -r extras/redis.txt
+ -r extras/sqlalchemy.txt
+diff --git a/requirements/test-ci-default.txt b/requirements/test-ci-default.txt
+index 0ab2b79da06..78994fa8e45 100644
+--- a/requirements/test-ci-default.txt
++++ b/requirements/test-ci-default.txt
+@@ -21,5 +21,5 @@
+ git+https://github.com/celery/kombu.git
+ 
+ # SQS dependencies other than boto
+-pycurl>=7.43.0.5; sys_platform != 'win32' and platform_python_implementation=="CPython"
+-
++pycurl>=7.43.0.5,<7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version < "3.9"
++pycurl>=7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version >= "3.9"
+diff --git a/requirements/test.txt b/requirements/test.txt
+index 1389fc0f84e..ca0b8da0610 100644
+--- a/requirements/test.txt
++++ b/requirements/test.txt
+@@ -1,16 +1,18 @@
+-pytest==8.3.3
++pytest==8.3.4
+ pytest-celery[all]>=1.1.3
+-pytest-rerunfailures==14.0
+-pytest-subtests==0.13.1
++pytest-rerunfailures>=14.0,<15.0; python_version >= "3.8" and python_version < "3.9"
++pytest-rerunfailures>=15.0; python_version >= "3.9" and python_version < "4.0"
++pytest-subtests<0.14.0; python_version < "3.9"
++pytest-subtests>=0.14.1; python_version >= "3.9"
+ pytest-timeout==2.3.1
+ pytest-click==1.1.0
+ pytest-order==1.3.0
+ boto3>=1.26.143
+ moto>=4.1.11,<5.1.0
+ # typing extensions
+-mypy==1.11.2; platform_python_implementation=="CPython"
++mypy==1.13.0; platform_python_implementation=="CPython"
+ pre-commit>=3.5.0,<3.8.0; python_version < '3.9'
+-pre-commit>=4.0.0; python_version >= '3.9'
++pre-commit>=4.0.1; python_version >= '3.9'
+ -r extras/yaml.txt
+ -r extras/msgpack.txt
+ -r extras/mongodb.txt
+diff --git a/t/integration/tasks.py b/t/integration/tasks.py
+index 227e3cb2917..031c89e002e 100644
+--- a/t/integration/tasks.py
++++ b/t/integration/tasks.py
+@@ -344,6 +344,7 @@ def __hash__(self):
+ 
+ class UnpickleableException(Exception):
+     """Exception that doesn't survive a pickling roundtrip (dump + load)."""
++
+     def __init__(self, foo, bar=None):
+         if bar is None:
+             # We define bar with a default value in the signature so that
+diff --git a/t/smoke/tests/quorum_queues/test_native_delayed_delivery.py b/t/smoke/tests/quorum_queues/test_native_delayed_delivery.py
+new file mode 100644
+index 00000000000..904b7047287
+--- /dev/null
++++ b/t/smoke/tests/quorum_queues/test_native_delayed_delivery.py
+@@ -0,0 +1,150 @@
++from datetime import timedelta
++from datetime import timezone as datetime_timezone
++
++import pytest
++import requests
++from future.backports.datetime import datetime
++from pytest_celery import CeleryTestSetup
++from requests.auth import HTTPBasicAuth
++
++from celery import Celery
++from t.smoke.tasks import noop
++from t.smoke.tests.quorum_queues.conftest import RabbitMQManagementBroker
++
++
++@pytest.fixture
++def queues(celery_setup: CeleryTestSetup) -> list:
++    broker: RabbitMQManagementBroker = celery_setup.broker
++    api = broker.get_management_url() + "/api/queues"
++    response = requests.get(api, auth=HTTPBasicAuth("guest", "guest"))
++    assert response.status_code == 200
++
++    queues = response.json()
++    assert isinstance(queues, list)
++
++    return queues
++
++
++@pytest.fixture
++def exchanges(celery_setup: CeleryTestSetup) -> list:
++    broker: RabbitMQManagementBroker = celery_setup.broker
++    api = broker.get_management_url() + "/api/exchanges"
++    response = requests.get(api, auth=HTTPBasicAuth("guest", "guest"))
++    assert response.status_code == 200
++
++    exchanges = response.json()
++    assert isinstance(exchanges, list)
++
++    return exchanges
++
++
++def queue_configuration_test_helper(celery_setup, queues):
++    res = [queue for queue in queues if queue["name"].startswith('celery_delayed')]
++    assert len(res) == 28
++    for queue in res:
++        queue_level = int(queue["name"].split("_")[-1])
++
++        queue_arguments = queue["arguments"]
++        if queue_level == 0:
++            assert queue_arguments["x-dead-letter-exchange"] == "celery_delayed_delivery"
++        else:
++            assert queue_arguments["x-dead-letter-exchange"] == f"celery_delayed_{queue_level - 1}"
++
++        assert queue_arguments["x-message-ttl"] == pow(2, queue_level) * 1000
++
++        conf = celery_setup.app.conf
++        assert queue_arguments["x-queue-type"] == conf.broker_native_delayed_delivery_queue_type
++
++
++def exchange_configuration_test_helper(exchanges):
++    res = [exchange for exchange in exchanges if exchange["name"].startswith('celery_delayed')]
++    assert len(res) == 29
++    for exchange in res:
++        assert exchange["type"] == "topic"
++
++
++class test_broker_configuration_quorum:
++    @pytest.fixture
++    def default_worker_app(self, default_worker_app: Celery) -> Celery:
++        app = default_worker_app
++        app.conf.broker_transport_options = {"confirm_publish": True}
++        app.conf.task_default_queue_type = "quorum"
++        app.conf.broker_native_delayed_delivery_queue_type = 'quorum'
++        app.conf.task_default_exchange_type = 'topic'
++        app.conf.task_default_routing_key = 'celery'
++
++        return app
++
++    def test_native_delayed_delivery_queue_configuration(
++        self,
++        queues: list,
++        celery_setup: CeleryTestSetup
++    ):
++        queue_configuration_test_helper(celery_setup, queues)
++
++    def test_native_delayed_delivery_exchange_configuration(self, exchanges: list, celery_setup: CeleryTestSetup):
++        exchange_configuration_test_helper(exchanges)
++
++
++class test_broker_configuration_classic:
++    @pytest.fixture
++    def default_worker_app(self, default_worker_app: Celery) -> Celery:
++        app = default_worker_app
++        app.conf.broker_transport_options = {"confirm_publish": True}
++        app.conf.task_default_queue_type = "quorum"
++        app.conf.broker_native_delayed_delivery_queue_type = 'classic'
++        app.conf.task_default_exchange_type = 'topic'
++        app.conf.task_default_routing_key = 'celery'
++
++        return app
++
++    def test_native_delayed_delivery_queue_configuration(
++        self,
++        queues: list,
++        celery_setup: CeleryTestSetup,
++        default_worker_app: Celery
++    ):
++        queue_configuration_test_helper(celery_setup, queues)
++
++    def test_native_delayed_delivery_exchange_configuration(self, exchanges: list, celery_setup: CeleryTestSetup):
++        exchange_configuration_test_helper(exchanges)
++
++
++class test_native_delayed_delivery:
++    @pytest.fixture
++    def default_worker_app(self, default_worker_app: Celery) -> Celery:
++        app = default_worker_app
++        app.conf.broker_transport_options = {"confirm_publish": True}
++        app.conf.task_default_queue_type = "quorum"
++        app.conf.task_default_exchange_type = 'topic'
++        app.conf.task_default_routing_key = 'celery'
++
++        return app
++
++    def test_countdown(self, celery_setup: CeleryTestSetup):
++        s = noop.s().set(queue=celery_setup.worker.worker_queue)
++
++        result = s.apply_async(countdown=5)
++
++        result.get(timeout=10)
++
++    def test_eta(self, celery_setup: CeleryTestSetup):
++        s = noop.s().set(queue=celery_setup.worker.worker_queue)
++
++        result = s.apply_async(eta=datetime.now(datetime_timezone.utc) + timedelta(0, 5))
++
++        result.get(timeout=10)
++
++    def test_eta_str(self, celery_setup: CeleryTestSetup):
++        s = noop.s().set(queue=celery_setup.worker.worker_queue)
++
++        result = s.apply_async(eta=(datetime.now(datetime_timezone.utc) + timedelta(0, 5)).isoformat())
++
++        result.get(timeout=10)
++
++    def test_eta_in_the_past(self, celery_setup: CeleryTestSetup):
++        s = noop.s().set(queue=celery_setup.worker.worker_queue)
++
++        result = s.apply_async(eta=(datetime.now(datetime_timezone.utc) - timedelta(0, 5)).isoformat())
++
++        result.get(timeout=10)
+diff --git a/t/smoke/workers/docker/dev b/t/smoke/workers/docker/dev
+index 47f3704510d..015be6deebb 100644
+--- a/t/smoke/workers/docker/dev
++++ b/t/smoke/workers/docker/dev
+@@ -1,4 +1,4 @@
+-FROM python:3.11-bookworm
++FROM python:3.13-bookworm
+ 
+ # Create a user to run the worker
+ RUN adduser --disabled-password --gecos "" test_user
+diff --git a/t/unit/app/test_amqp.py b/t/unit/app/test_amqp.py
+index 1293eb5d15e..4b46148d144 100644
+--- a/t/unit/app/test_amqp.py
++++ b/t/unit/app/test_amqp.py
+@@ -325,6 +325,22 @@ def test_send_task_message__with_delivery_mode(self):
+         )
+         assert prod.publish.call_args[1]['delivery_mode'] == 33
+ 
++    def test_send_task_message__with_timeout(self):
++        prod = Mock(name='producer')
++        self.app.amqp.send_task_message(
++            prod, 'foo', self.simple_message_no_sent_event,
++            timeout=1,
++        )
++        assert prod.publish.call_args[1]['timeout'] == 1
++
++    def test_send_task_message__with_confirm_timeout(self):
++        prod = Mock(name='producer')
++        self.app.amqp.send_task_message(
++            prod, 'foo', self.simple_message_no_sent_event,
++            confirm_timeout=1,
++        )
++        assert prod.publish.call_args[1]['confirm_timeout'] == 1
++
+     def test_send_task_message__with_receivers(self):
+         mocked_receiver = ((Mock(), Mock()), Mock())
+         with patch('celery.signals.task_sent.receivers', [mocked_receiver]):
+diff --git a/t/unit/app/test_app.py b/t/unit/app/test_app.py
+index 4bf1887b236..479a418cf67 100644
+--- a/t/unit/app/test_app.py
++++ b/t/unit/app/test_app.py
+@@ -9,11 +9,13 @@
+ from copy import deepcopy
+ from datetime import datetime, timedelta
+ from datetime import timezone as datetime_timezone
++from logging import LogRecord
+ from pickle import dumps, loads
+ from typing import Optional
+-from unittest.mock import DEFAULT, Mock, patch
++from unittest.mock import ANY, DEFAULT, MagicMock, Mock, patch
+ 
+ import pytest
++from kombu import Exchange, Queue
+ from pydantic import BaseModel, ValidationInfo, model_validator
+ from vine import promise
+ 
+@@ -615,6 +617,28 @@ def foo(arg: ArgModel, kwarg: KwargModel = kwarg_default) -> ReturnModel:
+             assert foo(arg={'arg_value': 5}, kwarg={'kwarg_value': 6}) == {'ret_value': 2}
+             check.assert_called_once_with(ArgModel(arg_value=5), kwarg=KwargModel(kwarg_value=6))
+ 
++    def test_task_with_pydantic_with_non_strict_validation(self):
++        """Test a pydantic task with where Pydantic has to apply non-strict validation."""
++
++        class Model(BaseModel):
++            value: timedelta
++
++        with self.Celery() as app:
++            check = Mock()
++
++            @app.task(pydantic=True)
++            def foo(arg: Model) -> Model:
++                check(arg)
++                return Model(value=timedelta(days=arg.value.days * 2))
++
++            assert foo({'value': timedelta(days=1)}) == {'value': 'P2D'}
++            check.assert_called_once_with(Model(value=timedelta(days=1)))
++            check.reset_mock()
++
++            # Pass a serialized value to the task
++            assert foo({'value': 'P3D'}) == {'value': 'P6D'}
++            check.assert_called_once_with(Model(value=timedelta(days=3)))
++
+     def test_task_with_pydantic_with_optional_pydantic_args(self):
+         """Test pydantic task receiving and returning an optional argument."""
+         class ArgModel(BaseModel):
+@@ -1248,7 +1272,8 @@ def test_pool_no_multiprocessing(self, mask_modules):
+     def test_bugreport(self):
+         assert self.app.bugreport()
+ 
+-    def test_send_task__connection_provided(self):
++    @patch('celery.app.base.detect_quorum_queues', return_value=[False, ""])
++    def test_send_task__connection_provided(self, detect_quorum_queues):
+         connection = Mock(name='connection')
+         router = Mock(name='router')
+         router.route.return_value = {}
+@@ -1399,6 +1424,183 @@ def test_send_task_expire_as_string(self):
+         except TypeError as e:
+             pytest.fail(f'raise unexcepted error {e}')
+ 
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_countdown(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        }
++
++        self.app.send_task('foo', (1, 2), countdown=30)
++
++        exchange = Exchange(
++            'celery_delayed_27',
++            type='topic',
++        )
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            exchange=exchange,
++            routing_key='0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.0.testcelery'
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_eta_datetime(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        }
++        self.app.now = Mock(return_value=datetime(2024, 8, 24, tzinfo=datetime_timezone.utc))
++
++        self.app.send_task('foo', (1, 2), eta=datetime(2024, 8, 25))
++
++        exchange = Exchange(
++            'celery_delayed_27',
++            type='topic',
++        )
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            exchange=exchange,
++            routing_key='0.0.0.0.0.0.0.0.0.0.0.1.0.1.0.1.0.0.0.1.1.0.0.0.0.0.0.0.testcelery'
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_eta_str(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        }
++        self.app.now = Mock(return_value=datetime(2024, 8, 24, tzinfo=datetime_timezone.utc))
++
++        self.app.send_task('foo', (1, 2), eta=datetime(2024, 8, 25).isoformat())
++
++        exchange = Exchange(
++            'celery_delayed_27',
++            type='topic',
++        )
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            exchange=exchange,
++            routing_key='0.0.0.0.0.0.0.0.0.0.0.1.0.1.0.1.0.0.0.1.1.0.0.0.0.0.0.0.testcelery',
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_no_eta_or_countdown(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {'queue': Queue('testcelery', routing_key='testcelery')}
++
++        self.app.send_task('foo', (1, 2), countdown=-10)
++
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            queue=Queue(
++                'testcelery',
++                routing_key='testcelery'
++            )
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_countdown_in_the_past(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        }
++
++        self.app.send_task('foo', (1, 2))
++
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            queue=Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_eta_in_the_past(self, detect_quorum_queues):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        }
++        self.app.now = Mock(return_value=datetime(2024, 8, 24, tzinfo=datetime_timezone.utc))
++
++        self.app.send_task('foo', (1, 2), eta=datetime(2024, 8, 23).isoformat())
++
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            queue=Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='topic')
++            )
++        )
++
++    @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
++    def test_native_delayed_delivery_direct_exchange(self, detect_quorum_queues, caplog):
++        self.app.amqp = MagicMock(name='amqp')
++        self.app.amqp.router.route.return_value = {
++            'queue': Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='direct')
++            )
++        }
++
++        self.app.send_task('foo', (1, 2), countdown=10)
++
++        self.app.amqp.send_task_message.assert_called_once_with(
++            ANY,
++            ANY,
++            ANY,
++            queue=Queue(
++                'testcelery',
++                routing_key='testcelery',
++                exchange=Exchange('testcelery', type='direct')
++            )
++        )
++
++        assert len(caplog.records) == 1
++        record: LogRecord = caplog.records[0]
++        assert record.levelname == "WARNING"
++        assert record.message == (
++            "Direct exchanges are not supported with native delayed delivery.\n"
++            "testcelery is a direct exchange but should be a topic exchange or "
++            "a fanout exchange in order for native delayed delivery to work properly.\n"
++            "If quorum queues are used, this task may block the worker process until the ETA arrives."
++        )
++
+ 
+ class test_defaults:
+ 
+diff --git a/t/unit/app/test_backends.py b/t/unit/app/test_backends.py
+index 54b28456627..af6def1d150 100644
+--- a/t/unit/app/test_backends.py
++++ b/t/unit/app/test_backends.py
+@@ -115,8 +115,8 @@ def test_backend_can_not_be_module(self, app):
+ 
+     @pytest.mark.celery(
+         result_backend=f'{CachedBackendWithTreadTrucking.__module__}.'
+-                       f'{CachedBackendWithTreadTrucking.__qualname__}'
+-                       f'+memory://')
++        f'{CachedBackendWithTreadTrucking.__qualname__}'
++        f'+memory://')
+     def test_backend_thread_safety(self):
+         @self.app.task
+         def dummy_add_task(x, y):
+diff --git a/t/unit/app/test_beat.py b/t/unit/app/test_beat.py
+index a95e8e41409..b81a11426e1 100644
+--- a/t/unit/app/test_beat.py
++++ b/t/unit/app/test_beat.py
+@@ -1,3 +1,4 @@
++import dbm
+ import errno
+ import sys
+ from datetime import datetime, timedelta, timezone
+@@ -688,6 +689,25 @@ def test_create_schedule_corrupted(self):
+         s._create_schedule()
+         s._destroy_open_corrupted_schedule.assert_called_with(expected_error)
+ 
++    def test_create_schedule_corrupted_dbm_error(self):
++        """
++        Test that any dbm.error that might happen when opening beat-schedule.db are caught
++        """
++        s = create_persistent_scheduler()[0](app=self.app,
++                                             schedule_filename='schedule')
++        s._store = MagicMock()
++        s._destroy_open_corrupted_schedule = Mock()
++        s._destroy_open_corrupted_schedule.return_value = MagicMock()
++
++        # self._store['entries'] = {} will throw a KeyError
++        s._store.__getitem__.side_effect = KeyError()
++        # then, when _create_schedule tries to reset _store['entries'], throw another error, specifically dbm.error
++        expected_error = dbm.error[0]()
++        s._store.__setitem__.side_effect = expected_error
++
++        s._create_schedule()
++        s._destroy_open_corrupted_schedule.assert_called_with(expected_error)
++
+     def test_create_schedule_missing_entries(self):
+         """
+         Test that if _create_schedule can't find the key "entries" in _store it will recreate it
+diff --git a/t/unit/backends/test_azureblockblob.py b/t/unit/backends/test_azureblockblob.py
+index 36ca91d82cb..434040dcd07 100644
+--- a/t/unit/backends/test_azureblockblob.py
++++ b/t/unit/backends/test_azureblockblob.py
+@@ -61,6 +61,40 @@ def test_create_client(self, mock_blob_service_factory):
+         assert backend._blob_service_client is not None
+         assert mock_blob_service_client_instance.create_container.call_count == 1
+ 
++    @patch(MODULE_TO_MOCK + ".AzureStorageQueuesTransport")
++    @patch(MODULE_TO_MOCK + ".BlobServiceClient")
++    def test_create_client__default_azure_credentials(self, mock_blob_service_client, mock_kombu_transport):
++        credential_mock = Mock()
++        mock_blob_service_client.return_value = Mock()
++        mock_kombu_transport.parse_uri.return_value = (credential_mock, "dummy_account_url")
++        url = "azureblockblob://DefaultAzureCredential@dummy_account_url"
++        backend = AzureBlockBlobBackend(app=self.app, url=url)
++        assert backend._blob_service_client is not None
++        mock_kombu_transport.parse_uri.assert_called_once_with(url.replace("azureblockblob://", ""))
++        mock_blob_service_client.assert_called_once_with(
++            account_url="dummy_account_url",
++            credential=credential_mock,
++            connection_timeout=backend._connection_timeout,
++            read_timeout=backend._read_timeout,
++        )
++
++    @patch(MODULE_TO_MOCK + ".AzureStorageQueuesTransport")
++    @patch(MODULE_TO_MOCK + ".BlobServiceClient")
++    def test_create_client__managed_identity_azure_credentials(self, mock_blob_service_client, mock_kombu_transport):
++        credential_mock = Mock()
++        mock_blob_service_client.return_value = Mock()
++        mock_kombu_transport.parse_uri.return_value = (credential_mock, "dummy_account_url")
++        url = "azureblockblob://ManagedIdentityCredential@dummy_account_url"
++        backend = AzureBlockBlobBackend(app=self.app, url=url)
++        assert backend._blob_service_client is not None
++        mock_kombu_transport.parse_uri.assert_called_once_with(url.replace("azureblockblob://", ""))
++        mock_blob_service_client.assert_called_once_with(
++            account_url="dummy_account_url",
++            credential=credential_mock,
++            connection_timeout=backend._connection_timeout,
++            read_timeout=backend._read_timeout,
++        )
++
+     @patch(MODULE_TO_MOCK + ".BlobServiceClient")
+     def test_configure_client(self, mock_blob_service_factory):
+ 
+diff --git a/t/unit/backends/test_gcs.py b/t/unit/backends/test_gcs.py
+index 8ebfbc9aa58..32e10659136 100644
+--- a/t/unit/backends/test_gcs.py
++++ b/t/unit/backends/test_gcs.py
+@@ -1,13 +1,24 @@
+-from datetime import datetime
+-from unittest.mock import Mock, call, patch
++import sys
++from datetime import datetime, timedelta
++from unittest.mock import MagicMock, Mock, call, patch
+ 
+ import pytest
+ from google.cloud.exceptions import NotFound
+ 
+-from celery.backends.gcs import GCSBackend
+ from celery.exceptions import ImproperlyConfigured
+ 
++# Workaround until python-firestore is fixed
++is_py313 = sys.version_info >= (3, 13)
++if not is_py313:
++    from celery.backends.gcs import GCSBackend
++else:
++    GCSBackend = None
+ 
++
++@pytest.mark.skipif(
++    is_py313,
++    reason="https://github.com/googleapis/python-firestore/issues/973",
++)
+ class test_GCSBackend:
+     def setup_method(self):
+         self.app.conf.gcs_bucket = 'bucket'
+@@ -18,12 +29,21 @@ def base_path(self, request):
+         return request.param
+ 
+     @pytest.fixture(params=[86400, None])
+-    def ttl(self, request):
++    def gcs_ttl(self, request):
+         return request.param
+ 
+     def test_missing_storage_module(self):
+         with patch('celery.backends.gcs.storage', None):
+-            with pytest.raises(ImproperlyConfigured, match='You must install'):
++            with pytest.raises(
++                ImproperlyConfigured, match='You must install'
++            ):
++                GCSBackend(app=self.app)
++
++    def test_missing_firestore_module(self):
++        with patch('celery.backends.gcs.firestore', None):
++            with pytest.raises(
++                ImproperlyConfigured, match='You must install'
++            ):
+                 GCSBackend(app=self.app)
+ 
+     def test_missing_bucket(self):
+@@ -38,6 +58,15 @@ def test_missing_project(self):
+         with pytest.raises(ImproperlyConfigured, match='Missing project'):
+             GCSBackend(app=self.app)
+ 
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_firestore_project(self, mock_firestore_ttl):
++        mock_firestore_ttl.return_value = True
++        b = GCSBackend(app=self.app)
++        assert b.firestore_project == 'project'
++        self.app.conf.firestore_project = 'project2'
++        b = GCSBackend(app=self.app)
++        assert b.firestore_project == 'project2'
++
+     def test_invalid_ttl(self):
+         self.app.conf.gcs_bucket = 'bucket'
+         self.app.conf.gcs_project = 'project'
+@@ -46,21 +75,38 @@ def test_invalid_ttl(self):
+         with pytest.raises(ImproperlyConfigured, match='Invalid ttl'):
+             GCSBackend(app=self.app)
+ 
+-    def test_parse_url(self, base_path):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_firestore_ttl_policy_disabled(self, mock_firestore_ttl):
++        self.app.conf.gcs_bucket = 'bucket'
++        self.app.conf.gcs_project = 'project'
++        self.app.conf.gcs_ttl = 0
++
++        mock_firestore_ttl.return_value = False
++        with pytest.raises(ImproperlyConfigured, match='Missing TTL policy'):
++            GCSBackend(app=self.app)
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_parse_url(self, mock_firestore_ttl, base_path):
+         self.app.conf.gcs_bucket = None
+         self.app.conf.gcs_project = None
+ 
++        mock_firestore_ttl.return_value = True
+         backend = GCSBackend(
+-            app=self.app, url=f'gcs://bucket/{base_path}?gcs_project=project'
++            app=self.app,
++            url=f'gcs://bucket/{base_path}?gcs_project=project',
+         )
+         assert backend.bucket_name == 'bucket'
+         assert backend.base_path == base_path.strip('/')
+ 
+     @patch.object(GCSBackend, '_is_bucket_lifecycle_rule_exists')
+-    def test_ttl_missing_lifecycle_rule(self, mock_lifecycle):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_bucket_ttl_missing_lifecycle_rule(
++        self, mock_firestore_ttl, mock_lifecycle
++    ):
+         self.app.conf.gcs_ttl = 86400
+ 
+         mock_lifecycle.return_value = False
++        mock_firestore_ttl.return_value = True
+         with pytest.raises(
+             ImproperlyConfigured, match='Missing lifecycle rule'
+         ):
+@@ -68,9 +114,11 @@ def test_ttl_missing_lifecycle_rule(self, mock_lifecycle):
+             mock_lifecycle.assert_called_once()
+ 
+     @patch.object(GCSBackend, '_get_blob')
+-    def test_get_key(self, mock_get_blob, base_path):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_get_key(self, mock_ttl, mock_get_blob, base_path):
+         self.app.conf.gcs_base_path = base_path
+ 
++        mock_ttl.return_value = True
+         mock_blob = Mock()
+         mock_get_blob.return_value = mock_blob
+         backend = GCSBackend(app=self.app)
+@@ -81,10 +129,19 @@ def test_get_key(self, mock_get_blob, base_path):
+ 
+     @patch.object(GCSBackend, 'bucket')
+     @patch.object(GCSBackend, '_get_blob')
+-    def test_set_key(self, mock_get_blob, mock_bucket_prop, base_path, ttl):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_set_key(
++        self,
++        mock_firestore_ttl,
++        mock_get_blob,
++        mock_bucket_prop,
++        base_path,
++        gcs_ttl,
++    ):
+         self.app.conf.gcs_base_path = base_path
+-        self.app.conf.gcs_ttl = ttl
++        self.app.conf.gcs_ttl = gcs_ttl
+ 
++        mock_firestore_ttl.return_value = True
+         mock_blob = Mock()
+         mock_get_blob.return_value = mock_blob
+         mock_bucket_prop.lifecycle_rules = [{'action': {'type': 'Delete'}}]
+@@ -94,14 +151,16 @@ def test_set_key(self, mock_get_blob, mock_bucket_prop, base_path, ttl):
+         mock_blob.upload_from_string.assert_called_once_with(
+             'testvalue', retry=backend._retry_policy
+         )
+-        if ttl:
++        if gcs_ttl:
+             assert mock_blob.custom_time >= datetime.utcnow()
+ 
+     @patch.object(GCSBackend, '_get_blob')
+-    def test_get_missing_key(self, mock_get_blob):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_get_missing_key(self, mock_firestore_ttl, mock_get_blob):
+         self.app.conf.gcs_bucket = 'bucket'
+         self.app.conf.gcs_project = 'project'
+ 
++        mock_firestore_ttl.return_value = True
+         mock_blob = Mock()
+         mock_get_blob.return_value = mock_blob
+ 
+@@ -112,9 +171,13 @@ def test_get_missing_key(self, mock_get_blob):
+         assert result is None
+ 
+     @patch.object(GCSBackend, '_get_blob')
+-    def test_delete_existing_key(self, mock_get_blob, base_path):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_delete_existing_key(
++        self, mock_firestore_ttl, mock_get_blob, base_path
++    ):
+         self.app.conf.gcs_base_path = base_path
+ 
++        mock_firestore_ttl.return_value = True
+         mock_blob = Mock()
+         mock_get_blob.return_value = mock_blob
+         mock_blob.exists.return_value = True
+@@ -126,9 +189,13 @@ def test_delete_existing_key(self, mock_get_blob, base_path):
+         mock_blob.delete.assert_called_once()
+ 
+     @patch.object(GCSBackend, '_get_blob')
+-    def test_delete_missing_key(self, mock_get_blob, base_path):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_delete_missing_key(
++        self, mock_firestore_ttl, mock_get_blob, base_path
++    ):
+         self.app.conf.gcs_base_path = base_path
+ 
++        mock_firestore_ttl.return_value = True
+         mock_blob = Mock()
+         mock_get_blob.return_value = mock_blob
+         mock_blob.exists.return_value = False
+@@ -140,23 +207,278 @@ def test_delete_missing_key(self, mock_get_blob, base_path):
+         mock_blob.delete.assert_not_called()
+ 
+     @patch.object(GCSBackend, 'get')
+-    def test_mget(self, mock_get, base_path):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_mget(self, mock_firestore_ttl, mock_get, base_path):
+         self.app.conf.gcs_base_path = base_path
++        mock_firestore_ttl.return_value = True
+         backend = GCSBackend(app=self.app)
+         mock_get.side_effect = ['value1', 'value2']
+         result = backend.mget([b'key1', b'key2'])
+-        mock_get.assert_has_calls([call(b'key1'), call(b'key2')], any_order=True)
++        mock_get.assert_has_calls(
++            [call(b'key1'), call(b'key2')], any_order=True
++        )
+         assert sorted(result) == sorted(['value1', 'value2'])
+ 
++    @patch.object(GCSBackend, 'client')
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_bucket(self, mock_firestore_ttl, mock_client):
++        mock_bucket = MagicMock()
++        mock_client.bucket.return_value = mock_bucket
++        mock_firestore_ttl.return_value = True
++        backend = GCSBackend(app=self.app)
++        result = backend.bucket
++        mock_client.bucket.assert_called_once_with(backend.bucket_name)
++        assert result == mock_bucket
++
++    @patch.object(GCSBackend, 'bucket')
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_get_blob(self, mock_firestore_ttl, mock_bucket):
++        key = 'test_key'
++        mock_blob = MagicMock()
++        mock_bucket.blob.return_value = mock_blob
++        mock_firestore_ttl.return_value = True
++
++        backend = GCSBackend(app=self.app)
++        result = backend._get_blob(key)
++
++        key_bucket_path = (
++            f'{backend.base_path}/{key}' if backend.base_path else key
++        )
++        mock_bucket.blob.assert_called_once_with(key_bucket_path)
++        assert result == mock_blob
++
+     @patch('celery.backends.gcs.Client')
+     @patch('celery.backends.gcs.getpid')
+-    def test_new_client_after_fork(self, mock_pid, mock_client):
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_new_client_after_fork(
++        self, mock_firestore_ttl, mock_pid, mock_client
++    ):
++        mock_firestore_ttl.return_value = True
+         mock_pid.return_value = 123
+         backend = GCSBackend(app=self.app)
+         client1 = backend.client
++        assert client1 == backend.client
+         mock_pid.assert_called()
+         mock_client.assert_called()
+         mock_pid.return_value = 456
+         mock_client.return_value = Mock()
+         assert client1 != backend.client
+         mock_client.assert_called_with(project='project')
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch('celery.backends.gcs.firestore.Client')
++    @patch('celery.backends.gcs.getpid')
++    def test_new_firestore_client_after_fork(
++        self, mock_pid, mock_firestore_client, mock_firestore_ttl
++    ):
++        mock_firestore_instance = MagicMock()
++        mock_firestore_client.return_value = mock_firestore_instance
++
++        backend = GCSBackend(app=self.app)
++        mock_pid.return_value = 123
++        client1 = backend.firestore_client
++        client2 = backend.firestore_client
++
++        mock_firestore_client.assert_called_once_with(
++            project=backend.firestore_project
++        )
++        assert client1 == mock_firestore_instance
++        assert client2 == mock_firestore_instance
++        assert backend._pid == 123
++        mock_pid.return_value = 456
++        _ = backend.firestore_client
++        assert backend._pid == 456
++
++    @patch('celery.backends.gcs.firestore_admin_v1.FirestoreAdminClient')
++    @patch('celery.backends.gcs.firestore_admin_v1.GetFieldRequest')
++    def test_is_firestore_ttl_policy_enabled(
++        self, mock_get_field_request, mock_firestore_admin_client
++    ):
++        mock_client_instance = MagicMock()
++        mock_firestore_admin_client.return_value = mock_client_instance
++        mock_field = MagicMock()
++        mock_field.ttl_config.state = 2  # State.ENABLED
++        mock_client_instance.get_field.return_value = mock_field
++
++        backend = GCSBackend(app=self.app)
++        result = backend._is_firestore_ttl_policy_enabled()
++
++        assert result
++        mock_field.ttl_config.state = 3  # State.NEEDS_REPAIR
++        mock_client_instance.get_field.return_value = mock_field
++        result = backend._is_firestore_ttl_policy_enabled()
++        assert not result
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch.object(GCSBackend, '_expire_chord_key')
++    @patch.object(GCSBackend, 'get_key_for_chord')
++    @patch('celery.backends.gcs.KeyValueStoreBackend._apply_chord_incr')
++    def test_apply_chord_incr(
++        self,
++        mock_super_apply_chord_incr,
++        mock_get_key_for_chord,
++        mock_expire_chord_key,
++        mock_firestore_ttl,
++    ):
++        mock_firestore_ttl.return_value = True
++        mock_get_key_for_chord.return_value = b'group_key'
++        header_result_args = [MagicMock()]
++        body = MagicMock()
++
++        backend = GCSBackend(app=self.app)
++        backend._apply_chord_incr(header_result_args, body)
++
++        mock_get_key_for_chord.assert_called_once_with(header_result_args[0])
++        mock_expire_chord_key.assert_called_once_with('group_key', 86400)
++        mock_super_apply_chord_incr.assert_called_once_with(
++            header_result_args, body
++        )
++
++    @patch.object(GCSBackend, '_firestore_document')
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_incr(self, mock_firestore_ttl, mock_firestore_document):
++        self.app.conf.gcs_bucket = 'bucket'
++        self.app.conf.gcs_project = 'project'
++
++        mock_firestore_ttl.return_value = True
++        gcs_backend = GCSBackend(app=self.app)
++        gcs_backend.incr(b'some-key')
++        assert mock_firestore_document.call_count == 1
++
++    @patch('celery.backends.gcs.maybe_signature')
++    @patch.object(GCSBackend, 'incr')
++    @patch.object(GCSBackend, '_restore_deps')
++    @patch.object(GCSBackend, '_delete_chord_key')
++    @patch('celery.backends.gcs.allow_join_result')
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    def test_on_chord_part_return(
++        self,
++        mock_firestore_ttl,
++        mock_allow_join_result,
++        mock_delete_chord_key,
++        mock_restore_deps,
++        mock_incr,
++        mock_maybe_signature,
++    ):
++        request = MagicMock()
++        request.group = 'group_id'
++        request.chord = {'chord_size': 2}
++        state = MagicMock()
++        result = MagicMock()
++        mock_firestore_ttl.return_value = True
++        mock_incr.return_value = 2
++        mock_restore_deps.return_value = MagicMock()
++        mock_restore_deps.return_value.join_native.return_value = [
++            'result1',
++            'result2',
++        ]
++        mock_maybe_signature.return_value = MagicMock()
++
++        b = GCSBackend(app=self.app)
++        b.on_chord_part_return(request, state, result)
++
++        group_key = b.chord_keyprefix + b'group_id'
++        mock_incr.assert_called_once_with(group_key)
++        mock_restore_deps.assert_called_once_with('group_id', request)
++        mock_maybe_signature.assert_called_once_with(
++            request.chord, app=self.app
++        )
++        mock_restore_deps.return_value.join_native.assert_called_once_with(
++            timeout=self.app.conf.result_chord_join_timeout,
++            propagate=True,
++        )
++        mock_maybe_signature.return_value.delay.assert_called_once_with(
++            ['result1', 'result2']
++        )
++        mock_delete_chord_key.assert_called_once_with(group_key)
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch('celery.backends.gcs.GroupResult.restore')
++    @patch('celery.backends.gcs.maybe_signature')
++    @patch.object(GCSBackend, 'chord_error_from_stack')
++    def test_restore_deps(
++        self,
++        mock_chord_error_from_stack,
++        mock_maybe_signature,
++        mock_group_result_restore,
++        mock_firestore_ttl,
++    ):
++        gid = 'group_id'
++        request = MagicMock()
++        mock_group_result_restore.return_value = MagicMock()
++
++        backend = GCSBackend(app=self.app)
++        deps = backend._restore_deps(gid, request)
++
++        mock_group_result_restore.assert_called_once_with(
++            gid, backend=backend
++        )
++        assert deps is not None
++        mock_chord_error_from_stack.assert_not_called()
++
++        mock_group_result_restore.side_effect = Exception('restore error')
++        deps = backend._restore_deps(gid, request)
++        mock_maybe_signature.assert_called_with(request.chord, app=self.app)
++        mock_chord_error_from_stack.assert_called_once()
++        assert deps is None
++
++        mock_group_result_restore.side_effect = None
++        mock_group_result_restore.return_value = None
++        deps = backend._restore_deps(gid, request)
++        mock_chord_error_from_stack.assert_called()
++        assert deps is None
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch.object(GCSBackend, '_firestore_document')
++    def test_delete_chord_key(
++        self, mock_firestore_document, mock_firestore_ttl
++    ):
++        key = 'test_key'
++        mock_document = MagicMock()
++        mock_firestore_document.return_value = mock_document
++
++        backend = GCSBackend(app=self.app)
++        backend._delete_chord_key(key)
++
++        mock_firestore_document.assert_called_once_with(key)
++        mock_document.delete.assert_called_once()
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch.object(GCSBackend, '_firestore_document')
++    def test_expire_chord_key(
++        self, mock_firestore_document, mock_firestore_ttl
++    ):
++        key = 'test_key'
++        expires = 86400
++        mock_document = MagicMock()
++        mock_firestore_document.return_value = mock_document
++        expected_expiry = datetime.utcnow() + timedelta(seconds=expires)
++
++        backend = GCSBackend(app=self.app)
++        backend._expire_chord_key(key, expires)
++
++        mock_firestore_document.assert_called_once_with(key)
++        mock_document.set.assert_called_once()
++        args, kwargs = mock_document.set.call_args
++        assert backend._field_expires in args[0]
++        assert args[0][backend._field_expires] >= expected_expiry
++
++    @patch.object(GCSBackend, '_is_firestore_ttl_policy_enabled')
++    @patch.object(GCSBackend, 'firestore_client')
++    def test_firestore_document(
++        self, mock_firestore_client, mock_firestore_ttl
++    ):
++        key = b'test_key'
++        mock_collection = MagicMock()
++        mock_document = MagicMock()
++        mock_firestore_client.collection.return_value = mock_collection
++        mock_collection.document.return_value = mock_document
++
++        backend = GCSBackend(app=self.app)
++        result = backend._firestore_document(key)
++
++        mock_firestore_client.collection.assert_called_once_with(
++            backend._collection_name
++        )
++        mock_collection.document.assert_called_once_with('test_key')
++        assert result == mock_document
+diff --git a/t/unit/concurrency/test_prefork.py b/t/unit/concurrency/test_prefork.py
+index eda7cee519f..ea42c09bad9 100644
+--- a/t/unit/concurrency/test_prefork.py
++++ b/t/unit/concurrency/test_prefork.py
+@@ -1,6 +1,7 @@
+ import errno
+ import os
+ import socket
++import tempfile
+ from itertools import cycle
+ from unittest.mock import Mock, patch
+ 
+@@ -293,6 +294,15 @@ def se2(*args):
+             with pytest.raises(socket.error):
+                 asynpool._select({3}, poll=poll)
+ 
++    def test_select_unpatched(self):
++        with tempfile.TemporaryFile('w') as f:
++            _, writeable, _ = asynpool._select(writers={f, }, err={f, })
++            assert f.fileno() in writeable
++
++        with tempfile.TemporaryFile('r') as f:
++            readable, _, _ = asynpool._select(readers={f, }, err={f, })
++            assert f.fileno() in readable
++
+     def test_promise(self):
+         fun = Mock()
+         x = asynpool.promise(fun, (1,), {'foo': 1})
+@@ -368,6 +378,7 @@ def _get_hub(self):
+         hub.close = Mock(name='hub.close()')
+         return hub
+ 
++    @t.skip.if_pypy
+     def test_schedule_writes_hub_remove_writer_ready_fd_not_in_all_inqueues(self):
+         pool = asynpool.AsynPool(threads=False)
+         hub = self._get_hub()
+@@ -386,6 +397,7 @@ def test_schedule_writes_hub_remove_writer_ready_fd_not_in_all_inqueues(self):
+         assert 6 in hub.readers
+         assert 6 not in hub.writers
+ 
++    @t.skip.if_pypy
+     def test_schedule_writes_hub_remove_writers_from_active_writers_when_get_index_error(self):
+         pool = asynpool.AsynPool(threads=False)
+         hub = self._get_hub()
+@@ -420,6 +432,7 @@ def test_schedule_writes_hub_remove_writers_from_active_writers_when_get_index_e
+ 
+         assert 6 in hub.writers
+ 
++    @t.skip.if_pypy
+     def test_schedule_writes_hub_remove_fd_only_from_writers_when_write_job_is_done(self):
+         pool = asynpool.AsynPool(threads=False)
+         hub = self._get_hub()
+@@ -450,6 +463,7 @@ def test_schedule_writes_hub_remove_fd_only_from_writers_when_write_job_is_done(
+         assert 2 not in hub.writers
+         assert 2 in hub.readers
+ 
++    @t.skip.if_pypy
+     def test_register_with_event_loop__no_on_tick_dupes(self):
+         """Ensure AsynPool's register_with_event_loop only registers
+         on_poll_start in the event loop the first time it's called. This
+@@ -461,6 +475,7 @@ def test_register_with_event_loop__no_on_tick_dupes(self):
+         pool.register_with_event_loop(hub)
+         hub.on_tick.add.assert_called_once()
+ 
++    @t.skip.if_pypy
+     @patch('billiard.pool.Pool._create_worker_process')
+     def test_before_create_process_signal(self, create_process):
+         from celery import signals
+diff --git a/t/unit/contrib/test_worker.py b/t/unit/contrib/test_worker.py
+index e3ec8f9a8bf..4534317ae83 100644
+--- a/t/unit/contrib/test_worker.py
++++ b/t/unit/contrib/test_worker.py
+@@ -4,12 +4,12 @@
+ # to install the celery.ping task that the test lib uses
+ import celery.contrib.testing.tasks  # noqa
+ from celery import Celery
+-from celery.contrib.testing.worker import start_worker
++from celery.contrib.testing.worker import TestWorkController, start_worker
+ 
+ 
+ class test_worker:
+     def setup_method(self):
+-        self.app = Celery('celerytest', backend='cache+memory://', broker='memory://',)
++        self.app = Celery('celerytest', backend='cache+memory://', broker='memory://', )
+ 
+         @self.app.task
+         def add(x, y):
+@@ -45,3 +45,15 @@ def test_start_worker_with_exception(self):
+             with start_worker(app=self.app, loglevel=0):
+                 result = self.error_task.apply_async()
+                 result.get(timeout=5)
++
++    def test_start_worker_with_hostname_config(self):
++        """Make sure a custom hostname can be supplied to the TestWorkController"""
++        test_hostname = 'test_name@test_host'
++        with start_worker(app=self.app, loglevel=0, hostname=test_hostname) as w:
++
++            assert isinstance(w, TestWorkController)
++            assert w.hostname == test_hostname
++
++            result = self.add.s(1, 2).apply_async()
++            val = result.get(timeout=5)
++        assert val == 3
+diff --git a/t/unit/tasks/test_tasks.py b/t/unit/tasks/test_tasks.py
+index f262efc1bc6..7462313c74f 100644
+--- a/t/unit/tasks/test_tasks.py
++++ b/t/unit/tasks/test_tasks.py
+@@ -377,6 +377,7 @@ class MyCustomException(Exception):
+ 
+ class UnpickleableException(Exception):
+     """Exception that doesn't survive a pickling roundtrip (dump + load)."""
++
+     def __init__(self, foo, bar):
+         super().__init__(foo)
+         self.bar = bar
+diff --git a/t/unit/test_loops.py b/t/unit/test_loops.py
+new file mode 100644
+index 00000000000..a2039941999
+--- /dev/null
++++ b/t/unit/test_loops.py
+@@ -0,0 +1,57 @@
++from unittest.mock import Mock, patch
++
++import pytest
++
++from celery import bootsteps
++from celery.worker.loops import synloop
++
++
++def test_synloop_perform_pending_operations_on_system_exit():
++    # Mock dependencies
++    obj = Mock()
++    connection = Mock()
++    consumer = Mock()
++    blueprint = Mock()
++    hub = Mock()
++    qos = Mock()
++    heartbeat = Mock()
++    clock = Mock()
++
++    # Set up the necessary attributes
++    obj.create_task_handler.return_value = Mock()
++    obj.perform_pending_operations = Mock()
++    obj.on_ready = Mock()
++    obj.pool.is_green = False
++    obj.connection = True
++
++    blueprint.state = bootsteps.RUN  # Simulate RUN state
++
++    qos.prev = qos.value = Mock()
++
++    # Mock state.maybe_shutdown to raise SystemExit
++    with patch("celery.worker.loops.state") as mock_state:
++        mock_state.maybe_shutdown.side_effect = SystemExit
++
++        # Call synloop and expect SystemExit to be raised
++        with pytest.raises(SystemExit):
++            synloop(
++                obj,
++                connection,
++                consumer,
++                blueprint,
++                hub,
++                qos,
++                heartbeat,
++                clock,
++                hbrate=2.0,
++            )
++
++    # Assert that perform_pending_operations was called even after SystemExit
++    obj.perform_pending_operations.assert_called_once()
++
++    # Assert that connection.drain_events was called
++    connection.drain_events.assert_called_with(timeout=2.0)
++
++    # Assert other important method calls
++    obj.on_ready.assert_called_once()
++    consumer.consume.assert_called_once()
+diff --git a/t/unit/worker/test_consumer.py b/t/unit/worker/test_consumer.py
+index ae677a7bfad..04d167e3d83 100644
+--- a/t/unit/worker/test_consumer.py
++++ b/t/unit/worker/test_consumer.py
+@@ -10,14 +10,15 @@
+ 
+ from celery import bootsteps
+ from celery.contrib.testing.mocks import ContextMock
+-from celery.exceptions import CeleryWarning, WorkerShutdown, WorkerTerminate
++from celery.exceptions import WorkerShutdown, WorkerTerminate
+ from celery.utils.collections import LimitedSet
++from celery.utils.quorum_queues import detect_quorum_queues
+ from celery.worker.consumer.agent import Agent
+ from celery.worker.consumer.consumer import CANCEL_TASKS_BY_DEFAULT, CLOSE, TERMINATE, Consumer
+ from celery.worker.consumer.gossip import Gossip
+ from celery.worker.consumer.heart import Heart
+ from celery.worker.consumer.mingle import Mingle
+-from celery.worker.consumer.tasks import ETA_TASKS_NO_GLOBAL_QOS_WARNING, Tasks
++from celery.worker.consumer.tasks import Tasks
+ from celery.worker.state import active_requests
+ 
+ 
+@@ -47,6 +48,7 @@ def setup_method(self):
+         @self.app.task(shared=False)
+         def add(x, y):
+             return x + y
++
+         self.add = add
+ 
+     def test_repr(self):
+@@ -147,6 +149,7 @@ def __enter__(self):
+ 
+             def __exit__(self, *args):
+                 pass
++
+         c.qos._mutex = MutexMock()
+ 
+         assert c._restore_prefetch_count_after_connection_restart(None) is None
+@@ -266,6 +269,7 @@ def test_max_restarts_exceeded(self):
+         def se(*args, **kwargs):
+             c.blueprint.state = CLOSE
+             raise RestartFreqExceeded()
++
+         c._restart_state.step.side_effect = se
+         c.blueprint.start.side_effect = socket.error()
+ 
+@@ -313,6 +317,7 @@ def test_too_many_open_files_raises_error(self):
+     def _closer(self, c):
+         def se(*args, **kwargs):
+             c.blueprint.state = CLOSE
++
+         return se
+ 
+     @pytest.mark.parametrize("broker_connection_retry", [True, False])
+@@ -455,7 +460,6 @@ def test_cancel_all_unacked_requests(self):
+         mock_request_acks_late_acknowledged.acknowledged = True
+         mock_request_acks_early = Mock(id='3')
+         mock_request_acks_early.task.acks_late = False
+-        mock_request_acks_early.acknowledged = False
+ 
+         active_requests.add(mock_request_acks_late_not_acknowledged)
+         active_requests.add(mock_request_acks_late_acknowledged)
+@@ -465,7 +469,7 @@ def test_cancel_all_unacked_requests(self):
+ 
+         mock_request_acks_late_not_acknowledged.cancel.assert_called_once_with(c.pool)
+         mock_request_acks_late_acknowledged.cancel.assert_not_called()
+-        mock_request_acks_early.cancel.assert_not_called()
++        mock_request_acks_early.cancel.assert_called_once_with(c.pool)
+ 
+         active_requests.clear()
+ 
+@@ -531,6 +535,61 @@ def test_start_raises_connection_error(self,
+             assert expected_connection_retry_type in record.msg
+ 
+ 
++class test_Consumer_PerformPendingOperations(ConsumerTestCase):
++
++    def test_perform_pending_operations_all_success(self):
++        """
++        Test that all pending operations are processed successfully when `once=False`.
++        """
++        c = self.get_consumer(no_hub=True)
++
++        # Create mock operations
++        mock_operation_1 = Mock()
++        mock_operation_2 = Mock()
++
++        # Add mock operations to _pending_operations
++        c._pending_operations = [mock_operation_1, mock_operation_2]
++
++        # Call perform_pending_operations
++        c.perform_pending_operations()
++
++        # Assert that all operations were called
++        mock_operation_1.assert_called_once()
++        mock_operation_2.assert_called_once()
++
++        # Ensure all pending operations are cleared
++        assert len(c._pending_operations) == 0
++
++    def test_perform_pending_operations_with_exception(self):
++        """
++        Test that pending operations are processed even if one raises an exception, and
++        the exception is logged when `once=False`.
++        """
++        c = self.get_consumer(no_hub=True)
++
++        # Mock operations: one failing, one successful
++        mock_operation_fail = Mock(side_effect=Exception("Test Exception"))
++        mock_operation_success = Mock()
++
++        # Add operations to _pending_operations
++        c._pending_operations = [mock_operation_fail, mock_operation_success]
++
++        # Patch logger to avoid logging during the test
++        with patch('celery.worker.consumer.consumer.logger.exception') as mock_logger:
++            # Call perform_pending_operations
++            c.perform_pending_operations()
++
++            # Assert that both operations were attempted
++            mock_operation_fail.assert_called_once()
++            mock_operation_success.assert_called_once()
++
++            # Ensure the exception was logged
++            mock_logger.assert_called_once()
++
++            # Ensure all pending operations are cleared
++            assert len(c._pending_operations) == 0
++
++
+ class test_Heart:
+ 
+     def test_start(self):
+@@ -593,8 +652,7 @@ def test_detect_quorum_queues_positive(self):
+         c = self.c
+         self.c.connection.transport.driver_type = 'amqp'
+         c.app.amqp.queues = {"celery": Mock(queue_arguments={"x-queue-type": "quorum"})}
+-        tasks = Tasks(c)
+-        result, name = tasks.detect_quorum_queues(c)
++        result, name = detect_quorum_queues(c.app, c.connection.transport.driver_type)
+         assert result
+         assert name == "celery"
+ 
+@@ -602,16 +660,14 @@ def test_detect_quorum_queues_negative(self):
+         c = self.c
+         self.c.connection.transport.driver_type = 'amqp'
+         c.app.amqp.queues = {"celery": Mock(queue_arguments=None)}
+-        tasks = Tasks(c)
+-        result, name = tasks.detect_quorum_queues(c)
++        result, name = detect_quorum_queues(c.app, c.connection.transport.driver_type)
+         assert not result
+         assert name == ""
+ 
+     def test_detect_quorum_queues_not_rabbitmq(self):
+         c = self.c
+         self.c.connection.transport.driver_type = 'redis'
+-        tasks = Tasks(c)
+-        result, name = tasks.detect_quorum_queues(c)
++        result, name = detect_quorum_queues(c.app, c.connection.transport.driver_type)
+         assert not result
+         assert name == ""
+ 
+@@ -634,14 +690,6 @@ def test_qos_global_worker_detect_quorum_queues_true_with_quorum_queues(self):
+         tasks = Tasks(c)
+         assert tasks.qos_global(c) is False
+ 
+-    def test_qos_global_eta_warning(self):
+-        c = self.c
+-        self.c.connection.transport.driver_type = 'amqp'
+-        c.app.amqp.queues = {"celery": Mock(queue_arguments={"x-queue-type": "quorum"})}
+-        tasks = Tasks(c)
+-        with pytest.warns(CeleryWarning, match=ETA_TASKS_NO_GLOBAL_QOS_WARNING % "celery"):
+-            tasks.qos_global(c)
+-
+     def test_log_when_qos_is_false(self, caplog):
+         c = self.c
+         c.connection.transport.driver_type = 'amqp'
+diff --git a/t/unit/worker/test_control.py b/t/unit/worker/test_control.py
+index df1c8c4c04b..877bc82c4b6 100644
+--- a/t/unit/worker/test_control.py
++++ b/t/unit/worker/test_control.py
+@@ -22,6 +22,8 @@
+ 
+ hostname = socket.gethostname()
+ 
++IS_PYPY = hasattr(sys, 'pypy_version_info')
++
+ 
+ class WorkController:
+     autoscaler = None
+@@ -721,6 +723,7 @@ def test_pool_restart(self):
+         consumer.controller.consumer = None
+         panel.handle('pool_restart', {'reloader': _reload})
+ 
++    @pytest.mark.skipif(IS_PYPY, reason="Patch for sys.modules doesn't work on PyPy correctly")
+     @patch('celery.worker.worker.logger.debug')
+     def test_pool_restart_import_modules(self, _debug):
+         consumer = Consumer(self.app)
+diff --git a/t/unit/worker/test_native_delayed_delivery.py b/t/unit/worker/test_native_delayed_delivery.py
+new file mode 100644
+index 00000000000..2170869d7ef
+--- /dev/null
++++ b/t/unit/worker/test_native_delayed_delivery.py
+@@ -0,0 +1,74 @@
++from logging import LogRecord
++from unittest.mock import Mock, patch
++
++from kombu import Exchange, Queue
++
++from celery.worker.consumer.delayed_delivery import DelayedDelivery
++
++
++class test_DelayedDelivery:
++    @patch('celery.worker.consumer.delayed_delivery.detect_quorum_queues', return_value=[False, ""])
++    def test_include_if_no_quorum_queues_detected(self, detect_quorum_queues):
++        consumer_mock = Mock()
++
++        delayed_delivery = DelayedDelivery(consumer_mock)
++
++        assert delayed_delivery.include_if(consumer_mock) is False
++
++    @patch('celery.worker.consumer.delayed_delivery.detect_quorum_queues', return_value=[True, ""])
++    def test_include_if_quorum_queues_detected(self, detect_quorum_queues):
++        consumer_mock = Mock()
++
++        delayed_delivery = DelayedDelivery(consumer_mock)
++
++        assert delayed_delivery.include_if(consumer_mock) is True
++
++    def test_start_native_delayed_delivery_direct_exchange(self, caplog):
++        consumer_mock = Mock()
++        consumer_mock.app.conf.broker_native_delayed_delivery_queue_type = 'classic'
++        consumer_mock.app.conf.broker_url = 'amqp://'
++        consumer_mock.app.amqp.queues = {
++            'celery': Queue('celery', exchange=Exchange('celery', type='direct'))
++        }
++
++        delayed_delivery = DelayedDelivery(consumer_mock)
++
++        delayed_delivery.start(consumer_mock)
++
++        assert len(caplog.records) == 1
++        record: LogRecord = caplog.records[0]
++        assert record.levelname == "WARNING"
++        assert record.message == (
++            "Exchange celery is a direct exchange "
++            "and native delayed delivery do not support direct exchanges.\n"
++            "ETA tasks published to this exchange "
++            "will block the worker until the ETA arrives."
++        )
++
++    def test_start_native_delayed_delivery_topic_exchange(self, caplog):
++        consumer_mock = Mock()
++        consumer_mock.app.conf.broker_native_delayed_delivery_queue_type = 'classic'
++        consumer_mock.app.conf.broker_url = 'amqp://'
++        consumer_mock.app.amqp.queues = {
++            'celery': Queue('celery', exchange=Exchange('celery', type='topic'))
++        }
++
++        delayed_delivery = DelayedDelivery(consumer_mock)
++
++        delayed_delivery.start(consumer_mock)
++
++        assert len(caplog.records) == 0
++
++    def test_start_native_delayed_delivery_fanout_exchange(self, caplog):
++        consumer_mock = Mock()
++        consumer_mock.app.conf.broker_native_delayed_delivery_queue_type = 'classic'
++        consumer_mock.app.conf.broker_url = 'amqp://'
++        consumer_mock.app.amqp.queues = {
++            'celery': Queue('celery', exchange=Exchange('celery', type='fanout'))
++        }
++
++        delayed_delivery = DelayedDelivery(consumer_mock)
++
++        delayed_delivery.start(consumer_mock)
++
++        assert len(caplog.records) == 0

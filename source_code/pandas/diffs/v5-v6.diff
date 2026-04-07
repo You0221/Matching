@@ -1,0 +1,4564 @@
+diff --git a/.github/workflows/unit-tests.yml b/.github/workflows/unit-tests.yml
+index 47b1d97df15b9..07f4dd2560601 100644
+--- a/.github/workflows/unit-tests.yml
++++ b/.github/workflows/unit-tests.yml
+@@ -392,7 +392,7 @@ jobs:
+       - name: Set up Python Dev Version
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.13-dev'
++          python-version: '3.14-dev'
+ 
+       - name: Build Environment
+         run: |
+diff --git a/.github/workflows/wheels.yml b/.github/workflows/wheels.yml
+index 6f86f36139a94..4d0645bfe473a 100644
+--- a/.github/workflows/wheels.yml
++++ b/.github/workflows/wheels.yml
+@@ -13,6 +13,8 @@
+ name: Wheel builder
+ 
+ on:
++  release:
++    types: [published]
+   schedule:
+   # 3:27 UTC every day
+   - cron: "27 3 * * *"
+@@ -101,11 +103,13 @@ jobs:
+         - [macos-14, macosx_arm64]
+         - [windows-2022, win_amd64]
+         # TODO: support PyPy?
+-        python: [["cp39", "3.9"], ["cp310", "3.10"], ["cp311", "3.11"], ["cp312", "3.12"], ["cp313", "3.13"], ["cp313t", "3.13"]]
++        python: [["cp39", "3.9"], ["cp310", "3.10"], ["cp311", "3.11"], ["cp312", "3.12"], ["cp313", "3.13"], ["cp313t", "3.13"], ["cp314", "3.14"], ["cp314t", "3.14"]]
+         # TODO: Build free-threaded wheels for Windows
+         exclude:
+         - buildplat: [windows-2022, win_amd64]
+           python: ["cp313t", "3.13"]
++        - buildplat: [windows-2022, win_amd64]
++          python: ["cp314t", "3.14"]
+ 
+     env:
+       IS_PUSH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+@@ -147,7 +151,7 @@ jobs:
+         run: echo "sdist_name=$(cd ./dist && ls -d */)" >> "$GITHUB_ENV"
+ 
+       - name: Build wheels
+-        uses: pypa/cibuildwheel@v2.23.3
++        uses: pypa/cibuildwheel@v3.1.4
+         with:
+          package-dir: ./dist/${{ startsWith(matrix.buildplat[1], 'macosx') && env.sdist_name || needs.build_sdist.outputs.sdist_file }}
+         env:
+@@ -182,8 +186,8 @@ jobs:
+           python -c `'import pandas as pd; pd.test(extra_args=[`\"--no-strict-data-files`\", `\"-m not clipboard and not single_cpu and not slow and not network and not db`\"])`';
+           "@
+           # add rc to the end of the image name if the Python version is unreleased
+-          docker pull python:${{ matrix.python[1] == '3.13' && '3.13-rc' || format('{0}-windowsservercore', matrix.python[1]) }}
+-          docker run --env PANDAS_CI='1' -v ${PWD}:C:\pandas python:${{ matrix.python[1] == '3.13' && '3.13-rc' || format('{0}-windowsservercore', matrix.python[1]) }} powershell -Command $TST_CMD
++          docker pull python:${{ matrix.python[1] == '3.14' && '3.14-rc' || format('{0}-windowsservercore', matrix.python[1]) }}
++          docker run --env PANDAS_CI='1' -v ${PWD}:C:\pandas python:${{ matrix.python[1] == '3.14' && '3.14-rc' || format('{0}-windowsservercore', matrix.python[1]) }} powershell -Command $TST_CMD
+ 
+       - uses: actions/upload-artifact@v4
+         with:
+@@ -206,3 +210,41 @@ jobs:
+           source ci/upload_wheels.sh
+           set_upload_vars
+           upload_wheels
++
++  publish:
++    if: >
++      github.repository == 'pandas-dev/pandas' &&
++      github.event_name == 'release' &&
++      startsWith(github.ref, 'refs/tags/v')
++
++    needs:
++      - build_sdist
++      - build_wheels
++
++    runs-on: ubuntu-latest
++
++    environment:
++      name: pypi
++    permissions:
++      id-token: write         # OIDC for Trusted Publishing
++      contents: read
++
++    steps:
++      - name: Download all artefacts
++        uses: actions/download-artifact@v4
++        with:
++          path: dist          # everything lands in ./dist/**
++
++      - name: Collect files
++        run: |
++          mkdir -p upload
++          # skip any wheel that contains 'pyodide'
++          find dist -name '*pyodide*.whl' -prune -o \
++                    -name '*.whl'   -exec mv {} upload/ \;
++          find dist -name '*.tar.gz' -exec mv {} upload/ \;
++
++      - name: Publish to **PyPI** (Trusted Publishing)
++        uses: pypa/gh-action-pypi-publish@release/v1
++        with:
++          packages-dir: upload
++          skip-existing: true
+diff --git a/ci/deps/actions-311-downstream_compat.yaml b/ci/deps/actions-311-downstream_compat.yaml
+index 47ede901b6904..3d22da5a91fdc 100644
+--- a/ci/deps/actions-311-downstream_compat.yaml
++++ b/ci/deps/actions-311-downstream_compat.yaml
+@@ -50,9 +50,8 @@ dependencies:
+   - pytables>=3.8.0
+   - python-calamine>=0.1.7
+   - pyxlsb>=1.0.10
+-  - s3fs>=2022.11.0
+-  # TEMP upper pin for scipy (https://github.com/statsmodels/statsmodels/issues/9584)
+-  - scipy>=1.10.0,<1.16
++  - s3fs>=2023.12.2
++  - scipy>=1.12.0
+   - sqlalchemy>=2.0.0
+   - tabulate>=0.9.0
+   - xarray>=2022.12.0, <=2024.9.0
+diff --git a/doc/source/development/maintaining.rst b/doc/source/development/maintaining.rst
+index c7803d8401e4e..d6e6bb20ce6bb 100644
+--- a/doc/source/development/maintaining.rst
++++ b/doc/source/development/maintaining.rst
+@@ -467,9 +467,10 @@ which will be triggered when the tag is pushed.
+    - Set as the latest release: Leave checked, unless releasing a patch release for an older version
+      (e.g. releasing 1.4.5 after 1.5 has been released)
+ 
+-5. Upload wheels to PyPI::
+-
+-    twine upload pandas/dist/pandas-<version>*.{whl,tar.gz} --skip-existing
++5. Verify wheels are uploaded automatically by GitHub Actions
++   via `**Trusted Publishing** <https://docs.pypi.org/trusted-publishers/>`__
++   when the GitHub `*Release* <https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases>`__
++   is published. Do not run ``twine upload`` manually.
+ 
+ 6. The GitHub release will after some hours trigger an
+    `automated conda-forge PR <https://github.com/conda-forge/pandas-feedstock/pulls>`_.
+diff --git a/doc/source/user_guide/migration-3-strings.rst b/doc/source/user_guide/migration-3-strings.rst
+index c415f8f43d3c8..d3c7a800b3152 100644
+--- a/doc/source/user_guide/migration-3-strings.rst
++++ b/doc/source/user_guide/migration-3-strings.rst
+@@ -118,12 +118,17 @@ through the ``str`` accessor will work the same:
+ Overview of behavior differences and how to address them
+ ---------------------------------------------------------
+ 
+-The dtype is no longer object dtype
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++The dtype is no longer a numpy "object" dtype
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ When inferring or reading string data, the data type of the resulting DataFrame
+ column or Series will silently start being the new ``"str"`` dtype instead of
+-``"object"`` dtype, and this can have some impact on your code.
++the numpy ``"object"`` dtype, and this can have some impact on your code.
++
++The new string dtype is a pandas data type ("extension dtype"), and no longer a
++numpy ``np.dtype`` instance. Therefore, passing the dtype of a string column to
++numpy functions will no longer work (e.g. passing it to a ``dtype=`` argument
++of a numpy function, or using ``np.issubdtype`` to check the dtype).
+ 
+ Checking the dtype
+ ^^^^^^^^^^^^^^^^^^
+@@ -183,6 +188,26 @@ let pandas do the inference. But if you want to be specific, you can specify the
+ This is actually compatible with pandas 2.x as well, since in pandas < 3,
+ ``dtype="str"`` was essentially treated as an alias for object dtype.
+ 
++.. attention::
++
++   While using ``dtype="str"`` in constructors is compatible with pandas 2.x,
++   specifying it as the dtype in :meth:`~Series.astype` runs into the issue
++   of also stringifying missing values in pandas 2.x. See the section
++   :ref:`string_migration_guide-astype_str` for more details.
++
++For selecting string columns with :meth:`~DataFrame.select_dtypes` in a pandas
++2.x and 3.x compatible way, it is not possible to use ``"str"``. While this
++works for pandas 3.x, it raises an error in pandas 2.x.
++As an alternative, you can select both ``object`` (for pandas 2.x) and
++``"string"`` (for pandas 3.x; which will also select the default ``str`` dtype
++and does not error on pandas 2.x):
++
++.. code-block:: python
++
++   # can use ``include=["str"]`` for pandas >= 3
++   >>> df.select_dtypes(include=["object", "string"])
++
++
+ The missing value sentinel is now always NaN
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+@@ -302,55 +327,103 @@ the :meth:`~pandas.Series.str.decode` method now has a ``dtype`` parameter to be
+ able to specify object dtype instead of the default of string dtype for this use
+ case.
+ 
++:meth:`Series.values` now returns an :class:`~pandas.api.extensions.ExtensionArray`
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++With object dtype, using ``.values`` on a Series will return the underlying NumPy array.
++
++.. code-block:: python
++
++   >>> ser = pd.Series(["a", "b", np.nan], dtype="object")
++   >>> type(ser.values)
++   <class 'numpy.ndarray'>
++
++However with the new string dtype, the underlying ExtensionArray is returned instead.
++
++.. code-block:: python
++
++   >>> ser = pd.Series(["a", "b", pd.NA], dtype="str")
++   >>> ser.values
++   <ArrowStringArray>
++   ['a', 'b', nan]
++   Length: 3, dtype: str
++
++If your code requires a NumPy array, you should use :meth:`Series.to_numpy`.
++
++.. code-block:: python
++
++   >>> ser = pd.Series(["a", "b", pd.NA], dtype="str")
++   >>> ser.to_numpy()
++   ['a' 'b' nan]
++
++In general, you should always prefer :meth:`Series.to_numpy` to get a NumPy array or :meth:`Series.array` to get an ExtensionArray over using :meth:`Series.values`.
++
+ Notable bug fixes
+ ~~~~~~~~~~~~~~~~~
+ 
++.. _string_migration_guide-astype_str:
++
+ ``astype(str)`` preserving missing values
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+-This is a long standing "bug" or misfeature, as discussed in https://github.com/pandas-dev/pandas/issues/25353.
++The stringifying of missing values is a long standing "bug" or misfeature, as
++discussed in https://github.com/pandas-dev/pandas/issues/25353, but fixing it
++introduces a significant behaviour change.
+ 
+-With pandas < 3, when using ``astype(str)`` (using the built-in :func:`str`, not
+-``astype("str")``!), the operation would convert every element to a string,
+-including the missing values:
++With pandas < 3, when using ``astype(str)`` or ``astype("str")``, the operation
++would convert every element to a string, including the missing values:
+ 
+ .. code-block:: python
+ 
+    # OLD behavior in pandas < 3
+-   >>> ser = pd.Series(["a", np.nan], dtype=object)
++   >>> ser = pd.Series([1.5, np.nan])
+    >>> ser
+-   0      a
++   0    1.5
+    1    NaN
+-   dtype: object
+-   >>> ser.astype(str)
+-   0      a
++   dtype: float64
++   >>> ser.astype("str")
++   0    1.5
+    1    nan
+    dtype: object
+-   >>> ser.astype(str).to_numpy()
+-   array(['a', 'nan'], dtype=object)
++   >>> ser.astype("str").to_numpy()
++   array(['1.5', 'nan'], dtype=object)
+ 
+ Note how ``NaN`` (``np.nan``) was converted to the string ``"nan"``. This was
+ not the intended behavior, and it was inconsistent with how other dtypes handled
+ missing values.
+ 
+-With pandas 3, this behavior has been fixed, and now ``astype(str)`` is an alias
+-for ``astype("str")``, i.e. casting to the new string dtype, which will preserve
+-the missing values:
++With pandas 3, this behavior has been fixed, and now ``astype("str")`` will cast
++to the new string dtype, which preserves the missing values:
+ 
+ .. code-block:: python
+ 
+    # NEW behavior in pandas 3
+    >>> pd.options.future.infer_string = True
+-   >>> ser = pd.Series(["a", np.nan], dtype=object)
+-   >>> ser.astype(str)
+-   0      a
++   >>> ser = pd.Series([1.5, np.nan])
++   >>> ser.astype("str")
++   0    1.5
+    1    NaN
+    dtype: str
+-   >>> ser.astype(str).values
+-   array(['a', nan], dtype=object)
++   >>> ser.astype("str").to_numpy()
++   array(['1.5', nan], dtype=object)
+ 
+ If you want to preserve the old behaviour of converting every object to a
+-string, you can use ``ser.map(str)`` instead.
++string, you can use ``ser.map(str)`` instead. If you want do such conversion
++while preserving the missing values in a way that works with both pandas 2.x and
++3.x, you can use ``ser.map(str, na_action="ignore")`` (for pandas 3.x only, you
++can do ``ser.astype("str")``).
++
++If you want to convert to object or string dtype for pandas 2.x and 3.x,
++respectively, without needing to stringify each individual element, you will
++have to use a conditional check on the pandas version.
++For example, to convert a categorical Series with string categories to its
++dense non-categorical version with object or string dtype:
++
++.. code-block:: python
++
++   >>> import pandas as pd
++   >>> ser = pd.Series(["a", np.nan], dtype="category")
++   >>> ser.astype(object if pd.__version__ < "3" else "str")
+ 
+ 
+ ``prod()`` raising for string data
+diff --git a/doc/source/whatsnew/index.rst b/doc/source/whatsnew/index.rst
+index f6fb2ea1fd15e..0b2d28f8317f1 100644
+--- a/doc/source/whatsnew/index.rst
++++ b/doc/source/whatsnew/index.rst
+@@ -16,6 +16,8 @@ Version 2.3
+ .. toctree::
+    :maxdepth: 2
+ 
++   v2.3.3
++   v2.3.2
+    v2.3.1
+    v2.3.0
+ 
+diff --git a/doc/source/whatsnew/v0.21.0.rst b/doc/source/whatsnew/v0.21.0.rst
+index dad69b99ee6a4..08a132264ddba 100644
+--- a/doc/source/whatsnew/v0.21.0.rst
++++ b/doc/source/whatsnew/v0.21.0.rst
+@@ -635,22 +635,17 @@ Previous behavior:
+ 
+ New behavior:
+ 
+-.. code-block:: ipython
++.. ipython:: python
+ 
+-   In [1]: pi = pd.period_range('2017-01', periods=12, freq='M')
++   pi = pd.period_range('2017-01', periods=12, freq='M')
+ 
+-   In [2]: s = pd.Series(np.arange(12), index=pi)
++   s = pd.Series(np.arange(12), index=pi)
+ 
+-   In [3]: resampled = s.resample('2Q').mean()
++   resampled = s.resample('2Q').mean()
+ 
+-   In [4]: resampled
+-   Out[4]:
+-   2017Q1    2.5
+-   2017Q3    8.5
+-   Freq: 2Q-DEC, dtype: float64
++   resampled
+ 
+-   In [5]: resampled.index
+-   Out[5]: PeriodIndex(['2017Q1', '2017Q3'], dtype='period[2Q-DEC]')
++   resampled.index
+ 
+ Upsampling and calling ``.ohlc()`` previously returned a ``Series``, basically identical to calling ``.asfreq()``. OHLC upsampling now returns a DataFrame with columns ``open``, ``high``, ``low`` and ``close`` (:issue:`13083`). This is consistent with downsampling and ``DatetimeIndex`` behavior.
+ 
+diff --git a/doc/source/whatsnew/v2.2.0.rst b/doc/source/whatsnew/v2.2.0.rst
+index e015afb17dce5..3c11bf8f8215b 100644
+--- a/doc/source/whatsnew/v2.2.0.rst
++++ b/doc/source/whatsnew/v2.2.0.rst
+@@ -662,7 +662,7 @@ Other Deprecations
+ - Deprecated :meth:`DatetimeArray.__init__` and :meth:`TimedeltaArray.__init__`, use :func:`array` instead (:issue:`55623`)
+ - Deprecated :meth:`Index.format`, use ``index.astype(str)`` or ``index.map(formatter)`` instead (:issue:`55413`)
+ - Deprecated :meth:`Series.ravel`, the underlying array is already 1D, so ravel is not necessary (:issue:`52511`)
+-- Deprecated :meth:`Series.resample` and :meth:`DataFrame.resample` with a :class:`PeriodIndex` (and the 'convention' keyword), convert to :class:`DatetimeIndex` (with ``.to_timestamp()``) before resampling instead (:issue:`53481`)
++- Deprecated :meth:`Series.resample` and :meth:`DataFrame.resample` with a :class:`PeriodIndex` (and the 'convention' keyword), convert to :class:`DatetimeIndex` (with ``.to_timestamp()``) before resampling instead (:issue:`53481`). Note: this deprecation was later undone in pandas 2.3.3 (:issue:`57033`)
+ - Deprecated :meth:`Series.view`, use :meth:`Series.astype` instead to change the dtype (:issue:`20251`)
+ - Deprecated :meth:`offsets.Tick.is_anchored`, use ``False`` instead (:issue:`55388`)
+ - Deprecated ``core.internals`` members ``Block``, ``ExtensionBlock``, and ``DatetimeTZBlock``, use public APIs instead (:issue:`55139`)
+diff --git a/doc/source/whatsnew/v2.3.1.rst b/doc/source/whatsnew/v2.3.1.rst
+index 52408fa50d11a..2a86b8b55a50b 100644
+--- a/doc/source/whatsnew/v2.3.1.rst
++++ b/doc/source/whatsnew/v2.3.1.rst
+@@ -73,4 +73,4 @@ Bug fixes
+ Contributors
+ ~~~~~~~~~~~~
+ 
+-.. contributors:: v2.3.0..v2.3.1|HEAD
++.. contributors:: v2.3.0..v2.3.1
+diff --git a/doc/source/whatsnew/v2.3.2.rst b/doc/source/whatsnew/v2.3.2.rst
+new file mode 100644
+index 0000000000000..ecd4900354f78
+--- /dev/null
++++ b/doc/source/whatsnew/v2.3.2.rst
+@@ -0,0 +1,40 @@
++.. _whatsnew_232:
++
++What's new in 2.3.2 (August 21, 2025)
++-------------------------------------
++
++These are the changes in pandas 2.3.2. See :ref:`release` for a full changelog
++including other versions of pandas.
++
++{{ header }}
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_232.string_fixes:
++
++Improvements and fixes for the StringDtype
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Most changes in this release are related to :class:`StringDtype` which will
++become the default string dtype in pandas 3.0. See
++:ref:`whatsnew_230.upcoming_changes` for more details.
++
++.. _whatsnew_232.string_fixes.bugs:
++
++Bug fixes
++^^^^^^^^^
++- Fix :meth:`~DataFrame.to_json` with ``orient="table"`` to correctly use the
++  "string" type in the JSON Table Schema for :class:`StringDtype` columns
++  (:issue:`61889`)
++- Boolean operations (``|``, ``&``, ``^``) with bool-dtype objects on the left and :class:`StringDtype` objects on the right now cast the string to bool, with a deprecation warning (:issue:`60234`)
++- Fixed :meth:`~Series.str.match`, :meth:`~Series.str.fullmatch` and :meth:`~Series.str.contains`
++  string methods with compiled regex for the Arrow-backed string dtype (:issue:`61964`, :issue:`61942`)
++- Bug in :meth:`Series.replace` and :meth:`DataFrame.replace` inconsistently
++  replacing matching values when missing values are present for string dtypes (:issue:`56599`)
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_232.contributors:
++
++Contributors
++~~~~~~~~~~~~
++
++.. contributors:: v2.3.1..v2.3.2
+diff --git a/doc/source/whatsnew/v2.3.3.rst b/doc/source/whatsnew/v2.3.3.rst
+new file mode 100644
+index 0000000000000..2e99e0fc8c47c
+--- /dev/null
++++ b/doc/source/whatsnew/v2.3.3.rst
+@@ -0,0 +1,78 @@
++.. _whatsnew_233:
++
++What's new in 2.3.3 (September 29, 2025)
++----------------------------------------
++
++These are the changes in pandas 2.3.3. See :ref:`release` for a full changelog
++including other versions of pandas.
++
++{{ header }}
++
++.. _whatsnew_233.py14_compat:
++
++Pandas 2.3.3 is now compatible with Python 3.14
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Pandas 2.3.3 is the first version of pandas that is generally compatible with the upcoming
++Python 3.14, and both wheels for free-threaded and normal Python 3.14 will be uploaded for
++this release.
++
++As usual please report any bugs discovered to our `issue tracker <https://github.com/pandas-dev/pandas/issues/new/choose>`_
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_233.string_fixes:
++
++Improvements and fixes for the StringDtype
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Most changes in this release are related to :class:`StringDtype` which will
++become the default string dtype in pandas 3.0. See
++:ref:`whatsnew_230.upcoming_changes` for more details.
++
++.. _whatsnew_233.string_fixes.improvements:
++
++Improvements
++^^^^^^^^^^^^
++- Update :meth:`DataFrame.select_dtypes` to keep selecting ``str`` columns when
++  specifying ``include=["object"]`` for backwards compatibility. In a future
++  release, this will be deprecated and code for pandas 3+ should be updated to
++  do ``include=["str"]`` (:issue:`61916`)
++- Support the ``/`` operation between a ``pathlib.Path`` object and a :class:`StringDtype`
++  Series, similarly as it works for object-dtype Series (:issue:`61940`)
++
++.. _whatsnew_233.string_fixes.bugs:
++
++Bug fixes
++^^^^^^^^^
++- Fix bug in :meth:`Series.str.replace` using named capture groups (e.g., ``\g<name>``) with the Arrow-backed dtype would raise an error (:issue:`57636`)
++- Fix regression in :meth:`Series.str.contains`, :meth:`~Series.str.match` and :meth:`~Series.str.fullmatch`
++  with a compiled regex and custom flags (:issue:`62240`)
++- Fix :meth:`Series.str.match` and :meth:`~Series.str.fullmatch` not matching patterns with groups correctly for the Arrow-backed string dtype (:issue:`61072`)
++- Fix bug in :meth:`~DataFrame.groupby` with ``sum()`` and unobserved categories resulting in ``0`` instead of the empty string ``""`` (:issue:`61909`)
++- Fix :meth:`Series.str.isdigit` to correctly recognize unicode superscript
++  characters as digits for :class:`StringDtype` backed by PyArrow (:issue:`61466`)
++- Fix comparing a :class:`StringDtype` Series with mixed objects raising an error (:issue:`60228`)
++- Fix error being raised when using a numpy ufunc with a Python-backed string array (:issue:`40800`)
++
++Other changes
++~~~~~~~~~~~~~
++
++- The deprecation of using :meth:`Series.resample` and :meth:`DataFrame.resample`
++  with a :class:`PeriodIndex` (and the 'convention' keyword) has been undone.
++  Resampling with a :class:`PeriodIndex` is supported again, but a subset of
++  methods that return incorrect results will raise an error in pandas 3.0 (:issue:`57033`)
++
++Other bug fixes
++~~~~~~~~~~~~~~~~
++
++- Fix memory leak in :meth:`DataFrame.to_json` with datetime columns (:issue:`62204`)
++- Fixed regression in :meth:`DataFrame.from_records` not initializing subclasses properly (:issue:`57008`)
++- The :meth:`DataFrame.iloc` now works correctly with ``copy_on_write`` option when assigning values after subsetting the columns of a homogeneous DataFrame (:issue:`60309`)
++
++.. ---------------------------------------------------------------------------
++.. _whatsnew_233.contributors:
++
++Contributors
++~~~~~~~~~~~~
++
++.. contributors:: v2.3.2..v2.3.3|HEAD
+diff --git a/pandas/_libs/groupby.pyi b/pandas/_libs/groupby.pyi
+index a494b61fa7e3d..eebd9331ab393 100644
+--- a/pandas/_libs/groupby.pyi
++++ b/pandas/_libs/groupby.pyi
+@@ -65,6 +65,7 @@ def group_sum(
+     result_mask: np.ndarray | None = ...,
+     min_count: int = ...,
+     is_datetimelike: bool = ...,
++    initial: object = ...,
+ ) -> None: ...
+ def group_prod(
+     out: np.ndarray,  # int64float_t[:, ::1]
+diff --git a/pandas/_libs/groupby.pyx b/pandas/_libs/groupby.pyx
+index b855d64d0be18..04343671af677 100644
+--- a/pandas/_libs/groupby.pyx
++++ b/pandas/_libs/groupby.pyx
+@@ -672,6 +672,7 @@ def group_sum(
+     uint8_t[:, ::1] result_mask=None,
+     Py_ssize_t min_count=0,
+     bint is_datetimelike=False,
++    object initial=0,
+ ) -> None:
+     """
+     Only aggregates on axis=0 using Kahan summation
+@@ -689,9 +690,15 @@ def group_sum(
+         raise ValueError("len(index) != len(labels)")
+ 
+     nobs = np.zeros((<object>out).shape, dtype=np.int64)
+-    # the below is equivalent to `np.zeros_like(out)` but faster
+-    sumx = np.zeros((<object>out).shape, dtype=(<object>out).base.dtype)
+-    compensation = np.zeros((<object>out).shape, dtype=(<object>out).base.dtype)
++    if initial == 0:
++        # the below is equivalent to `np.zeros_like(out)` but faster
++        sumx = np.zeros((<object>out).shape, dtype=(<object>out).base.dtype)
++        compensation = np.zeros((<object>out).shape, dtype=(<object>out).base.dtype)
++    else:
++        # in practice this path is only taken for strings to use empty string as initial
++        assert sum_t is object
++        sumx = np.full((<object>out).shape, initial, dtype=object)
++        # object code path does not use `compensation`
+ 
+     N, K = (<object>values).shape
+ 
+diff --git a/pandas/_libs/src/datetime/pd_datetime.c b/pandas/_libs/src/datetime/pd_datetime.c
+index 4c1969f6d9f57..2ac7af70147f0 100644
+--- a/pandas/_libs/src/datetime/pd_datetime.c
++++ b/pandas/_libs/src/datetime/pd_datetime.c
+@@ -55,9 +55,23 @@ static int convert_pydatetime_to_datetimestruct(PyObject *dtobj,
+   out->month = 1;
+   out->day = 1;
+ 
+-  out->year = PyLong_AsLong(PyObject_GetAttrString(obj, "year"));
+-  out->month = PyLong_AsLong(PyObject_GetAttrString(obj, "month"));
+-  out->day = PyLong_AsLong(PyObject_GetAttrString(obj, "day"));
++  tmp = PyObject_GetAttrString(obj, "year");
++  if (tmp == NULL)
++    return -1;
++  out->year = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
++
++  tmp = PyObject_GetAttrString(obj, "month");
++  if (tmp == NULL)
++    return -1;
++  out->month = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
++
++  tmp = PyObject_GetAttrString(obj, "day");
++  if (tmp == NULL)
++    return -1;
++  out->day = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
+ 
+   // TODO(anyone): If we can get PyDateTime_IMPORT to work, we could use
+   // PyDateTime_Check here, and less verbose attribute lookups.
+@@ -70,10 +84,29 @@ static int convert_pydatetime_to_datetimestruct(PyObject *dtobj,
+     return 0;
+   }
+ 
+-  out->hour = PyLong_AsLong(PyObject_GetAttrString(obj, "hour"));
+-  out->min = PyLong_AsLong(PyObject_GetAttrString(obj, "minute"));
+-  out->sec = PyLong_AsLong(PyObject_GetAttrString(obj, "second"));
+-  out->us = PyLong_AsLong(PyObject_GetAttrString(obj, "microsecond"));
++  tmp = PyObject_GetAttrString(obj, "hour");
++  if (tmp == NULL)
++    return -1;
++  out->hour = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
++
++  tmp = PyObject_GetAttrString(obj, "minute");
++  if (tmp == NULL)
++    return -1;
++  out->min = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
++
++  tmp = PyObject_GetAttrString(obj, "second");
++  if (tmp == NULL)
++    return -1;
++  out->sec = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
++
++  tmp = PyObject_GetAttrString(obj, "microsecond");
++  if (tmp == NULL)
++    return -1;
++  out->us = PyLong_AsLong(tmp);
++  Py_DECREF(tmp);
+ 
+   if (PyObject_HasAttrString(obj, "tzinfo")) {
+     PyObject *offset = extract_utc_offset(obj);
+diff --git a/pandas/_libs/src/vendored/ujson/python/objToJSON.c b/pandas/_libs/src/vendored/ujson/python/objToJSON.c
+index 5f35860c59cb7..4c89bd9540312 100644
+--- a/pandas/_libs/src/vendored/ujson/python/objToJSON.c
++++ b/pandas/_libs/src/vendored/ujson/python/objToJSON.c
+@@ -346,7 +346,8 @@ static char *PyDateTimeToIsoCallback(JSOBJ obj, JSONTypeContext *tc,
+   }
+ 
+   NPY_DATETIMEUNIT base = ((PyObjectEncoder *)tc->encoder)->datetimeUnit;
+-  return PyDateTimeToIso(obj, base, len);
++  GET_TC(tc)->cStr = PyDateTimeToIso(obj, base, len);
++  return GET_TC(tc)->cStr;
+ }
+ 
+ static char *PyTimeToJSON(JSOBJ _obj, JSONTypeContext *tc, size_t *outLen) {
+diff --git a/pandas/_testing/contexts.py b/pandas/_testing/contexts.py
+index 48616ee134582..aa409a90a22f8 100644
+--- a/pandas/_testing/contexts.py
++++ b/pandas/_testing/contexts.py
+@@ -13,7 +13,10 @@
+ 
+ from pandas._config import using_copy_on_write
+ 
+-from pandas.compat import PYPY
++from pandas.compat import (
++    PYPY,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.errors import ChainedAssignmentError
+ 
+ from pandas import set_option
+@@ -204,11 +207,11 @@ def raises_chained_assignment_error(warn=True, extra_warnings=(), extra_match=()
+ 
+         return nullcontext()
+ 
+-    if PYPY and not extra_warnings:
++    if (PYPY or WARNING_CHECK_DISABLED) and not extra_warnings:
+         from contextlib import nullcontext
+ 
+         return nullcontext()
+-    elif PYPY and extra_warnings:
++    elif (PYPY or WARNING_CHECK_DISABLED) and extra_warnings:
+         return assert_produces_warning(
+             extra_warnings,
+             match="|".join(extra_match),
+@@ -247,7 +250,7 @@ def assert_cow_warning(warn=True, match=None, **kwargs):
+     """
+     from pandas._testing import assert_produces_warning
+ 
+-    if not warn:
++    if not warn or WARNING_CHECK_DISABLED:
+         from contextlib import nullcontext
+ 
+         return nullcontext()
+diff --git a/pandas/compat/__init__.py b/pandas/compat/__init__.py
+index 62278c413dd23..c8554be0a18b1 100644
+--- a/pandas/compat/__init__.py
++++ b/pandas/compat/__init__.py
+@@ -20,7 +20,9 @@
+     PY310,
+     PY311,
+     PY312,
++    PY314,
+     PYPY,
++    WARNING_CHECK_DISABLED,
+ )
+ import pandas.compat.compressors
+ from pandas.compat.numpy import is_numpy_dev
+@@ -205,5 +207,7 @@ def get_bz2_file() -> type[pandas.compat.compressors.BZ2File]:
+     "PY310",
+     "PY311",
+     "PY312",
++    "PY314",
+     "PYPY",
++    "WARNING_CHECK_DISABLED",
+ ]
+diff --git a/pandas/compat/_constants.py b/pandas/compat/_constants.py
+index 7bc3fbaaefebf..fb011603712c6 100644
+--- a/pandas/compat/_constants.py
++++ b/pandas/compat/_constants.py
+@@ -16,9 +16,12 @@
+ PY310 = sys.version_info >= (3, 10)
+ PY311 = sys.version_info >= (3, 11)
+ PY312 = sys.version_info >= (3, 12)
++PY314 = sys.version_info >= (3, 14)
+ PYPY = platform.python_implementation() == "PyPy"
+ ISMUSL = "musl" in (sysconfig.get_config_var("HOST_GNU_TYPE") or "")
+ REF_COUNT = 2 if PY311 else 3
++WARNING_CHECK_DISABLED = PY314
++
+ 
+ __all__ = [
+     "IS64",
+@@ -26,5 +29,6 @@
+     "PY310",
+     "PY311",
+     "PY312",
++    "PY314",
+     "PYPY",
+ ]
+diff --git a/pandas/core/array_algos/replace.py b/pandas/core/array_algos/replace.py
+index 7d40fb985a593..16239ed8c4697 100644
+--- a/pandas/core/array_algos/replace.py
++++ b/pandas/core/array_algos/replace.py
+@@ -92,17 +92,18 @@ def _check_comparison_types(
+         )
+ 
+     # GH#32621 use mask to avoid comparing to NAs
+-    if isinstance(a, np.ndarray):
++    if isinstance(a, np.ndarray) and mask is not None:
+         a = a[mask]
+-
+-    result = op(a)
+-
+-    if isinstance(result, np.ndarray) and mask is not None:
+-        # The shape of the mask can differ to that of the result
+-        # since we may compare only a subset of a's or b's elements
+-        tmp = np.zeros(mask.shape, dtype=np.bool_)
+-        np.place(tmp, mask, result)
+-        result = tmp
++        result = op(a)
++
++        if isinstance(result, np.ndarray):
++            # The shape of the mask can differ to that of the result
++            # since we may compare only a subset of a's or b's elements
++            tmp = np.zeros(mask.shape, dtype=np.bool_)
++            np.place(tmp, mask, result)
++            result = tmp
++    else:
++        result = op(a)
+ 
+     _check_comparison_types(result, a, b)
+     return result
+diff --git a/pandas/core/arrays/_arrow_string_mixins.py b/pandas/core/arrays/_arrow_string_mixins.py
+index e136b4f92031d..c99ee7d02a226 100644
+--- a/pandas/core/arrays/_arrow_string_mixins.py
++++ b/pandas/core/arrays/_arrow_string_mixins.py
+@@ -16,6 +16,7 @@
+     pa_version_under11p0,
+     pa_version_under13p0,
+     pa_version_under17p0,
++    pa_version_under21p0,
+ )
+ 
+ if not pa_version_under10p1:
+@@ -168,10 +169,20 @@ def _str_replace(
+         flags: int = 0,
+         regex: bool = True,
+     ) -> Self:
+-        if isinstance(pat, re.Pattern) or callable(repl) or not case or flags:
++        if (
++            isinstance(pat, re.Pattern)
++            or callable(repl)
++            or not case
++            or flags
++            or (
++                isinstance(repl, str)
++                and (r"\g<" in repl or re.search(r"\\\d", repl) is not None)
++            )
++        ):
+             raise NotImplementedError(
+                 "replace is not supported with a re.Pattern, callable repl, "
+-                "case=False, or flags!=0"
++                "case=False, flags!=0, or when the replacement string contains "
++                "named group references (\\g<...>, \\d+)"
+             )
+ 
+         func = pc.replace_substring_regex if regex else pc.replace_substring
+@@ -258,6 +269,12 @@ def _str_isdecimal(self):
+         return self._convert_bool_result(result)
+ 
+     def _str_isdigit(self):
++        if pa_version_under21p0:
++            # https://github.com/pandas-dev/pandas/issues/61466
++            res_list = self._apply_elementwise(str.isdigit)
++            return self._convert_bool_result(
++                pa.chunked_array(res_list, type=pa.bool_())
++            )
+         result = pc.utf8_is_digit(self._pa_array)
+         return self._convert_bool_result(result)
+ 
+@@ -307,18 +324,22 @@ def _str_match(
+         na: Scalar | lib.NoDefault = lib.no_default,
+     ):
+         if not pat.startswith("^"):
+-            pat = f"^{pat}"
++            pat = f"^({pat})"
+         return self._str_contains(pat, case, flags, na, regex=True)
+ 
+     def _str_fullmatch(
+         self,
+-        pat,
++        pat: str,
+         case: bool = True,
+         flags: int = 0,
+         na: Scalar | lib.NoDefault = lib.no_default,
+     ):
+-        if not pat.endswith("$") or pat.endswith("\\$"):
+-            pat = f"{pat}$"
++        if (not pat.endswith("$") or pat.endswith("\\$")) and not pat.startswith("^"):
++            pat = f"^({pat})$"
++        elif not pat.endswith("$") or pat.endswith("\\$"):
++            pat = f"^({pat[1:]})$"
++        elif not pat.startswith("^"):
++            pat = f"^({pat[0:-1]})$"
+         return self._str_match(pat, case, flags, na)
+ 
+     def _str_find(self, sub: str, start: int = 0, end: int | None = None):
+diff --git a/pandas/core/arrays/arrow/array.py b/pandas/core/arrays/arrow/array.py
+index 5b2d3b7c065a8..e16a126ac10ee 100644
+--- a/pandas/core/arrays/arrow/array.py
++++ b/pandas/core/arrays/arrow/array.py
+@@ -2,6 +2,7 @@
+ 
+ import functools
+ import operator
++from pathlib import Path
+ import re
+ import textwrap
+ from typing import (
+@@ -237,7 +238,7 @@ def to_pyarrow_type(
+     return None
+ 
+ 
+-class ArrowExtensionArray(
++class ArrowExtensionArray(  # type: ignore[misc]
+     OpsMixin,
+     ExtensionArraySupportsAnyAll,
+     ArrowStringArrayMixin,
+@@ -726,12 +727,18 @@ def _cmp_method(self, other, op):
+         pc_func = ARROW_CMP_FUNCS[op.__name__]
+         if isinstance(other, (ExtensionArray, np.ndarray, list)):
+             try:
+-                result = pc_func(self._pa_array, self._box_pa(other))
+-            except pa.ArrowNotImplementedError:
+-                # TODO: could this be wrong if other is object dtype?
+-                #  in which case we need to operate pointwise?
+-                result = ops.invalid_comparison(self, other, op)
+-                result = pa.array(result, type=pa.bool_())
++                boxed = self._box_pa(other)
++            except pa.lib.ArrowInvalid:
++                # e.g. GH#60228 [1, "b"] we have to operate pointwise
++                res_values = [op(x, y) for x, y in zip(self, other)]
++                result = pa.array(res_values, type=pa.bool_(), from_pandas=True)
++            else:
++                try:
++                    result = pc_func(self._pa_array, boxed)
++                except pa.ArrowNotImplementedError:
++                    result = ops.invalid_comparison(self, other, op)
++                    result = pa.array(result, type=pa.bool_())
++
+         elif is_scalar(other):
+             try:
+                 result = pc_func(self._pa_array, self._box_pa(other))
+@@ -829,10 +836,45 @@ def _logical_method(self, other, op):
+         # integer types. Otherwise these are boolean ops.
+         if pa.types.is_integer(self._pa_array.type):
+             return self._evaluate_op_method(other, op, ARROW_BIT_WISE_FUNCS)
++        elif (
++            (
++                pa.types.is_string(self._pa_array.type)
++                or pa.types.is_large_string(self._pa_array.type)
++            )
++            and op in (roperator.ror_, roperator.rand_, roperator.rxor)
++            and isinstance(other, np.ndarray)
++            and other.dtype == bool
++        ):
++            # GH#60234 backward compatibility for the move to StringDtype in 3.0
++            op_name = op.__name__[1:].strip("_")
++            warnings.warn(
++                f"'{op_name}' operations between boolean dtype and {self.dtype} are "
++                "deprecated and will raise in a future version. Explicitly "
++                "cast the strings to a boolean dtype before operating instead.",
++                DeprecationWarning,
++                stacklevel=find_stack_level(),
++            )
++            return op(other, self.astype(bool))
+         else:
+             return self._evaluate_op_method(other, op, ARROW_LOGICAL_FUNCS)
+ 
+-    def _arith_method(self, other, op):
++    def _arith_method(self, other, op) -> Self | npt.NDArray[np.object_]:
++        if (
++            op in [operator.truediv, roperator.rtruediv]
++            and isinstance(other, Path)
++            and (
++                pa.types.is_string(self._pa_array.type)
++                or pa.types.is_large_string(self._pa_array.type)
++            )
++        ):
++            # GH#61940
++            return np.array(
++                [
++                    op(x, other) if isinstance(x, str) else self.dtype.na_value
++                    for x in self
++                ],
++                dtype=object,
++            )
+         return self._evaluate_op_method(other, op, ARROW_ARITHMETIC_FUNCS)
+ 
+     def equals(self, other) -> bool:
+diff --git a/pandas/core/arrays/base.py b/pandas/core/arrays/base.py
+index 28a95ce1784a2..62458b89f9c08 100644
+--- a/pandas/core/arrays/base.py
++++ b/pandas/core/arrays/base.py
+@@ -2366,6 +2366,7 @@ def _groupby_op(
+         kind = WrappedCythonOp.get_kind_from_how(how)
+         op = WrappedCythonOp(how=how, kind=kind, has_dropped_na=has_dropped_na)
+ 
++        initial: Any = 0
+         # GH#43682
+         if isinstance(self.dtype, StringDtype):
+             # StringArray
+@@ -2389,6 +2390,7 @@ def _groupby_op(
+ 
+             arr = self
+             if op.how == "sum":
++                initial = ""
+                 # https://github.com/pandas-dev/pandas/issues/60229
+                 # All NA should result in the empty string.
+                 if min_count == 0:
+@@ -2405,6 +2407,7 @@ def _groupby_op(
+             ngroups=ngroups,
+             comp_ids=ids,
+             mask=None,
++            initial=initial,
+             **kwargs,
+         )
+ 
+diff --git a/pandas/core/arrays/categorical.py b/pandas/core/arrays/categorical.py
+index 0fe69f6d1ebc2..8bee4740b3951 100644
+--- a/pandas/core/arrays/categorical.py
++++ b/pandas/core/arrays/categorical.py
+@@ -2215,8 +2215,16 @@ def _repr_categories(self) -> list[str]:
+         )
+         from pandas.io.formats import format as fmt
+ 
++        formatter = None
++        if self.categories.dtype == "str":
++            # the extension array formatter defaults to boxed=True in format_array
++            # override here to boxed=False to be consistent with QUOTE_NONNUMERIC
++            formatter = cast(ExtensionArray, self.categories._values)._formatter(
++                boxed=False
++            )
++
+         format_array = partial(
+-            fmt.format_array, formatter=None, quoting=QUOTE_NONNUMERIC
++            fmt.format_array, formatter=formatter, quoting=QUOTE_NONNUMERIC
+         )
+         if len(self.categories) > max_categories:
+             num = max_categories // 2
+diff --git a/pandas/core/arrays/numpy_.py b/pandas/core/arrays/numpy_.py
+index e0031d3db6ca7..07fd207933fc1 100644
+--- a/pandas/core/arrays/numpy_.py
++++ b/pandas/core/arrays/numpy_.py
+@@ -209,6 +209,14 @@ def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs, **kwargs):
+             # e.g. test_np_max_nested_tuples
+             return result
+         else:
++            if self.dtype.type is str:  # type: ignore[comparison-overlap]
++                # StringDtype
++                try:
++                    return type(self)(result)
++                except ValueError:
++                    # if validation of input fails (no strings)
++                    # -> fallback to returning raw numpy array
++                    return result
+             # one return value; re-box array-like results
+             return type(self)(result)
+ 
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 9c8dc2054106a..edc5529d0d78c 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -2,6 +2,7 @@
+ 
+ from functools import partial
+ import operator
++from pathlib import Path
+ from typing import (
+     TYPE_CHECKING,
+     Any,
+@@ -49,6 +50,7 @@
+     missing,
+     nanops,
+     ops,
++    roperator,
+ )
+ from pandas.core.algorithms import isin
+ from pandas.core.array_algos import masked_reductions
+@@ -195,8 +197,8 @@ def __repr__(self) -> str:
+         if self._na_value is libmissing.NA:
+             return f"{self.name}[{self.storage}]"
+         else:
+-            # TODO add more informative repr
+-            return self.name
++            storage = "" if self.storage == "pyarrow" else "storage='python', "
++            return f"<StringDtype({storage}na_value={self._na_value})>"
+ 
+     def __eq__(self, other: object) -> bool:
+         # we need to override the base class __eq__ because na_value (NA or NaN)
+@@ -385,6 +387,26 @@ class BaseStringArray(ExtensionArray):
+ 
+     dtype: StringDtype
+ 
++    # TODO(4.0): Once the deprecation here is enforced, this method can be
++    #  removed and we use the parent class method instead.
++    def _logical_method(self, other, op):
++        if (
++            op in (roperator.ror_, roperator.rand_, roperator.rxor)
++            and isinstance(other, np.ndarray)
++            and other.dtype == bool
++        ):
++            # GH#60234 backward compatibility for the move to StringDtype in 3.0
++            op_name = op.__name__[1:].strip("_")
++            warnings.warn(
++                f"'{op_name}' operations between boolean dtype and {self.dtype} are "
++                "deprecated and will raise in a future version. Explicitly "
++                "cast the strings to a boolean dtype before operating instead.",
++                DeprecationWarning,
++                stacklevel=find_stack_level(),
++            )
++            return op(other, self.astype(bool))
++        return NotImplemented
++
+     @doc(ExtensionArray.tolist)
+     def tolist(self):
+         if self.ndim > 1:
+@@ -1052,7 +1074,7 @@ def _cmp_method(self, other, op):
+         mask = isna(self) | isna(other)
+         valid = ~mask
+ 
+-        if not lib.is_scalar(other):
++        if lib.is_list_like(other):
+             if len(other) != len(self):
+                 # prevent improper broadcasting when other is 2D
+                 raise ValueError(
+@@ -1068,6 +1090,9 @@ def _cmp_method(self, other, op):
+             result = np.empty_like(self._ndarray, dtype="object")
+             result[mask] = self.dtype.na_value
+             result[valid] = op(self._ndarray[valid], other)
++            if isinstance(other, Path):
++                # GH#61940
++                return result
+             return self._from_backing_data(result)
+         else:
+             # logical
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index a57ada5a5b3b3..f9fd74cbd76b1 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -51,6 +51,7 @@
+     from pandas._typing import (
+         ArrayLike,
+         Dtype,
++        Scalar,
+         Self,
+         npt,
+     )
+@@ -329,8 +330,6 @@ def _data(self):
+     _str_startswith = ArrowStringArrayMixin._str_startswith
+     _str_endswith = ArrowStringArrayMixin._str_endswith
+     _str_pad = ArrowStringArrayMixin._str_pad
+-    _str_match = ArrowStringArrayMixin._str_match
+-    _str_fullmatch = ArrowStringArrayMixin._str_fullmatch
+     _str_lower = ArrowStringArrayMixin._str_lower
+     _str_upper = ArrowStringArrayMixin._str_upper
+     _str_strip = ArrowStringArrayMixin._str_strip
+@@ -345,6 +344,28 @@ def _data(self):
+     _str_len = ArrowStringArrayMixin._str_len
+     _str_slice = ArrowStringArrayMixin._str_slice
+ 
++    @staticmethod
++    def _is_re_pattern_with_flags(pat: str | re.Pattern) -> bool:
++        # check if `pat` is a compiled regex pattern with flags that are not
++        # supported by pyarrow
++        return (
++            isinstance(pat, re.Pattern)
++            and (pat.flags & ~(re.IGNORECASE | re.UNICODE)) != 0
++        )
++
++    @staticmethod
++    def _preprocess_re_pattern(pat: re.Pattern, case: bool) -> tuple[str, bool, int]:
++        pattern = pat.pattern
++        flags = pat.flags
++        # flags is not supported by pyarrow, but `case` is -> extract and remove
++        if flags & re.IGNORECASE:
++            case = False
++            flags = flags & ~re.IGNORECASE
++        # when creating a pattern with re.compile and a string, it automatically
++        # gets a UNICODE flag, while pyarrow assumes unicode for strings anyway
++        flags = flags & ~re.UNICODE
++        return pattern, case, flags
++
+     def _str_contains(
+         self,
+         pat,
+@@ -353,11 +374,42 @@ def _str_contains(
+         na=lib.no_default,
+         regex: bool = True,
+     ):
+-        if flags:
++        if flags or self._is_re_pattern_with_flags(pat):
+             return super()._str_contains(pat, case, flags, na, regex)
++        if isinstance(pat, re.Pattern):
++            # TODO flags passed separately by user are ignored
++            pat, case, flags = self._preprocess_re_pattern(pat, case)
+ 
+         return ArrowStringArrayMixin._str_contains(self, pat, case, flags, na, regex)
+ 
++    def _str_match(
++        self,
++        pat: str | re.Pattern,
++        case: bool = True,
++        flags: int = 0,
++        na: Scalar | lib.NoDefault = lib.no_default,
++    ):
++        if flags or self._is_re_pattern_with_flags(pat):
++            return super()._str_match(pat, case, flags, na)
++        if isinstance(pat, re.Pattern):
++            pat, case, flags = self._preprocess_re_pattern(pat, case)
++
++        return ArrowStringArrayMixin._str_match(self, pat, case, flags, na)
++
++    def _str_fullmatch(
++        self,
++        pat: str | re.Pattern,
++        case: bool = True,
++        flags: int = 0,
++        na: Scalar | lib.NoDefault = lib.no_default,
++    ):
++        if flags or self._is_re_pattern_with_flags(pat):
++            return super()._str_fullmatch(pat, case, flags, na)
++        if isinstance(pat, re.Pattern):
++            pat, case, flags = self._preprocess_re_pattern(pat, case)
++
++        return ArrowStringArrayMixin._str_fullmatch(self, pat, case, flags, na)
++
+     def _str_replace(
+         self,
+         pat: str | re.Pattern,
+@@ -367,7 +419,17 @@ def _str_replace(
+         flags: int = 0,
+         regex: bool = True,
+     ):
+-        if isinstance(pat, re.Pattern) or callable(repl) or not case or flags:
++        if (
++            isinstance(pat, re.Pattern)
++            or callable(repl)
++            or not case
++            or flags
++            or (  # substitution contains a named group pattern
++                # https://docs.python.org/3/library/re.html
++                isinstance(repl, str)
++                and (r"\g<" in repl or re.search(r"\\\d", repl) is not None)
++            )
++        ):
+             return super()._str_replace(pat, repl, n, case, flags, regex)
+ 
+         return ArrowStringArrayMixin._str_replace(
+diff --git a/pandas/core/dtypes/cast.py b/pandas/core/dtypes/cast.py
+index d4263f7488a14..9a7cfc0dec84e 100644
+--- a/pandas/core/dtypes/cast.py
++++ b/pandas/core/dtypes/cast.py
+@@ -966,7 +966,9 @@ def invalidate_string_dtypes(dtype_set: set[DtypeObj]) -> None:
+         np.dtype("<U").type,  # type: ignore[arg-type]
+     }
+     if non_string_dtypes != dtype_set:
+-        raise TypeError("string dtypes are not allowed, use 'object' instead")
++        raise TypeError(
++            "numpy string dtypes are not allowed, use 'str' or 'object' instead"
++        )
+ 
+ 
+ def coerce_indexer_dtype(indexer, categories) -> np.ndarray:
+diff --git a/pandas/core/frame.py b/pandas/core/frame.py
+index ef48090f02c3f..cc260770cbd78 100644
+--- a/pandas/core/frame.py
++++ b/pandas/core/frame.py
+@@ -54,7 +54,10 @@
+ from pandas._libs.hashtable import duplicated
+ from pandas._libs.lib import is_range_indexer
+ from pandas.compat import PYPY
+-from pandas.compat._constants import REF_COUNT
++from pandas.compat._constants import (
++    REF_COUNT,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.compat._optional import import_optional_dependency
+ from pandas.compat.numpy import function as nv
+ from pandas.errors import (
+@@ -141,6 +144,7 @@
+     TimedeltaArray,
+ )
+ from pandas.core.arrays.sparse import SparseFrameAccessor
++from pandas.core.arrays.string_ import StringDtype
+ from pandas.core.construction import (
+     ensure_wrapped_if_datetimelike,
+     sanitize_array,
+@@ -2545,8 +2549,10 @@ def maybe_reorder(
+ 
+         manager = _get_option("mode.data_manager", silent=True)
+         mgr = arrays_to_mgr(arrays, columns, result_index, typ=manager)
+-
+-        return cls._from_mgr(mgr, axes=mgr.axes)
++        df = DataFrame._from_mgr(mgr, axes=mgr.axes)
++        if cls is not DataFrame:
++            return cls(df, copy=False)
++        return df
+ 
+     def to_records(
+         self, index: bool = True, column_dtypes=None, index_dtypes=None
+@@ -4274,12 +4280,12 @@ def isetitem(self, loc, value) -> None:
+         self._iset_item_mgr(loc, arraylike, inplace=False, refs=refs)
+ 
+     def __setitem__(self, key, value) -> None:
+-        if not PYPY and using_copy_on_write():
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+             if sys.getrefcount(self) <= 3:
+                 warnings.warn(
+                     _chained_assignment_msg, ChainedAssignmentError, stacklevel=2
+                 )
+-        elif not PYPY and not using_copy_on_write():
++        elif not PYPY and not WARNING_CHECK_DISABLED and not using_copy_on_write():
+             if sys.getrefcount(self) <= 3 and (
+                 warn_copy_on_write()
+                 or (
+@@ -5077,10 +5083,19 @@ def check_int_infer_dtype(dtypes):
+         def dtype_predicate(dtype: DtypeObj, dtypes_set) -> bool:
+             # GH 46870: BooleanDtype._is_numeric == True but should be excluded
+             dtype = dtype if not isinstance(dtype, ArrowDtype) else dtype.numpy_dtype
+-            return issubclass(dtype.type, tuple(dtypes_set)) or (
+-                np.number in dtypes_set
+-                and getattr(dtype, "_is_numeric", False)
+-                and not is_bool_dtype(dtype)
++            return (
++                issubclass(dtype.type, tuple(dtypes_set))
++                or (
++                    np.number in dtypes_set
++                    and getattr(dtype, "_is_numeric", False)
++                    and not is_bool_dtype(dtype)
++                )
++                # backwards compat for the default `str` dtype being selected by object
++                or (
++                    isinstance(dtype, StringDtype)
++                    and dtype.na_value is np.nan
++                    and np.object_ in dtypes_set
++                )
+             )
+ 
+         def predicate(arr: ArrayLike) -> bool:
+@@ -8983,14 +8998,19 @@ def update(
+         2  3    6.0
+         """
+ 
+-        if not PYPY and using_copy_on_write():
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+             if sys.getrefcount(self) <= REF_COUNT:
+                 warnings.warn(
+                     _chained_assignment_method_msg,
+                     ChainedAssignmentError,
+                     stacklevel=2,
+                 )
+-        elif not PYPY and not using_copy_on_write() and self._is_view_after_cow_rules():
++        elif (
++            not PYPY
++            and not WARNING_CHECK_DISABLED
++            and not using_copy_on_write()
++            and self._is_view_after_cow_rules()
++        ):
+             if sys.getrefcount(self) <= REF_COUNT:
+                 warnings.warn(
+                     _chained_assignment_warning_method_msg,
+diff --git a/pandas/core/generic.py b/pandas/core/generic.py
+index 70b72577dd5d1..dd8c1723be54a 100644
+--- a/pandas/core/generic.py
++++ b/pandas/core/generic.py
+@@ -90,7 +90,10 @@
+     npt,
+ )
+ from pandas.compat import PYPY
+-from pandas.compat._constants import REF_COUNT
++from pandas.compat._constants import (
++    REF_COUNT,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.compat._optional import import_optional_dependency
+ from pandas.compat.numpy import function as nv
+ from pandas.errors import (
+@@ -7285,7 +7288,7 @@ def fillna(
+         """
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -7294,6 +7297,7 @@ def fillna(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -7588,7 +7592,7 @@ def ffill(
+         downcast = self._deprecate_downcast(downcast, "ffill")
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -7597,6 +7601,7 @@ def ffill(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -7792,7 +7797,7 @@ def bfill(
+         downcast = self._deprecate_downcast(downcast, "bfill")
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -7801,6 +7806,7 @@ def bfill(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -7963,7 +7969,7 @@ def replace(
+ 
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -7972,6 +7978,7 @@ def replace(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -8415,7 +8422,7 @@ def interpolate(
+         inplace = validate_bool_kwarg(inplace, "inplace")
+ 
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -8424,6 +8431,7 @@ def interpolate(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -9057,7 +9065,7 @@ def clip(
+         inplace = validate_bool_kwarg(inplace, "inplace")
+ 
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -9066,6 +9074,7 @@ def clip(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -9406,7 +9415,7 @@ def resample(
+         axis: Axis | lib.NoDefault = lib.no_default,
+         closed: Literal["right", "left"] | None = None,
+         label: Literal["right", "left"] | None = None,
+-        convention: Literal["start", "end", "s", "e"] | lib.NoDefault = lib.no_default,
++        convention: Literal["start", "end", "s", "e"] = "start",
+         kind: Literal["timestamp", "period"] | None | lib.NoDefault = lib.no_default,
+         on: Level | None = None,
+         level: Level | None = None,
+@@ -9445,8 +9454,6 @@ def resample(
+             For `PeriodIndex` only, controls whether to use the start or
+             end of `rule`.
+ 
+-            .. deprecated:: 2.2.0
+-                Convert PeriodIndex to DatetimeIndex before resampling instead.
+         kind : {{'timestamp', 'period'}}, optional, default None
+             Pass 'timestamp' to convert the resulting index to a
+             `DateTimeIndex` or 'period' to convert it to a `PeriodIndex`.
+@@ -9611,6 +9618,55 @@ def resample(
+         2000-01-01 00:06:00    26
+         Freq: 3min, dtype: int64
+ 
++        For a Series with a PeriodIndex, the keyword `convention` can be
++        used to control whether to use the start or end of `rule`.
++
++        Resample a year by quarter using 'start' `convention`. Values are
++        assigned to the first quarter of the period.
++
++        >>> s = pd.Series(
++        ...     [1, 2], index=pd.period_range("2012-01-01", freq="Y", periods=2)
++        ... )
++        >>> s
++        2012    1
++        2013    2
++        Freq: Y-DEC, dtype: int64
++        >>> s.resample("Q", convention="start").asfreq()
++        2012Q1    1.0
++        2012Q2    NaN
++        2012Q3    NaN
++        2012Q4    NaN
++        2013Q1    2.0
++        2013Q2    NaN
++        2013Q3    NaN
++        2013Q4    NaN
++        Freq: Q-DEC, dtype: float64
++
++        Resample quarters by month using 'end' `convention`. Values are
++        assigned to the last month of the period.
++
++        >>> q = pd.Series(
++        ...     [1, 2, 3, 4], index=pd.period_range("2018-01-01", freq="Q", periods=4)
++        ... )
++        >>> q
++        2018Q1    1
++        2018Q2    2
++        2018Q3    3
++        2018Q4    4
++        Freq: Q-DEC, dtype: int64
++        >>> q.resample("M", convention="end").asfreq()
++        2018-03    1.0
++        2018-04    NaN
++        2018-05    NaN
++        2018-06    2.0
++        2018-07    NaN
++        2018-08    NaN
++        2018-09    3.0
++        2018-10    NaN
++        2018-11    NaN
++        2018-12    4.0
++        Freq: M, dtype: float64
++
+         For DataFrame objects, the keyword `on` can be used to specify the
+         column instead of the index for resampling.
+ 
+@@ -9775,18 +9831,6 @@ def resample(
+         else:
+             kind = None
+ 
+-        if convention is not lib.no_default:
+-            warnings.warn(
+-                f"The 'convention' keyword in {type(self).__name__}.resample is "
+-                "deprecated and will be removed in a future version. "
+-                "Explicitly cast PeriodIndex to DatetimeIndex before resampling "
+-                "instead.",
+-                FutureWarning,
+-                stacklevel=find_stack_level(),
+-            )
+-        else:
+-            convention = "start"
+-
+         return get_resampler(
+             cast("Series | DataFrame", self),
+             freq=rule,
+@@ -10975,7 +11019,7 @@ def where(
+         """
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -10984,6 +11028,7 @@ def where(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+@@ -11058,7 +11103,7 @@ def mask(
+     ) -> Self | None:
+         inplace = validate_bool_kwarg(inplace, "inplace")
+         if inplace:
+-            if not PYPY and using_copy_on_write():
++            if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+                 if sys.getrefcount(self) <= REF_COUNT:
+                     warnings.warn(
+                         _chained_assignment_method_msg,
+@@ -11067,6 +11112,7 @@ def mask(
+                     )
+             elif (
+                 not PYPY
++                and not WARNING_CHECK_DISABLED
+                 and not using_copy_on_write()
+                 and self._is_view_after_cow_rules()
+             ):
+diff --git a/pandas/core/groupby/groupby.py b/pandas/core/groupby/groupby.py
+index 3a28de5222d15..5baa2a9b703cc 100644
+--- a/pandas/core/groupby/groupby.py
++++ b/pandas/core/groupby/groupby.py
+@@ -34,6 +34,7 @@ class providing the base-class of operations.
+ 
+ import numpy as np
+ 
++from pandas._config import using_string_dtype
+ from pandas._config.config import option_context
+ 
+ from pandas._libs import (
+@@ -3156,7 +3157,7 @@ def sum(
+                     npfunc=np.sum,
+                 )
+ 
+-            return self._reindex_output(result, fill_value=0)
++            return self._reindex_output(result, fill_value=0, method="sum")
+ 
+     @final
+     @doc(
+@@ -5574,6 +5575,7 @@ def _reindex_output(
+         output: OutputFrameOrSeries,
+         fill_value: Scalar = np.nan,
+         qs: npt.NDArray[np.float64] | None = None,
++        method: str | None = None,
+     ) -> OutputFrameOrSeries:
+         """
+         If we have categorical groupers, then we might want to make sure that
+@@ -5634,6 +5636,24 @@ def _reindex_output(
+                 "copy": False,
+                 "fill_value": fill_value,
+             }
++            if using_string_dtype() and method == "sum":
++                if isinstance(output, Series) and isinstance(output.dtype, StringDtype):
++                    d["fill_value"] = ""
++                    return output.reindex(**d)  # type: ignore[return-value, arg-type]
++                elif isinstance(output, DataFrame) and any(
++                    isinstance(dtype, StringDtype) for dtype in output.dtypes
++                ):
++                    orig_dtypes = output.dtypes
++                    indices = np.nonzero(output.dtypes == "string")[0]
++                    for idx in indices:
++                        output.isetitem(idx, output.iloc[:, idx].astype(object))
++                    output = output.reindex(**d)  # type: ignore[assignment, arg-type]
++                    for idx in indices:
++                        col = output.iloc[:, idx]
++                        output.isetitem(
++                            idx, col.mask(col == 0, "").astype(orig_dtypes.iloc[idx])
++                        )
++                    return output  # type: ignore[return-value]
+             return output.reindex(**d)  # type: ignore[arg-type]
+ 
+         # GH 13204
+diff --git a/pandas/core/groupby/ops.py b/pandas/core/groupby/ops.py
+index e2ddf9aa5c0c1..e44c28f656ecc 100644
+--- a/pandas/core/groupby/ops.py
++++ b/pandas/core/groupby/ops.py
+@@ -11,6 +11,7 @@
+ import functools
+ from typing import (
+     TYPE_CHECKING,
++    Any,
+     Callable,
+     Generic,
+     final,
+@@ -317,6 +318,7 @@ def _cython_op_ndim_compat(
+         comp_ids: np.ndarray,
+         mask: npt.NDArray[np.bool_] | None = None,
+         result_mask: npt.NDArray[np.bool_] | None = None,
++        initial: Any = 0,
+         **kwargs,
+     ) -> np.ndarray:
+         if values.ndim == 1:
+@@ -333,6 +335,7 @@ def _cython_op_ndim_compat(
+                 comp_ids=comp_ids,
+                 mask=mask,
+                 result_mask=result_mask,
++                initial=initial,
+                 **kwargs,
+             )
+             if res.shape[0] == 1:
+@@ -348,6 +351,7 @@ def _cython_op_ndim_compat(
+             comp_ids=comp_ids,
+             mask=mask,
+             result_mask=result_mask,
++            initial=initial,
+             **kwargs,
+         )
+ 
+@@ -361,6 +365,7 @@ def _call_cython_op(
+         comp_ids: np.ndarray,
+         mask: npt.NDArray[np.bool_] | None,
+         result_mask: npt.NDArray[np.bool_] | None,
++        initial: Any = 0,
+         **kwargs,
+     ) -> np.ndarray:  # np.ndarray[ndim=2]
+         orig_values = values
+@@ -415,6 +420,10 @@ def _call_cython_op(
+                 "first",
+                 "sum",
+             ]:
++                if self.how == "sum":
++                    # pass in through kwargs only for sum (other functions don't have
++                    # the keyword)
++                    kwargs["initial"] = initial
+                 func(
+                     out=result,
+                     counts=counts,
+diff --git a/pandas/core/indexing.py b/pandas/core/indexing.py
+index 869e511fc0720..c7bab4860411f 100644
+--- a/pandas/core/indexing.py
++++ b/pandas/core/indexing.py
+@@ -21,6 +21,7 @@
+ from pandas._libs.indexing import NDFrameIndexerBase
+ from pandas._libs.lib import item_from_zerodim
+ from pandas.compat import PYPY
++from pandas.compat._constants import WARNING_CHECK_DISABLED
+ from pandas.errors import (
+     AbstractMethodError,
+     ChainedAssignmentError,
+@@ -881,12 +882,12 @@ def _ensure_listlike_indexer(self, key, axis=None, value=None) -> None:
+ 
+     @final
+     def __setitem__(self, key, value) -> None:
+-        if not PYPY and using_copy_on_write():
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+             if sys.getrefcount(self.obj) <= 2:
+                 warnings.warn(
+                     _chained_assignment_msg, ChainedAssignmentError, stacklevel=2
+                 )
+-        elif not PYPY and not using_copy_on_write():
++        elif not PYPY and not WARNING_CHECK_DISABLED and not using_copy_on_write():
+             ctr = sys.getrefcount(self.obj)
+             ref_count = 2
+             if not warn_copy_on_write() and _check_cacher(self.obj):
+@@ -2575,6 +2576,22 @@ def __getitem__(self, key):
+         return super().__getitem__(key)
+ 
+     def __setitem__(self, key, value) -> None:
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
++            if sys.getrefcount(self.obj) <= 2:
++                warnings.warn(
++                    _chained_assignment_msg, ChainedAssignmentError, stacklevel=2
++                )
++        elif not PYPY and not WARNING_CHECK_DISABLED and not using_copy_on_write():
++            ctr = sys.getrefcount(self.obj)
++            ref_count = 2
++            if not warn_copy_on_write() and _check_cacher(self.obj):
++                # see https://github.com/pandas-dev/pandas/pull/56060#discussion_r1399245221
++                ref_count += 1
++            if ctr <= ref_count:
++                warnings.warn(
++                    _chained_assignment_warning_msg, FutureWarning, stacklevel=2
++                )
++
+         if self.ndim == 2 and not self._axes_are_unique:
+             # GH#33041 fall back to .loc
+             if not isinstance(key, tuple) or not all(is_scalar(x) for x in key):
+@@ -2599,6 +2616,25 @@ def _convert_key(self, key):
+                 raise ValueError("iAt based indexing can only have integer indexers")
+         return key
+ 
++    def __setitem__(self, key, value) -> None:
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
++            if sys.getrefcount(self.obj) <= 2:
++                warnings.warn(
++                    _chained_assignment_msg, ChainedAssignmentError, stacklevel=2
++                )
++        elif not PYPY and not WARNING_CHECK_DISABLED and not using_copy_on_write():
++            ctr = sys.getrefcount(self.obj)
++            ref_count = 2
++            if not warn_copy_on_write() and _check_cacher(self.obj):
++                # see https://github.com/pandas-dev/pandas/pull/56060#discussion_r1399245221
++                ref_count += 1
++            if ctr <= ref_count:
++                warnings.warn(
++                    _chained_assignment_warning_msg, FutureWarning, stacklevel=2
++                )
++
++        return super().__setitem__(key, value)
++
+ 
+ def _tuplify(ndim: int, loc: Hashable) -> tuple[Hashable | slice, ...]:
+     """
+diff --git a/pandas/core/internals/managers.py b/pandas/core/internals/managers.py
+index 2e0e04717373f..5e3a67d5363fd 100644
+--- a/pandas/core/internals/managers.py
++++ b/pandas/core/internals/managers.py
+@@ -405,8 +405,27 @@ def setitem(self, indexer, value, warn: bool = True) -> Self:
+                     self._iset_split_block(  # type: ignore[attr-defined]
+                         0, blk_loc, values
+                     )
+-                    # first block equals values
+-                    self.blocks[0].setitem((indexer[0], np.arange(len(blk_loc))), value)
++
++                    indexer = list(indexer)
++                    # first block equals values we are setting to -> set to all columns
++                    if lib.is_integer(indexer[1]):
++                        col_indexer = 0
++                    elif len(blk_loc) > 1:
++                        col_indexer = slice(None)  # type: ignore[assignment]
++                    else:
++                        col_indexer = np.arange(len(blk_loc))  # type: ignore[assignment]
++                    indexer[1] = col_indexer
++
++                    row_indexer = indexer[0]
++                    if isinstance(row_indexer, np.ndarray) and row_indexer.ndim == 2:
++                        # numpy cannot handle a 2d indexer in combo with a slice
++                        row_indexer = np.squeeze(row_indexer, axis=1)
++                    if isinstance(row_indexer, np.ndarray) and len(row_indexer) == 0:
++                        # numpy does not like empty indexer combined with slice
++                        # and we are setting nothing anyway
++                        return self
++                    indexer[0] = row_indexer
++                    self.blocks[0].setitem(tuple(indexer), value)
+                     return self
+             # No need to split if we either set all columns or on a single block
+             # manager
+diff --git a/pandas/core/resample.py b/pandas/core/resample.py
+index 229595202cccb..6c5da08a86fdc 100644
+--- a/pandas/core/resample.py
++++ b/pandas/core/resample.py
+@@ -1882,12 +1882,6 @@ class PeriodIndexResampler(DatetimeIndexResampler):
+ 
+     @property
+     def _resampler_for_grouping(self):
+-        warnings.warn(
+-            "Resampling a groupby with a PeriodIndex is deprecated. "
+-            "Cast to DatetimeIndex before resampling instead.",
+-            FutureWarning,
+-            stacklevel=find_stack_level(),
+-        )
+         return PeriodIndexResamplerGroupby
+ 
+     def _get_binner_for_time(self):
+@@ -2237,15 +2231,7 @@ def _get_resampler(self, obj: NDFrame, kind=None) -> Resampler:
+                 gpr_index=ax,
+             )
+         elif isinstance(ax, PeriodIndex) or kind == "period":
+-            if isinstance(ax, PeriodIndex):
+-                # GH#53481
+-                warnings.warn(
+-                    "Resampling with a PeriodIndex is deprecated. "
+-                    "Cast index to DatetimeIndex before resampling instead.",
+-                    FutureWarning,
+-                    stacklevel=find_stack_level(),
+-                )
+-            else:
++            if not isinstance(ax, PeriodIndex):
+                 warnings.warn(
+                     "Resampling with kind='period' is deprecated.  "
+                     "Use datetime paths instead.",
+diff --git a/pandas/core/series.py b/pandas/core/series.py
+index cc16c29c6c861..ef0b41f3ae552 100644
+--- a/pandas/core/series.py
++++ b/pandas/core/series.py
+@@ -39,7 +39,10 @@
+ )
+ from pandas._libs.lib import is_range_indexer
+ from pandas.compat import PYPY
+-from pandas.compat._constants import REF_COUNT
++from pandas.compat._constants import (
++    REF_COUNT,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.compat._optional import import_optional_dependency
+ from pandas.compat.numpy import function as nv
+ from pandas.errors import (
+@@ -1269,12 +1272,12 @@ def _get_value(self, label, takeable: bool = False):
+ 
+     def __setitem__(self, key, value) -> None:
+         warn = True
+-        if not PYPY and using_copy_on_write():
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+             if sys.getrefcount(self) <= 3:
+                 warnings.warn(
+                     _chained_assignment_msg, ChainedAssignmentError, stacklevel=2
+                 )
+-        elif not PYPY and not using_copy_on_write():
++        elif not PYPY and not WARNING_CHECK_DISABLED and not using_copy_on_write():
+             ctr = sys.getrefcount(self)
+             ref_count = 3
+             if not warn_copy_on_write() and _check_cacher(self):
+@@ -3621,14 +3624,19 @@ def update(self, other: Series | Sequence | Mapping) -> None:
+         2    3
+         dtype: int64
+         """
+-        if not PYPY and using_copy_on_write():
++        if not PYPY and not WARNING_CHECK_DISABLED and using_copy_on_write():
+             if sys.getrefcount(self) <= REF_COUNT:
+                 warnings.warn(
+                     _chained_assignment_method_msg,
+                     ChainedAssignmentError,
+                     stacklevel=2,
+                 )
+-        elif not PYPY and not using_copy_on_write() and self._is_view_after_cow_rules():
++        elif (
++            not PYPY
++            and not WARNING_CHECK_DISABLED
++            and not using_copy_on_write()
++            and self._is_view_after_cow_rules()
++        ):
+             ctr = sys.getrefcount(self)
+             ref_count = REF_COUNT
+             if _check_cacher(self):
+@@ -6161,9 +6169,11 @@ def _align_for_op(self, right, align_asobject: bool = False):
+                         np.bool_,
+                     ):
+                         warnings.warn(
+-                            "Operation between non boolean Series with different "
+-                            "indexes will no longer return a boolean result in "
+-                            "a future version. Cast both Series to object type "
++                            "Operation between Series with different indexes "
++                            "that are not of numpy boolean or object dtype "
++                            "will no longer return a numpy boolean result "
++                            "in a future version. "
++                            "Cast both Series to object type "
+                             "to maintain the prior behavior.",
+                             FutureWarning,
+                             stacklevel=find_stack_level(),
+diff --git a/pandas/core/strings/accessor.py b/pandas/core/strings/accessor.py
+index c0e458f7968e7..da17543f8470d 100644
+--- a/pandas/core/strings/accessor.py
++++ b/pandas/core/strings/accessor.py
+@@ -1353,8 +1353,8 @@ def match(self, pat: str, case: bool = True, flags: int = 0, na=lib.no_default):
+ 
+         Parameters
+         ----------
+-        pat : str
+-            Character sequence.
++        pat : str or compiled regex
++            Character sequence or regular expression.
+         case : bool, default True
+             If True, case sensitive.
+         flags : int, default 0 (no flags)
+diff --git a/pandas/core/strings/object_array.py b/pandas/core/strings/object_array.py
+index e82c6c20e86d9..05ffee662dbac 100644
+--- a/pandas/core/strings/object_array.py
++++ b/pandas/core/strings/object_array.py
+@@ -245,7 +245,7 @@ def rep(x, r):
+ 
+     def _str_match(
+         self,
+-        pat: str,
++        pat: str | re.Pattern,
+         case: bool = True,
+         flags: int = 0,
+         na: Scalar | lib.NoDefault = lib.no_default,
+diff --git a/pandas/io/excel/_xlsxwriter.py b/pandas/io/excel/_xlsxwriter.py
+index 6eacac8c064fb..e7a9789ccd0f3 100644
+--- a/pandas/io/excel/_xlsxwriter.py
++++ b/pandas/io/excel/_xlsxwriter.py
+@@ -213,7 +213,7 @@ def __init__(
+         )
+ 
+         try:
+-            self._book = Workbook(self._handles.handle, **engine_kwargs)
++            self._book = Workbook(self._handles.handle, **engine_kwargs)  # type: ignore[arg-type]
+         except TypeError:
+             self._handles.handle.close()
+             raise
+diff --git a/pandas/io/formats/format.py b/pandas/io/formats/format.py
+index 00c7526edfa48..bcbee6ce2662f 100644
+--- a/pandas/io/formats/format.py
++++ b/pandas/io/formats/format.py
+@@ -1232,7 +1232,7 @@ def _format(x):
+                 return self.na_rep
+             elif isinstance(x, PandasObject):
+                 return str(x)
+-            elif isinstance(x, StringDtype):
++            elif isinstance(x, StringDtype) and x.na_value is NA:
+                 return repr(x)
+             else:
+                 # object dtype
+diff --git a/pandas/io/json/_table_schema.py b/pandas/io/json/_table_schema.py
+index 4d9fba72cf173..c72411d87eabf 100644
+--- a/pandas/io/json/_table_schema.py
++++ b/pandas/io/json/_table_schema.py
+@@ -90,8 +90,6 @@ def as_json_table_type(x: DtypeObj) -> str:
+         return "datetime"
+     elif lib.is_np_dtype(x, "m"):
+         return "duration"
+-    elif isinstance(x, ExtensionDtype):
+-        return "any"
+     elif is_string_dtype(x):
+         return "string"
+     else:
+@@ -197,7 +195,7 @@ def convert_json_field_to_pandas_type(field) -> str | CategoricalDtype:
+     """
+     typ = field["type"]
+     if typ == "string":
+-        return "object"
++        return field.get("extDtype", None)
+     elif typ == "integer":
+         return field.get("extDtype", "int64")
+     elif typ == "number":
+diff --git a/pandas/plotting/_matplotlib/timeseries.py b/pandas/plotting/_matplotlib/timeseries.py
+index c7ddfa55d0417..accf418526d9b 100644
+--- a/pandas/plotting/_matplotlib/timeseries.py
++++ b/pandas/plotting/_matplotlib/timeseries.py
+@@ -86,12 +86,9 @@ def maybe_resample(series: Series, ax: Axes, kwargs: dict[str, Any]):
+             )
+             freq = ax_freq
+         elif _is_sup(freq, ax_freq):  # one is weekly
+-            # Resampling with PeriodDtype is deprecated, so we convert to
+-            #  DatetimeIndex, resample, then convert back.
+-            ser_ts = series.to_timestamp()
+-            ser_d = ser_ts.resample("D").last().dropna()
+-            ser_freq = ser_d.resample(ax_freq).last().dropna()
+-            series = ser_freq.to_period(ax_freq)
++            how = "last"
++            series = getattr(series.resample("D"), how)().dropna()
++            series = getattr(series.resample(ax_freq), how)().dropna()
+             freq = ax_freq
+         elif is_subperiod(freq, ax_freq) or _is_sub(freq, ax_freq):
+             _upsample_others(ax, freq, kwargs)
+diff --git a/pandas/tests/arrays/categorical/test_repr.py b/pandas/tests/arrays/categorical/test_repr.py
+index 3a2c489920eb0..7929dfc927034 100644
+--- a/pandas/tests/arrays/categorical/test_repr.py
++++ b/pandas/tests/arrays/categorical/test_repr.py
+@@ -19,16 +19,11 @@
+ class TestCategoricalReprWithFactor:
+     def test_print(self, using_infer_string):
+         factor = Categorical(["a", "b", "b", "a", "a", "c", "c", "c"], ordered=True)
+-        if using_infer_string:
+-            expected = [
+-                "['a', 'b', 'b', 'a', 'a', 'c', 'c', 'c']",
+-                "Categories (3, str): [a < b < c]",
+-            ]
+-        else:
+-            expected = [
+-                "['a', 'b', 'b', 'a', 'a', 'c', 'c', 'c']",
+-                "Categories (3, object): ['a' < 'b' < 'c']",
+-            ]
++        dtype = "str" if using_infer_string else "object"
++        expected = [
++            "['a', 'b', 'b', 'a', 'a', 'c', 'c', 'c']",
++            f"Categories (3, {dtype}): ['a' < 'b' < 'c']",
++        ]
+         expected = "\n".join(expected)
+         actual = repr(factor)
+         assert actual == expected
+diff --git a/pandas/tests/arrays/string_/test_string.py b/pandas/tests/arrays/string_/test_string.py
+index b4516da388314..b468480cf5f86 100644
+--- a/pandas/tests/arrays/string_/test_string.py
++++ b/pandas/tests/arrays/string_/test_string.py
+@@ -123,6 +123,18 @@ def test_repr(dtype):
+     assert repr(df.A.array) == expected
+ 
+ 
++def test_dtype_repr(dtype):
++    if dtype.storage == "pyarrow":
++        if dtype.na_value is pd.NA:
++            assert repr(dtype) == "string[pyarrow]"
++        else:
++            assert repr(dtype) == "<StringDtype(na_value=nan)>"
++    elif dtype.na_value is pd.NA:
++        assert repr(dtype) == "string[python]"
++    else:
++        assert repr(dtype) == "<StringDtype(storage='python', na_value=nan)>"
++
++
+ def test_none_to_nan(cls, dtype):
+     a = cls._from_sequence(["a", None, "b"], dtype=dtype)
+     assert a[1] is not None
+@@ -852,3 +864,30 @@ def test_tolist(dtype):
+     result = arr.tolist()
+     expected = vals
+     tm.assert_equal(result, expected)
++
++
++@pytest.mark.parametrize("box", [pd.Series, pd.array])
++def test_numpy_array_ufunc(dtype, box):
++    arr = box(["a", "bb", "ccc"], dtype=dtype)
++
++    # custom ufunc that works with string (object) input -> returning numeric
++    str_len_ufunc = np.frompyfunc(lambda x: len(x), 1, 1)
++    result = str_len_ufunc(arr)
++    expected_cls = pd.Series if box is pd.Series else np.array
++    # TODO we should infer int64 dtype here?
++    expected = expected_cls([1, 2, 3], dtype=object)
++    tm.assert_equal(result, expected)
++
++    # custom ufunc returning strings
++    str_multiply_ufunc = np.frompyfunc(lambda x: x * 2, 1, 1)
++    result = str_multiply_ufunc(arr)
++    expected = box(["aa", "bbbb", "cccccc"], dtype=dtype)
++    if dtype.storage == "pyarrow":
++        # TODO ArrowStringArray should also preserve the class / dtype
++        if box is pd.array:
++            expected = np.array(["aa", "bbbb", "cccccc"], dtype=object)
++        else:
++            # not specifying the dtype because the exact dtype is not yet preserved
++            expected = pd.Series(["aa", "bbbb", "cccccc"])
++
++    tm.assert_equal(result, expected)
+diff --git a/pandas/tests/computation/test_eval.py b/pandas/tests/computation/test_eval.py
+index cf3e50094ac97..859cbd30cfead 100644
+--- a/pandas/tests/computation/test_eval.py
++++ b/pandas/tests/computation/test_eval.py
+@@ -8,6 +8,7 @@
+ import pytest
+ 
+ from pandas.compat import PY312
++from pandas.compat._optional import import_optional_dependency
+ from pandas.errors import (
+     NumExprClobberingError,
+     PerformanceWarning,
+@@ -54,6 +55,9 @@
+     _unary_math_ops,
+ )
+ from pandas.core.computation.scope import DEFAULT_GLOBALS
++from pandas.util.version import Version
++
++numexpr = import_optional_dependency("numexpr", errors="ignore")
+ 
+ 
+ @pytest.fixture(
+@@ -322,7 +326,9 @@ def test_modulus(self, lhs, rhs, engine, parser):
+     def test_floor_division(self, lhs, rhs, engine, parser):
+         ex = "lhs // rhs"
+ 
+-        if engine == "python":
++        if engine == "python" or (
++            engine == "numexpr" and Version(numexpr.__version__) >= Version("2.13.0")
++        ):
+             res = pd.eval(ex, engine=engine, parser=parser)
+             expected = lhs // rhs
+             tm.assert_equal(res, expected)
+@@ -393,7 +399,7 @@ def test_frame_invert(self, engine, parser):
+ 
+         # int raises on numexpr
+         lhs = DataFrame(np.random.default_rng(2).integers(5, size=(5, 2)))
+-        if engine == "numexpr":
++        if engine == "numexpr" and Version(numexpr.__version__) < Version("2.13.0"):
+             msg = "couldn't find matching opcode for 'invert"
+             with pytest.raises(NotImplementedError, match=msg):
+                 pd.eval(expr, engine=engine, parser=parser)
+@@ -438,7 +444,7 @@ def test_series_invert(self, engine, parser):
+ 
+         # int raises on numexpr
+         lhs = Series(np.random.default_rng(2).integers(5, size=5))
+-        if engine == "numexpr":
++        if engine == "numexpr" and Version(numexpr.__version__) < Version("2.13.0"):
+             msg = "couldn't find matching opcode for 'invert"
+             with pytest.raises(NotImplementedError, match=msg):
+                 pd.eval(expr, engine=engine, parser=parser)
+diff --git a/pandas/tests/copy_view/test_chained_assignment_deprecation.py b/pandas/tests/copy_view/test_chained_assignment_deprecation.py
+index 0a37f6b813e55..49f5254f5bab4 100644
+--- a/pandas/tests/copy_view/test_chained_assignment_deprecation.py
++++ b/pandas/tests/copy_view/test_chained_assignment_deprecation.py
+@@ -1,7 +1,10 @@
+ import numpy as np
+ import pytest
+ 
+-from pandas.compat import PY311
++from pandas.compat import (
++    PY311,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.errors import (
+     ChainedAssignmentError,
+     SettingWithCopyWarning,
+@@ -150,6 +153,9 @@ def test_series_setitem(indexer, using_copy_on_write, warn_copy_on_write):
+ 
+     # using custom check instead of tm.assert_produces_warning because that doesn't
+     # fail if multiple warnings are raised
++    if WARNING_CHECK_DISABLED:
++        return
++
+     with pytest.warns() as record:
+         df["a"][indexer] = 0
+     assert len(record) == 1
+@@ -172,3 +178,83 @@ def test_frame_setitem(indexer, using_copy_on_write):
+     with option_context("chained_assignment", "warn"):
+         with tm.raises_chained_assignment_error(extra_warnings=extra_warnings):
+             df[0:3][indexer] = 10
++
++
++@pytest.mark.parametrize(
++    "indexer", [0, [0, 1], slice(0, 2), np.array([True, False, True])]
++)
++def test_series_iloc_setitem(indexer):
++    df = DataFrame({"a": [1, 2, 3], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df["a"].iloc[indexer] = 0
++
++
++@pytest.mark.parametrize(
++    "indexer", [0, [0, 1], slice(0, 2), np.array([True, False, True])]
++)
++def test_frame_iloc_setitem(indexer, using_copy_on_write):
++    df = DataFrame({"a": [1, 2, 3, 4, 5], "b": 1})
++
++    extra_warnings = () if using_copy_on_write else (SettingWithCopyWarning,)
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error(extra_warnings=extra_warnings):
++            df[0:3].iloc[indexer] = 10
++
++
++@pytest.mark.parametrize(
++    "indexer", [0, [0, 1], slice(0, 2), np.array([True, False, True])]
++)
++def test_series_loc_setitem(indexer):
++    df = DataFrame({"a": [1, 2, 3], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df["a"].loc[indexer] = 0
++
++
++@pytest.mark.parametrize(
++    "indexer", [0, [0, 1], (0, "a"), slice(0, 2), np.array([True, False, True])]
++)
++def test_frame_loc_setitem(indexer, using_copy_on_write):
++    df = DataFrame({"a": [1, 2, 3, 4, 5], "b": 1})
++
++    extra_warnings = () if using_copy_on_write else (SettingWithCopyWarning,)
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error(extra_warnings=extra_warnings):
++            df[0:3].loc[indexer] = 10
++
++
++def test_series_at_setitem():
++    df = DataFrame({"a": [1, 2, 3], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df["a"].at[0] = 0
++
++
++def test_frame_at_setitem():
++    df = DataFrame({"a": [1, 2, 3, 4, 5], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df[0:3].at[0, "a"] = 10
++
++
++def test_series_iat_setitem():
++    df = DataFrame({"a": [1, 2, 3], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df["a"].iat[0] = 0
++
++
++def test_frame_iat_setitem():
++    df = DataFrame({"a": [1, 2, 3, 4, 5], "b": 1})
++
++    with option_context("chained_assignment", "warn"):
++        with tm.raises_chained_assignment_error():
++            df[0:3].iat[0, 0] = 10
+diff --git a/pandas/tests/copy_view/test_clip.py b/pandas/tests/copy_view/test_clip.py
+index 7c87646424e2f..5c5abdae7a021 100644
+--- a/pandas/tests/copy_view/test_clip.py
++++ b/pandas/tests/copy_view/test_clip.py
+@@ -1,5 +1,7 @@
+ import numpy as np
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
++
+ from pandas import (
+     DataFrame,
+     option_context,
+@@ -89,7 +91,10 @@ def test_clip_chained_inplace(using_copy_on_write):
+             df[["a"]].clip(1, 2, inplace=True)
+         tm.assert_frame_equal(df, df_orig)
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["a"].clip(1, 2, inplace=True)
+ 
+         with tm.assert_produces_warning(None):
+diff --git a/pandas/tests/copy_view/test_interp_fillna.py b/pandas/tests/copy_view/test_interp_fillna.py
+index d0c4fa53faab9..0bcc968014242 100644
+--- a/pandas/tests/copy_view/test_interp_fillna.py
++++ b/pandas/tests/copy_view/test_interp_fillna.py
+@@ -1,6 +1,8 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
++
+ from pandas import (
+     NA,
+     ArrowDtype,
+@@ -404,7 +406,10 @@ def test_fillna_chained_assignment(using_copy_on_write):
+             with option_context("mode.chained_assignment", None):
+                 df[df.a > 5].fillna(100, inplace=True)
+ 
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["a"].fillna(100, inplace=True)
+ 
+ 
+@@ -421,7 +426,10 @@ def test_interpolate_chained_assignment(using_copy_on_write, func):
+             getattr(df[["a"]], func)(inplace=True)
+         tm.assert_frame_equal(df, df_orig)
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             getattr(df["a"], func)(inplace=True)
+ 
+         with tm.assert_produces_warning(None):
+diff --git a/pandas/tests/copy_view/test_methods.py b/pandas/tests/copy_view/test_methods.py
+index 09738fe1023fb..2df39a1ec7023 100644
+--- a/pandas/tests/copy_view/test_methods.py
++++ b/pandas/tests/copy_view/test_methods.py
+@@ -1,7 +1,10 @@
+ import numpy as np
+ import pytest
+ 
+-from pandas.compat import HAS_PYARROW
++from pandas.compat import (
++    HAS_PYARROW,
++    WARNING_CHECK_DISABLED,
++)
+ from pandas.errors import SettingWithCopyWarning
+ 
+ import pandas as pd
+@@ -18,6 +21,7 @@
+ )
+ import pandas._testing as tm
+ from pandas.tests.copy_view.util import get_array
++from pandas.util.version import Version
+ 
+ 
+ def test_copy(using_copy_on_write):
+@@ -1199,8 +1203,9 @@ def test_round(using_copy_on_write, warn_copy_on_write, decimals):
+     if using_copy_on_write:
+         assert tm.shares_memory(get_array(df2, "b"), get_array(df, "b"))
+         # TODO: Make inplace by using out parameter of ndarray.round?
+-        if decimals >= 0:
++        if decimals >= 0 and Version(np.__version__) < Version("2.4.0.dev0"):
+             # Ensure lazy copy if no-op
++            # TODO: Cannot rely on Numpy returning view after version 2.3
+             assert np.shares_memory(get_array(df2, "a"), get_array(df, "a"))
+         else:
+             assert not np.shares_memory(get_array(df2, "a"), get_array(df, "a"))
+@@ -1583,7 +1588,10 @@ def test_chained_where_mask(using_copy_on_write, func):
+             getattr(df[["a"]], func)(df["a"] > 2, 5, inplace=True)
+         tm.assert_frame_equal(df, df_orig)
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             getattr(df["a"], func)(df["a"] > 2, 5, inplace=True)
+ 
+         with tm.assert_produces_warning(None):
+@@ -1862,7 +1870,10 @@ def test_update_chained_assignment(using_copy_on_write):
+             df[["a"]].update(ser2.to_frame())
+         tm.assert_frame_equal(df, df_orig)
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["a"].update(ser2)
+ 
+         with tm.assert_produces_warning(None):
+diff --git a/pandas/tests/copy_view/test_replace.py b/pandas/tests/copy_view/test_replace.py
+index c6c9eca47f3f4..70158141d0cee 100644
+--- a/pandas/tests/copy_view/test_replace.py
++++ b/pandas/tests/copy_view/test_replace.py
+@@ -1,6 +1,8 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
++
+ from pandas import (
+     Categorical,
+     DataFrame,
+@@ -450,7 +452,10 @@ def test_replace_chained_assignment(using_copy_on_write):
+             with option_context("mode.chained_assignment", None):
+                 df[df.a > 5].replace(1, 100, inplace=True)
+ 
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["a"].replace(1, 100, inplace=True)
+ 
+ 
+diff --git a/pandas/tests/extension/test_arrow.py b/pandas/tests/extension/test_arrow.py
+index 820425ab51949..479497497a2ea 100644
+--- a/pandas/tests/extension/test_arrow.py
++++ b/pandas/tests/extension/test_arrow.py
+@@ -1876,23 +1876,28 @@ def test_str_match(pat, case, na, exp):
+ 
+ @pytest.mark.parametrize(
+     "pat, case, na, exp",
++    # Note: keep cases in sync with
++    # pandas/tests/strings/test_find_replace.py::test_str_fullmatch_extra_cases
+     [
+-        ["abc", False, None, [True, True, False, None]],
++        ["abc", False, None, [True, False, False, None]],
+         ["Abc", True, None, [False, False, False, None]],
+         ["bc", True, None, [False, False, False, None]],
+-        ["ab", False, None, [True, True, False, None]],
+-        ["a[a-z]{2}", False, None, [True, True, False, None]],
++        ["ab", False, None, [False, False, False, None]],
++        ["a[a-z]{2}", False, None, [True, False, False, None]],
+         ["A[a-z]{1}", True, None, [False, False, False, None]],
+         # GH Issue: #56652
+         ["abc$", False, None, [True, False, False, None]],
+         ["abc\\$", False, None, [False, True, False, None]],
+         ["Abc$", True, None, [False, False, False, None]],
+         ["Abc\\$", True, None, [False, False, False, None]],
++        # https://github.com/pandas-dev/pandas/issues/61072
++        ["(abc)|(abx)", True, None, [True, False, False, None]],
++        ["((abc)|(abx))", True, None, [True, False, False, None]],
+     ],
+ )
+ def test_str_fullmatch(pat, case, na, exp):
+     ser = pd.Series(["abc", "abc$", "$abc", None], dtype=ArrowDtype(pa.string()))
+-    result = ser.str.match(pat, case=case, na=na)
++    result = ser.str.fullmatch(pat, case=case, na=na)
+     expected = pd.Series(exp, dtype=ArrowDtype(pa.bool_()))
+     tm.assert_series_equal(result, expected)
+ 
+diff --git a/pandas/tests/extension/test_string.py b/pandas/tests/extension/test_string.py
+index a4f568d63a0a3..71d4f7cc5c4bf 100644
+--- a/pandas/tests/extension/test_string.py
++++ b/pandas/tests/extension/test_string.py
+@@ -275,3 +275,19 @@ def test_searchsorted_with_na_raises(data_for_sorting, as_series):
+     )
+     with pytest.raises(ValueError, match=msg):
+         arr.searchsorted(b)
++
++
++def test_mixed_object_comparison(dtype):
++    # GH#60228
++    ser = pd.Series(["a", "b"], dtype=dtype)
++
++    mixed = pd.Series([1, "b"], dtype=object)
++
++    result = ser == mixed
++    expected = pd.Series([False, True], dtype=bool)
++    if dtype.storage == "python" and dtype.na_value is pd.NA:
++        expected = expected.astype("boolean")
++    elif dtype.storage == "pyarrow" and dtype.na_value is pd.NA:
++        expected = expected.astype("bool[pyarrow]")
++
++    tm.assert_series_equal(result, expected)
+diff --git a/pandas/tests/frame/indexing/test_indexing.py b/pandas/tests/frame/indexing/test_indexing.py
+index 93f4c2c6e3273..1388f41e6f7ee 100644
+--- a/pandas/tests/frame/indexing/test_indexing.py
++++ b/pandas/tests/frame/indexing/test_indexing.py
+@@ -1500,13 +1500,18 @@ def test_set_2d_casting_date_to_int(self, col, indexer):
+         )
+         tm.assert_frame_equal(df, expected)
+ 
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
+     @pytest.mark.parametrize("col", [{}, {"name": "a"}])
+-    def test_loc_setitem_reordering_with_all_true_indexer(self, col):
++    def test_loc_setitem_reordering_with_all_true_indexer(self, col, has_ref):
+         # GH#48701
+         n = 17
+         df = DataFrame({**col, "x": range(n), "y": range(n)})
++        value = df[["x", "y"]].copy()
+         expected = df.copy()
+-        df.loc[n * [True], ["x", "y"]] = df[["x", "y"]]
++        if has_ref:
++            view = df[:]  # noqa: F841
++        df.loc[n * [True], ["x", "y"]] = value
+         tm.assert_frame_equal(df, expected)
+ 
+     def test_loc_rhs_empty_warning(self):
+diff --git a/pandas/tests/frame/indexing/test_setitem.py b/pandas/tests/frame/indexing/test_setitem.py
+index b3fe538d938f4..2c8456c6c0680 100644
+--- a/pandas/tests/frame/indexing/test_setitem.py
++++ b/pandas/tests/frame/indexing/test_setitem.py
+@@ -3,6 +3,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.errors import SettingWithCopyWarning
+ import pandas.util._test_decorators as td
+ 
+ from pandas.core.dtypes.base import _registry as ea_registry
+@@ -1400,6 +1401,94 @@ def test_frame_setitem_empty_dataframe(self):
+         )
+         tm.assert_frame_equal(df, expected)
+ 
++    def test_iloc_setitem_view_2dblock(self, using_copy_on_write, warn_copy_on_write):
++        # https://github.com/pandas-dev/pandas/issues/60309
++        df_parent = DataFrame(
++            {
++                "A": [1, 4, 1, 5],
++                "B": [2, 5, 2, 6],
++                "C": [3, 6, 1, 7],
++                "D": [8, 9, 10, 11],
++            }
++        )
++        df_orig = df_parent.copy()
++        df = df_parent[["B", "C"]]
++
++        # Perform the iloc operation
++        if using_copy_on_write:
++            df.iloc[[1, 3], :] = [[2, 2], [2, 2]]
++
++            # Check that original DataFrame is unchanged
++            tm.assert_frame_equal(df_parent, df_orig)
++        elif warn_copy_on_write:
++            # TODO(COW): should this warn?
++            # with tm.assert_cow_warning(warn_copy_on_write):
++            df.iloc[[1, 3], :] = [[2, 2], [2, 2]]
++        else:
++            with pd.option_context("chained_assignment", "warn"):
++                with tm.assert_produces_warning(SettingWithCopyWarning):
++                    df.iloc[[1, 3], :] = [[2, 2], [2, 2]]
++
++        # Check that df is modified correctly
++        expected = DataFrame({"B": [2, 2, 2, 2], "C": [3, 2, 1, 2]}, index=df.index)
++        tm.assert_frame_equal(df, expected)
++
++        # with setting to subset of columns
++        df = df_parent[["B", "C", "D"]]
++        if using_copy_on_write or warn_copy_on_write:
++            df.iloc[[1, 3], 0:3:2] = [[2, 2], [2, 2]]
++            tm.assert_frame_equal(df_parent, df_orig)
++        else:
++            with pd.option_context("chained_assignment", "warn"):
++                with tm.assert_produces_warning(SettingWithCopyWarning):
++                    df.iloc[[1, 3], 0:3:2] = [[2, 2], [2, 2]]
++
++        expected = DataFrame(
++            {"B": [2, 2, 2, 2], "C": [3, 6, 1, 7], "D": [8, 2, 10, 2]}, index=df.index
++        )
++        tm.assert_frame_equal(df, expected)
++
++    @pytest.mark.parametrize(
++        "indexer, value",
++        [
++            (([0, 2], slice(None)), [[2, 2, 2, 2], [2, 2, 2, 2]]),
++            ((slice(None), slice(None)), 2),
++            ((0, [1, 3]), [2, 2]),
++            (([0], 1), [2]),
++            (([0], np.int64(1)), [2]),
++            ((slice(None), np.int64(1)), [2, 2, 2]),
++            ((slice(None, 2), np.int64(1)), [2, 2]),
++            (
++                (np.array([False, True, False]), np.array([False, True, False, True])),
++                [2, 2],
++            ),
++        ],
++    )
++    def test_setitem_2dblock_with_ref(
++        self, indexer, value, using_copy_on_write, warn_copy_on_write
++    ):
++        # https://github.com/pandas-dev/pandas/issues/60309
++        arr = np.arange(12).reshape(3, 4)
++
++        df_parent = DataFrame(arr.copy(), columns=list("ABCD"))
++        # the test is specifically for the case where the df is backed by a single
++        # block (taking the non-split path)
++        assert df_parent._mgr.is_single_block
++        df_orig = df_parent.copy()
++        df = df_parent[:]
++
++        with tm.assert_cow_warning(warn_copy_on_write):
++            df.iloc[indexer] = value
++
++        # Check that original DataFrame is unchanged
++        if using_copy_on_write:
++            tm.assert_frame_equal(df_parent, df_orig)
++
++        # Check that df is modified correctly
++        arr[indexer] = value
++        expected = DataFrame(arr, columns=list("ABCD"))
++        tm.assert_frame_equal(df, expected)
++
+ 
+ def test_full_setter_loc_incompatible_dtype():
+     # https://github.com/pandas-dev/pandas/issues/55791
+diff --git a/pandas/tests/frame/methods/test_fillna.py b/pandas/tests/frame/methods/test_fillna.py
+index c0fc72768e27f..b6f4680bff73e 100644
+--- a/pandas/tests/frame/methods/test_fillna.py
++++ b/pandas/tests/frame/methods/test_fillna.py
+@@ -1,6 +1,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
+ import pandas.util._test_decorators as td
+ 
+ from pandas import (
+@@ -58,7 +59,10 @@ def test_fillna_on_column_view(self, using_copy_on_write):
+                 df[0].fillna(-1, inplace=True)
+             assert np.isnan(arr[:, 0]).all()
+         else:
+-            with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++            with tm.assert_produces_warning(
++                FutureWarning if not WARNING_CHECK_DISABLED else None,
++                match="inplace method",
++            ):
+                 df[0].fillna(-1, inplace=True)
+             assert (arr[:, 0] == -1).all()
+ 
+diff --git a/pandas/tests/frame/methods/test_interpolate.py b/pandas/tests/frame/methods/test_interpolate.py
+index ebee19e3de20a..214c7cb229f56 100644
+--- a/pandas/tests/frame/methods/test_interpolate.py
++++ b/pandas/tests/frame/methods/test_interpolate.py
+@@ -3,6 +3,7 @@
+ 
+ from pandas._config import using_string_dtype
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
+ from pandas.errors import ChainedAssignmentError
+ import pandas.util._test_decorators as td
+ 
+@@ -391,7 +392,10 @@ def test_interp_inplace(self, using_copy_on_write):
+             assert return_value is None
+             tm.assert_frame_equal(result, expected_cow)
+         else:
+-            with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++            with tm.assert_produces_warning(
++                FutureWarning if not WARNING_CHECK_DISABLED else None,
++                match="inplace method",
++            ):
+                 return_value = result["a"].interpolate(inplace=True)
+             assert return_value is None
+             tm.assert_frame_equal(result, expected)
+diff --git a/pandas/tests/frame/methods/test_select_dtypes.py b/pandas/tests/frame/methods/test_select_dtypes.py
+index 0354e9df3d168..1ba6b9c437726 100644
+--- a/pandas/tests/frame/methods/test_select_dtypes.py
++++ b/pandas/tests/frame/methods/test_select_dtypes.py
+@@ -102,6 +102,10 @@ def test_select_dtypes_include_using_list_like(self, using_infer_string):
+             ri = df.select_dtypes(include=[str])
+             tm.assert_frame_equal(ri, ei)
+ 
++        ri = df.select_dtypes(include=["object"])
++        ei = df[["a"]]
++        tm.assert_frame_equal(ri, ei)
++
+     def test_select_dtypes_exclude_using_list_like(self):
+         df = DataFrame(
+             {
+@@ -309,17 +313,15 @@ def test_select_dtypes_not_an_attr_but_still_valid_dtype(self, using_infer_strin
+         df["g"] = df.f.diff()
+         assert not hasattr(np, "u8")
+         r = df.select_dtypes(include=["i8", "O"], exclude=["timedelta"])
+-        if using_infer_string:
+-            e = df[["b"]]
+-        else:
+-            e = df[["a", "b"]]
++        # if using_infer_string:
++        #     TODO warn
++        e = df[["a", "b"]]
+         tm.assert_frame_equal(r, e)
+ 
+         r = df.select_dtypes(include=["i8", "O", "timedelta64[ns]"])
+-        if using_infer_string:
+-            e = df[["b", "g"]]
+-        else:
+-            e = df[["a", "b", "g"]]
++        # if using_infer_string:
++        #     TODO warn
++        e = df[["a", "b", "g"]]
+         tm.assert_frame_equal(r, e)
+ 
+     def test_select_dtypes_empty(self):
+@@ -483,3 +485,26 @@ def test_select_dtypes_no_view(self):
+         result = df.select_dtypes(include=["number"])
+         result.iloc[0, 0] = 0
+         tm.assert_frame_equal(df, df_orig)
++
++    def test_select_dtype_object_and_str(self, using_infer_string):
++        # https://github.com/pandas-dev/pandas/issues/61916
++        df = DataFrame(
++            {
++                "a": ["a", "b", "c"],
++                "b": [1, 2, 3],
++                "c": pd.array(["a", "b", "c"], dtype="string"),
++            }
++        )
++
++        # with "object" -> only select the object or default str dtype column
++        result = df.select_dtypes(include=["object"])
++        expected = df[["a"]]
++        tm.assert_frame_equal(result, expected)
++
++        # with "string" -> select both the default 'str' and the nullable 'string'
++        result = df.select_dtypes(include=["string"])
++        if using_infer_string:
++            expected = df[["a", "c"]]
++        else:
++            expected = df[["c"]]
++        tm.assert_frame_equal(result, expected)
+diff --git a/pandas/tests/frame/test_block_internals.py b/pandas/tests/frame/test_block_internals.py
+index b2fcba50de097..ac3e4f7c9224f 100644
+--- a/pandas/tests/frame/test_block_internals.py
++++ b/pandas/tests/frame/test_block_internals.py
+@@ -7,6 +7,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
+ from pandas.errors import PerformanceWarning
+ import pandas.util._test_decorators as td
+ 
+@@ -411,7 +412,10 @@ def test_update_inplace_sets_valid_block_values(using_copy_on_write):
+         with tm.raises_chained_assignment_error():
+             df["a"].fillna(1, inplace=True)
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["a"].fillna(1, inplace=True)
+ 
+     # check we haven't put a Series into any block.values
+diff --git a/pandas/tests/frame/test_subclass.py b/pandas/tests/frame/test_subclass.py
+index 855b58229cbdb..39a29406c6e9a 100644
+--- a/pandas/tests/frame/test_subclass.py
++++ b/pandas/tests/frame/test_subclass.py
+@@ -784,6 +784,13 @@ def test_constructor_with_metadata():
+     assert isinstance(subset, MySubclassWithMetadata)
+ 
+ 
++def test_constructor_with_metadata_from_records():
++    # GH#57008
++    df = MySubclassWithMetadata.from_records([{"a": 1, "b": 2}])
++    assert df.my_metadata is None
++    assert type(df) is MySubclassWithMetadata
++
++
+ class SimpleDataFrameSubClass(DataFrame):
+     """A subclass of DataFrame that does not define a constructor."""
+ 
+diff --git a/pandas/tests/groupby/test_categorical.py b/pandas/tests/groupby/test_categorical.py
+index cba02ae869889..9a442a9609b56 100644
+--- a/pandas/tests/groupby/test_categorical.py
++++ b/pandas/tests/groupby/test_categorical.py
+@@ -32,6 +32,14 @@ def f(a):
+         return a
+ 
+     index = MultiIndex.from_product(map(f, args), names=names)
++    if isinstance(fill_value, dict):
++        # fill_value is a dict mapping column names to fill values
++        # -> reindex column by column (reindex itself does not support this)
++        res = {}
++        for col in result.columns:
++            res[col] = result[col].reindex(index, fill_value=fill_value[col])
++        return DataFrame(res, index=index).sort_index()
++
+     return result.reindex(index, fill_value=fill_value).sort_index()
+ 
+ 
+@@ -340,7 +348,7 @@ def test_apply(ordered):
+ 
+ 
+ @pytest.mark.filterwarnings("ignore:invalid value encountered in cast:RuntimeWarning")
+-def test_observed(request, using_infer_string, observed):
++def test_observed(observed, using_infer_string):
+     # multiple groupers, don't re-expand the output space
+     # of the grouper
+     # gh-14942 (implement)
+@@ -348,10 +356,6 @@ def test_observed(request, using_infer_string, observed):
+     # gh-8138 (back-compat)
+     # gh-8869
+ 
+-    if using_infer_string and not observed:
+-        # TODO(infer_string) this fails with filling the string column with 0
+-        request.applymarker(pytest.mark.xfail(reason="TODO(infer_string)"))
+-
+     cat1 = Categorical(["a", "a", "b", "b"], categories=["a", "b", "z"], ordered=True)
+     cat2 = Categorical(["c", "d", "c", "d"], categories=["c", "d", "y"], ordered=True)
+     df = DataFrame({"A": cat1, "B": cat2, "values": [1, 2, 3, 4]})
+@@ -379,11 +383,18 @@ def test_observed(request, using_infer_string, observed):
+     result = gb.sum()
+     if not observed:
+         expected = cartesian_product_for_groupers(
+-            expected, [cat1, cat2], list("AB"), fill_value=0
++            expected,
++            [cat1, cat2],
++            list("AB"),
++            fill_value={"values": 0, "C": ""} if using_infer_string else 0,
+         )
+ 
+     tm.assert_frame_equal(result, expected)
+ 
++    result = gb["C"].sum()
++    expected = expected["C"]
++    tm.assert_series_equal(result, expected)
++
+     # https://github.com/pandas-dev/pandas/issues/8138
+     d = {
+         "cat": Categorical(
+diff --git a/pandas/tests/groupby/test_timegrouper.py b/pandas/tests/groupby/test_timegrouper.py
+index 3bae719e01b73..0dc2e84c55953 100644
+--- a/pandas/tests/groupby/test_timegrouper.py
++++ b/pandas/tests/groupby/test_timegrouper.py
+@@ -10,8 +10,6 @@
+ import pytest
+ import pytz
+ 
+-from pandas._config import using_string_dtype
+-
+ import pandas as pd
+ from pandas import (
+     DataFrame,
+@@ -75,10 +73,7 @@ def groupby_with_truncated_bingrouper(frame_for_truncated_bingrouper):
+ 
+ 
+ class TestGroupBy:
+-    # TODO(infer_string) resample sum introduces 0's
+-    # https://github.com/pandas-dev/pandas/issues/60229
+-    @pytest.mark.xfail(using_string_dtype(), reason="TODO(infer_string)")
+-    def test_groupby_with_timegrouper(self):
++    def test_groupby_with_timegrouper(self, using_infer_string):
+         # GH 4161
+         # TimeGrouper requires a sorted index
+         # also verifies that the resultant index has the correct name
+@@ -112,11 +107,13 @@ def test_groupby_with_timegrouper(self):
+                 unit=df.index.unit,
+             )
+             expected = DataFrame(
+-                {"Buyer": 0, "Quantity": 0},
++                {"Buyer": "" if using_infer_string else 0, "Quantity": 0},
+                 index=exp_dti,
+             )
+             # Cast to object to avoid implicit cast when setting entry to "CarlCarlCarl"
+             expected = expected.astype({"Buyer": object})
++            if using_infer_string:
++                expected = expected.astype({"Buyer": "str"})
+             expected.iloc[0, 0] = "CarlCarlCarl"
+             expected.iloc[6, 0] = "CarlCarl"
+             expected.iloc[18, 0] = "Joe"
+diff --git a/pandas/tests/indexes/categorical/test_category.py b/pandas/tests/indexes/categorical/test_category.py
+index 166e628ae4b3e..260b9bf97fea8 100644
+--- a/pandas/tests/indexes/categorical/test_category.py
++++ b/pandas/tests/indexes/categorical/test_category.py
+@@ -1,8 +1,6 @@
+ import numpy as np
+ import pytest
+ 
+-from pandas._config import using_string_dtype
+-
+ from pandas._libs import index as libindex
+ from pandas._libs.arrays import NDArrayBacked
+ 
+@@ -196,7 +194,6 @@ def test_unique(self, data, categories, expected_data, ordered):
+         expected = CategoricalIndex(expected_data, dtype=dtype)
+         tm.assert_index_equal(idx.unique(), expected)
+ 
+-    @pytest.mark.xfail(using_string_dtype(), reason="repr doesn't roundtrip")
+     def test_repr_roundtrip(self):
+         ci = CategoricalIndex(["a", "b"], categories=["a", "b"], ordered=True)
+         str(ci)
+diff --git a/pandas/tests/indexes/test_indexing.py b/pandas/tests/indexes/test_indexing.py
+index 1ea47f636ac9b..262ec1eac6f4a 100644
+--- a/pandas/tests/indexes/test_indexing.py
++++ b/pandas/tests/indexes/test_indexing.py
+@@ -17,6 +17,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import PY314
+ from pandas.errors import InvalidIndexError
+ 
+ from pandas.core.dtypes.common import (
+@@ -160,13 +161,19 @@ def test_contains_requires_hashable_raises(self, index):
+         with pytest.raises(TypeError, match=msg):
+             [] in index
+ 
++        if PY314:
++            container_or_iterable = "a container or iterable"
++        else:
++            container_or_iterable = "iterable"
++
+         msg = "|".join(
+             [
+                 r"unhashable type: 'dict'",
+                 r"must be real number, not dict",
+                 r"an integer is required",
+                 r"\{\}",
+-                r"pandas\._libs\.interval\.IntervalTree' is not iterable",
++                r"pandas\._libs\.interval\.IntervalTree' is not "
++                f"{container_or_iterable}",
+             ]
+         )
+         with pytest.raises(TypeError, match=msg):
+diff --git a/pandas/tests/indexing/multiindex/test_loc.py b/pandas/tests/indexing/multiindex/test_loc.py
+index fa5ec63dd32fe..8697103dd6f1a 100644
+--- a/pandas/tests/indexing/multiindex/test_loc.py
++++ b/pandas/tests/indexing/multiindex/test_loc.py
+@@ -33,14 +33,22 @@ def frame_random_data_integer_multi_index():
+ 
+ 
+ class TestMultiIndexLoc:
+-    def test_loc_setitem_frame_with_multiindex(self, multiindex_dataframe_random_data):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_loc_setitem_frame_with_multiindex(
++        self, multiindex_dataframe_random_data, has_ref
++    ):
+         frame = multiindex_dataframe_random_data
++        if has_ref:
++            view = frame[:]
+         frame.loc[("bar", "two"), "B"] = 5
+         assert frame.loc[("bar", "two"), "B"] == 5
+ 
+         # with integer labels
+         df = frame.copy()
+         df.columns = list(range(3))
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.loc[("bar", "two"), 1] = 7
+         assert df.loc[("bar", "two"), 1] == 7
+ 
+diff --git a/pandas/tests/indexing/test_iloc.py b/pandas/tests/indexing/test_iloc.py
+index c2742f42e3a92..4e18ec5ea9952 100644
+--- a/pandas/tests/indexing/test_iloc.py
++++ b/pandas/tests/indexing/test_iloc.py
+@@ -104,12 +104,18 @@ def test_iloc_setitem_fullcol_categorical(self, indexer, key, using_array_manage
+         expected = DataFrame({0: Series(cat.astype(object), dtype=object), 1: range(3)})
+         tm.assert_frame_equal(df, expected)
+ 
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
+     @pytest.mark.parametrize("box", [array, Series])
+-    def test_iloc_setitem_ea_inplace(self, frame_or_series, box, using_copy_on_write):
++    def test_iloc_setitem_ea_inplace(
++        self, frame_or_series, box, has_ref, using_copy_on_write
++    ):
+         # GH#38952 Case with not setting a full column
+         #  IntegerArray without NAs
+         arr = array([1, 2, 3, 4])
+         obj = frame_or_series(arr.to_numpy("i8"))
++        if has_ref:
++            view = obj[:]  # noqa: F841
+ 
+         if frame_or_series is Series:
+             values = obj.values
+@@ -125,14 +131,15 @@ def test_iloc_setitem_ea_inplace(self, frame_or_series, box, using_copy_on_write
+         tm.assert_equal(obj, expected)
+ 
+         # Check that we are actually in-place
+-        if frame_or_series is Series:
+-            if using_copy_on_write:
+-                assert obj.values is not values
+-                assert np.shares_memory(obj.values, values)
++        if not has_ref:
++            if frame_or_series is Series:
++                if using_copy_on_write:
++                    assert obj.values is not values
++                    assert np.shares_memory(obj.values, values)
++                else:
++                    assert obj.values is values
+             else:
+-                assert obj.values is values
+-        else:
+-            assert np.shares_memory(obj[0].values, values)
++                assert np.shares_memory(obj[0].values, values)
+ 
+     def test_is_scalar_access(self):
+         # GH#32085 index with duplicates doesn't matter for _is_scalar_access
+@@ -426,12 +433,16 @@ def test_iloc_getitem_slice_dups(self):
+         tm.assert_frame_equal(df.iloc[10:, :2], df2)
+         tm.assert_frame_equal(df.iloc[10:, 2:], df1)
+ 
+-    def test_iloc_setitem(self, warn_copy_on_write):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem(self, warn_copy_on_write, has_ref):
+         df = DataFrame(
+             np.random.default_rng(2).standard_normal((4, 4)),
+             index=np.arange(0, 8, 2),
+             columns=np.arange(0, 12, 3),
+         )
++        if has_ref:
++            view = df[:]  # noqa: F841
+ 
+         df.iloc[1, 1] = 1
+         result = df.iloc[1, 1]
+@@ -448,10 +459,14 @@ def test_iloc_setitem(self, warn_copy_on_write):
+         expected = Series([0, 1, 0], index=[4, 5, 6])
+         tm.assert_series_equal(s, expected)
+ 
+-    def test_iloc_setitem_axis_argument(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem_axis_argument(self, has_ref):
+         # GH45032
+         df = DataFrame([[6, "c", 10], [7, "d", 11], [8, "e", 12]])
+         df[1] = df[1].astype(object)
++        if has_ref:
++            view = df[:]
+         expected = DataFrame([[6, "c", 10], [7, "d", 11], [5, 5, 5]])
+         expected[1] = expected[1].astype(object)
+         df.iloc(axis=0)[2] = 5
+@@ -459,16 +474,22 @@ def test_iloc_setitem_axis_argument(self):
+ 
+         df = DataFrame([[6, "c", 10], [7, "d", 11], [8, "e", 12]])
+         df[1] = df[1].astype(object)
++        if has_ref:
++            view = df[:]  # noqa: F841
+         expected = DataFrame([[6, "c", 5], [7, "d", 5], [8, "e", 5]])
+         expected[1] = expected[1].astype(object)
+         df.iloc(axis=1)[2] = 5
+         tm.assert_frame_equal(df, expected)
+ 
+-    def test_iloc_setitem_list(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem_list(self, has_ref):
+         # setitem with an iloc list
+         df = DataFrame(
+             np.arange(9).reshape((3, 3)), index=["A", "B", "C"], columns=["A", "B", "C"]
+         )
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.iloc[[0, 1], [1, 2]]
+         df.iloc[[0, 1], [1, 2]] += 100
+ 
+@@ -669,12 +690,16 @@ def test_iloc_getitem_doc_issue(self, using_array_manager):
+         expected = DataFrame(arr[1:5, 2:4], index=index[1:5], columns=columns[2:4])
+         tm.assert_frame_equal(result, expected)
+ 
+-    def test_iloc_setitem_series(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem_series(self, has_ref):
+         df = DataFrame(
+             np.random.default_rng(2).standard_normal((10, 4)),
+             index=list("abcdefghij"),
+             columns=list("ABCD"),
+         )
++        if has_ref:
++            view = df[:]  # noqa: F841
+ 
+         df.iloc[1, 1] = 1
+         result = df.iloc[1, 1]
+@@ -703,12 +728,16 @@ def test_iloc_setitem_series(self):
+         expected = Series([0, 1, 2, 3, 4, 5])
+         tm.assert_series_equal(result, expected)
+ 
+-    def test_iloc_setitem_list_of_lists(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem_list_of_lists(self, has_ref):
+         # GH 7551
+         # list-of-list is set incorrectly in mixed vs. single dtyped frames
+         df = DataFrame(
+             {"A": np.arange(5, dtype="int64"), "B": np.arange(5, 10, dtype="int64")}
+         )
++        if has_ref:
++            view = df[:]
+         df.iloc[2:4] = [[10, 11], [12, 13]]
+         expected = DataFrame({"A": [0, 1, 10, 12, 4], "B": [5, 6, 11, 13, 9]})
+         tm.assert_frame_equal(df, expected)
+@@ -716,19 +745,25 @@ def test_iloc_setitem_list_of_lists(self):
+         df = DataFrame(
+             {"A": ["a", "b", "c", "d", "e"], "B": np.arange(5, 10, dtype="int64")}
+         )
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.iloc[2:4] = [["x", 11], ["y", 13]]
+         expected = DataFrame({"A": ["a", "b", "x", "y", "e"], "B": [5, 6, 11, 13, 9]})
+         tm.assert_frame_equal(df, expected)
+ 
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
+     @pytest.mark.parametrize("indexer", [[0], slice(None, 1, None), np.array([0])])
+     @pytest.mark.parametrize("value", [["Z"], np.array(["Z"])])
+-    def test_iloc_setitem_with_scalar_index(self, indexer, value):
++    def test_iloc_setitem_with_scalar_index(self, has_ref, indexer, value):
+         # GH #19474
+         # assigning like "df.iloc[0, [0]] = ['Z']" should be evaluated
+         # elementwisely, not using "setter('A', ['Z'])".
+ 
+         # Set object type to avoid upcast when setting "Z"
+         df = DataFrame([[1, 2], [3, 4]], columns=["A", "B"]).astype({"A": object})
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.iloc[0, indexer] = value
+         result = df.iloc[0, 0]
+ 
+@@ -1034,18 +1069,26 @@ def test_iloc_setitem_bool_indexer(self, klass):
+         expected = DataFrame({"flag": ["x", "y", "z"], "value": [2, 3, 4]})
+         tm.assert_frame_equal(df, expected)
+ 
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
+     @pytest.mark.parametrize("indexer", [[1], slice(1, 2)])
+-    def test_iloc_setitem_pure_position_based(self, indexer):
++    def test_iloc_setitem_pure_position_based(self, indexer, has_ref):
+         # GH#22046
+         df1 = DataFrame({"a2": [11, 12, 13], "b2": [14, 15, 16]})
+         df2 = DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
++        if has_ref:
++            view = df2[:]  # noqa: F841
+         df2.iloc[:, indexer] = df1.iloc[:, [0]]
+         expected = DataFrame({"a": [1, 2, 3], "b": [11, 12, 13], "c": [7, 8, 9]})
+         tm.assert_frame_equal(df2, expected)
+ 
+-    def test_iloc_setitem_dictionary_value(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_setitem_dictionary_value(self, has_ref):
+         # GH#37728
+         df = DataFrame({"x": [1, 2], "y": [2, 2]})
++        if has_ref:
++            view = df[:]
+         rhs = {"x": 9, "y": 99}
+         df.iloc[1] = rhs
+         expected = DataFrame({"x": [1, 9], "y": [2, 99]})
+@@ -1053,6 +1096,8 @@ def test_iloc_setitem_dictionary_value(self):
+ 
+         # GH#38335 same thing, mixed dtypes
+         df = DataFrame({"x": [1, 2], "y": [2.0, 2.0]})
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.iloc[1] = rhs
+         expected = DataFrame({"x": [1, 9], "y": [2.0, 99.0]})
+         tm.assert_frame_equal(df, expected)
+@@ -1266,10 +1311,14 @@ def test_iloc_float_raises(
+             ):
+                 obj.iloc[3.0] = 0
+ 
+-    def test_iloc_getitem_setitem_fancy_exceptions(self, float_frame):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_iloc_getitem_setitem_fancy_exceptions(self, float_frame, has_ref):
+         with pytest.raises(IndexingError, match="Too many indexers"):
+             float_frame.iloc[:, :, :]
+ 
++        if has_ref:
++            view = float_frame[:]  # noqa: F841
+         with pytest.raises(IndexError, match="too many indices for array"):
+             # GH#32257 we let numpy do validation, get their exception
+             float_frame.iloc[:, :, :] = 1
+diff --git a/pandas/tests/indexing/test_loc.py b/pandas/tests/indexing/test_loc.py
+index bb22a6d403086..a26bf15d0ff39 100644
+--- a/pandas/tests/indexing/test_loc.py
++++ b/pandas/tests/indexing/test_loc.py
+@@ -755,9 +755,13 @@ def test_loc_modify_datetime(self):
+ 
+         tm.assert_frame_equal(df, expected)
+ 
+-    def test_loc_setitem_frame_with_reindex(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_loc_setitem_frame_with_reindex(self, has_ref):
+         # GH#6254 setting issue
+         df = DataFrame(index=[3, 5, 4], columns=["A"], dtype=float)
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.loc[[4, 3, 5], "A"] = np.array([1, 2, 3], dtype="int64")
+ 
+         # setting integer values into a float dataframe with loc is inplace,
+@@ -788,7 +792,9 @@ def test_loc_setitem_frame_with_inverted_slice(self):
+         expected = DataFrame({"A": [3.0, 2.0, 1.0], "B": "string"}, index=[1, 2, 3])
+         tm.assert_frame_equal(df, expected)
+ 
+-    def test_loc_setitem_empty_frame(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_loc_setitem_empty_frame(self, has_ref):
+         # GH#6252 setting with an empty frame
+         keys1 = ["@" + str(i) for i in range(5)]
+         val1 = np.arange(5, dtype="int64")
+@@ -799,6 +805,8 @@ def test_loc_setitem_empty_frame(self):
+         index = list(set(keys1).union(keys2))
+         df = DataFrame(index=index)
+         df["A"] = np.nan
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.loc[keys1, "A"] = val1
+ 
+         df["B"] = np.nan
+@@ -813,12 +821,16 @@ def test_loc_setitem_empty_frame(self):
+         )
+         tm.assert_frame_equal(df, expected)
+ 
+-    def test_loc_setitem_frame(self):
++    @pytest.mark.filterwarnings("ignore:Setting a value on a view:FutureWarning")
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_loc_setitem_frame(self, has_ref):
+         df = DataFrame(
+             np.random.default_rng(2).standard_normal((4, 4)),
+             index=list("abcd"),
+             columns=list("ABCD"),
+         )
++        if has_ref:
++            view = df[:]  # noqa: F841
+ 
+         result = df.iloc[0, 0]
+ 
+@@ -2158,7 +2170,8 @@ def test_loc_setitem_with_expansion_inf_upcast_empty(self):
+         tm.assert_index_equal(result, expected)
+ 
+     @pytest.mark.filterwarnings("ignore:indexing past lexsort depth")
+-    def test_loc_setitem_with_expansion_nonunique_index(self, index):
++    @pytest.mark.parametrize("has_ref", [True, False])
++    def test_loc_setitem_with_expansion_nonunique_index(self, index, has_ref):
+         # GH#40096
+         if not len(index):
+             pytest.skip("Not relevant for empty Index")
+@@ -2184,11 +2197,15 @@ def test_loc_setitem_with_expansion_nonunique_index(self, index):
+ 
+         # Add new row, but no new columns
+         df = orig.copy()
++        if has_ref:
++            view = df[:]
+         df.loc[key, 0] = N
+         tm.assert_frame_equal(df, expected)
+ 
+         # add new row on a Series
+         ser = orig.copy()[0]
++        if has_ref:
++            view = ser[:]
+         ser.loc[key] = N
+         # the series machinery lets us preserve int dtype instead of float
+         expected = expected[0].astype(np.int64)
+@@ -2196,6 +2213,8 @@ def test_loc_setitem_with_expansion_nonunique_index(self, index):
+ 
+         # add new row and new column
+         df = orig.copy()
++        if has_ref:
++            view = df[:]  # noqa: F841
+         df.loc[key, 1] = N
+         expected = DataFrame(
+             {0: list(arr) + [np.nan], 1: [np.nan] * N + [float(N)]},
+diff --git a/pandas/tests/io/formats/test_to_latex.py b/pandas/tests/io/formats/test_to_latex.py
+index 1fd96dff27d06..a4feaa8d867bd 100644
+--- a/pandas/tests/io/formats/test_to_latex.py
++++ b/pandas/tests/io/formats/test_to_latex.py
+@@ -1,4 +1,3 @@
+-import codecs
+ from datetime import datetime
+ from textwrap import dedent
+ 
+@@ -42,7 +41,7 @@ def test_to_latex_to_file_utf8_with_encoding(self):
+         df = DataFrame([["au\xdfgangen"]])
+         with tm.ensure_clean("test.tex") as path:
+             df.to_latex(path, encoding="utf-8")
+-            with codecs.open(path, "r", encoding="utf-8") as f:
++            with open(path, encoding="utf-8") as f:
+                 assert df.to_latex() == f.read()
+ 
+     def test_to_latex_to_file_utf8_without_encoding(self):
+@@ -50,7 +49,7 @@ def test_to_latex_to_file_utf8_without_encoding(self):
+         df = DataFrame([["au\xdfgangen"]])
+         with tm.ensure_clean("test.tex") as path:
+             df.to_latex(path)
+-            with codecs.open(path, "r", encoding="utf-8") as f:
++            with open(path, encoding="utf-8") as f:
+                 assert df.to_latex() == f.read()
+ 
+     def test_to_latex_tabular_with_index(self):
+diff --git a/pandas/tests/io/json/test_json_table_schema.py b/pandas/tests/io/json/test_json_table_schema.py
+index 1c7320aa7a083..aac271b3f1f79 100644
+--- a/pandas/tests/io/json/test_json_table_schema.py
++++ b/pandas/tests/io/json/test_json_table_schema.py
+@@ -69,7 +69,7 @@ def test_build_table_schema(self, df_schema, using_infer_string):
+             "primaryKey": ["idx"],
+         }
+         if using_infer_string:
+-            expected["fields"][2] = {"name": "B", "type": "any", "extDtype": "str"}
++            expected["fields"][2] = {"name": "B", "type": "string", "extDtype": "str"}
+         assert result == expected
+         result = build_table_schema(df_schema)
+         assert "pandas_version" in result
+@@ -119,10 +119,10 @@ def test_multiindex(self, df_schema, using_infer_string):
+         if using_infer_string:
+             expected["fields"][0] = {
+                 "name": "level_0",
+-                "type": "any",
++                "type": "string",
+                 "extDtype": "str",
+             }
+-            expected["fields"][3] = {"name": "B", "type": "any", "extDtype": "str"}
++            expected["fields"][3] = {"name": "B", "type": "string", "extDtype": "str"}
+         assert result == expected
+ 
+         df.index.names = ["idx0", None]
+@@ -305,7 +305,7 @@ def test_to_json(self, df_table, using_infer_string):
+         ]
+ 
+         if using_infer_string:
+-            fields[2] = {"name": "B", "type": "any", "extDtype": "str"}
++            fields[2] = {"name": "B", "type": "string", "extDtype": "str"}
+ 
+         schema = {"fields": fields, "primaryKey": ["idx"]}
+         data = [
+@@ -544,7 +544,7 @@ def test_convert_pandas_type_to_json_field_categorical(self, kind, ordered):
+                 },
+                 CategoricalDtype(categories=["a", "b", "c"], ordered=True),
+             ),
+-            ({"type": "string"}, "object"),
++            ({"type": "string"}, None),
+         ],
+     )
+     def test_convert_json_field_to_pandas_type(self, inp, exp):
+diff --git a/pandas/tests/io/json/test_json_table_schema_ext_dtype.py b/pandas/tests/io/json/test_json_table_schema_ext_dtype.py
+index b7bb057bc538e..3da180db94db5 100644
+--- a/pandas/tests/io/json/test_json_table_schema_ext_dtype.py
++++ b/pandas/tests/io/json/test_json_table_schema_ext_dtype.py
+@@ -50,7 +50,7 @@ def test_build_table_schema(self):
+                 {"name": "index", "type": "integer"},
+                 {"name": "A", "type": "any", "extDtype": "DateDtype"},
+                 {"name": "B", "type": "number", "extDtype": "decimal"},
+-                {"name": "C", "type": "any", "extDtype": "string"},
++                {"name": "C", "type": "string", "extDtype": "string"},
+                 {"name": "D", "type": "integer", "extDtype": "Int64"},
+             ],
+             "primaryKey": ["index"],
+@@ -96,10 +96,10 @@ def test_as_json_table_type_ext_decimal_dtype(self):
+         ],
+     )
+     def test_as_json_table_type_ext_string_array_dtype(self, string_data):
+-        assert as_json_table_type(string_data.dtype) == "any"
++        assert as_json_table_type(string_data.dtype) == "string"
+ 
+     def test_as_json_table_type_ext_string_dtype(self):
+-        assert as_json_table_type(StringDtype()) == "any"
++        assert as_json_table_type(StringDtype()) == "string"
+ 
+     @pytest.mark.parametrize(
+         "integer_data",
+@@ -204,7 +204,7 @@ def test_build_string_series(self, sa):
+ 
+         fields = [
+             {"name": "id", "type": "integer"},
+-            {"name": "a", "type": "any", "extDtype": "string"},
++            {"name": "a", "type": "string", "extDtype": "string"},
+         ]
+ 
+         schema = {"fields": fields, "primaryKey": ["id"]}
+@@ -256,7 +256,7 @@ def test_to_json(self, df):
+             OrderedDict({"name": "idx", "type": "integer"}),
+             OrderedDict({"name": "A", "type": "any", "extDtype": "DateDtype"}),
+             OrderedDict({"name": "B", "type": "number", "extDtype": "decimal"}),
+-            OrderedDict({"name": "C", "type": "any", "extDtype": "string"}),
++            OrderedDict({"name": "C", "type": "string", "extDtype": "string"}),
+             OrderedDict({"name": "D", "type": "integer", "extDtype": "Int64"}),
+         ]
+ 
+diff --git a/pandas/tests/io/parser/test_quoting.py b/pandas/tests/io/parser/test_quoting.py
+index a70b7e3389c1b..261003d94ddf0 100644
+--- a/pandas/tests/io/parser/test_quoting.py
++++ b/pandas/tests/io/parser/test_quoting.py
+@@ -8,7 +8,10 @@
+ 
+ import pytest
+ 
+-from pandas.compat import PY311
++from pandas.compat import (
++    PY311,
++    PY314,
++)
+ from pandas.errors import ParserError
+ 
+ from pandas import DataFrame
+@@ -21,15 +24,24 @@
+ skip_pyarrow = pytest.mark.usefixtures("pyarrow_skip")
+ 
+ 
++if PY314:
++    # TODO: write a regex that works with all new possitibilities here
++    MSG1 = ""
++    MSG2 = r"[\s\S]*"
++else:
++    MSG1 = "a(n)? 1-character string"
++    MSG2 = "string( or None)?"
++
++
+ @pytest.mark.parametrize(
+     "kwargs,msg",
+     [
+-        ({"quotechar": "foo"}, '"quotechar" must be a(n)? 1-character string'),
++        ({"quotechar": "foo"}, f'"quotechar" must be {MSG1}'),
+         (
+             {"quotechar": None, "quoting": csv.QUOTE_MINIMAL},
+             "quotechar must be set if quoting enabled",
+         ),
+-        ({"quotechar": 2}, '"quotechar" must be string( or None)?, not int'),
++        ({"quotechar": 2}, f'"quotechar" must be {MSG2}, not int'),
+     ],
+ )
+ @skip_pyarrow  # ParserError: CSV parse error: Empty CSV file or block
+@@ -88,8 +100,12 @@ def test_null_quote_char(all_parsers, quoting, quote_char):
+ 
+     if quoting != csv.QUOTE_NONE:
+         # Sanity checking.
++        if not PY314:
++            msg = "1-character string"
++        else:
++            msg = "unicode character or None"
+         msg = (
+-            '"quotechar" must be a 1-character string'
++            f'"quotechar" must be a {msg}'
+             if PY311 and all_parsers.engine == "python" and quote_char == ""
+             else "quotechar must be set if quoting enabled"
+         )
+diff --git a/pandas/tests/io/test_common.py b/pandas/tests/io/test_common.py
+index a815ba9c1650a..80d7994298ec6 100644
+--- a/pandas/tests/io/test_common.py
++++ b/pandas/tests/io/test_common.py
+@@ -513,9 +513,8 @@ def test_is_fsspec_url():
+     assert icom.is_fsspec_url("RFC-3986+compliant.spec://something")
+ 
+ 
+-@pytest.mark.parametrize("encoding", [None, "utf-8"])
+ @pytest.mark.parametrize("format", ["csv", "json"])
+-def test_codecs_encoding(encoding, format):
++def test_codecs_encoding(format):
+     # GH39247
+     expected = pd.DataFrame(
+         1.1 * np.arange(120).reshape((30, 4)),
+@@ -523,9 +522,9 @@ def test_codecs_encoding(encoding, format):
+         index=pd.Index([f"i-{i}" for i in range(30)]),
+     )
+     with tm.ensure_clean() as path:
+-        with codecs.open(path, mode="w", encoding=encoding) as handle:
++        with open(path, mode="w", encoding="utf-8") as handle:
+             getattr(expected, f"to_{format}")(handle)
+-        with codecs.open(path, mode="r", encoding=encoding) as handle:
++        with open(path, encoding="utf-8") as handle:
+             if format == "csv":
+                 df = pd.read_csv(handle, index_col=0)
+             else:
+diff --git a/pandas/tests/resample/test_base.py b/pandas/tests/resample/test_base.py
+index e38584925627c..c087f26b6ff83 100644
+--- a/pandas/tests/resample/test_base.py
++++ b/pandas/tests/resample/test_base.py
+@@ -87,13 +87,8 @@ def test_asfreq_fill_value(series, create_index):
+ def test_resample_interpolate(frame):
+     # GH#12925
+     df = frame
+-    warn = None
+-    if isinstance(df.index, PeriodIndex):
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(warn, match=msg):
+-        result = df.resample("1min").asfreq().interpolate()
+-        expected = df.resample("1min").interpolate()
++    result = df.resample("1min").asfreq().interpolate()
++    expected = df.resample("1min").interpolate()
+     tm.assert_frame_equal(result, expected)
+ 
+ 
+@@ -125,13 +120,7 @@ def test_resample_empty_series(freq, empty_series_dti, resample_method):
+     elif freq == "ME" and isinstance(ser.index, PeriodIndex):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+-
+-    warn = None
+-    if isinstance(ser.index, PeriodIndex):
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = ser.resample(freq)
++    rs = ser.resample(freq)
+     result = getattr(rs, resample_method)()
+ 
+     if resample_method == "ohlc":
+@@ -189,9 +178,7 @@ def test_resample_nat_index_series(freq, series, resample_method):
+     ser = series.copy()
+     ser.index = PeriodIndex([NaT] * len(ser), freq=freq)
+ 
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(FutureWarning, match=msg):
+-        rs = ser.resample(freq)
++    rs = ser.resample(freq)
+     result = getattr(rs, resample_method)()
+ 
+     if resample_method == "ohlc":
+@@ -223,13 +210,7 @@ def test_resample_count_empty_series(freq, empty_series_dti, resample_method):
+     elif freq == "ME" and isinstance(ser.index, PeriodIndex):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+-
+-    warn = None
+-    if isinstance(ser.index, PeriodIndex):
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = ser.resample(freq)
++    rs = ser.resample(freq)
+ 
+     result = getattr(rs, resample_method)()
+ 
+@@ -257,13 +238,7 @@ def test_resample_empty_dataframe(empty_frame_dti, freq, resample_method):
+     elif freq == "ME" and isinstance(df.index, PeriodIndex):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+-
+-    warn = None
+-    if isinstance(df.index, PeriodIndex):
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = df.resample(freq, group_keys=False)
++    rs = df.resample(freq, group_keys=False)
+     result = getattr(rs, resample_method)()
+     if resample_method == "ohlc":
+         # TODO: no tests with len(df.columns) > 0
+@@ -306,14 +281,7 @@ def test_resample_count_empty_dataframe(freq, empty_frame_dti):
+     elif freq == "ME" and isinstance(empty_frame_dti.index, PeriodIndex):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+-
+-    warn = None
+-    if isinstance(empty_frame_dti.index, PeriodIndex):
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = empty_frame_dti.resample(freq)
+-    result = rs.count()
++    result = empty_frame_dti.resample(freq).count()
+ 
+     index = _asfreq_compat(empty_frame_dti.index, freq)
+ 
+@@ -340,14 +308,7 @@ def test_resample_size_empty_dataframe(freq, empty_frame_dti):
+     elif freq == "ME" and isinstance(empty_frame_dti.index, PeriodIndex):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+-
+-    msg = "Resampling with a PeriodIndex"
+-    warn = None
+-    if isinstance(empty_frame_dti.index, PeriodIndex):
+-        warn = FutureWarning
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = empty_frame_dti.resample(freq)
+-    result = rs.size()
++    result = empty_frame_dti.resample(freq).size()
+ 
+     index = _asfreq_compat(empty_frame_dti.index, freq)
+ 
+@@ -365,21 +326,12 @@ def test_resample_size_empty_dataframe(freq, empty_frame_dti):
+     ],
+ )
+ @pytest.mark.parametrize("dtype", [float, int, object, "datetime64[ns]"])
+-@pytest.mark.filterwarnings(r"ignore:PeriodDtype\[B\] is deprecated:FutureWarning")
+ def test_resample_empty_dtypes(index, dtype, resample_method):
+     # Empty series were sometimes causing a segfault (for the functions
+     # with Cython bounds-checking disabled) or an IndexError.  We just run
+     # them to ensure they no longer do.  (GH #10228)
+-    warn = None
+-    if isinstance(index, PeriodIndex):
+-        # GH#53511
+-        index = PeriodIndex([], freq="B", name=index.name)
+-        warn = FutureWarning
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-
+     empty_series_dti = Series([], index, dtype)
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = empty_series_dti.resample("d", group_keys=False)
++    rs = empty_series_dti.resample("d", group_keys=False)
+     try:
+         getattr(rs, resample_method)()
+     except DataError:
+@@ -406,17 +358,8 @@ def test_apply_to_empty_series(empty_series_dti, freq):
+         # index is PeriodIndex, so convert to corresponding Period freq
+         freq = "M"
+ 
+-    msg = "Resampling with a PeriodIndex"
+-    warn = None
+-    if isinstance(empty_series_dti.index, PeriodIndex):
+-        warn = FutureWarning
+-
+-    with tm.assert_produces_warning(warn, match=msg):
+-        rs = ser.resample(freq, group_keys=False)
+-
+-    result = rs.apply(lambda x: 1)
+-    with tm.assert_produces_warning(warn, match=msg):
+-        expected = ser.resample(freq).apply("sum")
++    result = ser.resample(freq, group_keys=False).apply(lambda x: 1)
++    expected = ser.resample(freq).apply("sum")
+ 
+     tm.assert_series_equal(result, expected, check_dtype=False)
+ 
+@@ -426,16 +369,8 @@ def test_resampler_is_iterable(series):
+     # GH 15314
+     freq = "h"
+     tg = Grouper(freq=freq, convention="start")
+-    msg = "Resampling with a PeriodIndex"
+-    warn = None
+-    if isinstance(series.index, PeriodIndex):
+-        warn = FutureWarning
+-
+-    with tm.assert_produces_warning(warn, match=msg):
+-        grouped = series.groupby(tg)
+-
+-    with tm.assert_produces_warning(warn, match=msg):
+-        resampled = series.resample(freq)
++    grouped = series.groupby(tg)
++    resampled = series.resample(freq)
+     for (rk, rv), (gk, gv) in zip(resampled, grouped):
+         assert rk == gk
+         tm.assert_series_equal(rv, gv)
+@@ -448,13 +383,8 @@ def test_resample_quantile(series):
+     q = 0.75
+     freq = "h"
+ 
+-    msg = "Resampling with a PeriodIndex"
+-    warn = None
+-    if isinstance(series.index, PeriodIndex):
+-        warn = FutureWarning
+-    with tm.assert_produces_warning(warn, match=msg):
+-        result = ser.resample(freq).quantile(q)
+-        expected = ser.resample(freq).agg(lambda x: x.quantile(q)).rename(ser.name)
++    result = ser.resample(freq).quantile(q)
++    expected = ser.resample(freq).agg(lambda x: x.quantile(q)).rename(ser.name)
+     tm.assert_series_equal(result, expected)
+ 
+ 
+diff --git a/pandas/tests/resample/test_datetime_index.py b/pandas/tests/resample/test_datetime_index.py
+index 80583f5d3c5f2..a9701b7ecd607 100644
+--- a/pandas/tests/resample/test_datetime_index.py
++++ b/pandas/tests/resample/test_datetime_index.py
+@@ -184,9 +184,6 @@ def test_resample_basic_grouper(series, unit):
+     tm.assert_series_equal(result, expected)
+ 
+ 
+-@pytest.mark.filterwarnings(
+-    "ignore:The 'convention' keyword in Series.resample:FutureWarning"
+-)
+ @pytest.mark.parametrize(
+     "_index_start,_index_end,_index_name",
+     [("1/1/2000 00:00:00", "1/1/2000 00:13:00", "index")],
+@@ -1058,10 +1055,7 @@ def test_period_with_agg():
+     )
+ 
+     expected = s2.to_timestamp().resample("D").mean().to_period()
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(FutureWarning, match=msg):
+-        rs = s2.resample("D")
+-    result = rs.agg(lambda x: x.mean())
++    result = s2.resample("D").agg(lambda x: x.mean())
+     tm.assert_series_equal(result, expected)
+ 
+ 
+diff --git a/pandas/tests/resample/test_period_index.py b/pandas/tests/resample/test_period_index.py
+index 6b7cce7d15a5b..689d45698d4cd 100644
+--- a/pandas/tests/resample/test_period_index.py
++++ b/pandas/tests/resample/test_period_index.py
+@@ -30,10 +30,6 @@
+ 
+ from pandas.tseries import offsets
+ 
+-pytestmark = pytest.mark.filterwarnings(
+-    "ignore:Resampling with a PeriodIndex is deprecated:FutureWarning"
+-)
+-
+ 
+ @pytest.fixture()
+ def _index_factory():
+@@ -146,9 +142,6 @@ def test_annual_upsample_cases(
+         ts = simple_period_range_series("1/1/1990", "12/31/1991", freq=f"Y-{month}")
+         warn = FutureWarning if period == "B" else None
+         msg = r"PeriodDtype\[B\] is deprecated"
+-        if warn is None:
+-            msg = "Resampling with a PeriodIndex is deprecated"
+-            warn = FutureWarning
+         with tm.assert_produces_warning(warn, match=msg):
+             result = getattr(ts.resample(period, convention=conv), meth)()
+             expected = result.to_timestamp(period, how=conv)
+@@ -191,9 +184,7 @@ def test_basic_upsample(self, freq, simple_period_range_series):
+         ts = simple_period_range_series("1/1/1990", "6/30/1995", freq="M")
+         result = ts.resample("Y-DEC").mean()
+ 
+-        msg = "The 'convention' keyword in Series.resample is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            resampled = result.resample(freq, convention="end").ffill()
++        resampled = result.resample(freq, convention="end").ffill()
+         expected = result.to_timestamp(freq, how="end")
+         expected = expected.asfreq(freq, "ffill").to_period(freq)
+         tm.assert_series_equal(resampled, expected)
+@@ -202,9 +193,7 @@ def test_upsample_with_limit(self):
+         rng = period_range("1/1/2000", periods=5, freq="Y")
+         ts = Series(np.random.default_rng(2).standard_normal(len(rng)), rng)
+ 
+-        msg = "The 'convention' keyword in Series.resample is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            result = ts.resample("M", convention="end").ffill(limit=2)
++        result = ts.resample("M", convention="end").ffill(limit=2)
+         expected = ts.asfreq("M").reindex(result.index, method="ffill", limit=2)
+         tm.assert_series_equal(result, expected)
+ 
+@@ -237,9 +226,6 @@ def test_quarterly_upsample(
+         ts = simple_period_range_series("1/1/1990", "12/31/1995", freq=freq)
+         warn = FutureWarning if period == "B" else None
+         msg = r"PeriodDtype\[B\] is deprecated"
+-        if warn is None:
+-            msg = "Resampling with a PeriodIndex is deprecated"
+-            warn = FutureWarning
+         with tm.assert_produces_warning(warn, match=msg):
+             result = ts.resample(period, convention=convention).ffill()
+             expected = result.to_timestamp(period, how=convention)
+@@ -253,9 +239,6 @@ def test_monthly_upsample(self, target, convention, simple_period_range_series):
+ 
+         warn = None if target == "D" else FutureWarning
+         msg = r"PeriodDtype\[B\] is deprecated"
+-        if warn is None:
+-            msg = "Resampling with a PeriodIndex is deprecated"
+-            warn = FutureWarning
+         with tm.assert_produces_warning(warn, match=msg):
+             result = ts.resample(target, convention=convention).ffill()
+             expected = result.to_timestamp(target, how=convention)
+@@ -427,9 +410,6 @@ def test_weekly_upsample(self, day, target, convention, simple_period_range_seri
+ 
+         warn = None if target == "D" else FutureWarning
+         msg = r"PeriodDtype\[B\] is deprecated"
+-        if warn is None:
+-            msg = "Resampling with a PeriodIndex is deprecated"
+-            warn = FutureWarning
+         with tm.assert_produces_warning(warn, match=msg):
+             result = ts.resample(target, convention=convention).ffill()
+             expected = result.to_timestamp(target, how=convention)
+@@ -466,9 +446,7 @@ def test_resample_to_quarterly(self, simple_period_range_series, month):
+     def test_resample_to_quarterly_start_end(self, simple_period_range_series, how):
+         # conforms, but different month
+         ts = simple_period_range_series("1990", "1992", freq="Y-JUN")
+-        msg = "The 'convention' keyword in Series.resample is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            result = ts.resample("Q-MAR", convention=how).ffill()
++        result = ts.resample("Q-MAR", convention=how).ffill()
+         expected = ts.asfreq("Q-MAR", how=how)
+         expected = expected.reindex(result.index, method="ffill")
+ 
+@@ -516,9 +494,7 @@ def test_upsample_daily_business_daily(self, simple_period_range_series):
+         tm.assert_series_equal(result, expected)
+ 
+         ts = simple_period_range_series("1/1/2000", "2/1/2000")
+-        msg = "The 'convention' keyword in Series.resample is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            result = ts.resample("h", convention="s").asfreq()
++        result = ts.resample("h", convention="s").asfreq()
+         exp_rng = period_range("1/1/2000", "2/1/2000 23:00", freq="h")
+         expected = ts.asfreq("h", how="s").reindex(exp_rng)
+         tm.assert_series_equal(result, expected)
+@@ -878,10 +854,7 @@ def test_resample_with_nat(self, periods, values, freq, expected_values):
+             "1970-01-01 00:00:00", periods=len(expected_values), freq=freq
+         )
+         expected = DataFrame(expected_values, index=expected_index)
+-        msg = "Resampling with a PeriodIndex is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            rs = frame.resample(freq)
+-        result = rs.mean()
++        result = frame.resample(freq).mean()
+         tm.assert_frame_equal(result, expected)
+ 
+     def test_resample_with_only_nat(self):
+@@ -917,10 +890,7 @@ def test_resample_with_offset(self, start, end, start_freq, end_freq, offset):
+         # GH 23882 & 31809
+         pi = period_range(start, end, freq=start_freq)
+         ser = Series(np.arange(len(pi)), index=pi)
+-        msg = "Resampling with a PeriodIndex is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            rs = ser.resample(end_freq, offset=offset)
+-        result = rs.mean()
++        result = ser.resample(end_freq, offset=offset).mean()
+         result = result.to_timestamp(end_freq)
+ 
+         expected = ser.to_timestamp().resample(end_freq, offset=offset).mean()
+@@ -930,10 +900,7 @@ def test_resample_with_offset_month(self):
+         # GH 23882 & 31809
+         pi = period_range("19910905 12:00", "19910909 1:00", freq="h")
+         ser = Series(np.arange(len(pi)), index=pi)
+-        msg = "Resampling with a PeriodIndex is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            rs = ser.resample("M", offset="3h")
+-        result = rs.mean()
++        result = ser.resample("M", offset="3h").mean()
+         result = result.to_timestamp("M")
+         expected = ser.to_timestamp().resample("ME", offset="3h").mean()
+         # TODO: is non-tick the relevant characteristic? (GH 33815)
+@@ -978,10 +945,7 @@ def test_sum_min_count(self):
+         data = np.ones(6)
+         data[3:6] = np.nan
+         s = Series(data, index).to_period()
+-        msg = "Resampling with a PeriodIndex is deprecated"
+-        with tm.assert_produces_warning(FutureWarning, match=msg):
+-            rs = s.resample("Q")
+-        result = rs.sum(min_count=1)
++        result = s.resample("Q").sum(min_count=1)
+         expected = Series(
+             [3.0, np.nan], index=PeriodIndex(["2018Q1", "2018Q2"], freq="Q-DEC")
+         )
+@@ -1075,9 +1039,7 @@ def test_corner_cases_period(simple_period_range_series):
+     # miscellaneous test coverage
+     len0pts = simple_period_range_series("2007-01", "2010-05", freq="M")[:0]
+     # it works
+-    msg = "Resampling with a PeriodIndex is deprecated"
+-    with tm.assert_produces_warning(FutureWarning, match=msg):
+-        result = len0pts.resample("Y-DEC").mean()
++    result = len0pts.resample("Y-DEC").mean()
+     assert len(result) == 0
+ 
+ 
+diff --git a/pandas/tests/reshape/merge/test_merge.py b/pandas/tests/reshape/merge/test_merge.py
+index 8a9fe9f3e2cfd..c8292afe3c0fe 100644
+--- a/pandas/tests/reshape/merge/test_merge.py
++++ b/pandas/tests/reshape/merge/test_merge.py
+@@ -8,6 +8,8 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import PY314
++
+ from pandas.core.dtypes.common import (
+     is_object_dtype,
+     is_string_dtype,
+@@ -2394,10 +2396,18 @@ def test_merge_suffix_raises(suffixes):
+         merge(a, b, left_index=True, right_index=True, suffixes=suffixes)
+ 
+ 
++TWO_GOT_THREE = "2, got 3" if PY314 else "2"
++
++
+ @pytest.mark.parametrize(
+     "col1, col2, suffixes, msg",
+     [
+-        ("a", "a", ("a", "b", "c"), r"too many values to unpack \(expected 2\)"),
++        (
++            "a",
++            "a",
++            ("a", "b", "c"),
++            (rf"too many values to unpack \(expected {TWO_GOT_THREE}\)"),
++        ),
+         ("a", "a", tuple("a"), r"not enough values to unpack \(expected 2, got 1\)"),
+     ],
+ )
+diff --git a/pandas/tests/scalar/period/test_period.py b/pandas/tests/scalar/period/test_period.py
+index 2c3a0816737fc..08378e1f2fb46 100644
+--- a/pandas/tests/scalar/period/test_period.py
++++ b/pandas/tests/scalar/period/test_period.py
+@@ -16,6 +16,7 @@
+ from pandas._libs.tslibs.np_datetime import OutOfBoundsDatetime
+ from pandas._libs.tslibs.parsing import DateParseError
+ from pandas._libs.tslibs.period import INVALID_FREQ_ERR_MSG
++from pandas.compat import PY314
+ 
+ from pandas import (
+     NaT,
+@@ -342,7 +343,10 @@ def test_invalid_arguments(self):
+         msg = '^Given date string "-2000" not likely a datetime$'
+         with pytest.raises(ValueError, match=msg):
+             Period("-2000", "Y")
+-        msg = "day is out of range for month"
++        if PY314:
++            msg = "day 0 must be in range 1..31 for month 1 in year 1: 0"
++        else:
++            msg = "day is out of range for month"
+         with pytest.raises(DateParseError, match=msg):
+             Period("0", "Y")
+         msg = "Unknown datetime string format, unable to parse"
+diff --git a/pandas/tests/scalar/timestamp/test_constructors.py b/pandas/tests/scalar/timestamp/test_constructors.py
+index 3975f3c46aaa1..11ef7bc92dfb7 100644
+--- a/pandas/tests/scalar/timestamp/test_constructors.py
++++ b/pandas/tests/scalar/timestamp/test_constructors.py
+@@ -18,7 +18,10 @@
+ import pytz
+ 
+ from pandas._libs.tslibs.dtypes import NpyDatetimeUnit
+-from pandas.compat import PY310
++from pandas.compat import (
++    PY310,
++    PY314,
++)
+ from pandas.errors import OutOfBoundsDatetime
+ 
+ from pandas import (
+@@ -225,7 +228,10 @@ def test_constructor_positional(self):
+         with pytest.raises(ValueError, match=msg):
+             Timestamp(2000, 13, 1)
+ 
+-        msg = "day is out of range for month"
++        if PY314:
++            msg = "must be in range 1..31 for month 1 in year 2000"
++        else:
++            msg = "day is out of range for month"
+         with pytest.raises(ValueError, match=msg):
+             Timestamp(2000, 1, 0)
+         with pytest.raises(ValueError, match=msg):
+@@ -249,7 +255,10 @@ def test_constructor_keyword(self):
+         with pytest.raises(ValueError, match=msg):
+             Timestamp(year=2000, month=13, day=1)
+ 
+-        msg = "day is out of range for month"
++        if PY314:
++            msg = "must be in range 1..31 for month 1 in year 2000"
++        else:
++            msg = "day is out of range for month"
+         with pytest.raises(ValueError, match=msg):
+             Timestamp(year=2000, month=1, day=0)
+         with pytest.raises(ValueError, match=msg):
+diff --git a/pandas/tests/series/indexing/test_indexing.py b/pandas/tests/series/indexing/test_indexing.py
+index 3b62f7c4c0549..f153628d32e27 100644
+--- a/pandas/tests/series/indexing/test_indexing.py
++++ b/pandas/tests/series/indexing/test_indexing.py
+@@ -5,6 +5,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
+ from pandas.errors import IndexingError
+ 
+ from pandas import (
+@@ -301,7 +302,10 @@ def test_underlying_data_conversion(using_copy_on_write):
+             df["val"].update(s)
+         expected = df_original
+     else:
+-        with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++        with tm.assert_produces_warning(
++            FutureWarning if not WARNING_CHECK_DISABLED else None,
++            match="inplace method",
++        ):
+             df["val"].update(s)
+         expected = DataFrame(
+             {"a": [1, 2, 3], "b": [1, 2, 3], "c": [1, 2, 3], "val": [0, 1, 0]}
+diff --git a/pandas/tests/series/methods/test_replace.py b/pandas/tests/series/methods/test_replace.py
+index 0c2e0fdc2616f..53b95d685dc99 100644
+--- a/pandas/tests/series/methods/test_replace.py
++++ b/pandas/tests/series/methods/test_replace.py
+@@ -625,7 +625,8 @@ def test_replace_with_compiled_regex(self):
+ 
+     def test_pandas_replace_na(self):
+         # GH#43344
+-        ser = pd.Series(["AA", "BB", "CC", "DD", "EE", "", pd.NA], dtype="string")
++        # GH#56599
++        ser = pd.Series(["AA", "BB", "CC", "DD", "EE", "", pd.NA, "AA"], dtype="string")
+         regex_mapping = {
+             "AA": "CC",
+             "BB": "CC",
+@@ -633,7 +634,9 @@ def test_pandas_replace_na(self):
+             "CC": "CC-REPL",
+         }
+         result = ser.replace(regex_mapping, regex=True)
+-        exp = pd.Series(["CC", "CC", "CC-REPL", "DD", "CC", "", pd.NA], dtype="string")
++        exp = pd.Series(
++            ["CC", "CC", "CC-REPL", "DD", "CC", "", pd.NA, "CC"], dtype="string"
++        )
+         tm.assert_series_equal(result, exp)
+ 
+     @pytest.mark.parametrize(
+diff --git a/pandas/tests/series/methods/test_update.py b/pandas/tests/series/methods/test_update.py
+index 3f18ae6c13880..b09a58e04947f 100644
+--- a/pandas/tests/series/methods/test_update.py
++++ b/pandas/tests/series/methods/test_update.py
+@@ -1,6 +1,7 @@
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import WARNING_CHECK_DISABLED
+ import pandas.util._test_decorators as td
+ 
+ from pandas import (
+@@ -34,7 +35,10 @@ def test_update(self, using_copy_on_write):
+                 df["c"].update(Series(["foo"], index=[0]))
+             expected = df_orig
+         else:
+-            with tm.assert_produces_warning(FutureWarning, match="inplace method"):
++            with tm.assert_produces_warning(
++                FutureWarning if not WARNING_CHECK_DISABLED else None,
++                match="inplace method",
++            ):
+                 df["c"].update(Series(["foo"], index=[0]))
+             expected = DataFrame(
+                 [[1, np.nan, "foo"], [3, 2.0, np.nan]], columns=["a", "b", "c"]
+diff --git a/pandas/tests/series/test_formats.py b/pandas/tests/series/test_formats.py
+index 4f93e7424bfd5..10588c3b744f2 100644
+--- a/pandas/tests/series/test_formats.py
++++ b/pandas/tests/series/test_formats.py
+@@ -318,38 +318,27 @@ def test_categorical_repr(self, using_infer_string):
+         assert exp == a.__str__()
+ 
+         a = Series(Categorical(["a", "b"] * 25))
++        exp = (
++            "0     a\n1     b\n"
++            "     ..\n"
++            "48    a\n49    b\n"
++            "Length: 50, dtype: category\nCategories (2, object): ['a', 'b']"
++        )
+         if using_infer_string:
+-            exp = (
+-                "0     a\n1     b\n"
+-                "     ..\n"
+-                "48    a\n49    b\n"
+-                "Length: 50, dtype: category\nCategories (2, str): [a, b]"
+-            )
+-        else:
+-            exp = (
+-                "0     a\n1     b\n"
+-                "     ..\n"
+-                "48    a\n49    b\n"
+-                "Length: 50, dtype: category\nCategories (2, object): ['a', 'b']"
+-            )
++            exp = exp.replace("object", "str")
+         with option_context("display.max_rows", 5):
+             assert exp == repr(a)
+ 
+         levs = list("abcdefghijklmnopqrstuvwxyz")
+         a = Series(Categorical(["a", "b"], categories=levs, ordered=True))
++        exp = (
++            "0    a\n1    b\n"
++            "dtype: category\n"
++            "Categories (26, object): ['a' < 'b' < 'c' < 'd' ... "
++            "'w' < 'x' < 'y' < 'z']"
++        )
+         if using_infer_string:
+-            exp = (
+-                "0    a\n1    b\n"
+-                "dtype: category\n"
+-                "Categories (26, str): [a < b < c < d ... w < x < y < z]"
+-            )
+-        else:
+-            exp = (
+-                "0    a\n1    b\n"
+-                "dtype: category\n"
+-                "Categories (26, object): ['a' < 'b' < 'c' < 'd' ... "
+-                "'w' < 'x' < 'y' < 'z']"
+-            )
++            exp = exp.replace("object", "str")
+         assert exp == a.__str__()
+ 
+     def test_categorical_series_repr(self):
+diff --git a/pandas/tests/strings/test_find_replace.py b/pandas/tests/strings/test_find_replace.py
+index dfa9a36995480..14c704f4dd1e5 100644
+--- a/pandas/tests/strings/test_find_replace.py
++++ b/pandas/tests/strings/test_find_replace.py
+@@ -290,6 +290,66 @@ def test_contains_nan(any_string_dtype):
+     tm.assert_series_equal(result, expected)
+ 
+ 
++def test_contains_compiled_regex(any_string_dtype):
++    # GH#61942
++    expected_dtype = (
++        np.bool_ if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++    )
++
++    ser = Series(["foo", "bar", "Baz"], dtype=any_string_dtype)
++
++    pat = re.compile("ba.")
++    result = ser.str.contains(pat)
++    expected = Series([False, True, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    # TODO this currently works for pyarrow-backed dtypes but raises for python
++    if any_string_dtype == "string" and any_string_dtype.storage == "pyarrow":
++        result = ser.str.contains(pat, case=False)
++        expected = Series([False, True, True], dtype=expected_dtype)
++        tm.assert_series_equal(result, expected)
++    else:
++        with pytest.raises(
++            ValueError, match="cannot process flags argument with a compiled pattern"
++        ):
++            ser.str.contains(pat, case=False)
++
++    pat = re.compile("ba.", flags=re.IGNORECASE)
++    result = ser.str.contains(pat)
++    expected = Series([False, True, True], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    # TODO should this be supported?
++    with pytest.raises(
++        ValueError, match="cannot process flags argument with a compiled pattern"
++    ):
++        ser.str.contains(pat, flags=re.IGNORECASE)
++
++
++def test_contains_compiled_regex_flags(any_string_dtype):
++    # ensure other (than ignorecase) flags are respected
++    expected_dtype = (
++        np.bool_ if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++    )
++
++    ser = Series(["foobar", "foo\nbar", "Baz"], dtype=any_string_dtype)
++
++    pat = re.compile("^ba")
++    result = ser.str.contains(pat)
++    expected = Series([False, False, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    pat = re.compile("^ba", flags=re.MULTILINE)
++    result = ser.str.contains(pat)
++    expected = Series([False, True, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    pat = re.compile("^ba", flags=re.MULTILINE | re.IGNORECASE)
++    result = ser.str.contains(pat)
++    expected = Series([False, True, True], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++
+ # --------------------------------------------------------------------------------------
+ # str.startswith
+ # --------------------------------------------------------------------------------------
+@@ -534,6 +594,68 @@ def test_replace_callable_raises(any_string_dtype, repl):
+         values.str.replace("a", repl, regex=True)
+ 
+ 
++@pytest.mark.parametrize(
++    "repl, expected_list",
++    [
++        (
++            r"\g<three> \g<two> \g<one>",
++            ["Three Two One", "Baz Bar Foo"],
++        ),
++        (
++            r"\g<3> \g<2> \g<1>",
++            ["Three Two One", "Baz Bar Foo"],
++        ),
++        (
++            r"\g<2>0",
++            ["Two0", "Bar0"],
++        ),
++        (
++            r"\g<2>0 \1",
++            ["Two0 One", "Bar0 Foo"],
++        ),
++    ],
++    ids=[
++        "named_groups_full_swap",
++        "numbered_groups_full_swap",
++        "single_group_with_literal",
++        "mixed_group_reference_with_literal",
++    ],
++)
++@pytest.mark.parametrize("use_compile", [True, False])
++def test_replace_named_groups_regex_swap(
++    any_string_dtype, use_compile, repl, expected_list
++):
++    # GH#57636
++    ser = Series(["One Two Three", "Foo Bar Baz"], dtype=any_string_dtype)
++    pattern = r"(?P<one>\w+) (?P<two>\w+) (?P<three>\w+)"
++    if use_compile:
++        pattern = re.compile(pattern)
++    result = ser.str.replace(pattern, repl, regex=True)
++    expected = Series(expected_list, dtype=any_string_dtype)
++    tm.assert_series_equal(result, expected)
++
++
++@pytest.mark.parametrize(
++    "repl",
++    [
++        r"\g<20>",
++        r"\20",
++    ],
++)
++@pytest.mark.parametrize("use_compile", [True, False])
++def test_replace_named_groups_regex_swap_expected_fail(
++    any_string_dtype, repl, use_compile
++):
++    # GH#57636
++    pattern = r"(?P<one>\w+) (?P<two>\w+) (?P<three>\w+)"
++    if use_compile:
++        pattern = re.compile(pattern)
++    ser = Series(["One Two Three", "Foo Bar Baz"], dtype=any_string_dtype)
++
++    with pytest.raises(re.error, match="invalid group reference"):
++        ser.str.replace(pattern, repl, regex=True)
++
++
+ def test_replace_callable_named_groups(any_string_dtype):
+     # test regex named groups
+     ser = Series(["Foo Bar Baz", np.nan], dtype=any_string_dtype)
+@@ -822,6 +944,63 @@ def test_match_case_kwarg(any_string_dtype):
+     tm.assert_series_equal(result, expected)
+ 
+ 
++def test_match_compiled_regex(any_string_dtype):
++    # GH#61952
++    expected_dtype = (
++        np.bool_ if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++    )
++
++    values = Series(["ab", "AB", "abc", "ABC"], dtype=any_string_dtype)
++
++    result = values.str.match(re.compile("ab"))
++    expected = Series([True, False, True, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    # TODO this currently works for pyarrow-backed dtypes but raises for python
++    if any_string_dtype == "string" and any_string_dtype.storage == "pyarrow":
++        result = values.str.match(re.compile("ab"), case=False)
++        expected = Series([True, True, True, True], dtype=expected_dtype)
++        tm.assert_series_equal(result, expected)
++    else:
++        with pytest.raises(
++            ValueError, match="cannot process flags argument with a compiled pattern"
++        ):
++            values.str.match(re.compile("ab"), case=False)
++
++    result = values.str.match(re.compile("ab", flags=re.IGNORECASE))
++    expected = Series([True, True, True, True], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    with pytest.raises(
++        ValueError, match="cannot process flags argument with a compiled pattern"
++    ):
++        values.str.match(re.compile("ab"), flags=re.IGNORECASE)
++
++
++@pytest.mark.parametrize(
++    "pat, case, exp",
++    [
++        ["ab", False, [True, False]],
++        ["Ab", True, [False, False]],
++        ["bc", True, [False, False]],
++        ["a[a-z]{1}", False, [True, False]],
++        ["A[a-z]{1}", True, [False, False]],
++        # https://github.com/pandas-dev/pandas/issues/61072
++        ["(bc)|(ab)", True, [True, False]],
++        ["((bc)|(ab))", True, [True, False]],
++    ],
++)
++def test_str_match_extra_cases(any_string_dtype, pat, case, exp):
++    ser = Series(["abc", "Xab"], dtype=any_string_dtype)
++    result = ser.str.match(pat, case=case)
++
++    expected_dtype = (
++        np.bool_ if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++    )
++    expected = Series(exp, dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++
+ # --------------------------------------------------------------------------------------
+ # str.fullmatch
+ # --------------------------------------------------------------------------------------
+@@ -891,6 +1070,76 @@ def test_fullmatch_case_kwarg(any_string_dtype):
+     tm.assert_series_equal(result, expected)
+ 
+ 
++def test_fullmatch_compiled_regex(any_string_dtype):
++    # GH#61952
++    expected_dtype = (
++        np.bool_ if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++    )
++
++    values = Series(["ab", "AB", "abc", "ABC"], dtype=any_string_dtype)
++
++    result = values.str.fullmatch(re.compile("ab"))
++    expected = Series([True, False, False, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    # TODO this currently works for pyarrow-backed dtypes but raises for python
++    if any_string_dtype == "string" and any_string_dtype.storage == "pyarrow":
++        result = values.str.fullmatch(re.compile("ab"), case=False)
++        expected = Series([True, True, False, False], dtype=expected_dtype)
++        tm.assert_series_equal(result, expected)
++    else:
++        with pytest.raises(
++            ValueError, match="cannot process flags argument with a compiled pattern"
++        ):
++            values.str.fullmatch(re.compile("ab"), case=False)
++
++    result = values.str.fullmatch(re.compile("ab", flags=re.IGNORECASE))
++    expected = Series([True, True, False, False], dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++    with pytest.raises(
++        ValueError, match="cannot process flags argument with a compiled pattern"
++    ):
++        values.str.fullmatch(re.compile("ab"), flags=re.IGNORECASE)
++
++
++@pytest.mark.parametrize(
++    "pat, case, na, exp",
++    # Note: keep cases in sync with
++    # pandas/tests/extension/test_arrow.py::test_str_fullmatch
++    [
++        ["abc", False, None, [True, False, False, None]],
++        ["Abc", True, None, [False, False, False, None]],
++        ["bc", True, None, [False, False, False, None]],
++        ["ab", False, None, [False, False, False, None]],
++        ["a[a-z]{2}", False, None, [True, False, False, None]],
++        ["A[a-z]{1}", True, None, [False, False, False, None]],
++        # GH Issue: #56652
++        ["abc$", False, None, [True, False, False, None]],
++        ["abc\\$", False, None, [False, True, False, None]],
++        ["Abc$", True, None, [False, False, False, None]],
++        ["Abc\\$", True, None, [False, False, False, None]],
++        # https://github.com/pandas-dev/pandas/issues/61072
++        ["(abc)|(abx)", True, None, [True, False, False, None]],
++        ["((abc)|(abx))", True, None, [True, False, False, None]],
++    ],
++)
++def test_str_fullmatch_extra_cases(any_string_dtype, pat, case, na, exp):
++    ser = Series(["abc", "abc$", "$abc", None], dtype=any_string_dtype)
++    result = ser.str.fullmatch(pat, case=case, na=na)
++
++    if any_string_dtype == "str":
++        # NaN propagates as False
++        exp[-1] = False
++        expected_dtype = bool
++    else:
++        expected_dtype = (
++            "object" if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
++        )
++    expected = Series(exp, dtype=expected_dtype)
++    tm.assert_series_equal(result, expected)
++
++
+ # --------------------------------------------------------------------------------------
+ # str.findall
+ # --------------------------------------------------------------------------------------
+diff --git a/pandas/tests/strings/test_strings.py b/pandas/tests/strings/test_strings.py
+index c729b910d05a7..5ac343b45c0c6 100644
+--- a/pandas/tests/strings/test_strings.py
++++ b/pandas/tests/strings/test_strings.py
+@@ -2,15 +2,20 @@
+     datetime,
+     timedelta,
+ )
++from pathlib import Path
+ 
+ import numpy as np
+ import pytest
+ 
++from pandas.compat import pa_version_under21p0
++
+ from pandas import (
++    NA,
+     DataFrame,
+     Index,
+     MultiIndex,
+     Series,
++    StringDtype,
+ )
+ import pandas._testing as tm
+ from pandas.core.strings.accessor import StringMethods
+@@ -238,8 +243,9 @@ def test_ismethods(method, expected, any_string_dtype):
+ @pytest.mark.parametrize(
+     "method, expected",
+     [
+-        ("isnumeric", [False, True, True, False, True, True, False]),
+-        ("isdecimal", [False, True, False, False, False, True, False]),
++        ("isnumeric", [False, True, True, True, False, True, True, False]),
++        ("isdecimal", [False, True, False, False, False, False, True, False]),
++        ("isdigit", [False, True, True, False, False, False, True, False]),
+     ],
+ )
+ def test_isnumeric_unicode(method, expected, any_string_dtype):
+@@ -248,18 +254,35 @@ def test_isnumeric_unicode(method, expected, any_string_dtype):
+     # 0x1378: ፸ ETHIOPIC NUMBER SEVENTY
+     # 0xFF13: ３ Em 3  # noqa: RUF003
+     ser = Series(
+-        ["A", "3", "¼", "★", "፸", "３", "four"], dtype=any_string_dtype  # noqa: RUF001
++        ["A", "3", "³", "¼", "★", "፸", "３", "four"],  # noqa: RUF001
++        dtype=any_string_dtype,
+     )
+     expected_dtype = (
+         "bool" if is_object_or_nan_string_dtype(any_string_dtype) else "boolean"
+     )
+     expected = Series(expected, dtype=expected_dtype)
++    if (
++        method == "isdigit"
++        and isinstance(ser.dtype, StringDtype)
++        and ser.dtype.storage == "pyarrow"
++        and not pa_version_under21p0
++    ):
++        # known difference in behavior between python and pyarrow unicode handling
++        # pyarrow 21+ considers ¼ and ፸ as a digit, while python does not
++        expected.iloc[3] = True
++        expected.iloc[5] = True
++
+     result = getattr(ser.str, method)()
+     tm.assert_series_equal(result, expected)
+ 
+     # compare with standard library
+-    expected = [getattr(item, method)() for item in ser]
+-    assert list(result) == expected
++    # (only for non-pyarrow storage given the above differences)
++    if any_string_dtype == "object" or (
++        isinstance(any_string_dtype, StringDtype)
++        and any_string_dtype.storage == "python"
++    ):
++        expected = [getattr(item, method)() for item in ser]
++        assert list(result) == expected
+ 
+ 
+ @pytest.mark.filterwarnings("ignore:Downcasting object dtype arrays:FutureWarning")
+@@ -776,3 +799,48 @@ def test_series_str_decode():
+     result = Series([b"x", b"y"]).str.decode(encoding="UTF-8", errors="strict")
+     expected = Series(["x", "y"], dtype="str")
+     tm.assert_series_equal(result, expected)
++
++
++def test_reversed_logical_ops(any_string_dtype):
++    # GH#60234
++    dtype = any_string_dtype
++    warn = None if dtype == object else DeprecationWarning
++    left = Series([True, False, False, True])
++    right = Series(["", "", "b", "c"], dtype=dtype)
++
++    msg = "operations between boolean dtype and"
++    with tm.assert_produces_warning(warn, match=msg):
++        result = left | right
++    expected = left | right.astype(bool)
++    tm.assert_series_equal(result, expected)
++
++    with tm.assert_produces_warning(warn, match=msg):
++        result = left & right
++    expected = left & right.astype(bool)
++    tm.assert_series_equal(result, expected)
++
++    with tm.assert_produces_warning(warn, match=msg):
++        result = left ^ right
++    expected = left ^ right.astype(bool)
++    tm.assert_series_equal(result, expected)
++
++
++def test_pathlib_path_division(any_string_dtype, request):
++    # GH#61940
++    if any_string_dtype == object:
++        mark = pytest.mark.xfail(
++            reason="with NA present we go through _masked_arith_op which "
++            "raises TypeError bc Path is not recognized by lib.is_scalar."
++        )
++        request.applymarker(mark)
++
++    item = Path("/Users/Irv/")
++    ser = Series(["A", "B", NA], dtype=any_string_dtype)
++
++    result = item / ser
++    expected = Series([item / "A", item / "B", ser.dtype.na_value], dtype=object)
++    tm.assert_series_equal(result, expected)
++
++    result = ser / item
++    expected = Series(["A" / item, "B" / item, ser.dtype.na_value], dtype=object)
++    tm.assert_series_equal(result, expected)
+diff --git a/pandas/tests/tools/test_to_datetime.py b/pandas/tests/tools/test_to_datetime.py
+index e7e8f3ac63cd1..e226dac88b882 100644
+--- a/pandas/tests/tools/test_to_datetime.py
++++ b/pandas/tests/tools/test_to_datetime.py
+@@ -22,6 +22,7 @@
+     iNaT,
+     parsing,
+ )
++from pandas.compat import PY314
+ from pandas.errors import (
+     OutOfBoundsDatetime,
+     OutOfBoundsTimedelta,
+@@ -57,6 +58,17 @@
+     r"alongside this."
+ )
+ 
++if PY314:
++    NOT_99 = ", not 99"
++    DAY_IS_OUT_OF_RANGE = (
++        r"day \d{1,2} must be in range 1\.\.\d{1,2} for month \d{1,2} in year \d{4}"
++        ", at position 0"
++    )
++else:
++    NOT_99 = ""
++    DAY_IS_OUT_OF_RANGE = "day is out of range for month, at position 0"
++
++
+ pytestmark = pytest.mark.filterwarnings(
+     "ignore:errors='ignore' is deprecated:FutureWarning"
+ )
+@@ -1451,7 +1463,7 @@ def test_datetime_invalid_scalar(self, value, format):
+                 r'^Given date string "a" not likely a datetime, at position 0$',
+                 r'^unconverted data remains when parsing with format "%H:%M:%S": "9", '
+                 f"at position 0. {PARSING_ERR_MSG}$",
+-                r"^second must be in 0..59: 00:01:99, at position 0$",
++                rf"^second must be in 0..59{NOT_99}: 00:01:99, at position 0$",
+             ]
+         )
+         with pytest.raises(ValueError, match=msg):
+@@ -1509,7 +1521,7 @@ def test_datetime_invalid_index(self, values, format):
+                 f"{PARSING_ERR_MSG}$",
+                 r'^unconverted data remains when parsing with format "%H:%M:%S": "9", '
+                 f"at position 0. {PARSING_ERR_MSG}$",
+-                r"^second must be in 0..59: 00:01:99, at position 0$",
++                rf"^second must be in 0..59{NOT_99}: 00:01:99, at position 0$",
+             ]
+         )
+         with pytest.raises(ValueError, match=msg):
+@@ -3012,7 +3024,10 @@ def test_day_not_in_month_coerce(self, cache, arg, format):
+         assert isna(to_datetime(arg, errors="coerce", format=format, cache=cache))
+ 
+     def test_day_not_in_month_raise(self, cache):
+-        msg = "day is out of range for month: 2015-02-29, at position 0"
++        if PY314:
++            msg = "day 29 must be in range 1..28 for month 2 in year 2015: 2015-02-29"
++        else:
++            msg = "day is out of range for month: 2015-02-29"
+         with pytest.raises(ValueError, match=msg):
+             to_datetime("2015-02-29", errors="raise", cache=cache)
+ 
+@@ -3022,12 +3037,12 @@ def test_day_not_in_month_raise(self, cache):
+             (
+                 "2015-02-29",
+                 "%Y-%m-%d",
+-                f"^day is out of range for month, at position 0. {PARSING_ERR_MSG}$",
++                f"^{DAY_IS_OUT_OF_RANGE}. {PARSING_ERR_MSG}$",
+             ),
+             (
+                 "2015-29-02",
+                 "%Y-%d-%m",
+-                f"^day is out of range for month, at position 0. {PARSING_ERR_MSG}$",
++                f"^{DAY_IS_OUT_OF_RANGE}. {PARSING_ERR_MSG}$",
+             ),
+             (
+                 "2015-02-32",
+@@ -3044,12 +3059,12 @@ def test_day_not_in_month_raise(self, cache):
+             (
+                 "2015-04-31",
+                 "%Y-%m-%d",
+-                f"^day is out of range for month, at position 0. {PARSING_ERR_MSG}$",
++                f"^{DAY_IS_OUT_OF_RANGE}. {PARSING_ERR_MSG}$",
+             ),
+             (
+                 "2015-31-04",
+                 "%Y-%d-%m",
+-                f"^day is out of range for month, at position 0. {PARSING_ERR_MSG}$",
++                f"^{DAY_IS_OUT_OF_RANGE}. {PARSING_ERR_MSG}$",
+             ),
+         ],
+     )
+diff --git a/pandas/tests/tslibs/test_parsing.py b/pandas/tests/tslibs/test_parsing.py
+index fb05a57056a83..2a3cc623e48ac 100644
+--- a/pandas/tests/tslibs/test_parsing.py
++++ b/pandas/tests/tslibs/test_parsing.py
+@@ -395,7 +395,8 @@ def test_hypothesis_delimited_date(
+         request.applymarker(
+             pytest.mark.xfail(
+                 reason="parse_datetime_string cannot reliably tell whether "
+-                "e.g. %m.%Y is a float or a date"
++                "e.g. %m.%Y is a float or a date",
++                strict=False,
+             )
+         )
+     date_string = test_datetime.strftime(date_format.replace(" ", delimiter))
+diff --git a/pandas/tests/util/test_assert_series_equal.py b/pandas/tests/util/test_assert_series_equal.py
+index 0d56885a1cb84..9cc9fb924ed67 100644
+--- a/pandas/tests/util/test_assert_series_equal.py
++++ b/pandas/tests/util/test_assert_series_equal.py
+@@ -215,24 +215,15 @@ def test_series_equal_numeric_values_mismatch(rtol):
+ 
+ 
+ def test_series_equal_categorical_values_mismatch(rtol, using_infer_string):
+-    if using_infer_string:
+-        msg = """Series are different
+-
+-Series values are different \\(66\\.66667 %\\)
+-\\[index\\]: \\[0, 1, 2\\]
+-\\[left\\]:  \\['a', 'b', 'c'\\]
+-Categories \\(3, str\\): \\[a, b, c\\]
+-\\[right\\]: \\['a', 'c', 'b'\\]
+-Categories \\(3, str\\): \\[a, b, c\\]"""
+-    else:
+-        msg = """Series are different
++    dtype = "str" if using_infer_string else "object"
++    msg = f"""Series are different
+ 
+ Series values are different \\(66\\.66667 %\\)
+ \\[index\\]: \\[0, 1, 2\\]
+ \\[left\\]:  \\['a', 'b', 'c'\\]
+-Categories \\(3, object\\): \\['a', 'b', 'c'\\]
++Categories \\(3, {dtype}\\): \\['a', 'b', 'c'\\]
+ \\[right\\]: \\['a', 'c', 'b'\\]
+-Categories \\(3, object\\): \\['a', 'b', 'c'\\]"""
++Categories \\(3, {dtype}\\): \\['a', 'b', 'c'\\]"""
+ 
+     s1 = Series(Categorical(["a", "b", "c"]))
+     s2 = Series(Categorical(["a", "c", "b"]))
+diff --git a/pandas/util/_print_versions.py b/pandas/util/_print_versions.py
+index 4ede5627c28b9..2d8df330f1aae 100644
+--- a/pandas/util/_print_versions.py
++++ b/pandas/util/_print_versions.py
+@@ -1,6 +1,5 @@
+ from __future__ import annotations
+ 
+-import codecs
+ import json
+ import locale
+ import os
+@@ -139,7 +138,7 @@ def show_versions(as_json: str | bool = False) -> None:
+             sys.stdout.writelines(json.dumps(j, indent=2))
+         else:
+             assert isinstance(as_json, str)  # needed for mypy
+-            with codecs.open(as_json, "wb", encoding="utf8") as f:
++            with open(as_json, "w", encoding="utf-8") as f:
+                 json.dump(j, f, indent=2)
+ 
+     else:
+diff --git a/pyproject.toml b/pyproject.toml
+index 085d5c3bce07a..d5a7f71391fef 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -49,6 +49,7 @@ classifiers = [
+     'Programming Language :: Python :: 3.11',
+     'Programming Language :: Python :: 3.12',
+     'Programming Language :: Python :: 3.13',
++    'Programming Language :: Python :: 3.14',
+     'Topic :: Scientific/Engineering'
+ ]
+ 
+@@ -151,7 +152,7 @@ parentdir_prefix = "pandas-"
+ setup = ['--vsenv'] # For Windows
+ 
+ [tool.cibuildwheel]
+-skip = "cp36-* cp37-* cp38-* pp* *_i686 *_ppc64le *_s390x"
++skip = "cp38-* *_i686 *_ppc64le *_s390x"
+ build-verbosity = "3"
+ environment = {LDFLAGS="-Wl,--strip-all"}
+ # pytz 2024.2 causing some failures

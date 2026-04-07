@@ -1,0 +1,770 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "dockerfile.security.missing-user-entrypoint.missing-user-entrypoint",
+    "rule_name": "dockerfile.security.missing-user-entrypoint.missing-user-entrypoint",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/dockerfile",
+    "line": 13,
+    "message": "By not specifying a USER, a program in the container may run as 'root'. This is a security hazard. If an attacker can control a process running as root, they may have control over the container. Ensure that the last USER in a Dockerfile is a USER other than 'root'.",
+    "cwe": [
+      269
+    ],
+    "extra": {
+      "end_line": 13,
+      "start_col": 1,
+      "end_col": 34,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "dockerfile"
+      ],
+      "owasp": [
+        "A04:2021 - Insecure Design"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A04_2021-Insecure_Design"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/templates/compose.html",
+    "line": 4,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 16,
+      "start_col": 3,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
+    "rule_name": "html.security.plaintext-http-link.plaintext-http-link",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "demos/blog/templates/compose.html",
+    "line": 8,
+    "message": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 8,
+      "start_col": 32,
+      "end_col": 128,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/319.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "demos/blog/templates/compose.html",
+    "line": 20,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 20,
+      "start_col": 3,
+      "end_col": 113,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/templates/create_author.html",
+    "line": 4,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 10,
+      "start_col": 1,
+      "end_col": 8,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/blog/templates/login.html",
+    "line": 8,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 13,
+      "start_col": 1,
+      "end_col": 8,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "javascript.browser.security.eval-detected.eval-detected",
+    "rule_name": "javascript.browser.security.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "demos/chat/static/chat.js",
+    "line": 58,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 58,
+      "start_col": 32,
+      "end_col": 58,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "browser"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "javascript.browser.security.eval-detected.eval-detected",
+    "rule_name": "javascript.browser.security.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "demos/chat/static/chat.js",
+    "line": 102,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 102,
+      "start_col": 33,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "browser"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/chat/templates/index.html",
+    "line": 16,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 27,
+      "start_col": 9,
+      "end_col": 16,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "demos/chat/templates/index.html",
+    "line": 30,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 30,
+      "start_col": 5,
+      "end_col": 116,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket",
+    "rule_name": "javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "demos/websocket/static/chat.js",
+    "line": 53,
+    "message": "Insecure WebSocket Detected. WebSocket Secure (wss) should be used for all WebSocket connections.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 53,
+      "start_col": 20,
+      "end_col": 25,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "regex"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A02_2021-Cryptographic_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "rule_name": "python.django.security.django-no-csrf-token.django-no-csrf-token",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "demos/websocket/templates/index.html",
+    "line": 16,
+    "message": "Manually-created forms in django templates should specify a csrf_token to prevent CSRF attacks.",
+    "cwe": [],
+    "extra": {
+      "end_line": 27,
+      "start_col": 9,
+      "end_col": 16,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "django"
+      ],
+      "owasp": null,
+      "references": [
+        "https://docs.djangoproject.com/en/4.2/howto/csrf/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "html.security.audit.missing-integrity.missing-integrity",
+    "rule_name": "html.security.audit.missing-integrity.missing-integrity",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "demos/websocket/templates/index.html",
+    "line": 30,
+    "message": "This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for example from a CDN) are delivered without unexpected manipulation. Without this attribute, if an attacker can modify the externally hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 'integrity' attribute for all externally hosted files.",
+    "cwe": [
+      353
+    ],
+    "extra": {
+      "end_line": 30,
+      "start_col": 5,
+      "end_col": 115,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "html"
+      ],
+      "owasp": [
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket",
+    "rule_name": "javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "docs/releases/v2.2.0.rst",
+    "line": 107,
+    "message": "Insecure WebSocket Detected. WebSocket Secure (wss) should be used for all WebSocket connections.",
+    "cwe": [
+      319
+    ],
+    "extra": {
+      "end_line": 107,
+      "start_col": 29,
+      "end_col": 34,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "regex"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A02_2021-Cryptographic_Failures"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "maint/vm/windows/bootstrap.py",
+    "line": 48,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 48,
+      "start_col": 16,
+      "end_col": 35,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "setup.py",
+    "line": 28,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 28,
+      "start_col": 5,
+      "end_col": 23,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "tornado/__init__.py",
+    "line": 66,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 66,
+      "start_col": 16,
+      "end_col": 61,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers",
+    "rule_name": "python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "tornado/netutil.py",
+    "line": 633,
+    "message": "The 'ssl' module disables insecure cipher suites by default. Therefore, use of 'set_ciphers()' should only be used when you have very specialized requirements. Otherwise, you risk lowering the security of the SSL channel.",
+    "cwe": [
+      326
+    ],
+    "extra": {
+      "end_line": 633,
+      "start_col": 9,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "ssl"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/ssl.html#cipher-selection",
+        "https://docs.python.org/3/library/ssl.html#ssl.SSLContext.set_ciphers"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+    "rule_name": "python.lang.security.audit.exec-detected.exec-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "tornado/util.py",
+    "line": 144,
+    "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 144,
+      "start_col": 5,
+      "end_col": 26,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "tornado/web.py",
+    "line": 1740,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 1740,
+      "start_col": 18,
+      "end_col": 32,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "tornado",
+    "project_version": "6.5.0b1",
+    "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "rule_name": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "tornado/websocket.py",
+    "line": 914,
+    "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "end_line": 914,
+      "start_col": 16,
+      "end_col": 30,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2017 - Sensitive Data Exposure",
+        "A02:2021 - Cryptographic Failures"
+      ],
+      "references": [
+        "https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html",
+        "https://www.trendmicro.com/vinfo/us/security/news/vulnerabilities-and-exploits/sha-1-collision-signals-the-end-of-the-algorithm-s-viability",
+        "http://2012.sharcs.org/slides/stevens.pdf",
+        "https://pycryptodome.readthedocs.io/en/latest/src/hash/sha3_256.html"
+      ],
+      "bandit_code": "B303",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/d5f8fa0d89d7b11442fc6ec80ca42953974354c8/bandit/blacklists/calls.py#L59",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

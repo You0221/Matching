@@ -1,0 +1,1071 @@
+diff --git a/.github/workflows/test.yml b/.github/workflows/test.yml
+index 7329ecdb93..6741867c3e 100644
+--- a/.github/workflows/test.yml
++++ b/.github/workflows/test.yml
+@@ -57,7 +57,7 @@ jobs:
+             tox_env: py312-full
+           - python: '3.13'
+             tox_env: py313-full
+-          - python: '3.14.0-alpha.1 - 3.14'
++          - python: '3.14.0-beta.1 - 3.14'
+             tox_env: py314-full
+           - python: 'pypy-3.10'
+             # Pypy is a lot slower due to jit warmup costs, so don't run the
+diff --git a/docs/releases.rst b/docs/releases.rst
+index 1e65c337e2..a37951d96c 100644
+--- a/docs/releases.rst
++++ b/docs/releases.rst
+@@ -4,6 +4,8 @@ Release notes
+ .. toctree::
+    :maxdepth: 2
+ 
++   releases/v6.5.2
++   releases/v6.5.1
+    releases/v6.5.0
+    releases/v6.4.2
+    releases/v6.4.1
+diff --git a/docs/releases/v6.5.0.rst b/docs/releases/v6.5.0.rst
+index 3a7907afac..e8dd02c958 100644
+--- a/docs/releases/v6.5.0.rst
++++ b/docs/releases/v6.5.0.rst
+@@ -1,14 +1,24 @@
+ What's new in Tornado 6.5.0
+ ===========================
+ 
+-In progress
+------------
++May 15, 2025
++------------
++
++Security Improvements
++~~~~~~~~~~~~~~~~~~~~~
++
++- Previously, malformed ``multipart-form-data`` requests could log multiple warnings and
++  constitute a denial-of-service attack. Now an exception is raised at the first error, so there
++  is only one log message per request. This fixes
++  `CVE-2025-47287 <https://github.com/tornadoweb/tornado/security/advisories/GHSA-7cx3-6m66-7c5m>`_.
+ 
+ General Changes
+ ~~~~~~~~~~~~~~~
+ 
+ - Python 3.14 is now supported. Older versions of Tornado will work on Python 3.14 but may log
+   deprecation warnings.
++- The free-threading mode of Python 3.13 is now supported on an experimental basis. Prebuilt
++  wheels are not yet available for this configuration, but it can be built from source.
+ - The minimum supported Python version is 3.9.
+ 
+ Deprecation Notices
+@@ -16,7 +26,7 @@ Deprecation Notices
+ 
+ - Support for ``obs-fold`` continuation lines in HTTP headers is deprecated and will be removed in
+   Tornado 7.0, as is the use of carriage returns without line feeds as header separators.
+-- The ``callback`` argument to ``websocket_connect`` is deprecated and will be removed in
++- The ``callback`` argument to `.websocket_connect` is deprecated and will be removed in
+   Tornado 7.0. Note that ``on_message_callback`` is not deprecated.
+ - The ``log_message`` and ``args`` attributes of `tornado.web.HTTPError` are deprecated. Use the
+   new ``get_message`` method instead.
+@@ -38,8 +48,8 @@ Type Annotation Changes
+ - `.RequestHandler.get_cookie` now has more accurate types.
+ - The return type of `.UIModule.render` may now be either `str` or `bytes`.
+ 
+-``tornado.httputil``
+-~~~~~~~~~~~~~~~~~~~~
++`tornado.httputil`
++~~~~~~~~~~~~~~~~~~
+ 
+ - Support for ``obs-fold`` continuation lines in HTTP headers is deprecated and will be removed in
+   Tornado 7.0, as is the use of carriage returns without line feeds as header separators.
+@@ -53,14 +63,20 @@ Type Annotation Changes
+   error to send more than one ``Host`` header, or to omit a ``Host`` header for a request that is
+   not using HTTP/1.0.
+ 
+-``tornado.netutil``
+-~~~~~~~~~~~~~~~~~~~
++`tornado.ioloop`
++~~~~~~~~~~~~~~~~
+ 
+-- ``.bind_unix_socket`` now supports the Linux abstract namespace.
++- Fixed a bug in which `contextvars` that were set when the event loop was created were not
++  available inside the event loop on Windows.
+ 
++`tornado.netutil`
++~~~~~~~~~~~~~~~~~
+ 
+-``tornado.platform.twisted``
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++- `.bind_unix_socket` now supports the Linux abstract namespace.
++
++
++`tornado.platform.twisted`
++~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ - ``TwistedResolver`` has been deleted. It was already deprecated and scheduled for removal
+   in Tornado 7.0, but due to the adoption of RFC 8482 it no longer works for most
+@@ -70,19 +86,19 @@ Type Annotation Changes
+   and it is also deprecated. Most users should switch to the default resolver, which uses
+   threads.
+ 
+-``tornado.web``
+-~~~~~~~~~~~~~~~
++`tornado.web`
++~~~~~~~~~~~~~
+ 
+ - The set of characters allowed in (outgoing) HTTP headers now matches the RFCs. Specifically, tab
+   characters are now allowed and DEL is not.
+ - Invalid ``If-Modified-Since`` headers are now ignored instead of causing a 500 error.
+-- ``%`` characters in the log message of ``tornado.web.HTTPError`` are no longer doubled when no
++- ``%`` characters in the log message of `tornado.web.HTTPError` are no longer doubled when no
+   additional arguments are passed. This matches the behavior of `logging.LogRecord`. A new method
+   ``get_message`` has been added to ``HTTPError`` to allow access to the fully-substituted message;
+   directly accessing ``log_message`` and ``args`` is deprecated.
+ 
+-``tornado.websocket``
+-~~~~~~~~~~~~~~~~~~~~~
++`tornado.websocket`
++~~~~~~~~~~~~~~~~~~~
+ 
+ - Some bugs involving ``ping_interval`` and ``ping_timeout`` have been fixed. Setting the
+   ``ping_timeout`` greater than the ``ping_interval`` is no longer supported. The default
+diff --git a/docs/releases/v6.5.1.rst b/docs/releases/v6.5.1.rst
+new file mode 100644
+index 0000000000..17a7549dae
+--- /dev/null
++++ b/docs/releases/v6.5.1.rst
+@@ -0,0 +1,11 @@
++What's new in Tornado 6.5.1
++===========================
++
++May 22, 2025
++------------
++
++Bug fixes
++~~~~~~~~~
++
++- Fixed a bug in ``multipart/form-data`` parsing that could incorrectly reject filenames containing
++  characters above U+00FF (i.e. most characters outside the Latin alphabet).
+diff --git a/docs/releases/v6.5.2.rst b/docs/releases/v6.5.2.rst
+new file mode 100644
+index 0000000000..cdec79f7c6
+--- /dev/null
++++ b/docs/releases/v6.5.2.rst
+@@ -0,0 +1,17 @@
++What's new in Tornado 6.5.2
++===========================
++
++Aug 8, 2025
++-----------
++
++Bug fixes
++~~~~~~~~~
++
++- Fixed a bug that resulted in WebSocket pings not being sent at the configured interval.
++- Improved logging for invalid ``Host`` headers. This was previouisly logged as an uncaught
++  exception with a stack trace, now it is simply a 400 response (logged as a warning in the
++  access log)
++- Restored the ``host`` argument to ``.HTTPServerRequest``. This argument is deprecated
++  and will be removed in the future, but its removal with no warning in 6.5.0 was a mistake.
++- Removed a debugging print statement that was left in the code.
++- Improved type hints for ``gen.multi``.
+\ No newline at end of file
+diff --git a/docs/web.rst b/docs/web.rst
+index 956336bda0..00066ccdfd 100644
+--- a/docs/web.rst
++++ b/docs/web.rst
+@@ -224,14 +224,22 @@
+            of `UIModule` or UI methods to be made available to templates.
+            May be set to a module, dictionary, or a list of modules
+            and/or dicts.  See :ref:`ui-modules` for more details.
+-         * ``websocket_ping_interval``: If set to a number, all websockets will
+-           be pinged every n seconds. This can help keep the connection alive
+-           through certain proxy servers which close idle connections, and it
+-           can detect if the websocket has failed without being properly closed.
+-         * ``websocket_ping_timeout``: If the ping interval is set, and the
+-           server doesn't receive a 'pong' in this many seconds, it will close
+-           the websocket. The default is three times the ping interval, with a
+-           minimum of 30 seconds. Ignored if the ping interval is not set.
++         * ``websocket_ping_interval``: If the ping interval has a non-zero
++           value, a ping will be sent periodically every
++           ``websocket_ping_interval`` seconds, and the connection will be
++           closed if a response is not received before the
++           ``websocket_ping_timeout``.
++           This can help keep the connection alive through certain proxy
++           servers which close idle connections, and it can detect if the
++           websocket has failed without being properly closed.
++         * ``websocket_ping_timeout``: For use with ``websocket_ping_interval``,
++           if the server does not receive a pong within this many seconds, it
++           will close the websocket_ping_timeout.
++           The default timeout is equal to the ping interval. The ping timeout
++           will be turned off if the ping interval is not set or if the
++           timeout is set to ``0``.
++           This can help to detect disconnected clients to avoid keeping
++           inactive connections open.
+ 
+          Authentication and security settings:
+ 
+diff --git a/requirements.txt b/requirements.txt
+index ed280c0646..b32a556200 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -12,7 +12,7 @@ black==24.4.2
+     # via -r requirements.in
+ build==1.2.1
+     # via pip-tools
+-cachetools==5.3.3
++cachetools==5.5.2
+     # via tox
+ certifi==2024.7.4
+     # via requests
+@@ -32,7 +32,7 @@ docutils==0.20.1
+     # via
+     #   sphinx
+     #   sphinx-rtd-theme
+-filelock==3.14.0
++filelock==3.18.0
+     # via
+     #   tox
+     #   virtualenv
+@@ -54,7 +54,7 @@ mypy-extensions==1.0.0
+     # via
+     #   black
+     #   mypy
+-packaging==24.1
++packaging==25.0
+     # via
+     #   black
+     #   build
+@@ -65,7 +65,7 @@ pathspec==0.12.1
+     # via black
+ pip-tools==7.4.1
+     # via -r requirements.in
+-platformdirs==4.2.2
++platformdirs==4.3.8
+     # via
+     #   black
+     #   tox
+@@ -78,7 +78,7 @@ pyflakes==3.2.0
+     # via flake8
+ pygments==2.18.0
+     # via sphinx
+-pyproject-api==1.6.1
++pyproject-api==1.9.1
+     # via tox
+ pyproject-hooks==1.1.0
+     # via
+@@ -109,7 +109,7 @@ sphinxcontrib-qthelp==1.0.7
+     # via sphinx
+ sphinxcontrib-serializinghtml==1.1.10
+     # via sphinx
+-tox==4.15.1
++tox==4.26.0
+     # via -r requirements.in
+ types-pycurl==7.45.3.20240421
+     # via -r requirements.in
+@@ -117,7 +117,7 @@ typing-extensions==4.12.2
+     # via mypy
+ urllib3==2.2.2
+     # via requests
+-virtualenv==20.26.6
++virtualenv==20.31.2
+     # via tox
+ wheel==0.43.0
+     # via pip-tools
+diff --git a/setup.py b/setup.py
+index de6cd3f0ae..e2a6991242 100644
+--- a/setup.py
++++ b/setup.py
+@@ -51,7 +51,7 @@
+             # Use the stable ABI so our wheels are compatible across python
+             # versions.
+             py_limited_api=can_use_limited_api,
+-            define_macros=[("Py_LIMITED_API", "0x03090000")],
++            define_macros=[("Py_LIMITED_API", "0x03090000")] if can_use_limited_api else [],
+         )
+     ]
+ 
+diff --git a/tornado/__init__.py b/tornado/__init__.py
+index d3ad3beae0..216fef69da 100644
+--- a/tornado/__init__.py
++++ b/tornado/__init__.py
+@@ -22,8 +22,8 @@
+ # is zero for an official release, positive for a development branch,
+ # or negative for a release candidate or beta (after the base version
+ # number has been incremented)
+-version = "6.5b1"
+-version_info = (6, 5, 0, -99)
++version = "6.5.2"
++version_info = (6, 5, 2, 0)
+ 
+ import importlib
+ import typing
+diff --git a/tornado/gen.py b/tornado/gen.py
+index 3dab733c6a..01e7f8a06f 100644
+--- a/tornado/gen.py
++++ b/tornado/gen.py
+@@ -437,6 +437,20 @@ def __anext__(self) -> Future:
+         return self.next()
+ 
+ 
++@overload
++def multi(
++    children: Sequence[_Yieldable],
++    quiet_exceptions: Union[Type[Exception], Tuple[Type[Exception], ...]] = (),
++) -> Future[List]: ...
++
++
++@overload
++def multi(
++    children: Mapping[Any, _Yieldable],
++    quiet_exceptions: Union[Type[Exception], Tuple[Type[Exception], ...]] = (),
++) -> Future[Dict]: ...
++
++
+ def multi(
+     children: Union[Sequence[_Yieldable], Mapping[Any, _Yieldable]],
+     quiet_exceptions: "Union[Type[Exception], Tuple[Type[Exception], ...]]" = (),
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index 8dd0c9b6e2..5b0dd1b8d0 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -66,6 +66,9 @@ def __exit__(
+     ) -> None:
+         if value is not None:
+             assert typ is not None
++            # Let HTTPInputError pass through to higher-level handler
++            if isinstance(value, httputil.HTTPInputError):
++                return None
+             self.logger.error("Uncaught exception", exc_info=(typ, value, tb))
+             raise _QuietException
+ 
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index 7044aca02b..d3dce21f5c 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -34,7 +34,6 @@
+ from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
+ 
+ from tornado.escape import native_str, parse_qs_bytes, utf8, to_unicode
+-from tornado.log import gen_log
+ from tornado.util import ObjectDict, unicode_type
+ 
+ 
+@@ -71,6 +70,10 @@
+ # To be used with str.strip() and related methods.
+ HTTP_WHITESPACE = " \t"
+ 
++# Roughly the inverse of RequestHandler._VALID_HEADER_CHARS, but permits
++# chars greater than \xFF (which may appear after decoding utf8).
++_FORBIDDEN_HEADER_CHARS_RE = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
++
+ 
+ class _ABNF:
+     """Class that holds a subset of ABNF rules from RFC 9110 and friends.
+@@ -197,14 +200,18 @@ def __init__(self, *args: typing.Any, **kwargs: str) -> None:  # noqa: F811
+ 
+     # new public methods
+ 
+-    def add(self, name: str, value: str) -> None:
++    def add(self, name: str, value: str, *, _chars_are_bytes: bool = True) -> None:
+         """Adds a new value for the given key."""
+         if not _ABNF.field_name.fullmatch(name):
+             raise HTTPInputError("Invalid header name %r" % name)
+-        if not _ABNF.field_value.fullmatch(to_unicode(value)):
+-            # TODO: the fact we still support bytes here (contrary to type annotations)
+-            # and still test for it should probably be changed.
+-            raise HTTPInputError("Invalid header value %r" % value)
++        if _chars_are_bytes:
++            if not _ABNF.field_value.fullmatch(to_unicode(value)):
++                # TODO: the fact we still support bytes here (contrary to type annotations)
++                # and still test for it should probably be changed.
++                raise HTTPInputError("Invalid header value %r" % value)
++        else:
++            if _FORBIDDEN_HEADER_CHARS_RE.search(value):
++                raise HTTPInputError("Invalid header value %r" % value)
+         norm_name = _normalize_header(name)
+         self._last_key = norm_name
+         if norm_name in self:
+@@ -230,7 +237,7 @@ def get_all(self) -> Iterable[Tuple[str, str]]:
+             for value in values:
+                 yield (name, value)
+ 
+-    def parse_line(self, line: str) -> None:
++    def parse_line(self, line: str, *, _chars_are_bytes: bool = True) -> None:
+         r"""Updates the dictionary with a single header line.
+ 
+         >>> h = HTTPHeaders()
+@@ -264,8 +271,12 @@ def parse_line(self, line: str) -> None:
+             if self._last_key is None:
+                 raise HTTPInputError("first header line cannot start with whitespace")
+             new_part = " " + line.strip(HTTP_WHITESPACE)
+-            if not _ABNF.field_value.fullmatch(new_part[1:]):
+-                raise HTTPInputError("Invalid header continuation %r" % new_part)
++            if _chars_are_bytes:
++                if not _ABNF.field_value.fullmatch(new_part[1:]):
++                    raise HTTPInputError("Invalid header continuation %r" % new_part)
++            else:
++                if _FORBIDDEN_HEADER_CHARS_RE.search(new_part):
++                    raise HTTPInputError("Invalid header value %r" % new_part)
+             self._as_list[self._last_key][-1] += new_part
+             self._dict[self._last_key] += new_part
+         else:
+@@ -273,10 +284,12 @@ def parse_line(self, line: str) -> None:
+                 name, value = line.split(":", 1)
+             except ValueError:
+                 raise HTTPInputError("no colon in header line")
+-            self.add(name, value.strip(HTTP_WHITESPACE))
++            self.add(
++                name, value.strip(HTTP_WHITESPACE), _chars_are_bytes=_chars_are_bytes
++            )
+ 
+     @classmethod
+-    def parse(cls, headers: str) -> "HTTPHeaders":
++    def parse(cls, headers: str, *, _chars_are_bytes: bool = True) -> "HTTPHeaders":
+         """Returns a dictionary from HTTP header text.
+ 
+         >>> h = HTTPHeaders.parse("Content-Type: text/html\\r\\nContent-Length: 42\\r\\n")
+@@ -289,17 +302,31 @@ def parse(cls, headers: str) -> "HTTPHeaders":
+            mix of `KeyError`, and `ValueError`.
+ 
+         """
++        # _chars_are_bytes is a hack. This method is used in two places, HTTP headers (in which
++        # non-ascii characters are to be interpreted as latin-1) and multipart/form-data (in which
++        # they are to be interpreted as utf-8). For historical reasons, this method handled this by
++        # expecting both callers to decode the headers to strings before parsing them. This wasn't a
++        # problem until we started doing stricter validation of the characters allowed in HTTP
++        # headers (using ABNF rules defined in terms of byte values), which inadvertently started
++        # disallowing non-latin1 characters in multipart/form-data filenames.
++        #
++        # This method should have accepted bytes and a desired encoding, but this change is being
++        # introduced in a patch release that shouldn't change the API. Instead, the _chars_are_bytes
++        # flag decides whether to use HTTP-style ABNF validation (treating the string as bytes
++        # smuggled through the latin1 encoding) or to accept any non-control unicode characters
++        # as required by multipart/form-data. This method will change to accept bytes in a future
++        # release.
+         h = cls()
+ 
+         start = 0
+         while True:
+             lf = headers.find("\n", start)
+             if lf == -1:
+-                h.parse_line(headers[start:])
++                h.parse_line(headers[start:], _chars_are_bytes=_chars_are_bytes)
+                 break
+             line = headers[start : lf + 1]
+             start = lf + 1
+-            h.parse_line(line)
++            h.parse_line(line, _chars_are_bytes=_chars_are_bytes)
+         return h
+ 
+     # MutableMapping abstract method implementations.
+@@ -432,6 +459,11 @@ class HTTPServerRequest:
+ 
+     .. versionchanged:: 4.0
+        Moved from ``tornado.httpserver.HTTPRequest``.
++
++    .. deprecated:: 6.5.2
++       The ``host`` argument to the ``HTTPServerRequest`` constructor is deprecated. Use
++       ``headers["Host"]`` instead. This argument was mistakenly removed in Tornado 6.5.0 and
++       temporarily restored in 6.5.2.
+     """
+ 
+     path = None  # type: str
+@@ -447,7 +479,7 @@ def __init__(
+         version: str = "HTTP/1.0",
+         headers: Optional[HTTPHeaders] = None,
+         body: Optional[bytes] = None,
+-        # host: Optional[str] = None,
++        host: Optional[str] = None,
+         files: Optional[Dict[str, List["HTTPFile"]]] = None,
+         connection: Optional["HTTPConnection"] = None,
+         start_line: Optional["RequestStartLine"] = None,
+@@ -467,7 +499,7 @@ def __init__(
+         self.protocol = getattr(context, "protocol", "http")
+ 
+         try:
+-            self.host = self.headers["Host"]
++            self.host = host or self.headers["Host"]
+         except KeyError:
+             if version == "HTTP/1.0":
+                 # HTTP/1.0 does not require the Host header.
+@@ -475,7 +507,6 @@ def __init__(
+             else:
+                 raise HTTPInputError("Missing Host header")
+         if not _ABNF.host.fullmatch(self.host):
+-            print(_ABNF.host.pattern)
+             raise HTTPInputError("Invalid Host header: %r" % self.host)
+         if "," in self.host:
+             # https://www.rfc-editor.org/rfc/rfc9112.html#name-request-target
+@@ -884,25 +915,22 @@ def parse_body_arguments(
+     """
+     if content_type.startswith("application/x-www-form-urlencoded"):
+         if headers and "Content-Encoding" in headers:
+-            gen_log.warning(
+-                "Unsupported Content-Encoding: %s", headers["Content-Encoding"]
++            raise HTTPInputError(
++                "Unsupported Content-Encoding: %s" % headers["Content-Encoding"]
+             )
+-            return
+         try:
+             # real charset decoding will happen in RequestHandler.decode_argument()
+             uri_arguments = parse_qs_bytes(body, keep_blank_values=True)
+         except Exception as e:
+-            gen_log.warning("Invalid x-www-form-urlencoded body: %s", e)
+-            uri_arguments = {}
++            raise HTTPInputError("Invalid x-www-form-urlencoded body: %s" % e) from e
+         for name, values in uri_arguments.items():
+             if values:
+                 arguments.setdefault(name, []).extend(values)
+     elif content_type.startswith("multipart/form-data"):
+         if headers and "Content-Encoding" in headers:
+-            gen_log.warning(
+-                "Unsupported Content-Encoding: %s", headers["Content-Encoding"]
++            raise HTTPInputError(
++                "Unsupported Content-Encoding: %s" % headers["Content-Encoding"]
+             )
+-            return
+         try:
+             fields = content_type.split(";")
+             for field in fields:
+@@ -911,9 +939,9 @@ def parse_body_arguments(
+                     parse_multipart_form_data(utf8(v), body, arguments, files)
+                     break
+             else:
+-                raise ValueError("multipart boundary not found")
++                raise HTTPInputError("multipart boundary not found")
+         except Exception as e:
+-            gen_log.warning("Invalid multipart/form-data: %s", e)
++            raise HTTPInputError("Invalid multipart/form-data: %s" % e) from e
+ 
+ 
+ def parse_multipart_form_data(
+@@ -942,26 +970,22 @@ def parse_multipart_form_data(
+         boundary = boundary[1:-1]
+     final_boundary_index = data.rfind(b"--" + boundary + b"--")
+     if final_boundary_index == -1:
+-        gen_log.warning("Invalid multipart/form-data: no final boundary")
+-        return
++        raise HTTPInputError("Invalid multipart/form-data: no final boundary found")
+     parts = data[:final_boundary_index].split(b"--" + boundary + b"\r\n")
+     for part in parts:
+         if not part:
+             continue
+         eoh = part.find(b"\r\n\r\n")
+         if eoh == -1:
+-            gen_log.warning("multipart/form-data missing headers")
+-            continue
+-        headers = HTTPHeaders.parse(part[:eoh].decode("utf-8"))
++            raise HTTPInputError("multipart/form-data missing headers")
++        headers = HTTPHeaders.parse(part[:eoh].decode("utf-8"), _chars_are_bytes=False)
+         disp_header = headers.get("Content-Disposition", "")
+         disposition, disp_params = _parse_header(disp_header)
+         if disposition != "form-data" or not part.endswith(b"\r\n"):
+-            gen_log.warning("Invalid multipart/form-data")
+-            continue
++            raise HTTPInputError("Invalid multipart/form-data")
+         value = part[eoh + 4 : -2]
+         if not disp_params.get("name"):
+-            gen_log.warning("multipart/form-data value missing name")
+-            continue
++            raise HTTPInputError("multipart/form-data missing name")
+         name = disp_params["name"]
+         if disp_params.get("filename"):
+             ctype = headers.get("Content-Type", "application/unknown")
+diff --git a/tornado/platform/asyncio.py b/tornado/platform/asyncio.py
+index 4635fecb26..a7a2e700c1 100644
+--- a/tornado/platform/asyncio.py
++++ b/tornado/platform/asyncio.py
+@@ -25,6 +25,7 @@
+ import asyncio
+ import atexit
+ import concurrent.futures
++import contextvars
+ import errno
+ import functools
+ import select
+@@ -472,6 +473,8 @@ class SelectorThread:
+     _closed = False
+ 
+     def __init__(self, real_loop: asyncio.AbstractEventLoop) -> None:
++        self._main_thread_ctx = contextvars.copy_context()
++
+         self._real_loop = real_loop
+ 
+         self._select_cond = threading.Condition()
+@@ -491,7 +494,8 @@ async def thread_manager_anext() -> None:
+         # clean up if we get to this point but the event loop is closed without
+         # starting.
+         self._real_loop.call_soon(
+-            lambda: self._real_loop.create_task(thread_manager_anext())
++            lambda: self._real_loop.create_task(thread_manager_anext()),
++            context=self._main_thread_ctx,
+         )
+ 
+         self._readers: Dict[_FileDescriptorLike, Callable] = {}
+@@ -618,7 +622,9 @@ def _run_select(self) -> None:
+                     raise
+ 
+             try:
+-                self._real_loop.call_soon_threadsafe(self._handle_select, rs, ws)
++                self._real_loop.call_soon_threadsafe(
++                    self._handle_select, rs, ws, context=self._main_thread_ctx
++                )
+             except RuntimeError:
+                 # "Event loop is closed". Swallow the exception for
+                 # consistency with PollIOLoop (and logical consistency
+diff --git a/tornado/routing.py b/tornado/routing.py
+index 245070c797..ff833d5e74 100644
+--- a/tornado/routing.py
++++ b/tornado/routing.py
+@@ -279,8 +279,8 @@ def finish(self) -> None:
+         self.delegate.finish()
+ 
+     def on_connection_close(self) -> None:
+-        assert self.delegate is not None
+-        self.delegate.on_connection_close()
++        if self.delegate is not None:
++            self.delegate.on_connection_close()
+ 
+ 
+ class _DefaultMessageDelegate(httputil.HTTPMessageDelegate):
+diff --git a/tornado/speedups.c b/tornado/speedups.c
+index 525d66034c..992c29c15b 100644
+--- a/tornado/speedups.c
++++ b/tornado/speedups.c
+@@ -51,20 +51,36 @@ static PyObject* websocket_mask(PyObject* self, PyObject* args) {
+     return result;
+ }
+ 
++static int speedups_exec(PyObject *module) {
++    return 0;
++}
++
+ static PyMethodDef methods[] = {
+     {"websocket_mask",  websocket_mask, METH_VARARGS, ""},
+     {NULL, NULL, 0, NULL}
+ };
+ 
++static PyModuleDef_Slot slots[] = {
++    {Py_mod_exec, speedups_exec},
++#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030c0000) || Py_LIMITED_API >= 0x030c0000
++    {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
++#endif
++#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030d0000) || Py_LIMITED_API >= 0x030d0000
++    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
++#endif
++    {0, NULL}
++};
++
+ static struct PyModuleDef speedupsmodule = {
+    PyModuleDef_HEAD_INIT,
+    "speedups",
+    NULL,
+-   -1,
+-   methods
++   0,
++   methods,
++   slots,
+ };
+ 
+ PyMODINIT_FUNC
+ PyInit_speedups(void) {
+-    return PyModule_Create(&speedupsmodule);
++    return PyModuleDef_Init(&speedupsmodule);
+ }
+diff --git a/tornado/test/asyncio_test.py b/tornado/test/asyncio_test.py
+index 6c355c04fe..f33c5f53c3 100644
+--- a/tornado/test/asyncio_test.py
++++ b/tornado/test/asyncio_test.py
+@@ -11,6 +11,7 @@
+ # under the License.
+ 
+ import asyncio
++import contextvars
+ import threading
+ import time
+ import unittest
+@@ -25,8 +26,14 @@
+     to_asyncio_future,
+     AddThreadSelectorEventLoop,
+ )
+-from tornado.testing import AsyncTestCase, gen_test, setup_with_context_manager
++from tornado.testing import (
++    AsyncTestCase,
++    gen_test,
++    setup_with_context_manager,
++    AsyncHTTPTestCase,
++)
+ from tornado.test.util import ignore_deprecation
++from tornado.web import Application, RequestHandler
+ 
+ 
+ class AsyncIOLoopTest(AsyncTestCase):
+@@ -261,3 +268,31 @@ def test_tornado_accessor(self):
+             asyncio.set_event_loop_policy(self.AnyThreadEventLoopPolicy())
+             self.assertIsInstance(self.executor.submit(IOLoop.current).result(), IOLoop)
+             self.executor.submit(lambda: asyncio.get_event_loop().close()).result()  # type: ignore
++
++
++class SelectorThreadContextvarsTest(AsyncHTTPTestCase):
++    ctx_value = "foo"
++    test_endpoint = "/"
++    tornado_test_ctx = contextvars.ContextVar("tornado_test_ctx", default="default")
++    tornado_test_ctx.set(ctx_value)
++
++    def get_app(self) -> Application:
++        tornado_test_ctx = self.tornado_test_ctx
++
++        class Handler(RequestHandler):
++            async def get(self):
++                # On the Windows platform,
++                # when a asyncio.events.Handle is created
++                # in the SelectorThread without providing a context,
++                # it will copy the current thread's context,
++                # which can lead to the loss of the main thread's context
++                # when executing the handle.
++                # Therefore, it is necessary to
++                # save a copy of the main thread's context in the SelectorThread
++                # for creating the handle.
++                self.write(tornado_test_ctx.get())
++
++        return Application([(self.test_endpoint, Handler)])
++
++    def test_context_vars(self):
++        self.assertEqual(self.ctx_value, self.fetch(self.test_endpoint).body.decode())
+diff --git a/tornado/test/httpclient_test.py b/tornado/test/httpclient_test.py
+index 08c809a2fc..77c0d6eb9b 100644
+--- a/tornado/test/httpclient_test.py
++++ b/tornado/test/httpclient_test.py
+@@ -442,7 +442,7 @@ def test_invalid_gzip(self):
+         # test if client hangs on tricky invalid gzip
+         # curl/simple httpclient have different behavior (exception, logging)
+         with ExpectLog(
+-            app_log, "(Uncaught exception|Exception in callback)", required=False
++            gen_log, ".*Malformed HTTP message.*unconsumed gzip data", required=False
+         ):
+             try:
+                 response = self.fetch("/invalid_gzip")
+diff --git a/tornado/test/httpserver_test.py b/tornado/test/httpserver_test.py
+index 570cb64ca6..008078ed97 100644
+--- a/tornado/test/httpserver_test.py
++++ b/tornado/test/httpserver_test.py
+@@ -462,6 +462,18 @@ def test_malformed_headers(self):
+             self.io_loop.add_timeout(datetime.timedelta(seconds=0.05), self.stop)
+             self.wait()
+ 
++    def test_invalid_host_header_with_whitespace(self):
++        with ExpectLog(
++            gen_log, ".*Malformed HTTP message.*Invalid Host header", level=logging.INFO
++        ):
++            self.stream.write(b"GET / HTTP/1.0\r\nHost: foo bar\r\n\r\n")
++            start_line, headers, response = self.io_loop.run_sync(
++                lambda: read_stream_body(self.stream)
++            )
++            self.assertEqual("HTTP/1.1", start_line.version)
++            self.assertEqual(400, start_line.code)
++            self.assertEqual("Bad Request", start_line.reason)
++
+     def test_chunked_request_body(self):
+         # Chunked requests are not widely supported and we don't have a way
+         # to generate them in AsyncHTTPClient, but HTTPServer will read them.
+@@ -1148,9 +1160,9 @@ def test_gzip_unsupported(self):
+         # Gzip support is opt-in; without it the server fails to parse
+         # the body (but parsing form bodies is currently just a log message,
+         # not a fatal error).
+-        with ExpectLog(gen_log, "Unsupported Content-Encoding"):
++        with ExpectLog(gen_log, ".*Unsupported Content-Encoding"):
+             response = self.post_gzip("foo=bar")
+-        self.assertEqual(json_decode(response.body), {})
++        self.assertEqual(response.code, 400)
+ 
+ 
+ class StreamingChunkSizeTest(AsyncHTTPTestCase):
+diff --git a/tornado/test/httputil_test.py b/tornado/test/httputil_test.py
+index 30fbec4d78..fdd5fcabf9 100644
+--- a/tornado/test/httputil_test.py
++++ b/tornado/test/httputil_test.py
+@@ -12,7 +12,6 @@
+ )
+ from tornado.escape import utf8, native_str
+ from tornado.log import gen_log
+-from tornado.testing import ExpectLog
+ from tornado.test.util import ignore_deprecation
+ 
+ import copy
+@@ -156,7 +155,7 @@ def test_special_filenames(self):
+             self.assertEqual(file["filename"], filename)
+             self.assertEqual(file["body"], b"Foo")
+ 
+-    def test_non_ascii_filename(self):
++    def test_non_ascii_filename_rfc5987(self):
+         data = b"""\
+ --1234
+ Content-Disposition: form-data; name="files"; filename="ab.txt"; filename*=UTF-8''%C3%A1b.txt
+@@ -171,6 +170,23 @@ def test_non_ascii_filename(self):
+         self.assertEqual(file["filename"], "áb.txt")
+         self.assertEqual(file["body"], b"Foo")
+ 
++    def test_non_ascii_filename_raw(self):
++        data = """\
++--1234
++Content-Disposition: form-data; name="files"; filename="测试.txt"
++
++Foo
++--1234--""".encode(
++            "utf-8"
++        ).replace(
++            b"\n", b"\r\n"
++        )
++        args, files = form_data_args()
++        parse_multipart_form_data(b"1234", data, args, files)
++        file = files["files"][0]
++        self.assertEqual(file["filename"], "测试.txt")
++        self.assertEqual(file["body"], b"Foo")
++
+     def test_boundary_starts_and_ends_with_quotes(self):
+         data = b"""\
+ --1234
+@@ -195,7 +211,9 @@ def test_missing_headers(self):
+             b"\n", b"\r\n"
+         )
+         args, files = form_data_args()
+-        with ExpectLog(gen_log, "multipart/form-data missing headers"):
++        with self.assertRaises(
++            HTTPInputError, msg="multipart/form-data missing headers"
++        ):
+             parse_multipart_form_data(b"1234", data, args, files)
+         self.assertEqual(files, {})
+ 
+@@ -209,7 +227,7 @@ def test_invalid_content_disposition(self):
+             b"\n", b"\r\n"
+         )
+         args, files = form_data_args()
+-        with ExpectLog(gen_log, "Invalid multipart/form-data"):
++        with self.assertRaises(HTTPInputError, msg="Invalid multipart/form-data"):
+             parse_multipart_form_data(b"1234", data, args, files)
+         self.assertEqual(files, {})
+ 
+@@ -222,7 +240,7 @@ def test_line_does_not_end_with_correct_line_break(self):
+             b"\n", b"\r\n"
+         )
+         args, files = form_data_args()
+-        with ExpectLog(gen_log, "Invalid multipart/form-data"):
++        with self.assertRaises(HTTPInputError, msg="Invalid multipart/form-data"):
+             parse_multipart_form_data(b"1234", data, args, files)
+         self.assertEqual(files, {})
+ 
+@@ -236,7 +254,9 @@ def test_content_disposition_header_without_name_parameter(self):
+             b"\n", b"\r\n"
+         )
+         args, files = form_data_args()
+-        with ExpectLog(gen_log, "multipart/form-data value missing name"):
++        with self.assertRaises(
++            HTTPInputError, msg="multipart/form-data value missing name"
++        ):
+             parse_multipart_form_data(b"1234", data, args, files)
+         self.assertEqual(files, {})
+ 
+diff --git a/tornado/test/websocket_test.py b/tornado/test/websocket_test.py
+index 1f317fb0d5..494c4bf67a 100644
+--- a/tornado/test/websocket_test.py
++++ b/tornado/test/websocket_test.py
+@@ -1,5 +1,6 @@
+ import asyncio
+ import contextlib
++import datetime
+ import functools
+ import socket
+ import traceback
+@@ -861,16 +862,21 @@ def initialize(self, close_future=None, compression_options=None):
+         return app
+ 
+     @staticmethod
+-    def suppress_pong(ws):
+-        """Suppress the client's "pong" response."""
++    def install_hook(ws):
++        """Optionally suppress the client's "pong" response."""
++
++        ws.drop_pongs = False
++        ws.pongs_received = 0
+ 
+         def wrapper(fcn):
+-            def _inner(oppcode: int, data: bytes):
+-                if oppcode == 0xA:  # NOTE: 0x9=ping, 0xA=pong
+-                    # prevent pong responses
+-                    return
++            def _inner(opcode: int, data: bytes):
++                if opcode == 0xA:  # NOTE: 0x9=ping, 0xA=pong
++                    ws.pongs_received += 1
++                    if ws.drop_pongs:
++                        # prevent pong responses
++                        return
+                 # leave all other responses unchanged
+-                return fcn(oppcode, data)
++                return fcn(opcode, data)
+ 
+             return _inner
+ 
+@@ -883,13 +889,14 @@ def test_client_ping_timeout(self):
+         ws = yield self.ws_connect(
+             "/", ping_interval=interval, ping_timeout=interval / 4
+         )
++        self.install_hook(ws)
+ 
+         # websocket handler (server side)
+         handler = self.handlers[0]
+ 
+         for _ in range(5):
+             # wait for the ping period
+-            yield gen.sleep(0.2)
++            yield gen.sleep(interval)
+ 
+             # connection should still be open from the server end
+             self.assertIsNone(handler.close_code)
+@@ -898,8 +905,12 @@ def test_client_ping_timeout(self):
+             # connection should still be open from the client end
+             assert ws.protocol.close_code is None
+ 
++        # Check that our hook is intercepting messages; allow for
++        # some variance in timing (due to e.g. cpu load)
++        self.assertGreaterEqual(ws.pongs_received, 4)
++
+         # suppress the pong response message
+-        self.suppress_pong(ws)
++        ws.drop_pongs = True
+ 
+         # give the server time to register this
+         yield gen.sleep(interval * 1.5)
+@@ -912,6 +923,23 @@ def test_client_ping_timeout(self):
+         self.assertEqual(ws.protocol.close_code, 1000)
+ 
+ 
++class PingCalculationTest(unittest.TestCase):
++    def test_ping_sleep_time(self):
++        from tornado.websocket import WebSocketProtocol13
++
++        now = datetime.datetime(2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc)
++        interval = 10  # seconds
++        last_ping_time = datetime.datetime(
++            2025, 1, 1, 11, 59, 54, tzinfo=datetime.timezone.utc
++        )
++        sleep_time = WebSocketProtocol13.ping_sleep_time(
++            last_ping_time=last_ping_time.timestamp(),
++            interval=interval,
++            now=now.timestamp(),
++        )
++        self.assertEqual(sleep_time, 4)
++
++
+ class ManualPingTest(WebSocketBaseTestCase):
+     def get_app(self):
+         class PingHandler(TestWebSocketHandler):
+diff --git a/tornado/testing.py b/tornado/testing.py
+index 9f54a1e2ed..a397e3fa1c 100644
+--- a/tornado/testing.py
++++ b/tornado/testing.py
+@@ -155,19 +155,6 @@ def setUp(self) -> None:
+                 category=DeprecationWarning,
+                 module=r"tornado\..*",
+             )
+-        if (3, 14) <= py_ver:
+-            # TODO: This is a temporary hack pending resolution of
+-            # https://github.com/python/cpython/issues/130322
+-            # If set_event_loop is undeprecated, we can remove it; if not
+-            # we need substantial changes to this class to use asyncio.Runner
+-            # like IsolatedAsyncioTestCase does.
+-            setup_with_context_manager(self, warnings.catch_warnings())
+-            warnings.filterwarnings(
+-                "ignore",
+-                message="'asyncio.set_event_loop' is deprecated",
+-                category=DeprecationWarning,
+-                module="tornado.testing",
+-            )
+         super().setUp()
+         if type(self).get_new_ioloop is not AsyncTestCase.get_new_ioloop:
+             warnings.warn("get_new_ioloop is deprecated", DeprecationWarning)
+diff --git a/tornado/web.py b/tornado/web.py
+index 0303f547ec..2f702d6480 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -1801,6 +1801,14 @@ async def _execute(
+         try:
+             if self.request.method not in self.SUPPORTED_METHODS:
+                 raise HTTPError(405)
++
++            # If we're not in stream_request_body mode, this is the place where we parse the body.
++            if not _has_stream_request_body(self.__class__):
++                try:
++                    self.request._parse_body()
++                except httputil.HTTPInputError as e:
++                    raise HTTPError(400, "Invalid body: %s" % e) from e
++
+             self.path_args = [self.decode_argument(arg) for arg in args]
+             self.path_kwargs = {
+                 k: self.decode_argument(v, name=k) for (k, v) in kwargs.items()
+@@ -1992,7 +2000,7 @@ def _has_stream_request_body(cls: Type[RequestHandler]) -> bool:
+ 
+ 
+ def removeslash(
+-    method: Callable[..., Optional[Awaitable[None]]]
++    method: Callable[..., Optional[Awaitable[None]]],
+ ) -> Callable[..., Optional[Awaitable[None]]]:
+     """Use this decorator to remove trailing slashes from the request path.
+ 
+@@ -2021,7 +2029,7 @@ def wrapper(  # type: ignore
+ 
+ 
+ def addslash(
+-    method: Callable[..., Optional[Awaitable[None]]]
++    method: Callable[..., Optional[Awaitable[None]]],
+ ) -> Callable[..., Optional[Awaitable[None]]]:
+     """Use this decorator to add a missing trailing slash to the request path.
+ 
+@@ -2445,8 +2453,9 @@ def finish(self) -> None:
+         if self.stream_request_body:
+             future_set_result_unless_cancelled(self.request._body_future, None)
+         else:
++            # Note that the body gets parsed in RequestHandler._execute so it can be in
++            # the right exception handler scope.
+             self.request.body = b"".join(self.chunks)
+-            self.request._parse_body()
+             self.execute()
+ 
+     def on_connection_close(self) -> None:
+@@ -3332,7 +3341,7 @@ def transform_chunk(self, chunk: bytes, finishing: bool) -> bytes:
+ 
+ 
+ def authenticated(
+-    method: Callable[..., Optional[Awaitable[None]]]
++    method: Callable[..., Optional[Awaitable[None]]],
+ ) -> Callable[..., Optional[Awaitable[None]]]:
+     """Decorate methods with this to require that the user be logged in.
+ 
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index b719547bdf..c2e18d218d 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -1346,6 +1346,11 @@ def start_pinging(self) -> None:
+         ):
+             self._ping_coroutine = asyncio.create_task(self.periodic_ping())
+ 
++    @staticmethod
++    def ping_sleep_time(*, last_ping_time: float, interval: float, now: float) -> float:
++        """Calculate the sleep time until the next ping should be sent."""
++        return max(0, last_ping_time + interval - now)
++
+     async def periodic_ping(self) -> None:
+         """Send a ping and wait for a pong if ping_timeout is configured.
+ 
+@@ -1371,7 +1376,13 @@ async def periodic_ping(self) -> None:
+                 return
+ 
+             # wait until the next scheduled ping
+-            await asyncio.sleep(IOLoop.current().time() - ping_time + interval)
++            await asyncio.sleep(
++                self.ping_sleep_time(
++                    last_ping_time=ping_time,
++                    interval=interval,
++                    now=IOLoop.current().time(),
++                )
++            )
+ 
+ 
+ class WebSocketClientConnection(simple_httpclient._HTTPConnection):

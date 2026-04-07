@@ -1,0 +1,1523 @@
+diff --git a/.bumpversion.cfg b/.bumpversion.cfg
+index 149c341155a..4baba791b06 100644
+--- a/.bumpversion.cfg
++++ b/.bumpversion.cfg
+@@ -1,5 +1,5 @@
+ [bumpversion]
+-current_version = 5.5.0rc4
++current_version = 5.5.0rc5
+ commit = True
+ tag = True
+ parse = (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?P<releaselevel>[a-z\d]+)?
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 779461c2657..c233a488509 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -1,6 +1,6 @@
+ repos:
+   - repo: https://github.com/asottile/pyupgrade
+-    rev: v3.19.0
++    rev: v3.19.1
+     hooks:
+       - id: pyupgrade
+         args: ["--py38-plus"]
+@@ -17,7 +17,7 @@ repos:
+         exclude: ^celery/app/task\.py$|^celery/backends/cache\.py$
+ 
+   - repo: https://github.com/codespell-project/codespell
+-    rev: v2.3.0
++    rev: v2.4.0
+     hooks:
+       - id: codespell # See pyproject.toml for args
+         args: [--toml, pyproject.toml, --write-changes]
+@@ -39,7 +39,7 @@ repos:
+       - id: isort
+ 
+   - repo: https://github.com/pre-commit/mirrors-mypy
+-    rev: v1.13.0
++    rev: v1.14.0
+     hooks:
+     -   id: mypy
+         pass_filenames: false
+diff --git a/Changelog.rst b/Changelog.rst
+index 9357c597f9c..bbb0ee81802 100644
+--- a/Changelog.rst
++++ b/Changelog.rst
+@@ -8,6 +8,169 @@ This document contains change notes for bugfix & new features
+ in the main branch & 5.5.x series, please see :ref:`whatsnew-5.5` for
+ an overview of what's new in Celery 5.5.
+ 
++.. _version-5.5.0rc5:
++
++5.5.0rc5
++========
++
++:release-date: 2025-02-25
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 5 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc3
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is currently at 5.5.0rc3.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Bump mypy from 1.13.0 to 1.14.0 (#9476)
++- Fix cassandra backend port settings not working (#9465)
++- Unroll group when a group with a single item is chained using the | operator (#9456)
++- fix(django): catch the right error when trying to close db connection (#9392)
++- Replacing a task with a chain which contains a group now returns a result instead of hanging (#9484)
++- Avoid using a group of one as it is now unrolled into a chain (#9510)
++- Link to the correct IRC network (#9509)
++- Bump pytest-github-actions-annotate-failures from 0.2.0 to 0.3.0 (#9504)
++- Update canvas.rst to fix output result from chain object (#9502)
++- Unauthorized Changes Cleanup (#9528)
++- [RE-APPROVED] fix(django): catch the right error when trying to close db connection (#9529)
++- [RE-APPROVED] Link to the correct IRC network (#9531)
++- [RE-APPROVED] Update canvas.rst to fix output result from chain object (#9532)
++- Update test-ci-base.txt (#9539)
++- Update install-pyenv.sh (#9540)
++- Update elasticsearch requirement from <=8.17.0 to <=8.17.1 (#9518)
++- Bump google-cloud-firestore from 2.19.0 to 2.20.0 (#9493)
++- Bump mypy from 1.14.0 to 1.14.1 (#9483)
++- Update elastic-transport requirement from <=8.15.1 to <=8.17.0 (#9490)
++- Update Dockerfile by adding missing Python version 3.13 (#9549)
++- Fix typo for default of sig (#9495)
++- fix(crontab): resolve constructor type conflicts (#9551)
++- worker_max_memory_per_child: kilobyte is 1024 bytes (#9553)
++- Fix formatting in quorum queue docs (#9555)
++- Bump cryptography from 44.0.0 to 44.0.1 (#9556)
++- Fix the send_task method when detecting if the native delayed delivery approach is available (#9552)
++- Reverted PR #7814 & minor code improvement (#9494)
++- Improved donation and sponsorship visibility (#9558)
++- Updated the Getting Help section, replacing deprecated with new resources (#9559)
++- Fixed django example (#9562)
++- Bump Kombu to v5.5.0rc3 (#9564)
++- Bump ephem from 4.1.6 to 4.2 (#9565)
++- Bump pytest-celery to v1.2.0 (#9568)
++- Remove dependency on `pycurl` (#9526)
++- Set TestWorkController.__test__ (#9574)
++- Fixed bug when revoking by stamped headers a stamp that does not exist (#9575)
++- Canvas Stamping Doc Fixes (#9578)
++- Bugfix: Chord with a chord in header doesn't invoke error callback on inner chord header failure (default config) (#9580)
++- Prepare for (pre) release: v5.5.0rc5 (#9582)
++
+ .. _version-5.5.0rc4:
+ 
+ 5.5.0rc4
+diff --git a/README.rst b/README.rst
+index 1acac3a69fd..716d12c9f24 100644
+--- a/README.rst
++++ b/README.rst
+@@ -2,7 +2,7 @@
+ 
+ |build-status| |coverage| |license| |wheel| |semgrep| |pyversion| |pyimp| |ocbackerbadge| |ocsponsorbadge|
+ 
+-:Version: 5.5.0rc4 (immunity)
++:Version: 5.5.0rc5 (immunity)
+ :Web: https://docs.celeryq.dev/en/stable/index.html
+ :Download: https://pypi.org/project/celery/
+ :Source: https://github.com/celery/celery/
+@@ -12,12 +12,16 @@
+ Donations
+ =========
+ 
+-This project relies on your generous donations.
++Open Collective
++---------------
+ 
+-If you are using Celery to create a commercial product, please consider becoming our `backer`_ or our `sponsor`_ to ensure Celery's future.
++.. image:: https://opencollective.com/static/images/opencollectivelogo-footer-n.svg
++   :alt: Open Collective logo
++   :width: 200px
+ 
+-.. _`backer`: https://opencollective.com/celery#backer
+-.. _`sponsor`: https://opencollective.com/celery#sponsor
++`Open Collective <https://opencollective.com/celery>`_ is our community-powered funding platform that fuels Celery's
++ongoing development. Your sponsorship directly supports improvements, maintenance, and innovative features that keep
++Celery robust and reliable.
+ 
+ For enterprise
+ ==============
+@@ -26,20 +30,46 @@ Available as part of the Tidelift Subscription.
+ 
+ The maintainers of ``celery`` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. `Learn more. <https://tidelift.com/subscription/pkg/pypi-celery?utm_source=pypi-celery&utm_medium=referral&utm_campaign=enterprise&utm_term=repo>`_
+ 
++Sponsors
++========
+ 
+-Sponsor
+-=======
++Blacksmith
++----------
++
++.. image:: ./docs/images/blacksmith-logo-white-on-black.svg
++   :alt: Blacksmith logo
++   :width: 240px
+ 
+-`Dragonfly <https://www.dragonflydb.io/>`_ is a drop-in Redis replacement that cuts costs and boosts performance. Designed to fully utilize the power of modern cloud hardware and deliver on the data demands of modern applications, Dragonfly frees developers from the limits of traditional in-memory data stores.
++`Official Announcement <https://www.linkedin.com/pulse/celery-now-powered-blacksmith-tomer-nosrati-ew68e/?trackingId=DWHH49WqS2iOW8Jf5N1kEg%3D%3D>`_
++
++Upstash
++-------
+ 
++.. image:: https://upstash.com/logo/upstash-dark-bg.svg
++   :alt: Upstash logo
++   :width: 200px
++
++`Upstash <http://upstash.com/?code=celery>`_ offers a serverless Redis database service,
++providing a seamless solution for Celery users looking to leverage
++serverless architectures. Upstash's serverless Redis service is designed
++with an eventual consistency model and durable storage, facilitated
++through a multi-tier storage architecture.
++
++Dragonfly
++---------
+ 
+ .. image:: https://github.com/celery/celery/raw/main/docs/images/dragonfly.svg
+    :alt: Dragonfly logo
+    :width: 150px
+ 
++`Dragonfly <https://www.dragonflydb.io/>`_ is a drop-in Redis replacement that cuts costs and boosts performance.
++Designed to fully utilize the power of modern cloud hardware and deliver on the data demands of modern applications,
++Dragonfly frees developers from the limits of traditional in-memory data stores.
+ 
+ 
+ 
++.. |oc-sponsor-1| image:: https://opencollective.com/celery/sponsor/0/avatar.svg
++    :target: https://opencollective.com/celery/sponsor/0/website
+ 
+ What's a Task Queue?
+ ====================
+@@ -506,31 +536,6 @@ Thank you to all our backers! 🙏 [`Become a backer`_]
+ .. |oc-backers| image:: https://opencollective.com/celery/backers.svg?width=890
+     :target: https://opencollective.com/celery#backers
+ 
+-Sponsors
+---------
+-
+-Support this project by becoming a sponsor. Your logo will show up here with a
+-link to your website. [`Become a sponsor`_]
+-
+-.. _`Become a sponsor`: https://opencollective.com/celery#sponsor
+-
+-|oc-sponsor-1| |oc-sponsor-2| |oc-sponsor-3|
+-
+-.. |oc-sponsor-1| image:: https://opencollective.com/celery/sponsor/0/avatar.svg
+-    :target: https://opencollective.com/celery/sponsor/0/website
+-
+-.. |oc-sponsor-2| image:: ./docs/images/blacksmith-logo-white-on-black.svg
+-    :target: https://www.blacksmith.sh/
+-    :alt: Blacksmith.sh
+-    :width: 240
+-    :height: 57
+-
+-.. |oc-sponsor-3| image:: https://upstash.com/logo/upstash-dark-bg.svg
+-    :target: http://upstash.com/?code=celery
+-    :alt: Upstash
+-    :width: 200
+-    :height: 57
+-
+ .. _license:
+ 
+ License
+diff --git a/celery/__init__.py b/celery/__init__.py
+index 0557678fc68..dfecfd72c19 100644
+--- a/celery/__init__.py
++++ b/celery/__init__.py
+@@ -17,7 +17,7 @@
+ 
+ SERIES = 'immunity'
+ 
+-__version__ = '5.5.0rc4'
++__version__ = '5.5.0rc5'
+ __author__ = 'Ask Solem'
+ __contact__ = 'auvipy@gmail.com'
+ __homepage__ = 'https://docs.celeryq.dev/'
+diff --git a/celery/app/base.py b/celery/app/base.py
+index 27b0421763c..5c853af70e5 100644
+--- a/celery/app/base.py
++++ b/celery/app/base.py
+@@ -832,8 +832,8 @@ def send_task(self, name, args=None, kwargs=None, countdown=None,
+         options = router.route(
+             options, route_name or name, args, kwargs, task_type)
+ 
+-        is_native_delayed_delivery = detect_quorum_queues(self,
+-                                                          self.producer_pool.connections.connection.transport_cls)[0]
++        driver_type = self.producer_pool.connections.connection.transport.driver_type
++        is_native_delayed_delivery = detect_quorum_queues(self, driver_type)[0]
+         if is_native_delayed_delivery and options['queue'].exchange.type != 'direct':
+             if eta:
+                 if isinstance(eta, str):
+diff --git a/celery/app/control.py b/celery/app/control.py
+index 73b5162e851..603d930a542 100644
+--- a/celery/app/control.py
++++ b/celery/app/control.py
+@@ -527,7 +527,8 @@ def revoke_by_stamped_headers(self, headers, destination=None, terminate=False,
+         if result:
+             for host in result:
+                 for response in host.values():
+-                    task_ids.update(response['ok'])
++                    if isinstance(response['ok'], set):
++                        task_ids.update(response['ok'])
+ 
+         if task_ids:
+             return self.revoke(list(task_ids), destination=destination, terminate=terminate, signal=signal, **kwargs)
+diff --git a/celery/app/log.py b/celery/app/log.py
+index 4c807f4e349..a4db1057791 100644
+--- a/celery/app/log.py
++++ b/celery/app/log.py
+@@ -18,6 +18,7 @@
+ from celery._state import get_current_task
+ from celery.exceptions import CDeprecationWarning, CPendingDeprecationWarning
+ from celery.local import class_property
++from celery.platforms import isatty
+ from celery.utils.log import (ColorFormatter, LoggingProxy, get_logger, get_multiprocessing_logger, mlevel,
+                               reset_multiprocessing_logger)
+ from celery.utils.nodenames import node_format
+@@ -203,7 +204,7 @@ def supports_color(self, colorize=None, logfile=None):
+         if colorize or colorize is None:
+             # Only use color if there's no active log file
+             # and stderr is an actual terminal.
+-            return logfile is None and sys.stderr.isatty()
++            return logfile is None and isatty(sys.stderr)
+         return colorize
+ 
+     def colored(self, logfile=None, enabled=None):
+diff --git a/celery/app/task.py b/celery/app/task.py
+index 951c75824b7..90ba8552d4f 100644
+--- a/celery/app/task.py
++++ b/celery/app/task.py
+@@ -535,6 +535,8 @@ def apply_async(self, args=None, kwargs=None, task_id=None, producer=None,
+             publisher (kombu.Producer): Deprecated alias to ``producer``.
+ 
+             headers (Dict): Message headers to be included in the message.
++                The headers can be used as an overlay for custom labeling
++                using the :ref:`canvas-stamping` feature.
+ 
+         Returns:
+             celery.result.AsyncResult: Promise of future evaluation.
+diff --git a/celery/apps/worker.py b/celery/apps/worker.py
+index 435d333eebb..5558dab8e5f 100644
+--- a/celery/apps/worker.py
++++ b/celery/apps/worker.py
+@@ -20,7 +20,7 @@
+ from celery import VERSION_BANNER, platforms, signals
+ from celery.app import trace
+ from celery.loaders.app import AppLoader
+-from celery.platforms import EX_FAILURE, EX_OK, check_privileges
++from celery.platforms import EX_FAILURE, EX_OK, check_privileges, isatty
+ from celery.utils import static, term
+ from celery.utils.debug import cry
+ from celery.utils.imports import qualname
+@@ -107,7 +107,7 @@ def on_after_init(self, purge=False, no_color=None,
+         super().setup_defaults(**kwargs)
+         self.purge = purge
+         self.no_color = no_color
+-        self._isatty = sys.stdout.isatty()
++        self._isatty = isatty(sys.stdout)
+         self.colored = self.app.log.colored(
+             self.logfile,
+             enabled=not no_color if no_color is not None else no_color
+@@ -279,7 +279,7 @@ def set_process_status(self, info):
+         )
+ 
+ 
+-def _shutdown_handler(worker: Worker, sig='TERM', how='Warm', callback=None, exitcode=EX_OK, verbose=True):
++def _shutdown_handler(worker: Worker, sig='SIGTERM', how='Warm', callback=None, exitcode=EX_OK, verbose=True):
+     """Install signal handler for warm/cold shutdown.
+ 
+     The handler will run from the MainProcess.
+diff --git a/celery/backends/cassandra.py b/celery/backends/cassandra.py
+index 0eb37f31ba8..4ca071d2d03 100644
+--- a/celery/backends/cassandra.py
++++ b/celery/backends/cassandra.py
+@@ -86,7 +86,7 @@ class CassandraBackend(BaseBackend):
+     supports_autoexpire = True      # autoexpire supported via entry_ttl
+ 
+     def __init__(self, servers=None, keyspace=None, table=None, entry_ttl=None,
+-                 port=9042, bundle_path=None, **kwargs):
++                 port=None, bundle_path=None, **kwargs):
+         super().__init__(**kwargs)
+ 
+         if not cassandra:
+@@ -96,7 +96,7 @@ def __init__(self, servers=None, keyspace=None, table=None, entry_ttl=None,
+         self.servers = servers or conf.get('cassandra_servers', None)
+         self.bundle_path = bundle_path or conf.get(
+             'cassandra_secure_bundle_path', None)
+-        self.port = port or conf.get('cassandra_port', None)
++        self.port = port or conf.get('cassandra_port', None) or 9042
+         self.keyspace = keyspace or conf.get('cassandra_keyspace', None)
+         self.table = table or conf.get('cassandra_table', None)
+         self.cassandra_options = conf.get('cassandra_options', {})
+diff --git a/celery/canvas.py b/celery/canvas.py
+index 9f4d2f0ce74..da395c1390e 100644
+--- a/celery/canvas.py
++++ b/celery/canvas.py
+@@ -2307,6 +2307,13 @@ def link_error(self, errback):
+                 CPendingDeprecationWarning
+             )
+ 
++        # Edge case for nested chords in the header
++        for task in maybe_list(self.tasks) or []:
++            if isinstance(task, chord):
++                # Let the nested chord do the error linking itself on its
++                # header and body where needed, based on the current configuration
++                task.link_error(errback)
++
+         self.body.link_error(errback)
+         return errback
+ 
+diff --git a/celery/contrib/testing/worker.py b/celery/contrib/testing/worker.py
+index cb418b8e87a..46eac75fd64 100644
+--- a/celery/contrib/testing/worker.py
++++ b/celery/contrib/testing/worker.py
+@@ -30,6 +30,10 @@
+ class TestWorkController(worker.WorkController):
+     """Worker that can synchronize on being fully started."""
+ 
++    # When this class is imported in pytest files, prevent pytest from thinking
++    # this is a test class
++    __test__ = False
++
+     logger_queue = None
+ 
+     def __init__(self, *args, **kwargs):
+diff --git a/celery/fixups/django.py b/celery/fixups/django.py
+index 5a8ca1b993a..b35499493a6 100644
+--- a/celery/fixups/django.py
++++ b/celery/fixups/django.py
+@@ -16,6 +16,7 @@
+     from types import ModuleType
+     from typing import Protocol
+ 
++    from django.db.backends.base.base import BaseDatabaseWrapper
+     from django.db.utils import ConnectionHandler
+ 
+     from celery.app.base import Celery
+@@ -164,15 +165,16 @@ def on_worker_process_init(self, **kwargs: Any) -> None:
+         # network IO that close() might cause.
+         for c in self._db.connections.all():
+             if c and c.connection:
+-                self._maybe_close_db_fd(c.connection)
++                self._maybe_close_db_fd(c)
+ 
+         # use the _ version to avoid DB_REUSE preventing the conn.close() call
+         self._close_database(force=True)
+         self.close_cache()
+ 
+-    def _maybe_close_db_fd(self, fd: IO) -> None:
++    def _maybe_close_db_fd(self, c: "BaseDatabaseWrapper") -> None:
+         try:
+-            _maybe_close_fd(fd)
++            with c.wrap_database_errors:
++                _maybe_close_fd(c.connection)
+         except self.interface_errors:
+             pass
+ 
+diff --git a/celery/platforms.py b/celery/platforms.py
+index a9c30a3251e..c0d0438a78e 100644
+--- a/celery/platforms.py
++++ b/celery/platforms.py
+@@ -42,7 +42,7 @@
+     'DaemonContext', 'detached', 'parse_uid', 'parse_gid', 'setgroups',
+     'initgroups', 'setgid', 'setuid', 'maybe_drop_privileges', 'signals',
+     'signal_name', 'set_process_title', 'set_mp_process_title',
+-    'get_errno_name', 'ignore_errno', 'fd_by_path',
++    'get_errno_name', 'ignore_errno', 'fd_by_path', 'isatty',
+ )
+ 
+ # exitcodes
+@@ -95,6 +95,14 @@
+ SIGMAP = {getattr(_signal, name): name for name in SIGNAMES}
+ 
+ 
++def isatty(fh):
++    """Return true if the process has a controlling terminal."""
++    try:
++        return fh.isatty()
++    except AttributeError:
++        pass
++
++
+ def pyimplementation():
+     """Return string identifying the current Python implementation."""
+     if hasattr(_platform, 'python_implementation'):
+diff --git a/celery/schedules.py b/celery/schedules.py
+index 9cd051004e7..010b3396fa8 100644
+--- a/celery/schedules.py
++++ b/celery/schedules.py
+@@ -4,9 +4,8 @@
+ import re
+ from bisect import bisect, bisect_left
+ from collections import namedtuple
+-from collections.abc import Iterable
+ from datetime import datetime, timedelta, tzinfo
+-from typing import Any, Callable, Mapping, Sequence
++from typing import Any, Callable, Iterable, Mapping, Sequence, Union
+ 
+ from kombu.utils.objects import cached_property
+ 
+@@ -52,7 +51,10 @@
+ """
+ 
+ 
+-def cronfield(s: str) -> str:
++Cronspec = Union[int, str, Iterable[int]]
++
++
++def cronfield(s: Cronspec | None) -> Cronspec:
+     return '*' if s is None else s
+ 
+ 
+@@ -396,8 +398,8 @@ class crontab(BaseSchedule):
+     present in ``month_of_year``.
+     """
+ 
+-    def __init__(self, minute: str = '*', hour: str = '*', day_of_week: str = '*',
+-                 day_of_month: str = '*', month_of_year: str = '*', **kwargs: Any) -> None:
++    def __init__(self, minute: Cronspec = '*', hour: Cronspec = '*', day_of_week: Cronspec = '*',
++                 day_of_month: Cronspec = '*', month_of_year: Cronspec = '*', **kwargs: Any) -> None:
+         self._orig_minute = cronfield(minute)
+         self._orig_hour = cronfield(hour)
+         self._orig_day_of_week = cronfield(day_of_week)
+@@ -430,7 +432,7 @@ def from_string(cls, crontab: str) -> crontab:
+ 
+     @staticmethod
+     def _expand_cronspec(
+-            cronspec: int | str | Iterable,
++            cronspec: Cronspec,
+             max_: int, min_: int = 0) -> set[Any]:
+         """Expand cron specification.
+ 
+@@ -555,7 +557,7 @@ def roll_over() -> None:
+     def __repr__(self) -> str:
+         return CRON_REPR.format(self)
+ 
+-    def __reduce__(self) -> tuple[type, tuple[str, str, str, str, str], Any]:
++    def __reduce__(self) -> tuple[type, tuple[Cronspec, Cronspec, Cronspec, Cronspec, Cronspec], Any]:
+         return (self.__class__, (self._orig_minute,
+                                  self._orig_hour,
+                                  self._orig_day_of_week,
+diff --git a/celery/utils/term.py b/celery/utils/term.py
+index 53236ad549d..ba6a3215fbc 100644
+--- a/celery/utils/term.py
++++ b/celery/utils/term.py
+@@ -165,7 +165,11 @@ def __add__(self, other: object) -> str:
+ 
+ 
+ def supports_images() -> bool:
+-    return sys.stdin.isatty() and ITERM_PROFILE is not None
++
++    try:
++        return sys.stdin.isatty() and bool(os.environ.get('ITERM_PROFILE'))
++    except AttributeError:
++        return False
+ 
+ 
+ def _read_as_base64(path: str) -> str:
+diff --git a/docker/Dockerfile b/docker/Dockerfile
+index 3cc2a3aff38..479613ac51f 100644
+--- a/docker/Dockerfile
++++ b/docker/Dockerfile
+@@ -75,7 +75,7 @@ RUN pyenv install pypy3.10
+ 
+ 
+ # Set global Python versions
+-RUN pyenv global 3.12 3.11 3.10 3.9 3.8 pypy3.10
++RUN pyenv global 3.13 3.12 3.11 3.10 3.9 3.8 pypy3.10
+ 
+ # Install celery
+ WORKDIR $HOME
+diff --git a/docker/scripts/install-pyenv.sh b/docker/scripts/install-pyenv.sh
+index ed63664fbdc..adfb3a96e11 100644
+--- a/docker/scripts/install-pyenv.sh
++++ b/docker/scripts/install-pyenv.sh
+@@ -7,8 +7,9 @@ curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
+ git clone https://github.com/s1341/pyenv-alias.git $(pyenv root)/plugins/pyenv-alias
+ 
+ # Python versions to test against
+-VERSION_ALIAS="python3.12" pyenv install 3.12.0
+-VERSION_ALIAS="python3.11" pyenv install 3.11.6
+-VERSION_ALIAS="python3.10" pyenv install 3.10.13
+-VERSION_ALIAS="python3.9" pyenv install 3.9.18
+-VERSION_ALIAS="python3.8" pyenv install 3.8.18
++VERSION_ALIAS="python3.13" pyenv install 3.13.1
++VERSION_ALIAS="python3.12" pyenv install 3.12.8
++VERSION_ALIAS="python3.11" pyenv install 3.11.11
++VERSION_ALIAS="python3.10" pyenv install 3.10.16
++VERSION_ALIAS="python3.9" pyenv install 3.9.21
++VERSION_ALIAS="python3.8" pyenv install 3.8.20
+diff --git a/docs/getting-started/backends-and-brokers/rabbitmq.rst b/docs/getting-started/backends-and-brokers/rabbitmq.rst
+index 5a324ecdc35..4dae16877e3 100644
+--- a/docs/getting-started/backends-and-brokers/rabbitmq.rst
++++ b/docs/getting-started/backends-and-brokers/rabbitmq.rst
+@@ -185,7 +185,7 @@ Using Quorum Queues
+     Quorum Queues require disabling global QoS which means some features won't work as expected.
+     See `limitations`_ for details.
+ 
+-Celery supports `Quorum Queues`_ by setting the ``x-queue-type`` header to ``quorum` like so:
++Celery supports `Quorum Queues`_ by setting the ``x-queue-type`` header to ``quorum`` like so:
+ 
+ .. code-block:: python
+ 
+diff --git a/docs/getting-started/backends-and-brokers/redis.rst b/docs/getting-started/backends-and-brokers/redis.rst
+index 997431b895f..11d42544ec2 100644
+--- a/docs/getting-started/backends-and-brokers/redis.rst
++++ b/docs/getting-started/backends-and-brokers/redis.rst
+@@ -160,6 +160,12 @@ through a multi-tier storage architecture.
+ Integration with Celery is straightforward as demonstrated
+ in an `example provided by Upstash <https://github.com/upstash/examples/tree/main/examples/using-celery>`_.
+ 
++Dragonfly
++---------
++`Dragonfly <https://www.dragonflydb.io/>`_ is a drop-in Redis replacement that cuts costs and boosts performance.
++Designed to fully utilize the power of modern cloud hardware and deliver on the data demands of modern applications,
++Dragonfly frees developers from the limits of traditional in-memory data stores.
++
+ .. _redis-caveats:
+ 
+ Caveats
+diff --git a/docs/history/changelog-5.5.rst b/docs/history/changelog-5.5.rst
+index e62f3997dbe..a8042cd7a06 100644
+--- a/docs/history/changelog-5.5.rst
++++ b/docs/history/changelog-5.5.rst
+@@ -8,6 +8,169 @@ This document contains change notes for bugfix & new features
+ in the main branch & 5.5.x series, please see :ref:`whatsnew-5.5` for
+ an overview of what's new in Celery 5.5.
+ 
++.. _version-5.5.0rc5:
++
++5.5.0rc5
++========
++
++:release-date: 2025-02-25
++:release-by: Tomer Nosrati
++
++Celery v5.5.0 Release Candidate 5 is now available for testing.
++Please help us test this version and report any issues.
++
++Key Highlights
++~~~~~~~~~~~~~~
++
++See :ref:`whatsnew-5.5` or read the main highlights below.
++
++Using Kombu 5.5.0rc3
++--------------------
++
++The minimum required Kombu version has been bumped to 5.5.0.
++Kombu is currently at 5.5.0rc3.
++
++Complete Quorum Queues Support
++------------------------------
++
++A completely new ETA mechanism was developed to allow full support with RabbitMQ Quorum Queues.
++
++After upgrading to this version, please share your feedback on the quorum queues support.
++
++Relevant Issues:
++`#9207 <https://github.com/celery/celery/discussions/9207>`_,
++`#6067 <https://github.com/celery/celery/discussions/6067>`_
++
++- New :ref:`documentation <using-quorum-queues>`.
++- New :setting:`broker_native_delayed_delivery_queue_type` configuration option.
++
++New support for Google Pub/Sub transport
++----------------------------------------
++
++After upgrading to this version, please share your feedback on the Google Pub/Sub transport support.
++
++Relevant Issues:
++`#9351 <https://github.com/celery/celery/pull/9351>`_
++
++Python 3.13 Improved Support
++----------------------------
++
++Additional dependencies have been migrated successfully to Python 3.13, including Kombu and py-amqp.
++
++Soft Shutdown
++-------------
++
++The soft shutdown is a new mechanism in Celery that sits between the warm shutdown and the cold shutdown.
++It sets a time limited "warm shutdown" period, during which the worker will continue to process tasks that are already running.
++After the soft shutdown ends, the worker will initiate a graceful cold shutdown, stopping all tasks and exiting.
++
++The soft shutdown is disabled by default, and can be enabled by setting the new configuration option :setting:`worker_soft_shutdown_timeout`.
++If a worker is not running any task when the soft shutdown initiates, it will skip the warm shutdown period and proceed directly to the cold shutdown
++unless the new configuration option :setting:`worker_enable_soft_shutdown_on_idle` is set to True. This is useful for workers
++that are idle, waiting on ETA tasks to be executed that still want to enable the soft shutdown anyways.
++
++The soft shutdown can replace the cold shutdown when using a broker with a visibility timeout mechanism, like :ref:`Redis <broker-redis>`
++or :ref:`SQS <broker-sqs>`, to enable a more graceful cold shutdown procedure, allowing the worker enough time to re-queue tasks that were not
++completed (e.g., ``Restoring 1 unacknowledged message(s)``) by resetting the visibility timeout of the unacknowledged messages just before
++the worker exits completely.
++
++After upgrading to this version, please share your feedback on the new Soft Shutdown mechanism.
++
++Relevant Issues:
++`#9213 <https://github.com/celery/celery/pull/9213>`_,
++`#9231 <https://github.com/celery/celery/pull/9231>`_,
++`#9238 <https://github.com/celery/celery/pull/9238>`_
++
++- New :ref:`documentation <worker-stopping>` for each shutdown type.
++- New :setting:`worker_soft_shutdown_timeout` configuration option.
++- New :setting:`worker_enable_soft_shutdown_on_idle` configuration option.
++
++REMAP_SIGTERM
++-------------
++
++The ``REMAP_SIGTERM`` "hidden feature" has been tested, :ref:`documented <worker-REMAP_SIGTERM>` and is now officially supported.
++This feature allows users to remap the SIGTERM signal to SIGQUIT, to initiate a soft or a cold shutdown using :sig:`TERM`
++instead of :sig:`QUIT`.
++
++Pydantic Support
++----------------
++
++This release introduces support for Pydantic models in Celery tasks.
++For more info, see the new pydantic example and PR `#9023 <https://github.com/celery/celery/pull/9023>`_ by @mathiasertl.
++
++After upgrading to this version, please share your feedback on the new Pydantic support.
++
++Redis Broker Stability Improvements
++-----------------------------------
++The root cause of the Redis broker instability issue has been `identified and resolved <https://github.com/celery/kombu/pull/2007>`_
++in the v5.4.0 release of Kombu, which should resolve the disconnections bug and offer additional improvements.
++
++After upgrading to this version, please share your feedback on the Redis broker stability.
++
++Relevant Issues:
++`#7276 <https://github.com/celery/celery/discussions/7276>`_,
++`#8091 <https://github.com/celery/celery/discussions/8091>`_,
++`#8030 <https://github.com/celery/celery/discussions/8030>`_,
++`#8384 <https://github.com/celery/celery/discussions/8384>`_
++
++Quorum Queues Initial Support
++-----------------------------
++This release introduces the initial support for Quorum Queues with Celery. 
++
++See new configuration options for more details:
++
++- :setting:`task_default_queue_type`
++- :setting:`worker_detect_quorum_queues`
++
++After upgrading to this version, please share your feedback on the Quorum Queues support.
++
++Relevant Issues:
++`#6067 <https://github.com/celery/celery/discussions/6067>`_,
++`#9121 <https://github.com/celery/celery/discussions/9121>`_
++
++What's Changed
++~~~~~~~~~~~~~~
++
++- Bump mypy from 1.13.0 to 1.14.0 (#9476)
++- Fix cassandra backend port settings not working (#9465)
++- Unroll group when a group with a single item is chained using the | operator (#9456)
++- fix(django): catch the right error when trying to close db connection (#9392)
++- Replacing a task with a chain which contains a group now returns a result instead of hanging (#9484)
++- Avoid using a group of one as it is now unrolled into a chain (#9510)
++- Link to the correct IRC network (#9509)
++- Bump pytest-github-actions-annotate-failures from 0.2.0 to 0.3.0 (#9504)
++- Update canvas.rst to fix output result from chain object (#9502)
++- Unauthorized Changes Cleanup (#9528)
++- [RE-APPROVED] fix(django): catch the right error when trying to close db connection (#9529)
++- [RE-APPROVED] Link to the correct IRC network (#9531)
++- [RE-APPROVED] Update canvas.rst to fix output result from chain object (#9532)
++- Update test-ci-base.txt (#9539)
++- Update install-pyenv.sh (#9540)
++- Update elasticsearch requirement from <=8.17.0 to <=8.17.1 (#9518)
++- Bump google-cloud-firestore from 2.19.0 to 2.20.0 (#9493)
++- Bump mypy from 1.14.0 to 1.14.1 (#9483)
++- Update elastic-transport requirement from <=8.15.1 to <=8.17.0 (#9490)
++- Update Dockerfile by adding missing Python version 3.13 (#9549)
++- Fix typo for default of sig (#9495)
++- fix(crontab): resolve constructor type conflicts (#9551)
++- worker_max_memory_per_child: kilobyte is 1024 bytes (#9553)
++- Fix formatting in quorum queue docs (#9555)
++- Bump cryptography from 44.0.0 to 44.0.1 (#9556)
++- Fix the send_task method when detecting if the native delayed delivery approach is available (#9552)
++- Reverted PR #7814 & minor code improvement (#9494)
++- Improved donation and sponsorship visibility (#9558)
++- Updated the Getting Help section, replacing deprecated with new resources (#9559)
++- Fixed django example (#9562)
++- Bump Kombu to v5.5.0rc3 (#9564)
++- Bump ephem from 4.1.6 to 4.2 (#9565)
++- Bump pytest-celery to v1.2.0 (#9568)
++- Remove dependency on `pycurl` (#9526)
++- Set TestWorkController.__test__ (#9574)
++- Fixed bug when revoking by stamped headers a stamp that does not exist (#9575)
++- Canvas Stamping Doc Fixes (#9578)
++- Bugfix: Chord with a chord in header doesn't invoke error callback on inner chord header failure (default config) (#9580)
++- Prepare for (pre) release: v5.5.0rc5 (#9582)
++
+ .. _version-5.5.0rc4:
+ 
+ 5.5.0rc4
+diff --git a/docs/includes/introduction.txt b/docs/includes/introduction.txt
+index 5bc0021d226..e6dba2738df 100644
+--- a/docs/includes/introduction.txt
++++ b/docs/includes/introduction.txt
+@@ -1,4 +1,4 @@
+-:Version: 5.5.0rc4 (immunity)
++:Version: 5.5.0rc5 (immunity)
+ :Web: https://docs.celeryq.dev/en/stable/index.html
+ :Download: https://pypi.org/project/celery/
+ :Source: https://github.com/celery/celery/
+diff --git a/docs/includes/resources.txt b/docs/includes/resources.txt
+index 4bfbfd17926..23e309513c8 100644
+--- a/docs/includes/resources.txt
++++ b/docs/includes/resources.txt
+@@ -3,25 +3,23 @@
+ Getting Help
+ ============
+ 
+-.. _mailing-list:
++.. warning::
+ 
+-Mailing list
+-------------
++    Our `Google Groups account <https://groups.google.com/group/celery-users/>`_ has been
++    `compromised <https://github.com/celery/celery/discussions/9525>`_.
+ 
+-For discussions about the usage, development, and future of Celery,
+-please join the `celery-users`_ mailing list.
++.. _social-media:
+ 
+-.. _`celery-users`: https://groups.google.com/group/celery-users/
+-
+-.. _irc-channel:
++Social Media
++============
+ 
+-IRC
+----
++Follow us on social media:
+ 
+-Come chat with us on IRC. The **#celery** channel is located at the `Libera Chat`_
+-network.
++- `X <https://x.com/celeryorg>`_
++- `LinkedIn <https://linkedin.com/company/celeryorg>`_
+ 
+-.. _`Libera Chat`: https://freenode.net
++These accounts will (mostly) mirror each other, but we encourage you to
++follow us on all platforms to ensure you don't miss any important updates.
+ 
+ .. _bug-tracker:
+ 
+@@ -31,13 +29,6 @@ Bug tracker
+ If you have any suggestions, bug reports, or annoyances please report them
+ to our issue tracker at https://github.com/celery/celery/issues/
+ 
+-.. _wiki:
+-
+-Wiki
+-====
+-
+-https://github.com/celery/celery/wiki
+-
+ .. _contributing-short:
+ 
+ Contributing
+diff --git a/docs/index.rst b/docs/index.rst
+index 299fb5749f2..107d96e019c 100644
+--- a/docs/index.rst
++++ b/docs/index.rst
+@@ -10,20 +10,18 @@ It's a task queue with focus on real-time processing, while also
+ supporting task scheduling.
+ 
+ Celery has a large and diverse community of users and contributors,
+-you should come join us :ref:`on IRC <irc-channel>`
+-or :ref:`our mailing-list <mailing-list>`.
++don't hesitate to ask questions or :ref:`get involved <getting-help>`.
+ 
+ Celery is Open Source and licensed under the `BSD License`_.
+ 
+-Donations
+-=========
++.. image:: https://opencollective.com/static/images/opencollectivelogo-footer-n.svg
++   :target: https://opencollective.com/celery
++   :alt: Open Collective logo
++   :width: 240px
+ 
+-This project relies on your generous donations.
+-
+-If you are using Celery to create a commercial product, please consider becoming our `backer`_ or our `sponsor`_ to ensure Celery's future.
+-
+-.. _`backer`: https://opencollective.com/celery#backer
+-.. _`sponsor`: https://opencollective.com/celery#sponsor
++`Open Collective <https://opencollective.com/celery>`_ is our community-powered funding platform that fuels Celery's
++ongoing development. Your sponsorship directly supports improvements, maintenance, and innovative features that keep
++Celery robust and reliable.
+ 
+ Getting Started
+ ===============
+diff --git a/docs/userguide/canvas.rst b/docs/userguide/canvas.rst
+index 8b74e38b955..8d510a9c2a0 100644
+--- a/docs/userguide/canvas.rst
++++ b/docs/userguide/canvas.rst
+@@ -461,17 +461,7 @@ Here're some examples:
+ 
+         >>> res = (add.s(4, 4) | group(add.si(i, i) for i in range(10)))()
+         >>> res.get()
+-        <GroupResult: de44df8c-821d-4c84-9a6a-44769c738f98 [
+-            bc01831b-9486-4e51-b046-480d7c9b78de,
+-            2650a1b8-32bf-4771-a645-b0a35dcc791b,
+-            dcbee2a5-e92d-4b03-b6eb-7aec60fd30cf,
+-            59f92e0a-23ea-41ce-9fad-8645a0e7759c,
+-            26e1e707-eccf-4bf4-bbd8-1e1729c3cce3,
+-            2d10a5f4-37f0-41b2-96ac-a973b1df024d,
+-            e13d3bdb-7ae3-4101-81a4-6f17ee21df2d,
+-            104b2be0-7b75-44eb-ac8e-f9220bdfa140,
+-            c5c551a5-0386-4973-aa37-b65cbeb2624b,
+-            83f72d71-4b71-428e-b604-6f16599a9f37]>
++        [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+ 
+         >>> res.parent.get()
+         8
+@@ -1184,6 +1174,8 @@ of one:
+ This means that the first task will have a countdown of one second, the second
+ task a countdown of two seconds, and so on.
+ 
++.. _canvas-stamping:
++
+ Stamping
+ ========
+ 
+diff --git a/docs/userguide/concurrency/gevent.rst b/docs/userguide/concurrency/gevent.rst
+index 7ec8eca414e..1bafd9ceb52 100644
+--- a/docs/userguide/concurrency/gevent.rst
++++ b/docs/userguide/concurrency/gevent.rst
+@@ -17,7 +17,7 @@ Features include:
+ 
+ * Fast event loop based on `libev`_ or `libuv`_.
+ * Lightweight execution units based on greenlets.
+-* API that re-uses concepts from the Python standard library (for
++* API that reuses concepts from the Python standard library (for
+   examples there are `events`_ and
+   `queues`_).
+ * `Cooperative sockets with SSL support <http://www.gevent.org/api/index.html#networking>`_
+diff --git a/docs/userguide/configuration.rst b/docs/userguide/configuration.rst
+index 01b276458ec..56521e0400c 100644
+--- a/docs/userguide/configuration.rst
++++ b/docs/userguide/configuration.rst
+@@ -3207,16 +3207,16 @@ it's replaced with a new one. Default is no limit.
+ Default: No limit.
+ Type: int (kilobytes)
+ 
+-Maximum amount of resident memory, in kilobytes, that may be consumed by a
+-worker before it will be replaced by a new worker. If a single
+-task causes a worker to exceed this limit, the task will be
+-completed, and the worker will be replaced afterwards.
++Maximum amount of resident memory, in kilobytes (1024 bytes), that may be
++consumed by a worker before it will be replaced by a new worker. If a single
++task causes a worker to exceed this limit, the task will be completed, and the
++worker will be replaced afterwards.
+ 
+ Example:
+ 
+ .. code-block:: python
+ 
+-    worker_max_memory_per_child = 12000  # 12MB
++    worker_max_memory_per_child = 12288  # 12 * 1024 = 12 MB
+ 
+ .. setting:: worker_disable_rate_limits
+ 
+diff --git a/docs/userguide/workers.rst b/docs/userguide/workers.rst
+index 1f2cef97c83..01d6491d72b 100644
+--- a/docs/userguide/workers.rst
++++ b/docs/userguide/workers.rst
+@@ -613,13 +613,13 @@ Note that remote control commands must be working for revokes to work.
+ Remote control commands are only supported by the RabbitMQ (amqp) and Redis
+ at this point.
+ 
+-.. control:: revoke_by_stamped_header
++.. control:: revoke_by_stamped_headers
+ 
+-``revoke_by_stamped_header``: Revoking tasks by their stamped headers
+----------------------------------------------------------------------
++``revoke_by_stamped_headers``: Revoking tasks by their stamped headers
++----------------------------------------------------------------------
+ :pool support: all, terminate only supported by prefork and eventlet
+ :broker support: *amqp, redis*
+-:command: :program:`celery -A proj control revoke_by_stamped_header <header=value>`
++:command: :program:`celery -A proj control revoke_by_stamped_headers <header=value>`
+ 
+ This command is similar to :meth:`~@control.revoke`, but instead of
+ specifying the task id(s), you specify the stamped header(s) as key-value pair(s),
+@@ -641,11 +641,11 @@ and each task that has a stamped header matching the key-value pair(s) will be r
+ 
+ .. code-block:: pycon
+ 
+-    >>> app.control.revoke_by_stamped_header({'header': 'value'})
++    >>> app.control.revoke_by_stamped_headers({'header': 'value'})
+ 
+-    >>> app.control.revoke_by_stamped_header({'header': 'value'}, terminate=True)
++    >>> app.control.revoke_by_stamped_headers({'header': 'value'}, terminate=True)
+ 
+-    >>> app.control.revoke_by_stamped_header({'header': 'value'}, terminate=True, signal='SIGKILL')
++    >>> app.control.revoke_by_stamped_headers({'header': 'value'}, terminate=True, signal='SIGKILL')
+ 
+ 
+ Revoking multiple tasks by stamped headers
+@@ -653,14 +653,14 @@ Revoking multiple tasks by stamped headers
+ 
+ .. versionadded:: 5.3
+ 
+-The ``revoke_by_stamped_header`` method also accepts a list argument, where it will revoke
++The ``revoke_by_stamped_headers`` method also accepts a list argument, where it will revoke
+ by several headers or several values.
+ 
+ **Example**
+ 
+ .. code-block:: pycon
+ 
+-    >> app.control.revoke_by_stamped_header({
++    >> app.control.revoke_by_stamped_headers({
+     ...    'header_A': 'value_1',
+     ...    'header_B': ['value_2', 'value_3'],
+     })
+@@ -672,11 +672,11 @@ and all of the tasks that have a stamped header ``header_B`` with values ``value
+ 
+ .. code-block:: console
+ 
+-    $ celery -A proj control revoke_by_stamped_header stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2
++    $ celery -A proj control revoke_by_stamped_headers stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2
+ 
+-    $ celery -A proj control revoke_by_stamped_header stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2 --terminate
++    $ celery -A proj control revoke_by_stamped_headers stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2 --terminate
+ 
+-    $ celery -A proj control revoke_by_stamped_header stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2 --terminate --signal=SIGKILL
++    $ celery -A proj control revoke_by_stamped_headers stamped_header_key_A=stamped_header_value_1 stamped_header_key_B=stamped_header_value_2 --terminate --signal=SIGKILL
+ 
+ .. _worker-time-limits:
+ 
+diff --git a/examples/django/proj/celery.py b/examples/django/proj/celery.py
+index 182da54fb55..ec3354dcdf3 100644
+--- a/examples/django/proj/celery.py
++++ b/examples/django/proj/celery.py
+@@ -1,7 +1,5 @@
+ import os
+ 
+-from django.conf import settings
+-
+ from celery import Celery
+ 
+ # Set the default Django settings module for the 'celery' program.
+@@ -13,7 +11,7 @@
+ # the configuration object to child processes.
+ # - namespace='CELERY' means all celery-related configuration keys
+ #   should have a `CELERY_` prefix.
+-app.config_from_object(f'django.conf:{settings.__name__}', namespace='CELERY')
++app.config_from_object('django.conf:settings', namespace='CELERY')
+ 
+ # Load task modules from all registered Django apps.
+ app.autodiscover_tasks()
+diff --git a/examples/django/proj/urls.py b/examples/django/proj/urls.py
+index 5f67c27b660..bfbc09114ee 100644
+--- a/examples/django/proj/urls.py
++++ b/examples/django/proj/urls.py
+@@ -1,4 +1,5 @@
+-from django.urls import handler404, handler500, include, url  # noqa
++from django.conf.urls import handler404, handler500  # noqa
++from django.urls import include, path  # noqa
+ 
+ # Uncomment the next two lines to enable the admin:
+ # from django.contrib import admin
+diff --git a/requirements/default.txt b/requirements/default.txt
+index bed03e2bd56..dcec525e00a 100644
+--- a/requirements/default.txt
++++ b/requirements/default.txt
+@@ -1,5 +1,5 @@
+ billiard>=4.2.1,<5.0
+-kombu>=5.5.0rc2,<6.0
++kombu>=5.5.0rc3,<6.0
+ vine>=5.1.0,<6.0
+ click>=8.1.2,<9.0
+ click-didyoumean>=0.3.0
+diff --git a/requirements/extras/auth.txt b/requirements/extras/auth.txt
+index afd08f7b18e..241eda13e6a 100644
+--- a/requirements/extras/auth.txt
++++ b/requirements/extras/auth.txt
+@@ -1 +1 @@
+-cryptography==44.0.0
++cryptography==44.0.1
+diff --git a/requirements/extras/elasticsearch.txt b/requirements/extras/elasticsearch.txt
+index a729c4ae794..80d47852d1e 100644
+--- a/requirements/extras/elasticsearch.txt
++++ b/requirements/extras/elasticsearch.txt
+@@ -1,2 +1,2 @@
+-elasticsearch<=8.17.0
+-elastic-transport<=8.15.1
++elasticsearch<=8.17.1
++elastic-transport<=8.17.0
+diff --git a/requirements/extras/gcs.txt b/requirements/extras/gcs.txt
+index 363a19b8c8b..28ba9ac9ae9 100644
+--- a/requirements/extras/gcs.txt
++++ b/requirements/extras/gcs.txt
+@@ -1,3 +1,3 @@
+ google-cloud-storage>=2.10.0
+-google-cloud-firestore==2.19.0
++google-cloud-firestore==2.20.0
+ grpcio==1.67.0
+diff --git a/requirements/extras/pytest.txt b/requirements/extras/pytest.txt
+index 6f0f7a19896..01972fb128f 100644
+--- a/requirements/extras/pytest.txt
++++ b/requirements/extras/pytest.txt
+@@ -1 +1 @@
+-pytest-celery[all]>=1.1.3
++pytest-celery[all]>=1.2.0
+diff --git a/requirements/extras/solar.txt b/requirements/extras/solar.txt
+index f0d13a35bb3..60b63fb7f24 100644
+--- a/requirements/extras/solar.txt
++++ b/requirements/extras/solar.txt
+@@ -1 +1 @@
+-ephem==4.1.6; platform_python_implementation!="PyPy"
++ephem==4.2; platform_python_implementation!="PyPy"
+diff --git a/requirements/extras/sqs.txt b/requirements/extras/sqs.txt
+index 43ee109e8c6..4160a304451 100644
+--- a/requirements/extras/sqs.txt
++++ b/requirements/extras/sqs.txt
+@@ -1,5 +1,3 @@
+ boto3>=1.26.143
+-pycurl>=7.43.0.5,<7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version < "3.9"
+-pycurl>=7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version >= "3.9"
+ urllib3>=1.26.16
+ kombu[sqs]>=5.3.4
+diff --git a/requirements/test-ci-base.txt b/requirements/test-ci-base.txt
+index 05ee50df850..b5649723471 100644
+--- a/requirements/test-ci-base.txt
++++ b/requirements/test-ci-base.txt
+@@ -1,6 +1,6 @@
+ pytest-cov==5.0.0; python_version<"3.9"
+ pytest-cov==6.0.0; python_version>="3.9"
+-pytest-github-actions-annotate-failures==0.2.0
++pytest-github-actions-annotate-failures==0.3.0
+ -r extras/redis.txt
+ -r extras/sqlalchemy.txt
+ -r extras/pymemcache.txt
+diff --git a/requirements/test-ci-default.txt b/requirements/test-ci-default.txt
+index 78994fa8e45..e689866e245 100644
+--- a/requirements/test-ci-default.txt
++++ b/requirements/test-ci-default.txt
+@@ -21,5 +21,4 @@
+ git+https://github.com/celery/kombu.git
+ 
+ # SQS dependencies other than boto
+-pycurl>=7.43.0.5,<7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version < "3.9"
+-pycurl>=7.45.4; sys_platform != 'win32' and platform_python_implementation=="CPython" and python_version >= "3.9"
++urllib3>=1.26.16
+diff --git a/requirements/test.txt b/requirements/test.txt
+index ca0b8da0610..c7f9a07dff1 100644
+--- a/requirements/test.txt
++++ b/requirements/test.txt
+@@ -1,5 +1,5 @@
+ pytest==8.3.4
+-pytest-celery[all]>=1.1.3
++pytest-celery[all]>=1.2.0
+ pytest-rerunfailures>=14.0,<15.0; python_version >= "3.8" and python_version < "3.9"
+ pytest-rerunfailures>=15.0; python_version >= "3.9" and python_version < "4.0"
+ pytest-subtests<0.14.0; python_version < "3.9"
+@@ -10,7 +10,7 @@ pytest-order==1.3.0
+ boto3>=1.26.143
+ moto>=4.1.11,<5.1.0
+ # typing extensions
+-mypy==1.13.0; platform_python_implementation=="CPython"
++mypy==1.14.1; platform_python_implementation=="CPython"
+ pre-commit>=3.5.0,<3.8.0; python_version < '3.9'
+ pre-commit>=4.0.1; python_version >= '3.9'
+ -r extras/yaml.txt
+diff --git a/t/integration/test_canvas.py b/t/integration/test_canvas.py
+index d2474fa2351..ed838dc6730 100644
+--- a/t/integration/test_canvas.py
++++ b/t/integration/test_canvas.py
+@@ -2862,6 +2862,60 @@ def test_chord_body_chain_child_replaced_with_chain_last(self, manager):
+         res_obj = orig_sig.delay()
+         assert res_obj.get(timeout=TIMEOUT) == [42]
+ 
++    def test_nested_chord_header_link_error(self, manager, subtests):
++        try:
++            manager.app.backend.ensure_chords_allowed()
++        except NotImplementedError as e:
++            raise pytest.skip(e.args[0])
++
++        if not manager.app.conf.result_backend.startswith("redis"):
++            raise pytest.skip("Requires redis result backend.")
++        redis_connection = get_redis_connection()
++
++        errback_msg = "errback called"
++        errback_key = "echo_errback"
++        errback_sig = redis_echo.si(errback_msg, redis_key=errback_key)
++
++        body_msg = "chord body called"
++        body_key = "echo_body"
++        body_sig = redis_echo.si(body_msg, redis_key=body_key)
++
++        redis_connection.delete(errback_key, body_key)
++
++        manager.app.conf.task_allow_error_cb_on_chord_header = False
++
++        chord_inner = chord(
++            [identity.si("t1"), fail.si()],
++            identity.si("t2 (body)"),
++        )
++        chord_outer = chord(
++            group(
++                [
++                    identity.si("t3"),
++                    chord_inner,
++                ],
++            ),
++            body_sig,
++        )
++        chord_outer.link_error(errback_sig)
++        chord_outer.delay()
++
++        with subtests.test(msg="Confirm the body was not executed"):
++            with pytest.raises(TimeoutError):
++                # confirm the chord body was not called
++                await_redis_echo((body_msg,), redis_key=body_key, timeout=10)
++            # Double check
++            assert not redis_connection.exists(body_key), "Chord body was called when it should have not"
++
++        with subtests.test(msg="Confirm only one errback was called"):
++            await_redis_echo((errback_msg,), redis_key=errback_key, timeout=10)
++            with pytest.raises(TimeoutError):
++                # Double check
++                await_redis_echo((errback_msg,), redis_key=errback_key, timeout=10)
++
++        # Cleanup
++        redis_connection.delete(errback_key)
++
+     def test_enabling_flag_allow_error_cb_on_chord_header(self, manager, subtests):
+         """
+         Test that the flag allow_error_callback_on_chord_header works as
+diff --git a/t/integration/test_tasks.py b/t/integration/test_tasks.py
+index 76c46fd3f65..1b175a01320 100644
+--- a/t/integration/test_tasks.py
++++ b/t/integration/test_tasks.py
+@@ -318,6 +318,16 @@ def on_signature(self, sig, **headers) -> dict:
+                     assert result.successful() is False
+             worker_state.revoked_stamps.clear()
+ 
++    def test_revoke_by_stamped_headers_no_match(self, manager):
++        response = manager.app.control.revoke_by_stamped_headers(
++            {"myheader": ["myvalue"]},
++            terminate=False,
++            reply=True,
++        )
++
++        expected_response = "headers {'myheader': ['myvalue']} flagged as revoked, but not terminated"
++        assert response[0][list(response[0].keys())[0]]["ok"] == expected_response
++
+     @flaky
+     def test_wrong_arguments(self, manager):
+         """Tests that proper exceptions are raised when task is called with wrong arguments."""
+diff --git a/t/unit/app/test_app.py b/t/unit/app/test_app.py
+index 479a418cf67..9092ffaaa5c 100644
+--- a/t/unit/app/test_app.py
++++ b/t/unit/app/test_app.py
+@@ -1448,6 +1448,8 @@ def test_native_delayed_delivery_countdown(self, detect_quorum_queues):
+             exchange=exchange,
+             routing_key='0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.0.testcelery'
+         )
++        driver_type_stub = self.app.amqp.producer_pool.connections.connection.transport.driver_type
++        detect_quorum_queues.assert_called_once_with(self.app, driver_type_stub)
+ 
+     @patch('celery.app.base.detect_quorum_queues', return_value=[True, "testcelery"])
+     def test_native_delayed_delivery_eta_datetime(self, detect_quorum_queues):
+diff --git a/t/unit/backends/test_cassandra.py b/t/unit/backends/test_cassandra.py
+index 9bf8a480f3d..b51b51d056c 100644
+--- a/t/unit/backends/test_cassandra.py
++++ b/t/unit/backends/test_cassandra.py
+@@ -267,4 +267,12 @@ def test_options(self):
+             'cql_version': '3.2.1',
+             'protocol_version': 3
+         }
+-        mod.CassandraBackend(app=self.app)
++        self.app.conf.cassandra_port = None
++        x = mod.CassandraBackend(app=self.app)
++        # Default port is 9042
++        assert x.port == 9042
++
++        # Valid options with port specified
++        self.app.conf.cassandra_port = 1234
++        x = mod.CassandraBackend(app=self.app)
++        assert x.port == 1234
+diff --git a/t/unit/fixups/test_django.py b/t/unit/fixups/test_django.py
+index 72b4d60d873..c09ba61642c 100644
+--- a/t/unit/fixups/test_django.py
++++ b/t/unit/fixups/test_django.py
+@@ -1,5 +1,5 @@
+ from contextlib import contextmanager
+-from unittest.mock import Mock, patch
++from unittest.mock import MagicMock, Mock, patch
+ 
+ import pytest
+ 
+@@ -156,6 +156,10 @@ def test_on_worker_init(self):
+                 assert f._worker_fixup is DWF.return_value
+ 
+ 
++class InterfaceError(Exception):
++    pass
++
++
+ class test_DjangoWorkerFixup(FixupCase):
+     Fixup = DjangoWorkerFixup
+ 
+@@ -180,14 +184,15 @@ def test_install(self):
+ 
+     def test_on_worker_process_init(self, patching):
+         with self.fixup_context(self.app) as (f, _, _):
+-            with patch('celery.fixups.django._maybe_close_fd') as mcf:
++            with patch('celery.fixups.django._maybe_close_fd', side_effect=InterfaceError) as mcf:
+                 _all = f._db.connections.all = Mock()
+                 conns = _all.return_value = [
+-                    Mock(), Mock(),
++                    Mock(), MagicMock(),
+                 ]
+                 conns[0].connection = None
+                 with patch.object(f, 'close_cache'):
+                     with patch.object(f, '_close_database'):
++                        f.interface_errors = (InterfaceError, )
+                         f.on_worker_process_init()
+                         mcf.assert_called_with(conns[1].connection)
+                         f.close_cache.assert_called_with()
+diff --git a/t/unit/tasks/test_canvas.py b/t/unit/tasks/test_canvas.py
+index 1f901376205..6d287848c31 100644
+--- a/t/unit/tasks/test_canvas.py
++++ b/t/unit/tasks/test_canvas.py
+@@ -1746,7 +1746,7 @@ def test_flag_allow_error_cb_on_chord_header_various_header_types(self):
+             group(signature('t'), signature('t'))
+         ]
+         for chord_header in headers:
+-            c = chord(chord_header, signature('t'))
++            c = chord(chord_header, signature('t'), app=self.app)
+             sig = signature('t')
+             errback = c.link_error(sig)
+             assert errback == sig
+@@ -1754,7 +1754,7 @@ def test_flag_allow_error_cb_on_chord_header_various_header_types(self):
+     @pytest.mark.usefixtures('depends_on_current_app')
+     def test_flag_allow_error_cb_on_chord_header_with_dict_callback(self):
+         self.app.conf.task_allow_error_cb_on_chord_header = True
+-        c = chord(group(signature('th1'), signature('th2')), signature('tbody'))
++        c = chord(group(signature('th1'), signature('th2')), signature('tbody'), app=self.app)
+         errback_dict = dict(signature('tcb'))
+         errback = c.link_error(errback_dict)
+         assert errback == errback_dict
+@@ -1783,7 +1783,7 @@ def test_chord_upgrade_on_chaining(self):
+     def test_link_error_on_chord_header(self, header):
+         """ Test that link_error on a chord also links the header """
+         self.app.conf.task_allow_error_cb_on_chord_header = True
+-        c = chord(header, signature('body'))
++        c = chord(header, signature('body'), app=self.app)
+         err = signature('err')
+         errback = c.link_error(err)
+         assert errback == err
+diff --git a/t/unit/tasks/test_stamping.py b/t/unit/tasks/test_stamping.py
+index 3d139abb9e9..1c8da859dd7 100644
+--- a/t/unit/tasks/test_stamping.py
++++ b/t/unit/tasks/test_stamping.py
+@@ -1300,13 +1300,13 @@ def tasks():
+ 
+         with subtests.test("chord header"):
+             self.app.conf.task_allow_error_cb_on_chord_header = True
+-            canvas = chord(tasks(), self.identity.si("body"))
++            canvas = chord(tasks(), self.identity.si("body"), app=self.app)
+             canvas.link_error(s("group_link_error"))
+             canvas.stamp(CustomStampingVisitor())
+ 
+         with subtests.test("chord body"):
+             self.app.conf.task_allow_error_cb_on_chord_header = False
+-            canvas = chord(tasks(), self.identity.si("body"))
++            canvas = chord(tasks(), self.identity.si("body"), app=self.app)
+             canvas.link_error(s("group_link_error"))
+             canvas.stamp(CustomStampingVisitor())
+ 
+diff --git a/t/unit/utils/test_functional.py b/t/unit/utils/test_functional.py
+index 52fdce6a96a..a8c9dc1e893 100644
+--- a/t/unit/utils/test_functional.py
++++ b/t/unit/utils/test_functional.py
+@@ -195,7 +195,7 @@ def __iter__(self):
+         # The following checks are for the known "misbehaviour"
+         assert getattr(g, "_regen__done") is False
+         # If the `regen()` instance doesn't think it's done then it'll dupe the
+-        # elements from the underlying iterator if it can be re-used
++        # elements from the underlying iterator if it can be reused
+         iter_g = iter(g)
+         for e in original_list * 2:
+             assert next(iter_g) == e
+diff --git a/t/unit/utils/test_platforms.py b/t/unit/utils/test_platforms.py
+index fdac88288dc..ebbcdc236c2 100644
+--- a/t/unit/utils/test_platforms.py
++++ b/t/unit/utils/test_platforms.py
+@@ -13,9 +13,9 @@
+ from celery.exceptions import SecurityError, SecurityWarning
+ from celery.platforms import (ASSUMING_ROOT, ROOT_DISALLOWED, ROOT_DISCOURAGED, DaemonContext, LockFailed, Pidfile,
+                               _setgroups_hack, check_privileges, close_open_fds, create_pidlock, detached,
+-                              fd_by_path, get_fdmax, ignore_errno, initgroups, maybe_drop_privileges, parse_gid,
+-                              parse_uid, set_mp_process_title, set_pdeathsig, set_process_title, setgid, setgroups,
+-                              setuid, signals)
++                              fd_by_path, get_fdmax, ignore_errno, initgroups, isatty, maybe_drop_privileges,
++                              parse_gid, parse_uid, set_mp_process_title, set_pdeathsig, set_process_title, setgid,
++                              setgroups, setuid, signals)
+ from celery.utils.text import WhateverIO
+ from t.unit import conftest
+ 
+@@ -25,6 +25,13 @@
+     resource = None
+ 
+ 
++def test_isatty():
++    fh = Mock(name='fh')
++    assert isatty(fh) is fh.isatty()
++    fh.isatty.side_effect = AttributeError()
++    assert not isatty(fh)
++
++
+ class test_find_option_with_arg:
+ 
+     def test_long_opt(self):
+diff --git a/t/unit/utils/test_term.py b/t/unit/utils/test_term.py
+index 2261b59f8e3..1a505ca54e5 100644
+--- a/t/unit/utils/test_term.py
++++ b/t/unit/utils/test_term.py
+@@ -1,11 +1,13 @@
++import os
+ from base64 import b64encode
+ from tempfile import NamedTemporaryFile
++from unittest.mock import patch
+ 
+ import pytest
+ 
+ import t.skip
+ from celery.utils import term
+-from celery.utils.term import _read_as_base64, colored, fg
++from celery.utils.term import _read_as_base64, colored, fg, supports_images
+ 
+ 
+ @t.skip.if_win32
+@@ -70,3 +72,16 @@ def test_read_as_base64(self):
+             expected_result = b64encode(test_data).decode('ascii')
+ 
+             assert result == expected_result
++
++    @pytest.mark.parametrize('is_tty, iterm_profile, expected', [
++        (True, 'test_profile', True),
++        (False, 'test_profile', False),
++        (True, None, False),
++    ])
++    @patch('sys.stdin.isatty')
++    @patch.dict(os.environ, {'ITERM_PROFILE': 'test_profile'}, clear=True)
++    def test_supports_images(self, mock_isatty, is_tty, iterm_profile, expected):
++        mock_isatty.return_value = is_tty
++        if iterm_profile is None:
++            del os.environ['ITERM_PROFILE']
++        assert supports_images() == expected

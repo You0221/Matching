@@ -1,0 +1,377 @@
+[
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/missing-equals",
+    "rule_name": "py/missing-equals",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/config.py",
+    "line": 50,
+    "message": "The class 'Config' does not override ['__eq__'](1), but adds the new attribute [root_path](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "44621beb3f28db55:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 20,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "file:/",
+              "index": 1
+            }
+          },
+          "message": {
+            "text": "'__eq__'"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "src/flask/config.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 0
+            },
+            "region": {
+              "startLine": 100,
+              "startColumn": 9,
+              "endColumn": 23
+            }
+          },
+          "message": {
+            "text": "root_path"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/missing-call-to-init",
+    "rule_name": "py/missing-call-to-init",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/app.py",
+    "line": 79,
+    "message": "Class Flask may not be initialized properly as [method Scaffold.__init__](1) is not called from its [__init__ method](2).",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "c4ecfb860c5870d2:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 18,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "src/flask/sansio/scaffold.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 3
+            },
+            "region": {
+              "startLine": 75,
+              "startColumn": 5,
+              "endLine": 82,
+              "endColumn": 7
+            }
+          },
+          "message": {
+            "text": "method Scaffold.__init__"
+          }
+        },
+        {
+          "id": 2,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "src/flask/app.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 2
+            },
+            "region": {
+              "startLine": 218,
+              "startColumn": 5,
+              "endLine": 230,
+              "endColumn": 7
+            }
+          },
+          "message": {
+            "text": "__init__ method"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "examples/tutorial/flaskr/__init__.py",
+    "line": 26,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "9dd39e3ce1c85593:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 20,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/empty-except",
+    "rule_name": "py/empty-except",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/cli.py",
+    "line": 1080,
+    "message": "'except' clause does nothing but pass and there is no explanatory comment.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "1ab81a46ba5feccb:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 23,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/sansio/app.py",
+    "line": 3,
+    "message": "Module 'logging' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "441d9a9c205adf2f:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 15,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/import-and-import-from",
+    "rule_name": "py/import-and-import-from",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/cli.py",
+    "line": 485,
+    "message": "Module 'importlib' is imported with both 'import' and 'import from'.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7862c3aa2c605e17:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 5,
+      "endColumn": 21,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/import-own-module",
+    "rule_name": "py/import-own-module",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/typing.py",
+    "line": 3,
+    "message": "The module 'typing' imports itself.\nThe module 'flask.typing' imports itself.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "4481e0c5738788ee:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 19,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/unused-import",
+    "rule_name": "py/unused-import",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/blueprints.py",
+    "line": 11,
+    "message": "Import of 'BlueprintSetupState' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "7b5b31997fda23ec:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 74,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/stack-trace-exposure",
+    "rule_name": "py/stack-trace-exposure",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/app.py",
+    "line": 902,
+    "message": "[Stack trace information](1) flows to this location and may be exposed to an external user.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "84696c71632efd77:1",
+        "primaryLocationStartColumnFingerprint": "30"
+      },
+      "startColumn": 39,
+      "endColumn": 41,
+      "relatedLocations": [
+        {
+          "id": 1,
+          "physicalLocation": {
+            "artifactLocation": {
+              "uri": "src/flask/app.py",
+              "uriBaseId": "%SRCROOT%",
+              "index": 2
+            },
+            "region": {
+              "startLine": 881,
+              "startColumn": 29,
+              "endColumn": 30
+            }
+          },
+          "message": {
+            "text": "Stack trace information"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/cli.py",
+    "line": 232,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "f1f71b50ca90f68f:1",
+        "primaryLocationStartColumnFingerprint": "12"
+      },
+      "startColumn": 13,
+      "endColumn": 16,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/ineffectual-statement",
+    "rule_name": "py/ineffectual-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/config.py",
+    "line": 30,
+    "message": "This statement has no effect.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "2acab6e9ddf62982:1",
+        "primaryLocationStartColumnFingerprint": "54"
+      },
+      "startColumn": 59,
+      "endColumn": 62,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/unreachable-statement",
+    "rule_name": "py/unreachable-statement",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/app.py",
+    "line": 611,
+    "message": "This statement is unreachable.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "6feefda0fbd4211a:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": 9,
+      "endColumn": 22,
+      "relatedLocations": null
+    }
+  },
+  {
+    "tool": "codeql",
+    "project_name": "flask",
+    "project_version": "3.0.3",
+    "rule_id": "py/unused-global-variable",
+    "rule_name": "py/unused-global-variable",
+    "severity": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "file": "src/flask/sansio/scaffold.py",
+    "line": 25,
+    "message": "The global variable '_sentinel' is not used.",
+    "cwe": [],
+    "extra": {
+      "partialFingerprints": {
+        "primaryLocationLineHash": "ab67785689e395df:1",
+        "primaryLocationStartColumnFingerprint": "0"
+      },
+      "startColumn": null,
+      "endColumn": 10,
+      "relatedLocations": null
+    }
+  }
+]

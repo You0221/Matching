@@ -1,0 +1,4014 @@
+diff --git a/.github/workflows/docs.yml b/.github/workflows/docs.yml
+index 9b88b9be9316..46c2cf870724 100644
+--- a/.github/workflows/docs.yml
++++ b/.github/workflows/docs.yml
+@@ -21,8 +21,7 @@ permissions:
+ 
+ jobs:
+   docs:
+-    # OS must be the same as on djangoproject.com.
+-    runs-on: ubuntu-20.04
++    runs-on: ubuntu-24.04
+     name: docs
+     steps:
+       - name: Checkout
+@@ -30,7 +29,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+           cache-dependency-path: 'docs/requirements.txt'
+       - run: python -m pip install -r docs/requirements.txt
+@@ -48,7 +47,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+       - run: python -m pip install blacken-docs
+       - name: Build docs
+         run: |
+diff --git a/.github/workflows/linters.yml b/.github/workflows/linters.yml
+index 3875e755f912..7c64dc98ff4c 100644
+--- a/.github/workflows/linters.yml
++++ b/.github/workflows/linters.yml
+@@ -27,7 +27,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+       - run: python -m pip install flake8
+       - name: flake8
+         # Pinned to v3.0.0.
+@@ -44,7 +44,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+       - run: python -m pip install isort
+       - name: isort
+         # Pinned to v3.0.0.
+diff --git a/.github/workflows/python_matrix.yml b/.github/workflows/python_matrix.yml
+new file mode 100644
+index 000000000000..ab48c2be8322
+--- /dev/null
++++ b/.github/workflows/python_matrix.yml
+@@ -0,0 +1,52 @@
++name: Python Matrix from config file
++
++on:
++  pull_request:
++    types: [labeled, synchronize, opened, reopened]
++    paths-ignore:
++      - 'docs/**'
++  workflow_dispatch:
++
++concurrency:
++  group: ${{ github.workflow }}-${{ github.ref }}
++  cancel-in-progress: true
++
++permissions:
++   contents: read
++
++jobs:
++  define-matrix:
++    if: contains(github.event.pull_request.labels.*.name, 'python-matrix')
++    runs-on: ubuntu-latest
++    outputs:
++      python_versions_output: ${{ steps.set-matrix.outputs.python_versions }}
++    steps:
++      - name: Checkout code
++        uses: actions/checkout@v4
++      - id: set-matrix
++        run: |
++          python_versions=$(sed -n "s/^.*Programming Language :: Python :: \([[:digit:]]\+\.[[:digit:]]\+\).*$/'\1', /p" pyproject.toml | tr -d '\n' | sed 's/, $//g')
++          echo "Supported Python versions: $python_versions"
++          echo "python_versions=[$python_versions]" >> "$GITHUB_OUTPUT"
++  python:
++    runs-on: ubuntu-latest
++    needs: define-matrix
++    strategy:
++      matrix:
++        python-version: ${{ fromJson(needs.define-matrix.outputs.python_versions_output) }}
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++      - name: Set up Python ${{ matrix.python-version }}
++        uses: actions/setup-python@v5
++        with:
++          python-version: ${{ matrix.python-version }}
++          cache: 'pip'
++          cache-dependency-path: 'tests/requirements/py3.txt'
++      - name: Install libmemcached-dev for pylibmc
++        run: sudo apt-get install libmemcached-dev
++      - name: Install and upgrade packaging tools
++        run: python -m pip install --upgrade pip setuptools wheel
++      - run: python -m pip install -r tests/requirements/py3.txt -e .
++      - name: Run tests
++        run: python tests/runtests.py -v2
+diff --git a/.github/workflows/schedule_tests.yml b/.github/workflows/schedule_tests.yml
+index c4523af4a030..495a61637846 100644
+--- a/.github/workflows/schedule_tests.yml
++++ b/.github/workflows/schedule_tests.yml
+@@ -19,7 +19,7 @@ jobs:
+           - '3.10'
+           - '3.11'
+           - '3.12'
+-          - '3.13-dev'
++          - '3.13'
+     name: Windows, SQLite, Python ${{ matrix.python-version }}
+     continue-on-error: true
+     steps:
+@@ -46,7 +46,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+       - name: Install libmemcached-dev for pylibmc
+         run: sudo apt-get install libmemcached-dev
+@@ -145,7 +145,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+           cache-dependency-path: 'tests/requirements/py3.txt'
+       - name: Install libmemcached-dev for pylibmc
+@@ -181,7 +181,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+           cache-dependency-path: 'tests/requirements/py3.txt'
+       - name: Install libmemcached-dev for pylibmc
+diff --git a/.github/workflows/selenium.yml b/.github/workflows/selenium.yml
+index fa916a0dedf0..bb82eb4203c5 100644
+--- a/.github/workflows/selenium.yml
++++ b/.github/workflows/selenium.yml
+@@ -24,7 +24,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+           cache-dependency-path: 'tests/requirements/py3.txt'
+       - name: Install libmemcached-dev for pylibmc
+@@ -61,7 +61,7 @@ jobs:
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+-          python-version: '3.12'
++          python-version: '3.13'
+           cache: 'pip'
+           cache-dependency-path: 'tests/requirements/py3.txt'
+       - name: Install libmemcached-dev for pylibmc
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index abe7c78a2554..5de554721d1f 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -23,7 +23,7 @@ jobs:
+     strategy:
+       matrix:
+         python-version:
+-          - '3.12'
++          - '3.13'
+     name: Windows, SQLite, Python ${{ matrix.python-version }}
+     steps:
+       - name: Checkout
+diff --git a/.readthedocs.yml b/.readthedocs.yml
+index bde8b64da0f0..915d51de46f9 100644
+--- a/.readthedocs.yml
++++ b/.readthedocs.yml
+@@ -4,12 +4,13 @@
+ version: 2
+ 
+ build:
+-  os: ubuntu-20.04
++  os: ubuntu-24.04
+   tools:
+-    python: "3.8"
++    python: "3.12"
+ 
+ sphinx:
+   configuration: docs/conf.py
++  fail_on_warning: true
+ 
+ python:
+   install:
+diff --git a/django/__init__.py b/django/__init__.py
+index e0b92dccfb39..49fdb66ba4e9 100644
+--- a/django/__init__.py
++++ b/django/__init__.py
+@@ -1,6 +1,6 @@
+ from django.utils.version import get_version
+ 
+-VERSION = (5, 1, 2, "final", 0)
++VERSION = (5, 1, 5, "final", 0)
+ 
+ __version__ = get_version(VERSION)
+ 
+diff --git a/django/contrib/admin/templates/admin/includes/fieldset.html b/django/contrib/admin/templates/admin/includes/fieldset.html
+index a9d3f927025e..c94d46fd6478 100644
+--- a/django/contrib/admin/templates/admin/includes/fieldset.html
++++ b/django/contrib/admin/templates/admin/includes/fieldset.html
+@@ -1,8 +1,7 @@
+-{% with name=fieldset.name|default:""|slugify %}
+-<fieldset class="module aligned {{ fieldset.classes }}"{% if name %} aria-labelledby="{{ prefix }}-{{ id_prefix}}-{{ name }}-{{ id_suffix }}-heading"{% endif %}>
+-    {% if name %}
++<fieldset class="module aligned {{ fieldset.classes }}"{% if fieldset.name %} aria-labelledby="{{ prefix }}-{{ id_prefix}}-{{ id_suffix }}-heading"{% endif %}>
++    {% if fieldset.name %}
+         {% if fieldset.is_collapsible %}<details><summary>{% endif %}
+-        <h{{ heading_level|default:2 }} id="{{ prefix }}-{{ id_prefix}}-{{ name }}-{{ id_suffix }}-heading" class="fieldset-heading">{{ fieldset.name }}</h{{ heading_level|default:2 }}>
++        <h{{ heading_level|default:2 }} id="{{ prefix }}-{{ id_prefix}}-{{ id_suffix }}-heading" class="fieldset-heading">{{ fieldset.name }}</h{{ heading_level|default:2 }}>
+         {% if fieldset.is_collapsible %}</summary>{% endif %}
+     {% endif %}
+     {% if fieldset.description %}
+@@ -36,6 +35,5 @@
+             {% if not line.fields|length == 1 %}</div>{% endif %}
+         </div>
+     {% endfor %}
+-    {% if name and fieldset.is_collapsible %}</details>{% endif %}
++    {% if fieldset.name and fieldset.is_collapsible %}</details>{% endif %}
+ </fieldset>
+-{% endwith %}
+diff --git a/django/contrib/auth/management/__init__.py b/django/contrib/auth/management/__init__.py
+index c40f2aa69dd2..a8639cb25858 100644
+--- a/django/contrib/auth/management/__init__.py
++++ b/django/contrib/auth/management/__init__.py
+@@ -115,10 +115,12 @@ def get_system_username():
+     """
+     try:
+         result = getpass.getuser()
+-    except (ImportError, KeyError):
+-        # KeyError will be raised by os.getpwuid() (called by getuser())
+-        # if there is no corresponding entry in the /etc/passwd file
+-        # (a very restricted chroot environment, for example).
++    except (ImportError, KeyError, OSError):
++        # TODO: Drop ImportError and KeyError when dropping support for PY312.
++        # KeyError (Python <3.13) or OSError (Python 3.13+) will be raised by
++        # os.getpwuid() (called by getuser()) if there is no corresponding
++        # entry in the /etc/passwd file (for example, in a very restricted
++        # chroot environment).
+         return ""
+     return result
+ 
+diff --git a/django/contrib/gis/geoip2.py b/django/contrib/gis/geoip2.py
+index f5058c1c05dc..a5fe429b89ed 100644
+--- a/django/contrib/gis/geoip2.py
++++ b/django/contrib/gis/geoip2.py
+@@ -34,6 +34,18 @@
+     __all__ += ["GeoIP2", "GeoIP2Exception"]
+ 
+ 
++# These are the values stored in the `database_type` field of the metadata.
++# See https://maxmind.github.io/MaxMind-DB/#database_type for details.
++SUPPORTED_DATABASE_TYPES = {
++    "DBIP-City-Lite",
++    "DBIP-Country-Lite",
++    "GeoIP2-City",
++    "GeoIP2-Country",
++    "GeoLite2-City",
++    "GeoLite2-Country",
++}
++
++
+ class GeoIP2Exception(Exception):
+     pass
+ 
+@@ -106,7 +118,7 @@ def __init__(self, path=None, cache=0, country=None, city=None):
+             )
+ 
+         database_type = self._metadata.database_type
+-        if not database_type.endswith(("City", "Country")):
++        if database_type not in SUPPORTED_DATABASE_TYPES:
+             raise GeoIP2Exception(f"Unable to handle database edition: {database_type}")
+ 
+     def __del__(self):
+@@ -123,6 +135,14 @@ def __repr__(self):
+     def _metadata(self):
+         return self._reader.metadata()
+ 
++    @cached_property
++    def is_city(self):
++        return "City" in self._metadata.database_type
++
++    @cached_property
++    def is_country(self):
++        return "Country" in self._metadata.database_type
++
+     def _query(self, query, *, require_city=False):
+         if not isinstance(query, (str, ipaddress.IPv4Address, ipaddress.IPv6Address)):
+             raise TypeError(
+@@ -130,9 +150,7 @@ def _query(self, query, *, require_city=False):
+                 "IPv6Address, not type %s" % type(query).__name__,
+             )
+ 
+-        is_city = self._metadata.database_type.endswith("City")
+-
+-        if require_city and not is_city:
++        if require_city and not self.is_city:
+             raise GeoIP2Exception(f"Invalid GeoIP city data file: {self._path}")
+ 
+         try:
+@@ -141,7 +159,7 @@ def _query(self, query, *, require_city=False):
+             # GeoIP2 only takes IP addresses, so try to resolve a hostname.
+             query = socket.gethostbyname(query)
+ 
+-        function = self._reader.city if is_city else self._reader.country
++        function = self._reader.city if self.is_city else self._reader.country
+         return function(query)
+ 
+     def city(self, query):
+diff --git a/django/core/cache/backends/filebased.py b/django/core/cache/backends/filebased.py
+index 29d49c0ede9f..cbf47e4e1687 100644
+--- a/django/core/cache/backends/filebased.py
++++ b/django/core/cache/backends/filebased.py
+@@ -166,5 +166,5 @@ def _list_cache_files(self):
+         """
+         return [
+             os.path.join(self._dir, fname)
+-            for fname in glob.glob1(self._dir, "*%s" % self.cache_suffix)
++            for fname in glob.glob(f"*{self.cache_suffix}", root_dir=self._dir)
+         ]
+diff --git a/django/core/validators.py b/django/core/validators.py
+index b1c5c053b846..8732ddf7adbf 100644
+--- a/django/core/validators.py
++++ b/django/core/validators.py
+@@ -101,13 +101,16 @@ def __init__(self, **kwargs):
+ 
+         if self.accept_idna:
+             self.regex = _lazy_re_compile(
+-                self.hostname_re + self.domain_re + self.tld_re, re.IGNORECASE
++                r"^" + self.hostname_re + self.domain_re + self.tld_re + r"$",
++                re.IGNORECASE,
+             )
+         else:
+             self.regex = _lazy_re_compile(
+-                self.ascii_only_hostname_re
++                r"^"
++                + self.ascii_only_hostname_re
+                 + self.ascii_only_domain_re
+-                + self.ascii_only_tld_re,
++                + self.ascii_only_tld_re
++                + r"$",
+                 re.IGNORECASE,
+             )
+         super().__init__(**kwargs)
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index 9aad9c809ee7..9f4eb2de55e6 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -95,6 +95,17 @@ def database_forwards(self, app_label, schema_editor, from_state, to_state):
+         model = to_state.apps.get_model(app_label, self.name)
+         if self.allow_migrate_model(schema_editor.connection.alias, model):
+             schema_editor.create_model(model)
++            # While the `index_together` option has been deprecated some
++            # historical migrations might still have references to them.
++            # This can be moved to the schema editor once it's adapted to
++            # from model states instead of rendered models (#29898).
++            to_model_state = to_state.models[app_label, self.name_lower]
++            if index_together := to_model_state.options.get("index_together"):
++                schema_editor.alter_index_together(
++                    model,
++                    set(),
++                    index_together,
++                )
+ 
+     def database_backwards(self, app_label, schema_editor, from_state, to_state):
+         model = from_state.apps.get_model(app_label, self.name)
+@@ -668,12 +679,13 @@ def state_forwards(self, app_label, state):
+     def database_forwards(self, app_label, schema_editor, from_state, to_state):
+         new_model = to_state.apps.get_model(app_label, self.name)
+         if self.allow_migrate_model(schema_editor.connection.alias, new_model):
+-            old_model = from_state.apps.get_model(app_label, self.name)
++            from_model_state = from_state.models[app_label, self.name_lower]
++            to_model_state = to_state.models[app_label, self.name_lower]
+             alter_together = getattr(schema_editor, "alter_%s" % self.option_name)
+             alter_together(
+                 new_model,
+-                getattr(old_model._meta, self.option_name, set()),
+-                getattr(new_model._meta, self.option_name, set()),
++                from_model_state.options.get(self.option_name) or set(),
++                to_model_state.options.get(self.option_name) or set(),
+             )
+ 
+     def database_backwards(self, app_label, schema_editor, from_state, to_state):
+diff --git a/django/db/migrations/state.py b/django/db/migrations/state.py
+index 42a2c80a5e21..087fa9df12b2 100644
+--- a/django/db/migrations/state.py
++++ b/django/db/migrations/state.py
+@@ -310,13 +310,14 @@ def rename_field(self, app_label, model_name, old_name, new_name):
+                         for from_field_name in from_fields
+                     ]
+                 )
+-        # Fix unique_together to refer to the new field.
++        # Fix index/unique_together to refer to the new field.
+         options = model_state.options
+-        if "unique_together" in options:
+-            options["unique_together"] = [
+-                [new_name if n == old_name else n for n in together]
+-                for together in options["unique_together"]
+-            ]
++        for option in ("index_together", "unique_together"):
++            if option in options:
++                options[option] = [
++                    [new_name if n == old_name else n for n in together]
++                    for together in options[option]
++                ]
+         # Fix to_fields to refer to the new field.
+         delay = True
+         references = get_references(self, model_key, (old_name, found))
+@@ -811,9 +812,6 @@ def from_model(cls, model, exclude_rels=False):
+                 if name == "unique_together":
+                     ut = model._meta.original_attrs["unique_together"]
+                     options[name] = set(normalize_together(ut))
+-                elif name == "index_together":
+-                    it = model._meta.original_attrs["index_together"]
+-                    options[name] = set(normalize_together(it))
+                 elif name == "indexes":
+                     indexes = [idx.clone() for idx in model._meta.indexes]
+                     for index in indexes:
+@@ -829,7 +827,7 @@ def from_model(cls, model, exclude_rels=False):
+         # If we're ignoring relationships, remove all field-listing model
+         # options (that option basically just means "make a stub model")
+         if exclude_rels:
+-            for key in ["unique_together", "index_together", "order_with_respect_to"]:
++            for key in ["unique_together", "order_with_respect_to"]:
+                 if key in options:
+                     del options[key]
+         # Private fields are ignored, so remove options that refer to them.
+@@ -934,7 +932,11 @@ def clone(self):
+     def render(self, apps):
+         """Create a Model object from our current state into the given apps."""
+         # First, make a Meta object
+-        meta_contents = {"app_label": self.app_label, "apps": apps, **self.options}
++        meta_options = {**self.options}
++        # Prune index_together from options as it's no longer an allowed meta
++        # attribute.
++        meta_options.pop("index_together", None)
++        meta_contents = {"app_label": self.app_label, "apps": apps, **meta_options}
+         meta = type("Meta", (), meta_contents)
+         # Then, work out our bases
+         try:
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 9bc39aeb227a..a866bc02ad6a 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -717,12 +717,13 @@ def refresh_from_db(self, using=None, fields=None, from_queryset=None):
+         if fields is not None:
+             db_instance_qs = db_instance_qs.only(*fields)
+         elif deferred_fields:
+-            fields = {
+-                f.attname
+-                for f in self._meta.concrete_fields
+-                if f.attname not in deferred_fields
+-            }
+-            db_instance_qs = db_instance_qs.only(*fields)
++            db_instance_qs = db_instance_qs.only(
++                *{
++                    f.attname
++                    for f in self._meta.concrete_fields
++                    if f.attname not in deferred_fields
++                }
++            )
+ 
+         db_instance = db_instance_qs.get()
+         non_loaded_fields = db_instance.get_deferred_fields()
+@@ -739,9 +740,9 @@ def refresh_from_db(self, using=None, fields=None, from_queryset=None):
+                     field.delete_cached_value(self)
+ 
+         # Clear cached relations.
+-        for field in self._meta.related_objects:
+-            if (fields is None or field.name in fields) and field.is_cached(self):
+-                field.delete_cached_value(self)
++        for rel in self._meta.related_objects:
++            if (fields is None or rel.name in fields) and rel.is_cached(self):
++                rel.delete_cached_value(self)
+ 
+         # Clear cached private relations.
+         for field in self._meta.private_fields:
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index d1f31f021135..76b46a3deb80 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -32,7 +32,7 @@
+ )
+ from django.utils.duration import duration_microseconds, duration_string
+ from django.utils.functional import Promise, cached_property
+-from django.utils.ipv6 import clean_ipv6_address
++from django.utils.ipv6 import MAX_IPV6_ADDRESS_LENGTH, clean_ipv6_address
+ from django.utils.text import capfirst
+ from django.utils.translation import gettext_lazy as _
+ 
+@@ -2228,7 +2228,7 @@ def __init__(
+         self.default_validators = validators.ip_address_validators(
+             protocol, unpack_ipv4
+         )
+-        kwargs["max_length"] = 39
++        kwargs["max_length"] = MAX_IPV6_ADDRESS_LENGTH
+         super().__init__(verbose_name, name, *args, **kwargs)
+ 
+     def check(self, **kwargs):
+@@ -2255,7 +2255,7 @@ def deconstruct(self):
+             kwargs["unpack_ipv4"] = self.unpack_ipv4
+         if self.protocol != "both":
+             kwargs["protocol"] = self.protocol
+-        if kwargs.get("max_length") == 39:
++        if kwargs.get("max_length") == self.max_length:
+             del kwargs["max_length"]
+         return name, path, args, kwargs
+ 
+diff --git a/django/db/models/fields/json.py b/django/db/models/fields/json.py
+index 1b219e620c9a..608da6036f87 100644
+--- a/django/db/models/fields/json.py
++++ b/django/db/models/fields/json.py
+@@ -193,20 +193,18 @@ def compile_json_path_final_key(self, key_transform):
+         # Compile the final key without interpreting ints as array elements.
+         return ".%s" % json.dumps(key_transform)
+ 
+-    def as_sql(self, compiler, connection, template=None):
++    def _as_sql_parts(self, compiler, connection):
+         # Process JSON path from the left-hand side.
+         if isinstance(self.lhs, KeyTransform):
+-            lhs, lhs_params, lhs_key_transforms = self.lhs.preprocess_lhs(
++            lhs_sql, lhs_params, lhs_key_transforms = self.lhs.preprocess_lhs(
+                 compiler, connection
+             )
+             lhs_json_path = compile_json_path(lhs_key_transforms)
+         else:
+-            lhs, lhs_params = self.process_lhs(compiler, connection)
++            lhs_sql, lhs_params = self.process_lhs(compiler, connection)
+             lhs_json_path = "$"
+-        sql = template % lhs
+         # Process JSON path from the right-hand side.
+         rhs = self.rhs
+-        rhs_params = []
+         if not isinstance(rhs, (list, tuple)):
+             rhs = [rhs]
+         for key in rhs:
+@@ -217,24 +215,43 @@ def as_sql(self, compiler, connection, template=None):
+             *rhs_key_transforms, final_key = rhs_key_transforms
+             rhs_json_path = compile_json_path(rhs_key_transforms, include_root=False)
+             rhs_json_path += self.compile_json_path_final_key(final_key)
+-            rhs_params.append(lhs_json_path + rhs_json_path)
++            yield lhs_sql, lhs_params, lhs_json_path + rhs_json_path
++
++    def _combine_sql_parts(self, parts):
+         # Add condition for each key.
+         if self.logical_operator:
+-            sql = "(%s)" % self.logical_operator.join([sql] * len(rhs_params))
+-        return sql, tuple(lhs_params) + tuple(rhs_params)
++            return "(%s)" % self.logical_operator.join(parts)
++        return "".join(parts)
++
++    def as_sql(self, compiler, connection, template=None):
++        sql_parts = []
++        params = []
++        for lhs_sql, lhs_params, rhs_json_path in self._as_sql_parts(
++            compiler, connection
++        ):
++            sql_parts.append(template % (lhs_sql, "%s"))
++            params.extend(lhs_params + [rhs_json_path])
++        return self._combine_sql_parts(sql_parts), tuple(params)
+ 
+     def as_mysql(self, compiler, connection):
+         return self.as_sql(
+-            compiler, connection, template="JSON_CONTAINS_PATH(%s, 'one', %%s)"
++            compiler, connection, template="JSON_CONTAINS_PATH(%s, 'one', %s)"
+         )
+ 
+     def as_oracle(self, compiler, connection):
+-        sql, params = self.as_sql(
+-            compiler, connection, template="JSON_EXISTS(%s, '%%s')"
+-        )
+-        # Add paths directly into SQL because path expressions cannot be passed
+-        # as bind variables on Oracle.
+-        return sql % tuple(params), []
++        template = "JSON_EXISTS(%s, '%s')"
++        sql_parts = []
++        params = []
++        for lhs_sql, lhs_params, rhs_json_path in self._as_sql_parts(
++            compiler, connection
++        ):
++            # Add right-hand-side directly into SQL because it cannot be passed
++            # as bind variables to JSON_EXISTS. It might result in invalid
++            # queries but it is assumed that it cannot be evaded because the
++            # path is JSON serialized.
++            sql_parts.append(template % (lhs_sql, rhs_json_path))
++            params.extend(lhs_params)
++        return self._combine_sql_parts(sql_parts), tuple(params)
+ 
+     def as_postgresql(self, compiler, connection):
+         if isinstance(self.rhs, KeyTransform):
+@@ -246,7 +263,7 @@ def as_postgresql(self, compiler, connection):
+ 
+     def as_sqlite(self, compiler, connection):
+         return self.as_sql(
+-            compiler, connection, template="JSON_TYPE(%s, %%s) IS NOT NULL"
++            compiler, connection, template="JSON_TYPE(%s, %s) IS NOT NULL"
+         )
+ 
+ 
+@@ -455,9 +472,9 @@ def as_oracle(self, compiler, connection):
+         return "(NOT %s OR %s IS NULL)" % (sql, lhs), tuple(params) + tuple(lhs_params)
+ 
+     def as_sqlite(self, compiler, connection):
+-        template = "JSON_TYPE(%s, %%s) IS NULL"
++        template = "JSON_TYPE(%s, %s) IS NULL"
+         if not self.rhs:
+-            template = "JSON_TYPE(%s, %%s) IS NOT NULL"
++            template = "JSON_TYPE(%s, %s) IS NOT NULL"
+         return HasKeyOrArrayIndex(self.lhs.lhs, self.lhs.key_name).as_sql(
+             compiler,
+             connection,
+diff --git a/django/forms/fields.py b/django/forms/fields.py
+index 4ec7b7aee74f..fbc10d404942 100644
+--- a/django/forms/fields.py
++++ b/django/forms/fields.py
+@@ -46,7 +46,7 @@
+ from django.utils.dateparse import parse_datetime, parse_duration
+ from django.utils.deprecation import RemovedInDjango60Warning
+ from django.utils.duration import duration_string
+-from django.utils.ipv6 import clean_ipv6_address
++from django.utils.ipv6 import MAX_IPV6_ADDRESS_LENGTH, clean_ipv6_address
+ from django.utils.regex_helper import _lazy_re_compile
+ from django.utils.translation import gettext_lazy as _
+ from django.utils.translation import ngettext_lazy
+@@ -1303,6 +1303,7 @@ def __init__(self, *, protocol="both", unpack_ipv4=False, **kwargs):
+         self.default_validators = validators.ip_address_validators(
+             protocol, unpack_ipv4
+         )
++        kwargs.setdefault("max_length", MAX_IPV6_ADDRESS_LENGTH)
+         super().__init__(**kwargs)
+ 
+     def to_python(self, value):
+@@ -1310,7 +1311,9 @@ def to_python(self, value):
+             return ""
+         value = value.strip()
+         if value and ":" in value:
+-            return clean_ipv6_address(value, self.unpack_ipv4)
++            return clean_ipv6_address(
++                value, self.unpack_ipv4, max_length=self.max_length
++            )
+         return value
+ 
+ 
+diff --git a/django/utils/html.py b/django/utils/html.py
+index d9513fc75848..ff8684f5a974 100644
+--- a/django/utils/html.py
++++ b/django/utils/html.py
+@@ -7,6 +7,7 @@
+ from html.parser import HTMLParser
+ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit, urlunsplit
+ 
++from django.core.exceptions import SuspiciousOperation
+ from django.utils.deprecation import RemovedInDjango60Warning
+ from django.utils.encoding import punycode
+ from django.utils.functional import Promise, cached_property, keep_lazy, keep_lazy_text
+@@ -39,6 +40,7 @@
+ )
+ 
+ MAX_URL_LENGTH = 2048
++MAX_STRIP_TAGS_DEPTH = 50
+ 
+ 
+ @keep_lazy(SafeString)
+@@ -205,15 +207,19 @@ def _strip_once(value):
+ @keep_lazy_text
+ def strip_tags(value):
+     """Return the given HTML with all tags stripped."""
+-    # Note: in typical case this loop executes _strip_once once. Loop condition
+-    # is redundant, but helps to reduce number of executions of _strip_once.
+     value = str(value)
++    # Note: in typical case this loop executes _strip_once twice (the second
++    # execution does not remove any more tags).
++    strip_tags_depth = 0
+     while "<" in value and ">" in value:
++        if strip_tags_depth >= MAX_STRIP_TAGS_DEPTH:
++            raise SuspiciousOperation
+         new_value = _strip_once(value)
+         if value.count("<") == new_value.count("<"):
+             # _strip_once wasn't able to detect more tags.
+             break
+         value = new_value
++        strip_tags_depth += 1
+     return value
+ 
+ 
+diff --git a/django/utils/ipv6.py b/django/utils/ipv6.py
+index 8b691b5e6633..1b79d5222646 100644
+--- a/django/utils/ipv6.py
++++ b/django/utils/ipv6.py
+@@ -3,9 +3,22 @@
+ from django.core.exceptions import ValidationError
+ from django.utils.translation import gettext_lazy as _
+ 
++MAX_IPV6_ADDRESS_LENGTH = 39
++
++
++def _ipv6_address_from_str(ip_str, max_length=MAX_IPV6_ADDRESS_LENGTH):
++    if len(ip_str) > max_length:
++        raise ValueError(
++            f"Unable to convert {ip_str} to an IPv6 address (value too long)."
++        )
++    return ipaddress.IPv6Address(int(ipaddress.IPv6Address(ip_str)))
++
+ 
+ def clean_ipv6_address(
+-    ip_str, unpack_ipv4=False, error_message=_("This is not a valid IPv6 address.")
++    ip_str,
++    unpack_ipv4=False,
++    error_message=_("This is not a valid IPv6 address."),
++    max_length=MAX_IPV6_ADDRESS_LENGTH,
+ ):
+     """
+     Clean an IPv6 address string.
+@@ -24,7 +37,7 @@ def clean_ipv6_address(
+     Return a compressed IPv6 address or the same value.
+     """
+     try:
+-        addr = ipaddress.IPv6Address(int(ipaddress.IPv6Address(ip_str)))
++        addr = _ipv6_address_from_str(ip_str, max_length)
+     except ValueError:
+         raise ValidationError(
+             error_message, code="invalid", params={"protocol": _("IPv6")}
+@@ -43,7 +56,7 @@ def is_valid_ipv6_address(ip_str):
+     Return whether or not the `ip_str` string is a valid IPv6 address.
+     """
+     try:
+-        ipaddress.IPv6Address(ip_str)
++        _ipv6_address_from_str(ip_str)
+     except ValueError:
+         return False
+     return True
+diff --git a/docs/conf.py b/docs/conf.py
+index 7b367e23e15e..047813814cc1 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -13,6 +13,8 @@
+ import sys
+ from os.path import abspath, dirname, join
+ 
++from sphinx import version_info as sphinx_version
++
+ # Workaround for sphinx-build recursion limit overflow:
+ # pickle.dump(doctree, f, pickle.HIGHEST_PROTOCOL)
+ #  RuntimeError: maximum recursion depth exceeded while pickling an object
+@@ -138,13 +140,15 @@ def django_release():
+ extlinks = {
+     "bpo": ("https://bugs.python.org/issue?@action=redirect&bpo=%s", "bpo-%s"),
+     "commit": ("https://github.com/django/django/commit/%s", "%s"),
+-    "cve": ("https://nvd.nist.gov/vuln/detail/CVE-%s", "CVE-%s"),
+     "pypi": ("https://pypi.org/project/%s/", "%s"),
+     # A file or directory. GitHub redirects from blob to tree if needed.
+     "source": ("https://github.com/django/django/blob/main/%s", "%s"),
+     "ticket": ("https://code.djangoproject.com/ticket/%s", "#%s"),
+ }
+ 
++if sphinx_version < (8, 1):
++    extlinks["cve"] = ("https://www.cve.org/CVERecord?id=CVE-%s", "CVE-%s")
++
+ # The language for content autogenerated by Sphinx. Refer to documentation
+ # for a list of supported languages.
+ # language = None
+diff --git a/docs/faq/contributing.txt b/docs/faq/contributing.txt
+index 71a6a7a47688..d281ce8b7574 100644
+--- a/docs/faq/contributing.txt
++++ b/docs/faq/contributing.txt
+@@ -53,8 +53,8 @@ To determine the right time, you need to keep an eye on the schedule. If you
+ post your message right before a release deadline, you're not likely to get the
+ sort of attention you require.
+ 
+-Gentle IRC reminders can also work -- again, strategically timed if possible.
+-During a bug sprint would be a very good time, for example.
++Gentle reminders in the ``#contributing-getting-started`` channel in the
++`Django Discord server`_ can work.
+ 
+ Another way to get traction is to pull several related tickets together. When
+ someone sits down to review a bug in an area they haven't touched for
+@@ -68,6 +68,8 @@ issue over and over again. This sort of behavior will not gain you any
+ additional attention -- certainly not the attention that you need in order to
+ get your issue addressed.
+ 
++.. _`Django Discord server`: https://discord.gg/xcRH6mN4fa
++
+ But I've reminded you several times and you keep ignoring my contribution!
+ ==========================================================================
+ 
+diff --git a/docs/faq/help.txt b/docs/faq/help.txt
+index a999c08d3205..7c8b39fc46b6 100644
+--- a/docs/faq/help.txt
++++ b/docs/faq/help.txt
+@@ -23,14 +23,9 @@ Then, please post it in one of the following channels:
+   discussions.
+ * The |django-users| mailing list. This is for email-based discussions.
+ * The `Django Discord server`_ for chat-based discussions.
+-* The `#django IRC channel`_ on the Libera.Chat IRC network. This is for
+-  chat-based discussions. If you're new to IRC, see the `Libera.Chat
+-  documentation`_ for different ways to connect.
+ 
+ .. _`"Using Django"`: https://forum.djangoproject.com/c/users/6
+ .. _`Django Discord server`: https://discord.gg/xcRH6mN4fa
+-.. _#django IRC channel: https://web.libera.chat/#django
+-.. _Libera.Chat documentation: https://libera.chat/guides/connect
+ 
+ In all these channels please abide by the `Django Code of Conduct`_. In
+ summary, being friendly and patient, considerate, respectful, and careful in
+diff --git a/docs/faq/install.txt b/docs/faq/install.txt
+index a89da571a96b..7ee5a351ce2d 100644
+--- a/docs/faq/install.txt
++++ b/docs/faq/install.txt
+@@ -55,18 +55,18 @@ Django version Python versions
+ 4.1            3.8, 3.9, 3.10, 3.11 (added in 4.1.3)
+ 4.2            3.8, 3.9, 3.10, 3.11, 3.12 (added in 4.2.8)
+ 5.0            3.10, 3.11, 3.12
+-5.1            3.10, 3.11, 3.12
++5.1            3.10, 3.11, 3.12, 3.13 (added in 5.1.3)
+ ============== ===============
+ 
+ For each version of Python, only the latest micro release (A.B.C) is officially
+ supported. You can find the latest micro version for each series on the `Python
+ download page <https://www.python.org/downloads/>`_.
+ 
+-Typically, we will support a Python version up to and including the first
+-Django LTS release whose security support ends after security support for that
+-version of Python ends. For example, Python 3.9 security support ends in
+-October 2025 and Django 4.2 LTS security support ends in April 2026. Therefore
+-Django 4.2 is the last version to support Python 3.9.
++We will support a Python version up to and including the first Django LTS
++release whose security support ends after security support for that version of
++Python ends. For example, Python 3.9 security support ends in October 2025 and
++Django 4.2 LTS security support ends in April 2026. Therefore Django 4.2 is the
++last version to support Python 3.9.
+ 
+ What Python version should I use with Django?
+ =============================================
+diff --git a/docs/howto/auth-remote-user.txt b/docs/howto/auth-remote-user.txt
+index 19b25432fe7c..f8492e367ad9 100644
+--- a/docs/howto/auth-remote-user.txt
++++ b/docs/howto/auth-remote-user.txt
+@@ -6,12 +6,11 @@ This document describes how to make use of external authentication sources
+ (where the web server sets the ``REMOTE_USER`` environment variable) in your
+ Django applications.  This type of authentication solution is typically seen on
+ intranet sites, with single sign-on solutions such as IIS and Integrated
+-Windows Authentication or Apache and `mod_authnz_ldap`_, `CAS`_, `Cosign`_,
+-`WebAuth`_, `mod_auth_sspi`_, etc.
++Windows Authentication or Apache and `mod_authnz_ldap`_, `CAS`_, `WebAuth`_,
++`mod_auth_sspi`_, etc.
+ 
+-.. _mod_authnz_ldap: https://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html
++.. _mod_authnz_ldap: https://httpd.apache.org/docs/current/mod/mod_authnz_ldap.html
+ .. _CAS: https://www.apereo.org/projects/cas
+-.. _Cosign: http://weblogin.org
+ .. _WebAuth: https://uit.stanford.edu/service/authentication
+ .. _mod_auth_sspi: https://sourceforge.net/projects/mod-auth-sspi
+ 
+diff --git a/docs/howto/deployment/asgi/hypercorn.txt b/docs/howto/deployment/asgi/hypercorn.txt
+index ea5ce3cc72c6..3abd2d54efcf 100644
+--- a/docs/howto/deployment/asgi/hypercorn.txt
++++ b/docs/howto/deployment/asgi/hypercorn.txt
+@@ -17,7 +17,7 @@ You can install Hypercorn with ``pip``:
+ Running Django in Hypercorn
+ ===========================
+ 
+-When Hypercorn is installed, a ``hypercorn`` command is available
++When :pypi:`Hypercorn` is installed, a ``hypercorn`` command is available
+ which runs ASGI applications. Hypercorn needs to be called with the
+ location of a module containing an ASGI application object, followed
+ by what the application is called (separated by a colon).
+@@ -35,4 +35,4 @@ this command from the same directory as your ``manage.py`` file.
+ For more advanced usage, please read the `Hypercorn documentation
+ <Hypercorn_>`_.
+ 
+-.. _Hypercorn: https://pgjones.gitlab.io/hypercorn/
++.. _Hypercorn: https://hypercorn.readthedocs.io/
+diff --git a/docs/howto/index.txt b/docs/howto/index.txt
+index 0034032ce25e..d799ca79069d 100644
+--- a/docs/howto/index.txt
++++ b/docs/howto/index.txt
+@@ -1,38 +1,66 @@
+-===============
+-"How-to" guides
+-===============
++=============
++How-to guides
++=============
+ 
+-Here you'll find short answers to "How do I....?" types of questions. These
+-how-to guides don't cover topics in depth -- you'll find that material in the
+-:doc:`/topics/index` and the :doc:`/ref/index`. However, these guides will help
+-you quickly accomplish common tasks.
++Practical guides covering common tasks and problems.
++
++Models, data and databases
++==========================
+ 
+ .. toctree::
+    :maxdepth: 1
+ 
+-   auth-remote-user
+-   csrf
+-   custom-management-commands
+-   custom-model-fields
+-   custom-lookups
+-   custom-template-backend
+-   custom-template-tags
+-   custom-file-storage
+-   deployment/index
+-   upgrade-version
+-   error-reporting
+    initial-data
+    legacy-databases
+-   logging
++   custom-model-fields
++   writing-migrations
++   custom-lookups
++
++Templates and output
++====================
++
++.. toctree::
++   :maxdepth: 1
++
+    outputting-csv
+    outputting-pdf
+    overriding-templates
++   custom-template-backend
++   custom-template-tags
++
++Project configuration and management
++====================================
++
++.. toctree::
++   :maxdepth: 1
++
+    static-files/index
+-   static-files/deployment
+-   windows
+-   writing-migrations
++   logging
++   error-reporting
+    delete-app
+ 
++Installing, deploying and upgrading
++===================================
++
++.. toctree::
++   :maxdepth: 1
++
++   upgrade-version
++   windows
++   deployment/index
++   static-files/deployment
++
++Other guides
++============
++
++.. toctree::
++   :maxdepth: 1
++
++   auth-remote-user
++   csrf
++   custom-management-commands
++   custom-file-storage
++
+ .. seealso::
+ 
+     The `Django community aggregator`_, where we aggregate content from the
+diff --git a/docs/howto/overriding-templates.txt b/docs/howto/overriding-templates.txt
+index f636948a201d..f99a1203a8d6 100644
+--- a/docs/howto/overriding-templates.txt
++++ b/docs/howto/overriding-templates.txt
+@@ -111,15 +111,15 @@ reimplement the entire template.
+ For example, you can use this technique to add a custom logo to the
+ ``admin/base_site.html`` template:
+ 
+-    .. code-block:: html+django
+-       :caption: ``templates/admin/base_site.html``
++.. code-block:: html+django
++   :caption: ``templates/admin/base_site.html``
+ 
+-        {% extends "admin/base_site.html" %}
++    {% extends "admin/base_site.html" %}
+ 
+-        {% block branding %}
+-            <img src="link/to/logo.png" alt="logo">
+-            {{ block.super }}
+-        {% endblock %}
++    {% block branding %}
++      <img src="link/to/logo.png" alt="logo">
++      {{ block.super }}
++    {% endblock %}
+ 
+ Key points to note:
+ 
+diff --git a/docs/howto/static-files/deployment.txt b/docs/howto/static-files/deployment.txt
+index d6d1158249d4..19b7c9df826a 100644
+--- a/docs/howto/static-files/deployment.txt
++++ b/docs/howto/static-files/deployment.txt
+@@ -15,7 +15,7 @@ Serving static files in production
+ The basic outline of putting static files into production consists of two
+ steps: run the :djadmin:`collectstatic` command when static files change, then
+ arrange for the collected static files directory (:setting:`STATIC_ROOT`) to be
+-moved to the static file server and served. Depending the ``staticfiles``
++moved to the static file server and served. Depending on the ``staticfiles``
+ :setting:`STORAGES` alias, files may need to be moved to a new location
+ manually or the :func:`post_process
+ <django.contrib.staticfiles.storage.StaticFilesStorage.post_process>` method of
+diff --git a/docs/howto/windows.txt b/docs/howto/windows.txt
+index 83aa8d065573..235b18a24ff3 100644
+--- a/docs/howto/windows.txt
++++ b/docs/howto/windows.txt
+@@ -2,7 +2,7 @@
+ How to install Django on Windows
+ ================================
+ 
+-This document will guide you through installing Python 3.12 and Django on
++This document will guide you through installing Python 3.13 and Django on
+ Windows. It also provides instructions for setting up a virtual environment,
+ which makes it easier to work on Python projects. This is meant as a beginner's
+ guide for users working on Django projects and does not reflect how Django
+@@ -18,7 +18,7 @@ Install Python
+ ==============
+ 
+ Django is a Python web framework, thus requiring Python to be installed on your
+-machine. At the time of writing, Python 3.12 is the latest version.
++machine. At the time of writing, Python 3.13 is the latest version.
+ 
+ To install Python on your machine go to https://www.python.org/downloads/. The
+ website should offer you a download button for the latest Python version.
+diff --git a/docs/internals/_images/triage_process.svg b/docs/internals/_images/triage_process.svg
+index 2b5e0d3cedd3..6fbf1cbcc7f2 100644
+--- a/docs/internals/_images/triage_process.svg
++++ b/docs/internals/_images/triage_process.svg
+@@ -232,47 +232,47 @@
+       </g>
+       <g id="Graphic_89">
+         <rect x="189" y="144" width="243" height="54" fill="white"/>
+-        <path d="M 432 198 L 189 198 L 189 144 L 432 144 Z" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+-        <text transform="translate(193 150)" fill="#797979">
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="19.789062" y="11">The ticket was already reported, was </tspan>
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x=".8017578" y="25">already rejected, isn&apos;t a bug, doesn&apos;t contain </tspan>
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="1.2792969" y="39">enough information, or can&apos;t be reproduced.</tspan>
++        <path d="M 432 198 L 189 198 L 189 144 L 432 144 Z" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <text transform="translate(193 150)" fill="#595959">
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="19.789062" y="11">The ticket was already reported, was </tspan>
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x=".8017578" y="25">already rejected, isn&apos;t a bug, doesn&apos;t contain </tspan>
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="1.2792969" y="39">enough information, or can&apos;t be reproduced.</tspan>
+         </text>
+       </g>
+       <g id="Line_90">
+-        <line x1="252" y1="278.5" x2="252" y2="198" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <line x1="252" y1="278.5" x2="252" y2="198" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Graphic_91">
+-        <path d="M 258.36395 281.63605 C 261.8787 285.15076 261.8787 290.84924 258.36395 294.36395 C 254.84924 297.8787 249.15076 297.8787 245.63605 294.36395 C 242.1213 290.84924 242.1213 285.15076 245.63605 281.63605 C 249.15076 278.1213 254.84924 278.1213 258.36395 281.63605" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <path d="M 258.36395 281.63605 C 261.8787 285.15076 261.8787 290.84924 258.36395 294.36395 C 254.84924 297.8787 249.15076 297.8787 245.63605 294.36395 C 242.1213 290.84924 242.1213 285.15076 245.63605 281.63605 C 249.15076 278.1213 254.84924 278.1213 258.36395 281.63605" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Graphic_96">
+         <rect x="72" y="144" width="99" height="54" fill="white"/>
+-        <path d="M 171 198 L 72 198 L 72 144 L 171 144 Z" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+-        <text transform="translate(76 150)" fill="#797979">
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="8.486328" y="11">The ticket is a </tspan>
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="4.463867" y="25">bug and should </tspan>
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="22.81836" y="39">be fixed.</tspan>
++        <path d="M 171 198 L 72 198 L 72 144 L 171 144 Z" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <text transform="translate(76 150)" fill="#595959">
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="8.486328" y="11">The ticket is a </tspan>
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="4.463867" y="25">bug and should </tspan>
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="22.81836" y="39">be fixed.</tspan>
+         </text>
+       </g>
+       <g id="Graphic_97">
+-        <path d="M 150.36395 317.63605 C 153.87869 321.15076 153.87869 326.84924 150.36395 330.36395 C 146.84924 333.8787 141.15076 333.8787 137.63605 330.36395 C 134.12131 326.84924 134.12131 321.15076 137.63605 317.63605 C 141.15076 314.1213 146.84924 314.1213 150.36395 317.63605" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <path d="M 150.36395 317.63605 C 153.87869 321.15076 153.87869 326.84924 150.36395 330.36395 C 146.84924 333.8787 141.15076 333.8787 137.63605 330.36395 C 134.12131 326.84924 134.12131 321.15076 137.63605 317.63605 C 141.15076 314.1213 146.84924 314.1213 150.36395 317.63605" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Line_98">
+-        <path d="M 134.5 324 L 81 324 L 81 198" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <path d="M 134.5 324 L 81 324 L 81 198" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Graphic_102">
+         <rect x="72" y="522" width="342" height="36" fill="white"/>
+-        <path d="M 414 558 L 72 558 L 72 522 L 414 522 Z" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+-        <text transform="translate(76 526)" fill="#797979">
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="7.241211" y="11">The ticket has a patch which applies cleanly and includes all </tspan>
+-          <tspan font-family="Helvetica" font-size="12" fill="#797979" x="26.591797" y="25">needed tests and docs. A merger can commit it as is.</tspan>
++        <path d="M 414 558 L 72 558 L 72 522 L 414 522 Z" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <text transform="translate(76 526)" fill="#595959">
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="7.241211" y="11">The ticket has a patch which applies cleanly and includes all </tspan>
++          <tspan font-family="Helvetica" font-size="12" fill="#595959" x="26.591797" y="25">needed tests and docs. A merger can commit it as is.</tspan>
+         </text>
+       </g>
+       <g id="Graphic_103">
+-        <path d="M 150.36395 407.63605 C 153.87869 411.15076 153.87869 416.84924 150.36395 420.36395 C 146.84924 423.8787 141.15076 423.8787 137.63605 420.36395 C 134.12131 416.84924 134.12131 411.15076 137.63605 407.63605 C 141.15076 404.1213 146.84924 404.1213 150.36395 407.63605" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <path d="M 150.36395 407.63605 C 153.87869 411.15076 153.87869 416.84924 150.36395 420.36395 C 146.84924 423.8787 141.15076 423.8787 137.63605 420.36395 C 134.12131 416.84924 134.12131 411.15076 137.63605 407.63605 C 141.15076 404.1213 146.84924 404.1213 150.36395 407.63605" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Line_104">
+-        <path d="M 134.5 414 L 81 414 L 81 522" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
++        <path d="M 134.5 414 L 81 414 L 81 522" stroke="#595959" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4.0,4.0" stroke-width="1"/>
+       </g>
+       <g id="Line_151">
+         <line x1="252" y1="288" x2="303.79966" y2="317.5998" marker-end="url(#FilledArrow_Marker)" stroke="#008f00" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+diff --git a/docs/internals/contributing/bugs-and-features.txt b/docs/internals/contributing/bugs-and-features.txt
+index 52cde58531b5..06201fd73ae0 100644
+--- a/docs/internals/contributing/bugs-and-features.txt
++++ b/docs/internals/contributing/bugs-and-features.txt
+@@ -17,7 +17,7 @@ Otherwise, before reporting a bug or requesting a new feature on the
+   `searching`_ or running `custom queries`_ in the ticket tracker.
+ 
+ * Don't use the ticket system to ask support questions. Use the
+-  |django-users| list or the `#django`_ IRC channel for that.
++  |django-users| list or the `Django Discord server`_ for that.
+ 
+ * Don't reopen issues that have been marked "wontfix" without finding consensus
+   to do so on the `Django Forum`_ or |django-developers| list.
+@@ -39,8 +39,8 @@ particular:
+ * **Do** read the :doc:`FAQ </faq/index>` to see if your issue might
+   be a well-known question.
+ 
+-* **Do** ask on |django-users| or `#django`_ *first* if you're not sure if
+-  what you're seeing is a bug.
++* **Do** ask on |django-users| or the `Django Discord server`_ *first* if
++  you're not sure if what you're seeing is a bug.
+ 
+ * **Do** write complete, reproducible, specific bug reports. You must
+   include a clear, concise description of the problem, and a set of
+@@ -171,5 +171,5 @@ Votes on technical matters should be announced and held in public on the
+ 
+ .. _searching: https://code.djangoproject.com/search
+ .. _custom queries: https://code.djangoproject.com/query
+-.. _#django: https://web.libera.chat/#django
+ .. _Django Forum: https://forum.djangoproject.com/
++.. _Django Discord server: https://discord.gg/xcRH6mN4fa
+diff --git a/docs/internals/contributing/index.txt b/docs/internals/contributing/index.txt
+index 6e3fd948ee26..6ac5e884bdf5 100644
+--- a/docs/internals/contributing/index.txt
++++ b/docs/internals/contributing/index.txt
+@@ -31,9 +31,9 @@ a great ecosystem to work in:
+   friendly and helpful atmosphere. If you're new to the Django community,
+   you should read the `posting guidelines`_.
+ 
+-* Join the `Django Discord server`_ or the `#django IRC channel`_ on
+-  Libera.Chat to discuss and answer questions. By explaining Django to other
+-  users, you're going to learn a lot about the framework yourself.
++* Join the `Django Discord server`_ to discuss and answer questions. By
++  explaining Django to other users, you're going to learn a lot about the
++  framework yourself.
+ 
+ * Blog about Django. We syndicate all the Django blogs we know about on
+   the `community page`_; if you'd like to see your blog on that page you
+@@ -45,8 +45,6 @@ a great ecosystem to work in:
+   build it!
+ 
+ .. _posting guidelines: https://code.djangoproject.com/wiki/UsingTheMailingList
+-.. _#django IRC channel: https://web.libera.chat/#django
+-.. _#django-dev IRC channel: https://web.libera.chat/#django-dev
+ .. _community page: https://www.djangoproject.com/community/
+ .. _Django Discord server: https://discord.gg/xcRH6mN4fa
+ .. _Django forum: https://forum.djangoproject.com/
+diff --git a/docs/internals/contributing/new-contributors.txt b/docs/internals/contributing/new-contributors.txt
+index 8e81031b3247..201fe4afc2aa 100644
+--- a/docs/internals/contributing/new-contributors.txt
++++ b/docs/internals/contributing/new-contributors.txt
+@@ -21,53 +21,55 @@ First steps
+ 
+ Start with these steps to discover Django's development process.
+ 
+-* **Triage tickets**
++Triage tickets
++--------------
+ 
+-  If an `unreviewed ticket`_ reports a bug, try and reproduce it. If you
+-  can reproduce it and it seems valid, make a note that you confirmed the bug
+-  and accept the ticket. Make sure the ticket is filed under the correct
+-  component area. Consider writing a patch that adds a test for the bug's
+-  behavior, even if you don't fix the bug itself. See more at
+-  :ref:`how-can-i-help-with-triaging`
++If an `unreviewed ticket`_ reports a bug, try and reproduce it. If you can
++reproduce it and it seems valid, make a note that you confirmed the bug and
++accept the ticket. Make sure the ticket is filed under the correct component
++area. Consider writing a patch that adds a test for the bug's behavior, even if
++you don't fix the bug itself. See more at :ref:`how-can-i-help-with-triaging`
+ 
+-* **Look for tickets that are accepted and review patches to build familiarity
+-  with the codebase and the process**
++Review patches of accepted tickets
++----------------------------------
+ 
+-  Mark the appropriate flags if a patch needs docs or tests. Look through the
+-  changes a patch makes, and keep an eye out for syntax that is incompatible
+-  with older but still supported versions of Python. :doc:`Run the tests
+-  </internals/contributing/writing-code/unit-tests>` and make sure they pass.
+-  Where possible and relevant, try them out on a database other than SQLite.
+-  Leave comments and feedback!
++This will help you build familiarity with the codebase and processes. Mark the
++appropriate flags if a patch needs docs or tests. Look through the changes a
++patch makes, and keep an eye out for syntax that is incompatible with older but
++still supported versions of Python. :doc:`Run the tests
++</internals/contributing/writing-code/unit-tests>` and make sure they pass.
++Where possible and relevant, try them out on a database other than SQLite.
++Leave comments and feedback!
+ 
+-* **Keep old patches up to date**
++Keep old patches up-to-date
++---------------------------
+ 
+-  Oftentimes the codebase will change between a patch being submitted and the
+-  time it gets reviewed. Make sure it still applies cleanly and functions as
+-  expected. Updating a patch is both useful and important! See more on
+-  :doc:`writing-code/submitting-patches`.
++Oftentimes the codebase will change between a patch being submitted and the
++time it gets reviewed. Make sure it still applies cleanly and functions as
++expected. Updating a patch is both useful and important! See more on
++:doc:`writing-code/submitting-patches`.
+ 
+-* **Write some documentation**
++Write some documentation
++------------------------
+ 
+-  Django's documentation is great but it can always be improved. Did you find
+-  a typo? Do you think that something should be clarified? Go ahead and
+-  suggest a documentation patch! See also the guide on
+-  :doc:`writing-documentation`.
++Django's documentation is great but it can always be improved. Did you find a
++typo? Do you think that something should be clarified? Go ahead and suggest a
++documentation patch! See also the guide on :doc:`writing-documentation`.
+ 
+-  .. note::
++.. note::
+ 
+-      The `reports page`_ contains links to many useful Trac queries, including
+-      several that are useful for triaging tickets and reviewing patches as
+-      suggested above.
++  The `reports page`_ contains links to many useful Trac queries, including
++  several that are useful for triaging tickets and reviewing patches as
++  suggested above.
+ 
+-      .. _reports page: https://code.djangoproject.com/wiki/Reports
++  .. _reports page: https://code.djangoproject.com/wiki/Reports
+ 
+-* **Sign the Contributor License Agreement**
++Sign the Contributor License Agreement
++--------------------------------------
+ 
+-  The code that you write belongs to you or your employer. If your
+-  contribution is more than one or two lines of code, you need to sign the
+-  `CLA`_. See the `Contributor License Agreement FAQ`_ for a more thorough
+-  explanation.
++The code that you write belongs to you or your employer. If your contribution
++is more than one or two lines of code, you need to sign the `CLA`_. See the
++`Contributor License Agreement FAQ`_ for a more thorough explanation.
+ 
+ .. _CLA: https://www.djangoproject.com/foundation/cla/
+ .. _Contributor License Agreement FAQ: https://www.djangoproject.com/foundation/cla/faq/
+@@ -80,78 +82,89 @@ Guidelines
+ As a newcomer on a large project, it's easy to experience frustration. Here's
+ some advice to make your work on Django more useful and rewarding.
+ 
+-* **Pick a subject area that you care about, that you are familiar with, or
+-  that you want to learn about**
++Pick a subject area
++-------------------
+ 
+-  You don't already have to be an expert on the area you want to work on; you
+-  become an expert through your ongoing contributions to the code.
++This should be something that you care about, that you are familiar with or
++that you want to learn about. You don't already have to be an expert on the
++area you want to work on; you become an expert through your ongoing
++contributions to the code.
+ 
+-* **Analyze tickets' context and history**
++Analyze tickets' context and history
++------------------------------------
+ 
+-  Trac isn't an absolute; the context is just as important as the words.
+-  When reading Trac, you need to take into account who says things, and when
+-  they were said. Support for an idea two years ago doesn't necessarily mean
+-  that the idea will still have support. You also need to pay attention to who
+-  *hasn't* spoken -- for example, if an experienced contributor hasn't been
+-  recently involved in a discussion, then a ticket may not have the support
+-  required to get into Django.
++Trac isn't an absolute; the context is just as important as the words. When
++reading Trac, you need to take into account who says things, and when they were
++said. Support for an idea two years ago doesn't necessarily mean that the idea
++will still have support. You also need to pay attention to who *hasn't* spoken
++-- for example, if an experienced contributor hasn't been recently involved in
++a discussion, then a ticket may not have the support required to get into
++Django.
+ 
+-* **Start small**
++Start small
++-----------
+ 
+-  It's easier to get feedback on a little issue than on a big one. See the
+-  `easy pickings`_.
++It's easier to get feedback on a little issue than on a big one. See the
++`easy pickings`_.
+ 
+-* **If you're going to engage in a big task, make sure that your idea has
+-  support first**
++Confirm support before engaging in a big task
++---------------------------------------------
+ 
+-  This means getting someone else to confirm that a bug is real before you fix
+-  the issue, and ensuring that there's consensus on a proposed feature before
+-  you go implementing it.
++This means getting someone else to confirm that a bug is real before you fix
++the issue, and ensuring that there's consensus on a proposed feature before you
++go implementing it.
+ 
+-* **Be bold! Leave feedback!**
++Be bold! Leave feedback!
++------------------------
+ 
+-  Sometimes it can be scary to put your opinion out to the world and say "this
+-  ticket is correct" or "this patch needs work", but it's the only way the
+-  project moves forward. The contributions of the broad Django community
+-  ultimately have a much greater impact than that of any one person. We can't
+-  do it without **you**!
++Sometimes it can be scary to put your opinion out to the world and say "this
++ticket is correct" or "this patch needs work", but it's the only way the
++project moves forward. The contributions of the broad Django community
++ultimately have a much greater impact than that of any one person. We can't do
++it without **you**!
+ 
+-* **Err on the side of caution when marking things Ready For Check-in**
++Be cautious when marking things "Ready For Check-in"
++----------------------------------------------------
+ 
+-  If you're really not certain if a ticket is ready, don't mark it as
+-  such. Leave a comment instead, letting others know your thoughts.  If you're
+-  mostly certain, but not completely certain, you might also try asking on IRC
+-  to see if someone else can confirm your suspicions.
++If you're really not certain if a ticket is ready, don't mark it as such. Leave
++a comment instead, letting others know your thoughts. If you're mostly certain,
++but not completely certain, you might also try asking on the
++``#contributing-getting-started`` channel in the `Django Discord server`_ to
++see if someone else can confirm your suspicions.
+ 
+-* **Wait for feedback, and respond to feedback that you receive**
++.. _`Django Discord server`: https://discord.gg/xcRH6mN4fa
+ 
+-  Focus on one or two tickets, see them through from start to finish, and
+-  repeat. The shotgun approach of taking on lots of tickets and letting some
+-  fall by the wayside ends up doing more harm than good.
++Wait for feedback, and respond to feedback that you receive
++-----------------------------------------------------------
+ 
+-* **Be rigorous**
++Focus on one or two tickets, see them through from start to finish, and repeat.
++The shotgun approach of taking on lots of tickets and letting some fall by the
++wayside ends up doing more harm than good.
+ 
+-  When we say ":pep:`8`, and must have docs and tests", we mean it. If a patch
+-  doesn't have docs and tests, there had better be a good reason. Arguments
+-  like "I couldn't find any existing tests of this feature" don't carry much
+-  weight--while it may be true, that means you have the extra-important job of
+-  writing the very first tests for that feature, not that you get a pass from
+-  writing tests altogether.
++Be rigorous
++-----------
+ 
+-* **Be patient**
++When we say ":pep:`8`, and must have docs and tests", we mean it. If a patch
++doesn't have docs and tests, there had better be a good reason. Arguments like
++"I couldn't find any existing tests of this feature" don't carry much weight.
++While it may be true, that means you have the extra-important job of writing
++the very first tests for that feature, not that you get a pass from writing
++tests altogether.
+ 
+-  It's not always easy for your ticket or your patch to be reviewed quickly.
+-  This isn't personal. There are a lot of tickets and pull requests to get
+-  through.
++Be patient
++----------
+ 
+-  Keeping your patch up to date is important. Review the ticket on Trac to
+-  ensure that the *Needs tests*, *Needs documentation*, and *Patch needs
+-  improvement* flags are unchecked once you've addressed all review comments.
++It's not always easy for your ticket or your patch to be reviewed quickly. This
++isn't personal. There are a lot of tickets and pull requests to get through.
+ 
+-  Remember that Django has an eight-month release cycle, so there's plenty of
+-  time for your patch to be reviewed.
++Keeping your patch up to date is important. Review the ticket on Trac to ensure
++that the *Needs tests*, *Needs documentation*, and *Patch needs improvement*
++flags are unchecked once you've addressed all review comments.
+ 
+-  Finally, a well-timed reminder can help. See :ref:`contributing code FAQ
+-  <new-contributors-faq>` for ideas here.
++Remember that Django has an eight-month release cycle, so there's plenty of
++time for your patch to be reviewed.
++
++Finally, a well-timed reminder can help. See :ref:`contributing code FAQ
++<new-contributors-faq>` for ideas here.
+ 
+ .. _easy pickings: https://code.djangoproject.com/query?status=!closed&easy=1
+diff --git a/docs/internals/contributing/triaging-tickets.txt b/docs/internals/contributing/triaging-tickets.txt
+index 852219c96caa..7987d63e9a61 100644
+--- a/docs/internals/contributing/triaging-tickets.txt
++++ b/docs/internals/contributing/triaging-tickets.txt
+@@ -49,8 +49,8 @@ attribute easily tells us what and who each ticket is waiting on.
+ Since a picture is worth a thousand words, let's start there:
+ 
+ .. image:: /internals/_images/triage_process.*
+-   :height: 501
+-   :width: 400
++   :height: 750
++   :width: 600
+    :alt: Django's ticket triage workflow
+ 
+ We've got two roles in this diagram:
+diff --git a/docs/internals/contributing/writing-code/submitting-patches.txt b/docs/internals/contributing/writing-code/submitting-patches.txt
+index c63cc6f9f02c..c2081a0e0a66 100644
+--- a/docs/internals/contributing/writing-code/submitting-patches.txt
++++ b/docs/internals/contributing/writing-code/submitting-patches.txt
+@@ -45,10 +45,14 @@ and time availability), claim it by following these steps:
+   any activity, it's probably safe to reassign it to yourself.
+ 
+ * Log into your account, if you haven't already, by clicking "GitHub Login"
+-  or "DjangoProject Login" in the upper left of the ticket page.
++  or "DjangoProject Login" in the upper left of the ticket page. Once logged
++  in, you can then click the "Modify Ticket" button near the bottom of the
++  page.
+ 
+-* Claim the ticket by clicking the "assign to myself" radio button under
+-  "Action" near the bottom of the page, then click "Submit changes."
++* Claim the ticket by clicking the "assign to" radio button in the "Action"
++  section. Your username will be filled in the text box by default.
++
++* Finally click the "Submit changes" button at the bottom to save.
+ 
+ .. note::
+     The Django software foundation requests that anyone contributing more than
+@@ -111,7 +115,7 @@ requirements:
+   feature, the change should also contain documentation.
+ 
+ When you think your work is ready to be reviewed, send :doc:`a GitHub pull
+-request <working-with-git>`. 
++request <working-with-git>`.
+ If you can't send a pull request for some reason, you can also use patches in
+ Trac. When using this style, follow these guidelines.
+ 
+@@ -137,20 +141,63 @@ Regardless of the way you submit your work, follow these steps.
+ .. _ticket tracker: https://code.djangoproject.com/
+ .. _Development dashboard: https://dashboard.djangoproject.com/
+ 
+-Non-trivial contributions
+-=========================
++Contributions which require community feedback
++==============================================
++
++A wider community discussion is required when a patch introduces new Django
++functionality and makes some sort of design decision. This is especially
++important if the approach involves a :ref:`deprecation <deprecating-a-feature>`
++or introduces breaking changes.
++
++The following are different approaches for gaining feedback from the community.
++
++The Django Forum or django-developers mailing list
++--------------------------------------------------
++
++You can propose a change on the `Django Forum`_ or |django-developers| mailing
++list. You should explain the need for the change, go into details of the
++approach and discuss alternatives.
++
++Please include a link to such discussions in your contributions.
++
++Third party package
++-------------------
++
++Django does not accept experimental features. All features must follow our
++:ref:`deprecation policy <internal-release-deprecation-policy>`. Hence, it can
++take months or years for Django to iterate on an API design.
++
++If you need user feedback on a public interface, it is better to create a
++third-party package first. You can iterate on the public API much faster, while
++also validating the need for the feature.
++
++Once this package becomes stable and there are clear benefits of incorporating
++aspects into Django core, starting a discussion on the `Django Forum`_ or
++|django-developers| mailing list would be the next step.
++
++Django Enhancement Proposal (DEP)
++---------------------------------
++
++Similar to Python’s PEPs, Django has `Django Enhancement Proposals`_ or DEPs. A
++DEP is a design document which provides information to the Django community, or
++describes a new feature or process for Django. They provide concise technical
++specifications of features, along with rationales. DEPs are also the primary
++mechanism for proposing and collecting community input on major new features.
+ 
+-A "non-trivial" contribution is one that is more than a small bug fix. It's a
+-change that introduces new Django functionality and makes some sort of design
+-decision.
++Before considering writing a DEP, it is recommended to first open a discussion
++on the `Django Forum`_ or |django-developers| mailing list. This allows the
++community to provide feedback and helps refine the proposal. Once the DEP is
++ready the :ref:`Steering Council <steering-council>` votes on whether to accept
++it.
+ 
+-If you provide a non-trivial change, include evidence that alternatives have
+-been discussed on the `Django Forum`_ or |django-developers| list.
++Some examples of DEPs that have been approved and fully implemented:
+ 
+-If you're not sure whether your contribution should be considered non-trivial,
+-ask on the ticket for opinions.
++* `DEP 181: ORM Expressions <https://github.com/django/deps/blob/main/final/0181-orm-expressions.rst>`_
++* `DEP 182: Multiple Template Engines <https://github.com/django/deps/blob/main/final/0182-multiple-template-engines.rst>`_
++* `DEP 201: Simplified routing syntax <https://github.com/django/deps/blob/main/final/0201-simplified-routing-syntax.rst>`_
+ 
+ .. _Django Forum: https://forum.djangoproject.com/
++.. _Django Enhancement Proposals: https://github.com/django/deps
+ 
+ .. _deprecating-a-feature:
+ 
+diff --git a/docs/internals/contributing/writing-code/unit-tests.txt b/docs/internals/contributing/writing-code/unit-tests.txt
+index 3641bfb8cc53..76f4a9e7542d 100644
+--- a/docs/internals/contributing/writing-code/unit-tests.txt
++++ b/docs/internals/contributing/writing-code/unit-tests.txt
+@@ -322,7 +322,6 @@ dependencies:
+ * :pypi:`numpy`
+ * :pypi:`Pillow` 6.2.1+
+ * :pypi:`PyYAML`
+-* :pypi:`pytz` (required)
+ * :pypi:`pywatchman`
+ * :pypi:`redis` 3.4+
+ * :pypi:`setuptools`
+diff --git a/docs/internals/howto-release-django.txt b/docs/internals/howto-release-django.txt
+index c0a8ab8ab14e..bedb1b88220d 100644
+--- a/docs/internals/howto-release-django.txt
++++ b/docs/internals/howto-release-django.txt
+@@ -561,9 +561,6 @@ Now you're ready to actually put the release out there. To do this:
+    message body should include the vulnerability details, for example, the
+    announcement blog post text. Include a link to the announcement blog post.
+ 
+-#. Add a link to the blog post in the topic of the ``#django`` IRC channel:
+-   ``/msg chanserv TOPIC #django new topic goes here``.
+-
+ Post-release
+ ============
+ 
+@@ -624,9 +621,9 @@ need to be done by the releaser.
+    message, add a "refs #XXXX" to the original ticket where the deprecation
+    began if possible.
+ 
+-#. Remove ``.. versionadded::``, ``.. versionadded::``, and ``.. deprecated::``
+-   annotations in the documentation from two releases ago. For example, in
+-   Django 4.2, notes for 4.0 will be removed.
++#. Remove ``.. versionadded::``, ``.. versionchanged::``, and
++   ``.. deprecated::`` annotations in the documentation from two releases ago.
++   For example, in Django 4.2, notes for 4.0 will be removed.
+ 
+ #. Add the new branch to `Read the Docs
+    <https://readthedocs.org/projects/django/>`_. Since the automatically
+diff --git a/docs/internals/security.txt b/docs/internals/security.txt
+index 55300b01e170..6aac9a6b660d 100644
+--- a/docs/internals/security.txt
++++ b/docs/internals/security.txt
+@@ -38,6 +38,41 @@ action to be taken, you may receive further followup emails.
+ 
+ .. _our public Trac instance: https://code.djangoproject.com/query
+ 
++.. _security-report-evaluation:
++
++How does Django evaluate a report
++=================================
++
++These are criteria used by the security team when evaluating whether a report
++requires a security release:
++
++* The vulnerability is within a :ref:`supported version <security-support>` of
++  Django.
++
++* The vulnerability applies to a production-grade Django application. This means
++  the following do not require a security release:
++
++  * Exploits that only affect local development, for example when using
++    :djadmin:`runserver`.
++  * Exploits which fail to follow security best practices, such as failure to
++    sanitize user input. For other examples, see our :ref:`security
++    documentation <cross-site-scripting>`.
++  * Exploits in AI generated code that do not adhere to security best practices.
++
++The security team may conclude that the source of the vulnerability is within
++the Python standard library, in which case the reporter will be asked to report
++the vulnerability to the Python core team. For further details see the `Python
++security guidelines <https://www.python.org/dev/security/>`_.
++
++On occasion, a security release may be issued to help resolve a security
++vulnerability within a popular third-party package. These reports should come
++from the package maintainers.
++
++If you are unsure whether your finding meets these criteria, please still report
++it :ref:`privately by emailing security@djangoproject.com
++<reporting-security-issues>`. The security team will review your report and
++recommend the correct course of action.
++
+ .. _security-support:
+ 
+ Supported versions
+diff --git a/docs/intro/contributing.txt b/docs/intro/contributing.txt
+index 7d590e76a21b..32c8645f20ad 100644
+--- a/docs/intro/contributing.txt
++++ b/docs/intro/contributing.txt
+@@ -41,13 +41,13 @@ so that it can be of use to the widest audience.
+ .. admonition:: Where to get help:
+ 
+     If you're having trouble going through this tutorial, please post a message
+-    on the `Django Forum`_, |django-developers|, or drop by
+-    `#django-dev on irc.libera.chat`__ to chat with other Django users who
+-    might be able to help.
++    on the `Django Forum`_, |django-developers|, or drop by the
++    `Django Discord server`_ to chat with other Django users who might be able
++    to help.
+ 
+-__ https://web.libera.chat/#django-dev
+ .. _Dive Into Python: https://diveintopython3.net/
+ .. _Django Forum: https://forum.djangoproject.com/
++.. _Django Discord server: https://discord.gg/xcRH6mN4fa
+ 
+ What does this tutorial cover?
+ ------------------------------
+@@ -217,8 +217,7 @@ a dependency for one or more of the Python packages. Consult the failing
+ package's documentation or search the web with the error message that you
+ encounter.
+ 
+-Now we are ready to run the test suite. If you're using GNU/Linux, macOS, or
+-some other flavor of Unix, run:
++Now we are ready to run the test suite:
+ 
+ .. console::
+ 
+diff --git a/docs/intro/overview.txt b/docs/intro/overview.txt
+index 8314b3d35159..af87a01bb478 100644
+--- a/docs/intro/overview.txt
++++ b/docs/intro/overview.txt
+@@ -26,7 +26,7 @@ representing your models -- so far, it's been solving many years' worth of
+ database-schema problems. Here's a quick example:
+ 
+ .. code-block:: python
+-    :caption: ``mysite/news/models.py``
++    :caption: ``news/models.py``
+ 
+     from django.db import models
+ 
+@@ -151,7 +151,7 @@ a website that lets authenticated users add, change and delete objects. The
+ only step required is to register your model in the admin site:
+ 
+ .. code-block:: python
+-    :caption: ``mysite/news/models.py``
++    :caption: ``news/models.py``
+ 
+     from django.db import models
+ 
+@@ -163,7 +163,7 @@ only step required is to register your model in the admin site:
+         reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+ 
+ .. code-block:: python
+-    :caption: ``mysite/news/admin.py``
++    :caption: ``news/admin.py``
+ 
+     from django.contrib import admin
+ 
+@@ -195,7 +195,7 @@ Here's what a URLconf might look like for the ``Reporter``/``Article``
+ example above:
+ 
+ .. code-block:: python
+-    :caption: ``mysite/news/urls.py``
++    :caption: ``news/urls.py``
+ 
+     from django.urls import path
+ 
+@@ -235,7 +235,7 @@ and renders the template with the retrieved data. Here's an example view for
+ ``year_archive`` from above:
+ 
+ .. code-block:: python
+-    :caption: ``mysite/news/views.py``
++    :caption: ``news/views.py``
+ 
+     from django.shortcuts import render
+ 
+@@ -265,7 +265,7 @@ Let's say the ``news/year_archive.html`` template was found. Here's what that
+ might look like:
+ 
+ .. code-block:: html+django
+-    :caption: ``mysite/news/templates/news/year_archive.html``
++    :caption: ``news/templates/news/year_archive.html``
+ 
+     {% extends "base.html" %}
+ 
+@@ -306,10 +306,10 @@ Here's what the "base.html" template, including the use of :doc:`static files
+ </howto/static-files/index>`, might look like:
+ 
+ .. code-block:: html+django
+-    :caption: ``mysite/templates/base.html``
++    :caption: ``templates/base.html``
+ 
+     {% load static %}
+-    <html>
++    <html lang="en">
+     <head>
+         <title>{% block title %}{% endblock %}</title>
+     </head>
+diff --git a/docs/intro/reusable-apps.txt b/docs/intro/reusable-apps.txt
+index 98f21c9d91b2..5acf8c2b182a 100644
+--- a/docs/intro/reusable-apps.txt
++++ b/docs/intro/reusable-apps.txt
+@@ -6,7 +6,7 @@ This advanced tutorial begins where :doc:`Tutorial 8 </intro/tutorial08>`
+ left off. We'll be turning our web-poll into a standalone Python package
+ you can reuse in new projects and share with other people.
+ 
+-If you haven't recently completed Tutorials 1–7, we encourage you to review
++If you haven't recently completed Tutorials 1–8, we encourage you to review
+ these so that your example project matches the one described below.
+ 
+ Reusability matters
+@@ -57,7 +57,7 @@ After the previous tutorials, our project should look like this:
+ 
+ .. code-block:: text
+ 
+-    mysite/
++    djangotutorial/
+         manage.py
+         mysite/
+             __init__.py
+@@ -90,12 +90,12 @@ After the previous tutorials, our project should look like this:
+             admin/
+                 base_site.html
+ 
+-You created ``mysite/templates`` in :doc:`Tutorial 7 </intro/tutorial07>`,
+-and ``polls/templates`` in :doc:`Tutorial 3 </intro/tutorial03>`. Now perhaps
+-it is clearer why we chose to have separate template directories for the
+-project and application: everything that is part of the polls application is in
+-``polls``. It makes the application self-contained and easier to drop into a
+-new project.
++You created ``djangotutorial/templates`` in :doc:`Tutorial 7
++</intro/tutorial07>`, and ``polls/templates`` in
++:doc:`Tutorial 3 </intro/tutorial03>`. Now perhaps it is clearer why we chose
++to have separate template directories for the project and application:
++everything that is part of the polls application is in ``polls``. It makes the
++application self-contained and easier to drop into a new project.
+ 
+ The ``polls`` directory could now be copied into a new Django project and
+ immediately reused. It's not quite ready to be published though. For that, we
+@@ -237,6 +237,7 @@ this. For a small app like polls, this process isn't too difficult.
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
+            "Programming Language :: Python :: 3.12",
++           "Programming Language :: Python :: 3.13",
+            "Topic :: Internet :: WWW/HTTP",
+            "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+        ]
+diff --git a/docs/intro/tutorial01.txt b/docs/intro/tutorial01.txt
+index 0af25d209b00..00d1627c24d8 100644
+--- a/docs/intro/tutorial01.txt
++++ b/docs/intro/tutorial01.txt
+@@ -30,9 +30,6 @@ of this page, or update Django to the newest version. If you're using an older
+ version of Python, check :ref:`faq-python-version-support` to find a compatible
+ version of Django.
+ 
+-See :doc:`How to install Django </topics/install>` for advice on how to remove
+-older versions of Django and install a newer one.
+-
+ .. admonition:: Where to get help:
+ 
+     If you're having trouble going through this tutorial, please head over to
+@@ -48,14 +45,21 @@ including database configuration, Django-specific options and
+ application-specific settings.
+ 
+ From the command line, ``cd`` into a directory where you'd like to store your
+-code, then run the following command:
++code and create a new directory named ``djangotutorial``. (This directory name
++doesn't matter to Django; you can rename it to anything you like.)
++
++.. console::
++
++   $ mkdir djangotutorial
++
++Then, run the following command to bootstrap a new Django project:
+ 
+ .. console::
+ 
+-   $ django-admin startproject mysite
++   $ django-admin startproject mysite djangotutorial
+ 
+-This will create a ``mysite`` directory in your current directory. If it didn't
+-work, see :ref:`troubleshooting-django-admin`.
++This will create a project called ``mysite`` inside the ``djangotutorial``
++directory. If it didn't work, see :ref:`troubleshooting-django-admin`.
+ 
+ .. note::
+ 
+@@ -68,7 +72,7 @@ Let's look at what :djadmin:`startproject` created:
+ 
+ .. code-block:: text
+ 
+-    mysite/
++    djangotutorial/
+         manage.py
+         mysite/
+             __init__.py
+@@ -79,14 +83,11 @@ Let's look at what :djadmin:`startproject` created:
+ 
+ These files are:
+ 
+-* The outer :file:`mysite/` root directory is a container for your project. Its
+-  name doesn't matter to Django; you can rename it to anything you like.
+-
+ * :file:`manage.py`: A command-line utility that lets you interact with this
+   Django project in various ways. You can read all the details about
+   :file:`manage.py` in :doc:`/ref/django-admin`.
+ 
+-* The inner :file:`mysite/` directory is the actual Python package for your
++* :file:`mysite/`: A directory that is the actual Python package for your
+   project. Its name is the Python package name you'll need to use to import
+   anything inside it (e.g. ``mysite.urls``).
+ 
+@@ -111,8 +112,8 @@ These files are:
+ The development server
+ ======================
+ 
+-Let's verify your Django project works. Change into the outer :file:`mysite` directory, if
+-you haven't already, and run the following commands:
++Let's verify your Django project works. Change into the :file:`djangotutorial`
++directory, if you haven't already, and run the following commands:
+ 
+ .. console::
+ 
+@@ -179,10 +180,8 @@ rather than creating directories.
+     configuration and apps for a particular website. A project can contain
+     multiple apps. An app can be in multiple projects.
+ 
+-Your apps can live anywhere on your :ref:`Python path <tut-searchpath>`. In
+-this tutorial, we'll create our poll app in the same directory as your
+-:file:`manage.py` file so that it can be imported as its own top-level module,
+-rather than a submodule of ``mysite``.
++Your apps can live anywhere in your :ref:`Python path <tut-searchpath>`. In
++this tutorial, we'll create our poll app inside the ``djangotutorial`` folder.
+ 
+ To create your app, make sure you're in the same directory as :file:`manage.py`
+ and type this command:
+@@ -288,7 +287,8 @@ app will still work.
+ .. admonition:: When to use :func:`~django.urls.include()`
+ 
+     You should always use ``include()`` when you include other URL patterns.
+-    ``admin.site.urls`` is the only exception to this.
++    The only exception is ``admin.site.urls``, which is a pre-built URLconf
++    provided by Django for the default admin site.
+ 
+ You have now wired an ``index`` view into the URLconf. Verify it's working with
+ the following command:
+diff --git a/docs/intro/tutorial05.txt b/docs/intro/tutorial05.txt
+index 5f501ce92f5b..921670aa5ecb 100644
+--- a/docs/intro/tutorial05.txt
++++ b/docs/intro/tutorial05.txt
+@@ -216,7 +216,7 @@ and you'll see something like:
+     FAIL: test_was_published_recently_with_future_question (polls.tests.QuestionModelTests)
+     ----------------------------------------------------------------------
+     Traceback (most recent call last):
+-      File "/path/to/mysite/polls/tests.py", line 16, in test_was_published_recently_with_future_question
++      File "/path/to/djangotutorial/polls/tests.py", line 16, in test_was_published_recently_with_future_question
+         self.assertIs(future_question.was_published_recently(), False)
+     AssertionError: True is not False
+ 
+@@ -456,7 +456,7 @@ and then we must amend the ``get_queryset`` method like so:
+ 
+ ``Question.objects.filter(pub_date__lte=timezone.now())`` returns a queryset
+ containing ``Question``\s whose ``pub_date`` is less than or equal to - that
+-is, earlier than or equal to - ``timezone.now``.
++is, earlier than or equal to - ``timezone.now()``.
+ 
+ Testing our new view
+ --------------------
+diff --git a/docs/intro/tutorial07.txt b/docs/intro/tutorial07.txt
+index e0c87be8987c..62eded486488 100644
+--- a/docs/intro/tutorial07.txt
++++ b/docs/intro/tutorial07.txt
+@@ -306,10 +306,10 @@ powered by Django itself, and its interfaces use Django's own template system.
+ Customizing your *project's* templates
+ --------------------------------------
+ 
+-Create a ``templates`` directory in your project directory (the one that
+-contains ``manage.py``). Templates can live anywhere on your filesystem that
+-Django can access. (Django runs as whatever user your server runs.) However,
+-keeping your templates within the project is a good convention to follow.
++Create a ``templates`` directory in your ``djangotutorial`` directory.
++Templates can live anywhere on your filesystem that Django can access. (Django
++runs as whatever user your server runs.) However, keeping your templates within
++the project is a good convention to follow.
+ 
+ Open your settings file (:file:`mysite/settings.py`, remember) and add a
+ :setting:`DIRS <TEMPLATES-DIRS>` option in the :setting:`TEMPLATES` setting:
+diff --git a/docs/intro/tutorial08.txt b/docs/intro/tutorial08.txt
+index 463db3221ea3..261cd85d8587 100644
+--- a/docs/intro/tutorial08.txt
++++ b/docs/intro/tutorial08.txt
+@@ -22,10 +22,11 @@ Installing Django Debug Toolbar
+ ===============================
+ 
+ Django Debug Toolbar is a useful tool for debugging Django web applications.
+-It's a third-party package maintained by the `Jazzband
+-<https://jazzband.co>`_ organization. The toolbar helps you understand how your
+-application functions and to identify problems. It does so by providing panels
+-that provide debug information about the current request and response.
++It's a third-party package that is maintained by the community organization
++`Django Commons <https://github.com/django-commons>`_. The toolbar helps you
++understand how your application functions and to identify problems. It does so
++by providing panels that provide debug information about the current request
++and response.
+ 
+ To install a third-party application like the toolbar, you need to install
+ the package by running the below command within an activated virtual
+@@ -67,10 +68,9 @@ resolve the issue yourself, there are options available to you.
+    <https://django-debug-toolbar.readthedocs.io/en/latest/tips.html>`_ that
+    outlines troubleshooting options.
+ #. Search for similar issues on the package's issue tracker. Django Debug
+-   Toolbar’s is `on GitHub <https://github.com/jazzband/django-debug-toolbar/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc>`_.
++   Toolbar’s is `on GitHub <https://github.com/django-commons/django-debug-toolbar/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc>`_.
+ #. Consult the `Django Forum <https://forum.djangoproject.com/>`_.
+ #. Join the `Django Discord server <https://discord.gg/xcRH6mN4fa>`_.
+-#. Join the #Django IRC channel on `Libera.chat <https://libera.chat/>`_.
+ 
+ Installing other third-party packages
+ =====================================
+diff --git a/docs/intro/whatsnext.txt b/docs/intro/whatsnext.txt
+index ca55b12d7a0d..e02d90f800a8 100644
+--- a/docs/intro/whatsnext.txt
++++ b/docs/intro/whatsnext.txt
+@@ -123,11 +123,11 @@ ticket system and use your feedback to improve the documentation for everybody.
+ 
+ Note, however, that tickets should explicitly relate to the documentation,
+ rather than asking broad tech-support questions. If you need help with your
+-particular Django setup, try the |django-users| mailing list or the `#django
+-IRC channel`_ instead.
++particular Django setup, try the |django-users| mailing list or the
++`Django Discord server`_ instead.
+ 
+ .. _ticket system: https://code.djangoproject.com/
+-.. _#django IRC channel: https://web.libera.chat/#django
++.. _Django Discord server: https://discord.gg/xcRH6mN4fa
+ 
+ In plain text
+ -------------
+diff --git a/docs/ref/contrib/admin/index.txt b/docs/ref/contrib/admin/index.txt
+index c2061f11ab79..4a8b52c18f66 100644
+--- a/docs/ref/contrib/admin/index.txt
++++ b/docs/ref/contrib/admin/index.txt
+@@ -1473,6 +1473,27 @@ templates used by the :class:`ModelAdmin` views:
+ 
+     See also :ref:`saving-objects-in-the-formset`.
+ 
++.. warning::
++
++    All hooks that return a ``ModelAdmin`` property return the property itself
++    rather than a copy of its value. Dynamically modifying the value can lead
++    to surprising results.
++
++    Let's take :meth:`ModelAdmin.get_readonly_fields` as an example::
++
++        class PersonAdmin(admin.ModelAdmin):
++            readonly_fields = ["name"]
++
++            def get_readonly_fields(self, request, obj=None):
++                readonly = super().get_readonly_fields(request, obj)
++                if not request.user.is_superuser:
++                    readonly.append("age")  # Edits the class attribute.
++                return readonly
++
++    This results in ``readonly_fields`` becoming
++    ``["name", "age", "age", ...]``, even for a superuser, as ``"age"`` is added
++    each time non-superuser visits the page.
++
+ .. method:: ModelAdmin.get_ordering(request)
+ 
+     The ``get_ordering`` method takes a ``request`` as parameter and
+diff --git a/docs/ref/contrib/auth.txt b/docs/ref/contrib/auth.txt
+index 036f8d9f7678..9185c9d0f94a 100644
+--- a/docs/ref/contrib/auth.txt
++++ b/docs/ref/contrib/auth.txt
+@@ -54,7 +54,8 @@ Fields
+ 
+         Required. A hash of, and metadata about, the password. (Django doesn't
+         store the raw password.) Raw passwords can be arbitrarily long and can
+-        contain any character. See the :doc:`password documentation
++        contain any character. The metadata in this field may mark the password
++        as unusable. See the :doc:`password documentation
+         </topics/auth/passwords>`.
+ 
+     .. attribute:: groups
+@@ -179,8 +180,9 @@ Methods
+ 
+     .. method:: set_unusable_password()
+ 
+-        Marks the user as having no password set.  This isn't the same as
+-        having a blank string for a password.
++        Marks the user as having no password set by updating the metadata in
++        the :attr:`~django.contrib.auth.models.User.password` field. This isn't
++        the same as having a blank string for a password.
+         :meth:`~django.contrib.auth.models.User.check_password()` for this user
+         will never return ``True``. Doesn't save the
+         :class:`~django.contrib.auth.models.User` object.
+diff --git a/docs/ref/contrib/flatpages.txt b/docs/ref/contrib/flatpages.txt
+index c82fb5de85c0..01e5553ff3cd 100644
+--- a/docs/ref/contrib/flatpages.txt
++++ b/docs/ref/contrib/flatpages.txt
+@@ -256,7 +256,7 @@ Here's a sample :file:`flatpages/default.html` template:
+ .. code-block:: html+django
+ 
+     <!DOCTYPE html>
+-    <html>
++    <html lang="en">
+     <head>
+     <title>{{ flatpage.title }}</title>
+     </head>
+diff --git a/docs/ref/contrib/gis/geos.txt b/docs/ref/contrib/gis/geos.txt
+index 173e51979ccd..0900bebed8ae 100644
+--- a/docs/ref/contrib/gis/geos.txt
++++ b/docs/ref/contrib/gis/geos.txt
+@@ -34,8 +34,7 @@ features include:
+   may be used outside of a Django project/application.  In other words,
+   no need to have :envvar:`DJANGO_SETTINGS_MODULE` set or use a database, etc.
+ * Mutability: :class:`GEOSGeometry` objects may be modified.
+-* Cross-platform and tested; compatible with Windows, Linux, Solaris, and
+-  macOS platforms.
++* Cross-platform tested.
+ 
+ .. _geos-tutorial:
+ 
+diff --git a/docs/ref/contrib/postgres/indexes.txt b/docs/ref/contrib/postgres/indexes.txt
+index 73ef195309bb..107d9c278d43 100644
+--- a/docs/ref/contrib/postgres/indexes.txt
++++ b/docs/ref/contrib/postgres/indexes.txt
+@@ -34,14 +34,14 @@ available from the ``django.contrib.postgres.indexes`` module.
+ .. class:: BrinIndex(*expressions, autosummarize=None, pages_per_range=None, **options)
+ 
+     Creates a `BRIN index
+-    <https://www.postgresql.org/docs/current/brin-intro.html>`_.
++    <https://www.postgresql.org/docs/current/brin.html>`_.
+ 
+     Set the ``autosummarize`` parameter to ``True`` to enable `automatic
+     summarization`_ to be performed by autovacuum.
+ 
+     The ``pages_per_range`` argument takes a positive integer.
+ 
+-    .. _automatic summarization: https://www.postgresql.org/docs/current/brin-intro.html#BRIN-OPERATION
++    .. _automatic summarization: https://www.postgresql.org/docs/current/brin.html#BRIN-OPERATION
+ 
+ ``BTreeIndex``
+ ==============
+diff --git a/docs/ref/files/storage.txt b/docs/ref/files/storage.txt
+index f7c290a15098..52c8f90427d5 100644
+--- a/docs/ref/files/storage.txt
++++ b/docs/ref/files/storage.txt
+@@ -11,7 +11,25 @@ Django provides convenient ways to access the default storage class:
+ 
+ .. data:: storages
+ 
+-    Storage instances as defined by :setting:`STORAGES`.
++    A dictionary-like object that allows retrieving a storage instance using
++    its alias as defined by :setting:`STORAGES`.
++
++    ``storages`` has an attribute ``backends``, which defaults to the raw value
++    provided in :setting:`STORAGES`.
++
++    Additionally, ``storages`` provides a ``create_storage()`` method that
++    accepts the dictionary used in :setting:`STORAGES` for a backend, and
++    returns a storage instance based on that backend definition. This may be
++    useful for third-party packages needing to instantiate storages in tests:
++
++    .. code-block:: pycon
++
++        >>> from django.core.files.storage import storages
++        >>> storages.backends
++        {'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
++         'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
++         'custom': {'BACKEND': 'package.storage.CustomStorage'}}
++        >>> storage_instance = storages.create_storage({"BACKEND": "package.storage.CustomStorage"})
+ 
+ .. class:: DefaultStorage
+ 
+diff --git a/docs/ref/forms/api.txt b/docs/ref/forms/api.txt
+index 28cd452c4e8b..2315757eb75e 100644
+--- a/docs/ref/forms/api.txt
++++ b/docs/ref/forms/api.txt
+@@ -406,8 +406,8 @@ process:
+ .. code-block:: pycon
+ 
+     >>> f.base_fields["subject"].label_suffix = "?"
+-    >>> another_f = CommentForm(auto_id=False)
+-    >>> f.as_div().split("</div>")[0]
++    >>> another_f = ContactForm(auto_id=False)
++    >>> another_f.as_div().split("</div>")[0]
+     '<div><label for="id_subject">Subject?</label><input type="text" name="subject" maxlength="100" required id="id_subject">'
+ 
+ Accessing "clean" data
+@@ -770,7 +770,7 @@ The template used by ``as_table()``. Default: ``'django/forms/table.html'``.
+     >>> f = ContactForm()
+     >>> f.as_table()
+     '<tr><th><label for="id_subject">Subject:</label></th><td><input id="id_subject" type="text" name="subject" maxlength="100" required></td></tr>\n<tr><th><label for="id_message">Message:</label></th><td><input type="text" name="message" id="id_message" required></td></tr>\n<tr><th><label for="id_sender">Sender:</label></th><td><input type="email" name="sender" id="id_sender" required></td></tr>\n<tr><th><label for="id_cc_myself">Cc myself:</label></th><td><input type="checkbox" name="cc_myself" id="id_cc_myself"></td></tr>'
+-    >>> print(f)
++    >>> print(f.as_table())
+     <tr><th><label for="id_subject">Subject:</label></th><td><input id="id_subject" type="text" name="subject" maxlength="100" required></td></tr>
+     <tr><th><label for="id_message">Message:</label></th><td><input type="text" name="message" id="id_message" required></td></tr>
+     <tr><th><label for="id_sender">Sender:</label></th><td><input type="email" name="sender" id="id_sender" required></td></tr>
+diff --git a/docs/ref/forms/fields.txt b/docs/ref/forms/fields.txt
+index 3ee33c966109..8aa1c94cd63c 100644
+--- a/docs/ref/forms/fields.txt
++++ b/docs/ref/forms/fields.txt
+@@ -65,8 +65,6 @@ an empty value -- either ``None`` or the empty string (``""``) -- then
+     Traceback (most recent call last):
+     ...
+     ValidationError: ['This field is required.']
+-    >>> f.clean(" ")
+-    ' '
+     >>> f.clean(0)
+     '0'
+     >>> f.clean(True)
+@@ -112,7 +110,7 @@ validation may not be correct when adding and deleting formsets.
+ The ``label`` argument lets you specify the "human-friendly" label for this
+ field. This is used when the ``Field`` is displayed in a ``Form``.
+ 
+-As explained in "Outputting forms as HTML" above, the default label for a
++As explained in :ref:`ref-forms-api-outputting-html`, the default label for a
+ ``Field`` is generated from the field name by converting all underscores to
+ spaces and upper-casing the first letter. Specify ``label`` if that default
+ behavior doesn't result in an adequate label.
+@@ -226,7 +224,7 @@ validation if a particular field's value is not given. ``initial`` values are
+     >>> f = CommentForm(data)
+     >>> f.is_valid()
+     False
+-    # The form does *not* fall back to using the initial values.
++    # The form does *not* fallback to using the initial values.
+     >>> f.errors
+     {'url': ['This field is required.'], 'name': ['This field is required.']}
+ 
+@@ -379,7 +377,7 @@ See the :doc:`validators documentation </ref/validators>` for more information.
+ The ``localize`` argument enables the localization of form data input, as well
+ as the rendered output.
+ 
+-See the :doc:`format localization </topics/i18n/formatting>` documentation for
++See the :doc:`format localization documentation </topics/i18n/formatting>` for
+ more information.
+ 
+ ``disabled``
+@@ -775,7 +773,7 @@ For each field, we describe the default widget used if you don't specify
+     * Empty value: ``''`` (an empty string)
+     * Normalizes to: A string. IPv6 addresses are normalized as described below.
+     * Validates that the given value is a valid IP address.
+-    * Error message keys: ``required``, ``invalid``
++    * Error message keys: ``required``, ``invalid``, ``max_length``
+ 
+     The IPv6 address normalization follows :rfc:`4291#section-2.2` section 2.2,
+     including using the IPv4 format suggested in paragraph 3 of that section, like
+@@ -783,7 +781,7 @@ For each field, we describe the default widget used if you don't specify
+     ``2001::1``, and ``::ffff:0a0a:0a0a`` to ``::ffff:10.10.10.10``. All characters
+     are converted to lowercase.
+ 
+-    Takes two optional arguments:
++    Takes three optional arguments:
+ 
+     .. attribute:: protocol
+ 
+@@ -798,6 +796,15 @@ For each field, we describe the default widget used if you don't specify
+         ``192.0.2.1``. Default is disabled. Can only be used
+         when ``protocol`` is set to ``'both'``.
+ 
++    .. attribute:: max_length
++
++        Defaults to 39, and behaves the same way as it does for
++        :class:`CharField`.
++
++    .. versionchanged:: 4.2.18
++
++        The default value for ``max_length`` was set to 39 characters.
++
+ ``ImageField``
+ --------------
+ 
+diff --git a/docs/ref/forms/validation.txt b/docs/ref/forms/validation.txt
+index 7a037eaf756c..614b345b5a43 100644
+--- a/docs/ref/forms/validation.txt
++++ b/docs/ref/forms/validation.txt
+@@ -254,7 +254,7 @@ Common cases such as validating against an email or a regular expression can be
+ handled using existing validator classes available in Django. For example,
+ ``validators.validate_slug`` is an instance of
+ a :class:`~django.core.validators.RegexValidator` constructed with the first
+-argument being the pattern: ``^[-a-zA-Z0-9_]+$``. See the section on
++argument being the pattern: ``^[-a-zA-Z0-9_]+\Z``. See the section on
+ :doc:`writing validators </ref/validators>` to see a list of what is already
+ available and for an example of how to write a validator.
+ 
+diff --git a/docs/ref/forms/widgets.txt b/docs/ref/forms/widgets.txt
+index f76759b25454..807cee8f8ae2 100644
+--- a/docs/ref/forms/widgets.txt
++++ b/docs/ref/forms/widgets.txt
+@@ -142,9 +142,9 @@ For example, take the following form::
+         url = forms.URLField()
+         comment = forms.CharField()
+ 
+-This form will include three default :class:`TextInput` widgets, with default
+-rendering -- no CSS class, no extra attributes. This means that the input boxes
+-provided for each widget will be rendered exactly the same:
++This form will include :class:`TextInput` widgets for the name and comment
++fields, and a :class:`URLInput` widget for the url field. Each has default
++rendering - no CSS class, no extra attributes:
+ 
+ .. code-block:: pycon
+ 
+@@ -154,11 +154,11 @@ provided for each widget will be rendered exactly the same:
+     <div>Url:<input type="url" name="url" required></div>
+     <div>Comment:<input type="text" name="comment" required></div>
+ 
+-On a real web page, you probably don't want every widget to look the same. You
+-might want a larger input element for the comment, and you might want the
+-'name' widget to have some special CSS class. It is also possible to specify
+-the 'type' attribute to take advantage of the new HTML5 input types.  To do
+-this, you use the :attr:`Widget.attrs` argument when creating the widget::
++On a real web page, you probably want to customize this. You might want a
++larger input element for the comment, and you might want the 'name' widget to
++have some special CSS class. It is also possible to specify the 'type'
++attribute to use a different HTML5 input type. To do this, you use the
++:attr:`Widget.attrs` argument when creating the widget::
+ 
+     class CommentForm(forms.Form):
+         name = forms.CharField(widget=forms.TextInput(attrs={"class": "special"}))
+diff --git a/docs/ref/models/fields.txt b/docs/ref/models/fields.txt
+index 069ecdbabbd0..2b1ce96dda5c 100644
+--- a/docs/ref/models/fields.txt
++++ b/docs/ref/models/fields.txt
+@@ -22,9 +22,9 @@ This document contains all the API references of :class:`Field` including the
+ 
+ .. note::
+ 
+-    Technically, these models are defined in :mod:`django.db.models.fields`, but
+-    for convenience they're imported into :mod:`django.db.models`; the standard
+-    convention is to use ``from django.db import models`` and refer to fields as
++    Fields are defined in :mod:`django.db.models.fields`, but for convenience
++    they're imported into :mod:`django.db.models`. The standard convention is
++    to use ``from django.db import models`` and refer to fields as
+     ``models.<Foo>Field``.
+ 
+ .. _common-model-field-options:
+@@ -434,6 +434,11 @@ precedence when creating instances in Python code. ``db_default`` will still be
+ set at the database level and will be used when inserting rows outside of the
+ ORM or when adding a new field in a migration.
+ 
++If a field has a ``db_default`` without a ``default`` set and no value is
++assigned to the field, a ``DatabaseDefault`` object is returned as the field
++value on unsaved model instances. The actual value for the field is determined
++by the database when the model instance is saved.
++
+ ``db_index``
+ ------------
+ 
+@@ -1634,80 +1639,25 @@ Django also defines a set of fields that represent relations.
+ .. class:: ForeignKey(to, on_delete, **options)
+ 
+ A many-to-one relationship. Requires two positional arguments: the class to
+-which the model is related and the :attr:`~ForeignKey.on_delete` option.
+-
+-.. _recursive-relationships:
+-
+-To create a recursive relationship -- an object that has a many-to-one
+-relationship with itself -- use ``models.ForeignKey('self',
+-on_delete=models.CASCADE)``.
+-
+-.. _lazy-relationships:
+-
+-If you need to create a relationship on a model that has not yet been defined,
+-you can use the name of the model, rather than the model object itself::
++which the model is related and the :attr:`~ForeignKey.on_delete` option::
+ 
+     from django.db import models
+ 
+ 
+-    class Car(models.Model):
+-        manufacturer = models.ForeignKey(
+-            "Manufacturer",
+-            on_delete=models.CASCADE,
+-        )
+-        # ...
+-
+-
+     class Manufacturer(models.Model):
+-        # ...
+-        pass
+-
+-Relationships defined this way on :ref:`abstract models
+-<abstract-base-classes>` are resolved when the model is subclassed as a
+-concrete model and are not relative to the abstract model's ``app_label``:
+-
+-.. code-block:: python
+-    :caption: ``products/models.py``
+-
+-    from django.db import models
++        name = models.TextField()
+ 
+ 
+-    class AbstractCar(models.Model):
+-        manufacturer = models.ForeignKey("Manufacturer", on_delete=models.CASCADE)
+-
+-        class Meta:
+-            abstract = True
+-
+-.. code-block:: python
+-    :caption: ``production/models.py``
+-
+-    from django.db import models
+-    from products.models import AbstractCar
+-
+-
+-    class Manufacturer(models.Model):
+-        pass
+-
+-
+-    class Car(AbstractCar):
+-        pass
+-
+-
+-    # Car.manufacturer will point to `production.Manufacturer` here.
+-
+-To refer to models defined in another application, you can explicitly specify
+-a model with the full application label. For example, if the ``Manufacturer``
+-model above is defined in another application called ``production``, you'd
+-need to use::
+-
+     class Car(models.Model):
+-        manufacturer = models.ForeignKey(
+-            "production.Manufacturer",
+-            on_delete=models.CASCADE,
+-        )
++        manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+ 
+-This sort of reference, called a lazy relationship, can be useful when
+-resolving circular import dependencies between two applications.
++The first positional argument can be either a concrete model class or a
++:ref:`lazy reference <lazy-relationships>` to a model class.
++:ref:`Recursive relationships <recursive-relationships>`, where a model has a
++relationship with itself, are also supported.
++
++See :attr:`ForeignKey.on_delete` for details on the second positional
++argument.
+ 
+ A database index is automatically created on the ``ForeignKey``. You can
+ disable this by setting :attr:`~Field.db_index` to ``False``.  You may want to
+@@ -1720,9 +1670,9 @@ Database Representation
+ 
+ Behind the scenes, Django appends ``"_id"`` to the field name to create its
+ database column name. In the above example, the database table for the ``Car``
+-model will have a ``manufacturer_id`` column. (You can change this explicitly by
+-specifying :attr:`~Field.db_column`) However, your code should never have to
+-deal with the database column name, unless you write custom SQL. You'll always
++model will have a ``manufacturer_id`` column. You can change this explicitly by
++specifying :attr:`~Field.db_column`, however, your code should never have to
++deal with the database column name (unless you write custom SQL). You'll always
+ deal with the field names of your model object.
+ 
+ .. _foreign-key-arguments:
+@@ -2272,6 +2222,120 @@ accepted by :class:`ForeignKey`, plus one extra argument:
+ See :doc:`One-to-one relationships </topics/db/examples/one_to_one>` for usage
+ examples of ``OneToOneField``.
+ 
++.. _lazy-relationships:
++
++Lazy relationships
++------------------
++
++Lazy relationships allow referencing models by their names (as strings) or
++creating recursive relationships. Strings can be used as the first argument in
++any relationship field to reference models lazily. A lazy reference can be
++either :ref:`recursive <recursive-relationships>`,
++:ref:`relative <relative-relationships>` or
++:ref:`absolute <absolute-relationships>`.
++
++.. _recursive-relationships:
++
++Recursive
++~~~~~~~~~
++
++To define a relationship where a model references itself, use ``"self"`` as the
++first argument of the relationship field::
++
++    from django.db import models
++
++
++    class Manufacturer(models.Model):
++        name = models.TextField()
++        suppliers = models.ManyToManyField("self", symmetrical=False)
++
++
++When used in an :ref:`abstract model <abstract-base-classes>`, the recursive
++relationship resolves such that each concrete subclass references itself.
++
++.. _relative-relationships:
++
++Relative
++~~~~~~~~
++
++When a relationship needs to be created with a model that has not been defined
++yet, it can be referenced by its name rather than the model object itself::
++
++    from django.db import models
++
++
++    class Car(models.Model):
++        manufacturer = models.ForeignKey(
++            "Manufacturer",
++            on_delete=models.CASCADE,
++        )
++
++
++    class Manufacturer(models.Model):
++        name = models.TextField()
++        suppliers = models.ManyToManyField("self", symmetrical=False)
++
++Relationships defined this way on :ref:`abstract models
++<abstract-base-classes>` are resolved when the model is subclassed as a
++concrete model and are not relative to the abstract model's ``app_label``:
++
++.. code-block:: python
++    :caption: ``products/models.py``
++
++    from django.db import models
++
++
++    class AbstractCar(models.Model):
++        manufacturer = models.ForeignKey("Manufacturer", on_delete=models.CASCADE)
++
++        class Meta:
++            abstract = True
++
++.. code-block:: python
++    :caption: ``production/models.py``
++
++    from django.db import models
++    from products.models import AbstractCar
++
++
++    class Manufacturer(models.Model):
++        name = models.TextField()
++
++
++    class Car(AbstractCar):
++        pass
++
++In this example, the ``Car.manufacturer`` relationship will resolve to
++``production.Manufacturer``, as it points to the concrete model defined
++within the ``production/models.py`` file.
++
++.. admonition:: Reusable models with relative references
++
++    Relative references allow the creation of reusable abstract models with
++    relationships that can resolve to different implementations of the
++    referenced models in various subclasses across different applications.
++
++.. _absolute-relationships:
++
++Absolute
++~~~~~~~~
++
++Absolute references specify a model using its ``app_label`` and class name,
++allowing for model references across different applications. This type of lazy
++relationship can also help resolve circular imports.
++
++For example, if the ``Manufacturer`` model is defined in another application
++called ``thirdpartyapp``, it can be referenced as::
++
++    class Car(models.Model):
++        manufacturer = models.ForeignKey(
++            "thirdpartyapp.Manufacturer",
++            on_delete=models.CASCADE,
++        )
++
++Absolute references always point to the same model, even when used in an
++:ref:`abstract model <abstract-base-classes>`.
++
+ Field API reference
+ ===================
+ 
+diff --git a/docs/ref/models/instances.txt b/docs/ref/models/instances.txt
+index 9cf47a0fc5e1..4fd3e0052c6a 100644
+--- a/docs/ref/models/instances.txt
++++ b/docs/ref/models/instances.txt
+@@ -552,9 +552,8 @@ object's primary key attribute does **not** define a
+ :attr:`~django.db.models.Field.default` or
+ :attr:`~django.db.models.Field.db_default`, Django follows this algorithm:
+ 
+-* If the object's primary key attribute is set to a value that evaluates to
+-  ``True`` (i.e., a value other than ``None`` or the empty string), Django
+-  executes an ``UPDATE``.
++* If the object's primary key attribute is set to anything except ``None``,
++  Django executes an ``UPDATE``.
+ * If the object's primary key attribute is *not* set or if the ``UPDATE``
+   didn't update anything (e.g. if primary key is set to a value that doesn't
+   exist in the database), Django executes an ``INSERT``.
+diff --git a/docs/ref/templates/builtins.txt b/docs/ref/templates/builtins.txt
+index 86841b3dbd38..c00baf3a0779 100644
+--- a/docs/ref/templates/builtins.txt
++++ b/docs/ref/templates/builtins.txt
+@@ -3110,7 +3110,7 @@ slightly different call:
+ 
+     {% load static %}
+     {% static "images/hi.jpg" as myphoto %}
+-    <img src="{{ myphoto }}">
++    <img src="{{ myphoto }}" alt="Hi!">
+ 
+ .. admonition:: Using Jinja2 templates?
+ 
+diff --git a/docs/releases/4.2.17.txt b/docs/releases/4.2.17.txt
+new file mode 100644
+index 000000000000..9a6aee3db6ef
+--- /dev/null
++++ b/docs/releases/4.2.17.txt
+@@ -0,0 +1,33 @@
++===========================
++Django 4.2.17 release notes
++===========================
++
++*December 4, 2024*
++
++Django 4.2.17 fixes one security issue with severity "high" and one security
++issue with severity "moderate" in 4.2.16.
++
++CVE-2024-53907: Denial-of-service possibility in ``strip_tags()``
++=================================================================
++
++:func:`~django.utils.html.strip_tags` would be extremely slow to evaluate
++certain inputs containing large sequences of nested incomplete HTML entities.
++The ``strip_tags()`` method is used to implement the corresponding
++:tfilter:`striptags` template filter, which was thus also vulnerable.
++
++``strip_tags()`` now has an upper limit of recursive calls to ``HTMLParser``
++before raising a :exc:`.SuspiciousOperation` exception.
++
++Remember that absolutely NO guarantee is provided about the results of
++``strip_tags()`` being HTML safe. So NEVER mark safe the result of a
++``strip_tags()`` call without escaping it first, for example with
++:func:`django.utils.html.escape`.
++
++CVE-2024-53908: Potential SQL injection via ``HasKey(lhs, rhs)`` on Oracle
++==========================================================================
++
++Direct usage of the ``django.db.models.fields.json.HasKey`` lookup on Oracle
++was subject to SQL injection if untrusted data was used as a ``lhs`` value.
++
++Applications that use the :lookup:`has_key <jsonfield.has_key>` lookup through
++the ``__`` syntax are unaffected.
+diff --git a/docs/releases/4.2.18.txt b/docs/releases/4.2.18.txt
+new file mode 100644
+index 000000000000..fef91d9150bf
+--- /dev/null
++++ b/docs/releases/4.2.18.txt
+@@ -0,0 +1,19 @@
++===========================
++Django 4.2.18 release notes
++===========================
++
++*January 14, 2025*
++
++Django 4.2.18 fixes a security issue with severity "moderate" in 4.2.17.
++
++CVE-2024-56374: Potential denial-of-service vulnerability in IPv6 validation
++============================================================================
++
++Lack of upper bound limit enforcement in strings passed when performing IPv6
++validation could lead to a potential denial-of-service attack. The undocumented
++and private functions ``clean_ipv6_address`` and ``is_valid_ipv6_address`` were
++vulnerable, as was the  :class:`django.forms.GenericIPAddressField` form field,
++which has now been updated to define a ``max_length`` of 39 characters.
++
++The :class:`django.db.models.GenericIPAddressField` model field was not
++affected.
+diff --git a/docs/releases/5.0.10.txt b/docs/releases/5.0.10.txt
+new file mode 100644
+index 000000000000..ae1fbf99e40a
+--- /dev/null
++++ b/docs/releases/5.0.10.txt
+@@ -0,0 +1,33 @@
++===========================
++Django 5.0.10 release notes
++===========================
++
++*December 4, 2024*
++
++Django 5.0.10 fixes one security issue with severity "high" and one security
++issue with severity "moderate" in 5.0.9.
++
++CVE-2024-53907: Denial-of-service possibility in ``strip_tags()``
++=================================================================
++
++:func:`~django.utils.html.strip_tags` would be extremely slow to evaluate
++certain inputs containing large sequences of nested incomplete HTML entities.
++The ``strip_tags()`` method is used to implement the corresponding
++:tfilter:`striptags` template filter, which was thus also vulnerable.
++
++``strip_tags()`` now has an upper limit of recursive calls to ``HTMLParser``
++before raising a :exc:`.SuspiciousOperation` exception.
++
++Remember that absolutely NO guarantee is provided about the results of
++``strip_tags()`` being HTML safe. So NEVER mark safe the result of a
++``strip_tags()`` call without escaping it first, for example with
++:func:`django.utils.html.escape`.
++
++CVE-2024-53908: Potential SQL injection via ``HasKey(lhs, rhs)`` on Oracle
++==========================================================================
++
++Direct usage of the ``django.db.models.fields.json.HasKey`` lookup on Oracle
++was subject to SQL injection if untrusted data was used as a ``lhs`` value.
++
++Applications that use the :lookup:`has_key <jsonfield.has_key>` lookup through
++the ``__`` syntax are unaffected.
+diff --git a/docs/releases/5.0.11.txt b/docs/releases/5.0.11.txt
+new file mode 100644
+index 000000000000..e5cb68488840
+--- /dev/null
++++ b/docs/releases/5.0.11.txt
+@@ -0,0 +1,19 @@
++===========================
++Django 5.0.11 release notes
++===========================
++
++*January 14, 2025*
++
++Django 5.0.11 fixes a security issue with severity "moderate" in 5.0.10.
++
++CVE-2024-56374: Potential denial-of-service vulnerability in IPv6 validation
++============================================================================
++
++Lack of upper bound limit enforcement in strings passed when performing IPv6
++validation could lead to a potential denial-of-service attack. The undocumented
++and private functions ``clean_ipv6_address`` and ``is_valid_ipv6_address`` were
++vulnerable, as was the  :class:`django.forms.GenericIPAddressField` form field,
++which has now been updated to define a ``max_length`` of 39 characters.
++
++The :class:`django.db.models.GenericIPAddressField` model field was not
++affected.
+diff --git a/docs/releases/5.1.3.txt b/docs/releases/5.1.3.txt
+new file mode 100644
+index 000000000000..9e251f221f7c
+--- /dev/null
++++ b/docs/releases/5.1.3.txt
+@@ -0,0 +1,22 @@
++==========================
++Django 5.1.3 release notes
++==========================
++
++*November 5, 2024*
++
++Django 5.1.3 fixes several bugs in 5.1.2 and adds compatibility with Python
++3.13.
++
++Bugfixes
++========
++
++* Fixed a bug in Django 5.1 where
++  :class:`~django.core.validators.DomainNameValidator` accepted any input value
++  that contained a valid domain name, rather than only input values that were a
++  valid domain name (:ticket:`35845`).
++
++* Fixed a regression in Django 5.1 that prevented the use of DB-IP databases
++  with :class:`~django.contrib.gis.geoip2.GeoIP2` (:ticket:`35841`).
++
++* Fixed a regression in Django 5.1 where non-ASCII fieldset names were not
++  displayed when rendering admin fieldsets (:ticket:`35876`).
+diff --git a/docs/releases/5.1.4.txt b/docs/releases/5.1.4.txt
+new file mode 100644
+index 000000000000..e7687256887d
+--- /dev/null
++++ b/docs/releases/5.1.4.txt
+@@ -0,0 +1,43 @@
++==========================
++Django 5.1.4 release notes
++==========================
++
++*December 4, 2024*
++
++Django 5.1.4 fixes one security issue with severity "high", one security issue
++with severity "moderate", and several bugs in 5.1.3.
++
++CVE-2024-53907: Denial-of-service possibility in ``strip_tags()``
++=================================================================
++
++:func:`~django.utils.html.strip_tags` would be extremely slow to evaluate
++certain inputs containing large sequences of nested incomplete HTML entities.
++The ``strip_tags()`` method is used to implement the corresponding
++:tfilter:`striptags` template filter, which was thus also vulnerable.
++
++``strip_tags()`` now has an upper limit of recursive calls to ``HTMLParser``
++before raising a :exc:`.SuspiciousOperation` exception.
++
++Remember that absolutely NO guarantee is provided about the results of
++``strip_tags()`` being HTML safe. So NEVER mark safe the result of a
++``strip_tags()`` call without escaping it first, for example with
++:func:`django.utils.html.escape`.
++
++CVE-2024-53908: Potential SQL injection via ``HasKey(lhs, rhs)`` on Oracle
++==========================================================================
++
++Direct usage of the ``django.db.models.fields.json.HasKey`` lookup on Oracle
++was subject to SQL injection if untrusted data was used as a ``lhs`` value.
++
++Applications that use the :lookup:`has_key <jsonfield.has_key>` lookup through
++the ``__`` syntax are unaffected.
++
++Bugfixes
++========
++
++* Fixed a crash in ``createsuperuser`` on Python 3.13+ caused by an unhandled
++  ``OSError`` when the username could not be determined (:ticket:`35942`).
++
++* Fixed a regression in Django 5.1 where relational fields were not updated
++  when calling ``Model.refresh_from_db()`` on instances with deferred fields
++  (:ticket:`35950`).
+diff --git a/docs/releases/5.1.5.txt b/docs/releases/5.1.5.txt
+new file mode 100644
+index 000000000000..574663df36ad
+--- /dev/null
++++ b/docs/releases/5.1.5.txt
+@@ -0,0 +1,26 @@
++==========================
++Django 5.1.5 release notes
++==========================
++
++*January 14, 2025*
++
++Django 5.1.5 fixes a security issue with severity "moderate" and one bug in
++5.1.4.
++
++CVE-2024-56374: Potential denial-of-service vulnerability in IPv6 validation
++============================================================================
++
++Lack of upper bound limit enforcement in strings passed when performing IPv6
++validation could lead to a potential denial-of-service attack. The undocumented
++and private functions ``clean_ipv6_address`` and ``is_valid_ipv6_address`` were
++vulnerable, as was the  :class:`django.forms.GenericIPAddressField` form field,
++which has now been updated to define a ``max_length`` of 39 characters.
++
++The :class:`django.db.models.GenericIPAddressField` model field was not
++affected.
++
++Bugfixes
++========
++
++* Fixed a crash when applying migrations with references to the removed
++  ``Meta.index_together`` option (:ticket:`34856`).
+diff --git a/docs/releases/5.1.txt b/docs/releases/5.1.txt
+index bc868fddda6e..037c76fd5453 100644
+--- a/docs/releases/5.1.txt
++++ b/docs/releases/5.1.txt
+@@ -18,8 +18,9 @@ project.
+ Python compatibility
+ ====================
+ 
+-Django 5.1 supports Python 3.10, 3.11, and 3.12. We **highly recommend** and
+-only officially support the latest release of each series.
++Django 5.1 supports Python 3.10, 3.11, 3.12, and 3.13 (as of 5.1.3). We
++**highly recommend** and only officially support the latest release of each
++series.
+ 
+ .. _whats-new-5.1:
+ 
+diff --git a/docs/releases/index.txt b/docs/releases/index.txt
+index 7db747c97f45..83dc38ef072f 100644
+--- a/docs/releases/index.txt
++++ b/docs/releases/index.txt
+@@ -25,6 +25,9 @@ versions of the documentation contain the release notes for any later releases.
+ .. toctree::
+    :maxdepth: 1
+ 
++   5.1.5
++   5.1.4
++   5.1.3
+    5.1.2
+    5.1.1
+    5.1
+@@ -34,6 +37,8 @@ versions of the documentation contain the release notes for any later releases.
+ .. toctree::
+    :maxdepth: 1
+ 
++   5.0.11
++   5.0.10
+    5.0.9
+    5.0.8
+    5.0.7
+@@ -51,6 +56,8 @@ versions of the documentation contain the release notes for any later releases.
+ .. toctree::
+    :maxdepth: 1
+ 
++   4.2.18
++   4.2.17
+    4.2.16
+    4.2.15
+    4.2.14
+diff --git a/docs/releases/security.txt b/docs/releases/security.txt
+index b83be59dbb85..02ea77b54d74 100644
+--- a/docs/releases/security.txt
++++ b/docs/releases/security.txt
+@@ -36,6 +36,28 @@ Issues under Django's security process
+ All security issues have been handled under versions of Django's security
+ process. These are listed below.
+ 
++December 4, 2024 - :cve:`2024-53907`
++------------------------------------
++
++Potential denial-of-service in ``django.utils.html.strip_tags()``.
++`Full description
++<https://www.djangoproject.com/weblog/2024/dec/04/security-releases/>`__
++
++* Django 5.1 :commit:`(patch) <bbc74a7f7eb7335e913bdb4787f22e83a9be947e>`
++* Django 5.0 :commit:`(patch) <a5a89ea28cc550c1b29b03f9e14ef3c128ec1e84>`
++* Django 4.2 :commit:`(patch) <790eb058b0716c536a2f2e8d1c6d5079d776c22b>`
++
++December 4, 2024 - :cve:`2024-53908`
++------------------------------------
++
++Potential SQL injection in ``HasKey(lhs, rhs)`` on Oracle.
++`Full description
++<https://www.djangoproject.com/weblog/2024/dec/04/security-releases/>`__
++
++* Django 5.1 :commit:`(patch) <6943d61818e63e77b65d8b1ae65941e8f04bd87b>`
++* Django 5.0 :commit:`(patch) <ff08bb6c70aa45f83a5ef3bd0b601c7c9d1a7642>`
++* Django 4.2 :commit:`(patch) <7376bcbf508883282ffcc0f0fac5cf0ed2d6cbc5>`
++
+ September 3, 2024 - :cve:`2024-45231`
+ -------------------------------------
+ 
+diff --git a/docs/spelling_wordlist b/docs/spelling_wordlist
+index d715e62e054b..747a712a62eb 100644
+--- a/docs/spelling_wordlist
++++ b/docs/spelling_wordlist
+@@ -123,6 +123,7 @@ deduplicates
+ deduplication
+ deepcopy
+ deferrable
++DEP
+ deprecations
+ deserialization
+ deserialize
+@@ -141,6 +142,7 @@ Disqus
+ distro
+ django
+ djangoproject
++djangotutorial
+ dm
+ docstring
+ docstrings
+diff --git a/docs/topics/auth/customizing.txt b/docs/topics/auth/customizing.txt
+index 3839c8608b5b..e9e4e78b7930 100644
+--- a/docs/topics/auth/customizing.txt
++++ b/docs/topics/auth/customizing.txt
+@@ -127,15 +127,19 @@ wasn't provided to :func:`~django.contrib.auth.authenticate` (which passes it
+ on to the backend).
+ 
+ The Django admin is tightly coupled to the Django :ref:`User object
+-<user-objects>`. The best way to deal with this is to create a Django ``User``
+-object for each user that exists for your backend (e.g., in your LDAP
+-directory, your external SQL database, etc.) You can either write a script to
+-do this in advance, or your ``authenticate`` method can do it the first time a
+-user logs in.
++<user-objects>`. For example, for a user to access the admin,
++:attr:`.User.is_staff` and :attr:`.User.is_active` must be ``True`` (see
++:meth:`.AdminSite.has_permission` for details).
++
++The best way to deal with this is to create a Django ``User`` object for each
++user that exists for your backend (e.g., in your LDAP directory, your external
++SQL database, etc.). You can either write a script to do this in advance, or
++your ``authenticate`` method can do it the first time a user logs in.
+ 
+ Here's an example backend that authenticates against a username and password
+ variable defined in your ``settings.py`` file and creates a Django ``User``
+-object the first time a user authenticates::
++object the first time a user authenticates. In this example, the created Django
++``User`` object is a superuser who will have full access to the admin::
+ 
+     from django.conf import settings
+     from django.contrib.auth.backends import BaseBackend
+@@ -162,7 +166,7 @@ object the first time a user authenticates::
+                 except User.DoesNotExist:
+                     # Create a new user. There's no need to set a password
+                     # because only the password from settings.py is checked.
+-                    user = User(username=username)
++                    user = User(username=username)  # is_active defaults to True.
+                     user.is_staff = True
+                     user.is_superuser = True
+                     user.save()
+diff --git a/docs/topics/db/fixtures.txt b/docs/topics/db/fixtures.txt
+index ac5b34dae0d7..6066d34f8e66 100644
+--- a/docs/topics/db/fixtures.txt
++++ b/docs/topics/db/fixtures.txt
+@@ -4,28 +4,25 @@
+ Fixtures
+ ========
+ 
+-.. seealso::
+-
+-    * :doc:`/howto/initial-data`
+-
+-What is a fixture?
+-==================
+-
+ A *fixture* is a collection of files that contain the serialized contents of
+ the database. Each fixture has a unique name, and the files that comprise the
+ fixture can be distributed over multiple directories, in multiple applications.
+ 
+-How to produce a fixture?
+-=========================
++.. seealso::
++
++    * :doc:`/howto/initial-data`
++
++How to produce a fixture
++========================
+ 
+ Fixtures can be generated by :djadmin:`manage.py dumpdata <dumpdata>`. It's
+ also possible to generate custom fixtures by directly using :doc:`serialization
+ tools </topics/serialization>` or even by handwriting them.
+ 
+-How to use a fixture?
+-=====================
++How to use a fixture
++====================
+ 
+-Fixtures can be used to pre-populate database with data for
++Fixtures can be used to pre-populate the database with data for
+ :ref:`tests <topics-testing-fixtures>`:
+ 
+ .. code-block:: python
+@@ -40,8 +37,8 @@ or to provide some :ref:`initial data <initial-data-via-fixtures>` using the
+ 
+     django-admin loaddata <fixture label>
+ 
+-Where Django looks for fixtures?
+-================================
++How fixtures are discovered
++===========================
+ 
+ Django will search in these locations for fixtures:
+ 
+@@ -116,8 +113,8 @@ example).
+ 
+ .. _MySQL: https://dev.mysql.com/doc/refman/en/constraint-foreign-key.html
+ 
+-How fixtures are saved to the database?
+-=======================================
++How fixtures are saved to the database
++======================================
+ 
+ When fixture files are processed, the data is saved to the database as is.
+ Model defined :meth:`~django.db.models.Model.save` methods are not called, and
+diff --git a/docs/topics/db/models.txt b/docs/topics/db/models.txt
+index ee4bdab7bb38..62488a75f791 100644
+--- a/docs/topics/db/models.txt
++++ b/docs/topics/db/models.txt
+@@ -228,6 +228,15 @@ ones:
+     object. If callable it will be called every time a new object is
+     created.
+ 
++:attr:`~Field.db_default`
++    The database-computed default value for the field. This can be a literal
++    value or a database function.
++
++    If both ``db_default`` and :attr:`Field.default` are set, ``default`` will
++    take precedence when creating instances in Python code. ``db_default`` will
++    still be set at the database level and will be used when inserting rows
++    outside of the ORM or when adding a new field in a migration.
++
+ :attr:`~Field.help_text`
+     Extra "help" text to be displayed with the form widget. It's useful for
+     documentation even if your field isn't used on a form.
+diff --git a/docs/topics/db/queries.txt b/docs/topics/db/queries.txt
+index 45c6183103c3..7e3338eaea33 100644
+--- a/docs/topics/db/queries.txt
++++ b/docs/topics/db/queries.txt
+@@ -62,7 +62,8 @@ class represents a particular record in the database table.
+ To create an object, instantiate it using keyword arguments to the model class,
+ then call :meth:`~django.db.models.Model.save` to save it to the database.
+ 
+-Assuming models live in a file ``mysite/blog/models.py``, here's an example:
++Assuming models live in a ``models.py`` file inside a ``blog`` Django app, here
++is an example:
+ 
+ .. code-block:: pycon
+ 
+diff --git a/docs/topics/email.txt b/docs/topics/email.txt
+index 75a50f40a142..109efe8ad364 100644
+--- a/docs/topics/email.txt
++++ b/docs/topics/email.txt
+@@ -311,9 +311,11 @@ All parameters are optional and can be set at any time prior to calling the
+ * ``bcc``: A list or tuple of addresses used in the "Bcc" header when
+   sending the email.
+ 
+-* ``connection``: An email backend instance. Use this parameter if
+-  you want to use the same connection for multiple messages. If omitted, a
+-  new connection is created when ``send()`` is called.
++* ``connection``: An :ref:`email backend <topic-email-backends>` instance. Use
++  this parameter if you are sending the ``EmailMessage`` via ``send()`` and you
++  want to use the same connection for multiple messages. If omitted, a new
++  connection is created when ``send()`` is called. This parameter is ignored
++  when using :ref:`send_messages() <topics-sending-multiple-emails>`.
+ 
+ * ``attachments``: A list of attachments to put on the message. These can
+   be either :class:`~email.mime.base.MIMEBase` instances, or ``(filename,
+@@ -662,9 +664,10 @@ destroying a connection every time you want to send an email.
+ 
+ There are two ways you tell an email backend to reuse a connection.
+ 
+-Firstly, you can use the ``send_messages()`` method. ``send_messages()`` takes
+-a list of :class:`~django.core.mail.EmailMessage` instances (or subclasses),
+-and sends them all using a single connection.
++Firstly, you can use the ``send_messages()`` method on a connection. This takes
++a list of :class:`EmailMessage` (or subclass) instances, and sends them all
++using that single connection. As a consequence, any :class:`connection
++<EmailMessage>` set on an individual message is ignored.
+ 
+ For example, if you have a function called ``get_notification_email()`` that
+ returns a list of :class:`~django.core.mail.EmailMessage` objects representing
+diff --git a/docs/topics/forms/formsets.txt b/docs/topics/forms/formsets.txt
+index 1f49044e6e8c..14d4962eb671 100644
+--- a/docs/topics/forms/formsets.txt
++++ b/docs/topics/forms/formsets.txt
+@@ -48,13 +48,10 @@ following example will create a formset class to display two blank forms:
+ 
+     >>> ArticleFormSet = formset_factory(ArticleForm, extra=2)
+ 
+-Iterating over a formset will render the forms in the order they were
+-created. You can change this order by providing an alternate implementation for
+-the ``__iter__()`` method.
+-
+-Formsets can also be indexed into, which returns the corresponding form. If you
+-override ``__iter__``, you will need to also override ``__getitem__`` to have
+-matching behavior.
++Formsets can be iterated and indexed, accessing forms in the order they were
++created. You can reorder the forms by overriding the default
++:py:meth:`iteration <object.__iter__>` and
++:py:meth:`indexing <object.__getitem__>` behavior if needed.
+ 
+ .. _formsets-initial-data:
+ 
+@@ -1008,10 +1005,11 @@ deal with the management form:
+ The above ends up calling the :meth:`BaseFormSet.render` method on the formset
+ class. This renders the formset using the template specified by the
+ :attr:`~BaseFormSet.template_name` attribute. Similar to forms, by default the
+-formset will be rendered ``as_table``, with other helper methods of ``as_p``
+-and ``as_ul`` being available. The rendering of the formset can be customized
+-by specifying the ``template_name`` attribute, or more generally by
+-:ref:`overriding the default template <overriding-built-in-formset-templates>`.
++formset will be rendered ``as_div``, with other helper methods of ``as_p``,
++``as_ul``, and ``as_table`` being available. The rendering of the formset can
++be customized by specifying the ``template_name`` attribute, or more generally
++by :ref:`overriding the default template
++<overriding-built-in-formset-templates>`.
+ 
+ .. _manually-rendered-can-delete-and-can-order:
+ 
+diff --git a/docs/topics/http/views.txt b/docs/topics/http/views.txt
+index 2985bfb72b2c..feb4eaa4ecb7 100644
+--- a/docs/topics/http/views.txt
++++ b/docs/topics/http/views.txt
+@@ -23,7 +23,7 @@ Here's a view that returns the current date and time, as an HTML document::
+ 
+     def current_datetime(request):
+         now = datetime.datetime.now()
+-        html = "<html><body>It is now %s.</body></html>" % now
++        html = '<html lang="en"><body>It is now %s.</body></html>' % now
+         return HttpResponse(html)
+ 
+ Let's step through this code one line at a time:
+@@ -225,7 +225,7 @@ Here's an example of an async view::
+ 
+     async def current_datetime(request):
+         now = datetime.datetime.now()
+-        html = "<html><body>It is now %s.</body></html>" % now
++        html = '<html lang="en"><body>It is now %s.</body></html>' % now
+         return HttpResponse(html)
+ 
+ You can read more about Django's async support, and how to best use async
+diff --git a/docs/topics/performance.txt b/docs/topics/performance.txt
+index cedd824e300f..1075d6e0ad85 100644
+--- a/docs/topics/performance.txt
++++ b/docs/topics/performance.txt
+@@ -72,10 +72,7 @@ in effect simulating the experience of an actual user.
+ 
+ These can't report on the internals of your code, but can provide a useful
+ insight into your site's overall performance, including aspects that can't be
+-adequately measured from within Django environment. Examples include:
+-
+-* `Yahoo's Yslow <https://yslow.org/>`_
+-* `Google PageSpeed <https://developers.google.com/speed/>`_
++adequately measured from within Django environment.
+ 
+ There are also several paid-for services that perform a similar analysis,
+ including some that are Django-aware and can integrate with your codebase to
+@@ -137,7 +134,7 @@ one that it is comfortable to code for.
+ 
+     Firstly, in a real-life case you need to consider what is happening before
+     and after your count to work out what's an optimal way of doing it *in that
+-    particular context*. The database optimization documents describes :ref:`a
++    particular context*. The database optimization document describes :ref:`a
+     case where counting in the template would be better
+     <overuse_of_count_and_exists>`.
+ 
+diff --git a/pyproject.toml b/pyproject.toml
+index 5c85cf42b618..19bc17ba1a6e 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -30,6 +30,7 @@ classifiers = [
+     "Programming Language :: Python :: 3.10",
+     "Programming Language :: Python :: 3.11",
+     "Programming Language :: Python :: 3.12",
++    "Programming Language :: Python :: 3.13",
+     "Topic :: Internet :: WWW/HTTP",
+     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+     "Topic :: Internet :: WWW/HTTP :: WSGI",
+diff --git a/tests/admin_inlines/tests.py b/tests/admin_inlines/tests.py
+index 2c148a49f0ec..4959afb02d3f 100644
+--- a/tests/admin_inlines/tests.py
++++ b/tests/admin_inlines/tests.py
+@@ -1785,7 +1785,7 @@ def test_inline_headings(self):
+         # The second and third have the same "Advanced options" name, but the
+         # second one has the "collapse" class.
+         for x, classes in ((1, ""), (2, "collapse")):
+-            heading_id = f"fieldset-0-advanced-options-{x}-heading"
++            heading_id = f"fieldset-0-{x}-heading"
+             with self.subTest(heading_id=heading_id):
+                 self.assertContains(
+                     response,
+@@ -1830,7 +1830,7 @@ def test_inline_headings(self):
+                 # Every fieldset defined for an inline's form.
+                 for z, fieldset in enumerate(inline_admin_form):
+                     if fieldset.name:
+-                        heading_id = f"{prefix}-{y}-details-{z}-heading"
++                        heading_id = f"{prefix}-{y}-{z}-heading"
+                         self.assertContains(
+                             response,
+                             f'<fieldset class="module aligned {fieldset.classes}" '
+diff --git a/tests/admin_scripts/tests.py b/tests/admin_scripts/tests.py
+index 2e77f2c97a62..6878da6f5854 100644
+--- a/tests/admin_scripts/tests.py
++++ b/tests/admin_scripts/tests.py
+@@ -2304,8 +2304,8 @@ def test_precedence(self):
+ class CommandDBOptionChoiceTests(SimpleTestCase):
+     def test_invalid_choice_db_option(self):
+         expected_error = (
+-            "Error: argument --database: invalid choice: "
+-            "'deflaut' (choose from 'default', 'other')"
++            r"Error: argument --database: invalid choice: 'deflaut' "
++            r"\(choose from '?default'?, '?other'?\)"
+         )
+         args = [
+             "changepassword",
+@@ -2326,7 +2326,7 @@ def test_invalid_choice_db_option(self):
+         ]
+ 
+         for arg in args:
+-            with self.assertRaisesMessage(CommandError, expected_error):
++            with self.assertRaisesRegex(CommandError, expected_error):
+                 call_command(arg, "--database", "deflaut", verbosity=0)
+ 
+ 
+diff --git a/tests/admin_views/admin.py b/tests/admin_views/admin.py
+index 0ea64d594ac5..5e14069bae23 100644
+--- a/tests/admin_views/admin.py
++++ b/tests/admin_views/admin.py
+@@ -237,6 +237,7 @@ class ArticleAdmin(ArticleAdminWithExtraUrl):
+             "Some other fields",
+             {"classes": ("wide",), "fields": ("date", "section", "sub_section")},
+         ),
++        ("이름", {"fields": ("another_section",)}),
+     )
+ 
+     # These orderings aren't particularly useful but show that expressions can
+diff --git a/tests/admin_views/tests.py b/tests/admin_views/tests.py
+index 5a3e28f0e450..29ef894bc2fc 100644
+--- a/tests/admin_views/tests.py
++++ b/tests/admin_views/tests.py
+@@ -2508,6 +2508,19 @@ def test_add_view(self):
+         self.assertContains(
+             response, '<input type="submit" value="Save and view" name="_continue">'
+         )
++        self.assertContains(
++            response,
++            '<h2 id="fieldset-0-0-heading" class="fieldset-heading">Some fields</h2>',
++        )
++        self.assertContains(
++            response,
++            '<h2 id="fieldset-0-1-heading" class="fieldset-heading">'
++            "Some other fields</h2>",
++        )
++        self.assertContains(
++            response,
++            '<h2 id="fieldset-0-2-heading" class="fieldset-heading">이름</h2>',
++        )
+         post = self.client.post(
+             reverse("admin:admin_views_article_add"), add_dict, follow=False
+         )
+diff --git a/tests/auth_tests/test_management.py b/tests/auth_tests/test_management.py
+index 5765c500346a..0ef85a7299c7 100644
+--- a/tests/auth_tests/test_management.py
++++ b/tests/auth_tests/test_management.py
+@@ -126,6 +126,13 @@ def tearDown(self):
+     def test_actual_implementation(self):
+         self.assertIsInstance(management.get_system_username(), str)
+ 
++    def test_getuser_raises_exception(self):
++        # TODO: Drop ImportError and KeyError when dropping support for PY312.
++        for exc in (ImportError, KeyError, OSError):
++            with self.subTest(exc=str(exc)):
++                with mock.patch("getpass.getuser", side_effect=exc):
++                    self.assertEqual(management.get_system_username(), "")
++
+     def test_simple(self):
+         management.get_system_username = lambda: "joe"
+         self.assertEqual(management.get_default_username(), "joe")
+diff --git a/tests/backends/base/test_operations.py b/tests/backends/base/test_operations.py
+index 8df02ee76b44..36891323fd16 100644
+--- a/tests/backends/base/test_operations.py
++++ b/tests/backends/base/test_operations.py
+@@ -174,12 +174,6 @@ class DatabaseOperationTests(TestCase):
+     def setUp(self):
+         self.ops = BaseDatabaseOperations(connection=connection)
+ 
+-    @skipIfDBFeature("supports_over_clause")
+-    def test_window_frame_raise_not_supported_error(self):
+-        msg = "This backend does not support window expressions."
+-        with self.assertRaisesMessage(NotSupportedError, msg):
+-            self.ops.window_frame_rows_start_end()
+-
+     @skipIfDBFeature("can_distinct_on_fields")
+     def test_distinct_on_fields(self):
+         msg = "DISTINCT ON fields is not supported by this database backend"
+diff --git a/tests/contenttypes_tests/test_fields.py b/tests/contenttypes_tests/test_fields.py
+index ab16324fb681..fc49d59b2775 100644
+--- a/tests/contenttypes_tests/test_fields.py
++++ b/tests/contenttypes_tests/test_fields.py
+@@ -57,6 +57,15 @@ def test_clear_cached_generic_relation_explicit_fields(self):
+         self.assertIsNot(answer.question, old_question_obj)
+         self.assertEqual(answer.question, old_question_obj)
+ 
++    def test_clear_cached_generic_relation_when_deferred(self):
++        question = Question.objects.create(text="question")
++        Answer.objects.create(text="answer", question=question)
++        answer = Answer.objects.defer("text").get()
++        old_question_obj = answer.question
++        # The reverse relation is refreshed even when the text field is deferred.
++        answer.refresh_from_db()
++        self.assertIsNot(answer.question, old_question_obj)
++
+ 
+ class GenericRelationTests(TestCase):
+     def test_value_to_string(self):
+diff --git a/tests/defer/tests.py b/tests/defer/tests.py
+index 3945b667bad5..989b5c63d788 100644
+--- a/tests/defer/tests.py
++++ b/tests/defer/tests.py
+@@ -290,6 +290,14 @@ def test_custom_refresh_on_deferred_loading(self):
+             self.assertEqual(rf2.name, "new foo")
+             self.assertEqual(rf2.value, "new bar")
+ 
++    def test_refresh_when_one_field_deferred(self):
++        s = Secondary.objects.create()
++        PrimaryOneToOne.objects.create(name="foo", value="bar", related=s)
++        s = Secondary.objects.defer("first").get()
++        p_before = s.primary_o2o
++        s.refresh_from_db()
++        self.assertIsNot(s.primary_o2o, p_before)
++
+ 
+ class InvalidDeferTests(SimpleTestCase):
+     def test_invalid_defer(self):
+diff --git a/tests/forms_tests/field_tests/test_genericipaddressfield.py b/tests/forms_tests/field_tests/test_genericipaddressfield.py
+index 80722f5c65c1..ef00a727a468 100644
+--- a/tests/forms_tests/field_tests/test_genericipaddressfield.py
++++ b/tests/forms_tests/field_tests/test_genericipaddressfield.py
+@@ -1,6 +1,7 @@
+ from django.core.exceptions import ValidationError
+ from django.forms import GenericIPAddressField
+ from django.test import SimpleTestCase
++from django.utils.ipv6 import MAX_IPV6_ADDRESS_LENGTH
+ 
+ 
+ class GenericIPAddressFieldTest(SimpleTestCase):
+@@ -125,6 +126,35 @@ def test_generic_ipaddress_as_ipv6_only(self):
+         ):
+             f.clean("1:2")
+ 
++    def test_generic_ipaddress_max_length_custom(self):
++        # Valid IPv4-mapped IPv6 address, len 45.
++        addr = "0000:0000:0000:0000:0000:ffff:192.168.100.228"
++        f = GenericIPAddressField(max_length=len(addr))
++        f.clean(addr)
++
++    def test_generic_ipaddress_max_length_validation_error(self):
++        # Valid IPv4-mapped IPv6 address, len 45.
++        addr = "0000:0000:0000:0000:0000:ffff:192.168.100.228"
++
++        cases = [
++            ({}, MAX_IPV6_ADDRESS_LENGTH),  # Default value.
++            ({"max_length": len(addr) - 1}, len(addr) - 1),
++        ]
++        for kwargs, max_length in cases:
++            max_length_plus_one = max_length + 1
++            msg = (
++                f"Ensure this value has at most {max_length} characters (it has "
++                f"{max_length_plus_one}).'"
++            )
++            with self.subTest(max_length=max_length):
++                f = GenericIPAddressField(**kwargs)
++                with self.assertRaisesMessage(ValidationError, msg):
++                    f.clean("x" * max_length_plus_one)
++                with self.assertRaisesMessage(
++                    ValidationError, "This is not a valid IPv6 address."
++                ):
++                    f.clean(addr)
++
+     def test_generic_ipaddress_as_generic_not_required(self):
+         f = GenericIPAddressField(required=False)
+         self.assertEqual(f.clean(""), "")
+@@ -150,7 +180,8 @@ def test_generic_ipaddress_as_generic_not_required(self):
+             f.clean(" fe80::223:6cff:fe8a:2e8a "), "fe80::223:6cff:fe8a:2e8a"
+         )
+         self.assertEqual(
+-            f.clean(" 2a02::223:6cff:fe8a:2e8a "), "2a02::223:6cff:fe8a:2e8a"
++            f.clean(" " * MAX_IPV6_ADDRESS_LENGTH + " 2a02::223:6cff:fe8a:2e8a "),
++            "2a02::223:6cff:fe8a:2e8a",
+         )
+         with self.assertRaisesMessage(
+             ValidationError, "'This is not a valid IPv6 address.'"
+diff --git a/tests/gis_tests/data/geoip2/GeoIP2-City-Test.mmdb b/tests/gis_tests/data/geoip2/GeoIP2-City-Test.mmdb
+index 3197ef122fa3..bf3cbe783593 100644
+Binary files a/tests/gis_tests/data/geoip2/GeoIP2-City-Test.mmdb and b/tests/gis_tests/data/geoip2/GeoIP2-City-Test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/GeoIP2-Country-Test.mmdb b/tests/gis_tests/data/geoip2/GeoIP2-Country-Test.mmdb
+index d79c9933bb98..a5989654ebd2 100644
+Binary files a/tests/gis_tests/data/geoip2/GeoIP2-Country-Test.mmdb and b/tests/gis_tests/data/geoip2/GeoIP2-Country-Test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/GeoLite2-ASN-Test.mmdb b/tests/gis_tests/data/geoip2/GeoLite2-ASN-Test.mmdb
+index afa7e956e4cd..fe2123f9e0fc 100644
+Binary files a/tests/gis_tests/data/geoip2/GeoLite2-ASN-Test.mmdb and b/tests/gis_tests/data/geoip2/GeoLite2-ASN-Test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/GeoLite2-City-Test.mmdb b/tests/gis_tests/data/geoip2/GeoLite2-City-Test.mmdb
+index 028a6984d93f..9eea131c76b7 100644
+Binary files a/tests/gis_tests/data/geoip2/GeoLite2-City-Test.mmdb and b/tests/gis_tests/data/geoip2/GeoLite2-City-Test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/GeoLite2-Country-Test.mmdb b/tests/gis_tests/data/geoip2/GeoLite2-Country-Test.mmdb
+index a2cbb0831697..0233bba39b82 100644
+Binary files a/tests/gis_tests/data/geoip2/GeoLite2-Country-Test.mmdb and b/tests/gis_tests/data/geoip2/GeoLite2-Country-Test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/LICENSE b/tests/gis_tests/data/geoip2/LICENSE
+deleted file mode 100644
+index f86abbd73e1c..000000000000
+--- a/tests/gis_tests/data/geoip2/LICENSE
++++ /dev/null
+@@ -1,4 +0,0 @@
+-This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+-Unported License. To view a copy of this license, visit
+-http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative
+-Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+diff --git a/tests/gis_tests/data/geoip2/README b/tests/gis_tests/data/geoip2/README
+deleted file mode 100644
+index b6a21720a38d..000000000000
+--- a/tests/gis_tests/data/geoip2/README
++++ /dev/null
+@@ -1,3 +0,0 @@
+-These test databases are taken from the following repository:
+-
+-https://github.com/maxmind/MaxMind-DB/
+diff --git a/tests/gis_tests/data/geoip2/README.md b/tests/gis_tests/data/geoip2/README.md
+new file mode 100644
+index 000000000000..f2a703b45775
+--- /dev/null
++++ b/tests/gis_tests/data/geoip2/README.md
+@@ -0,0 +1,28 @@
++# GeoIP2 and GeoLite2 Test Databases
++
++The following test databases are provided under [this license][0]:
++
++- `GeoIP2-City-Test.mmdb`
++- `GeoIP2-Country-Test.mmdb`
++- `GeoLite2-ASN-Test.mmdb`
++- `GeoLite2-City-Test.mmdb`
++- `GeoLite2-Country-Test.mmdb`
++
++Updates can be found in [this repository][1].
++
++[0]: https://github.com/maxmind/MaxMind-DB/blob/main/LICENSE-MIT
++[1]: https://github.com/maxmind/MaxMind-DB/tree/main/test-data
++
++# DB-IP Lite Test Databases
++
++The following test databases are provided under [this license][2]:
++
++- `dbip-city-lite-test.mmdb`
++- `dbip-country-lite-test.mmdb`
++
++They have been modified to strip them down to a minimal dataset for testing.
++
++Updates can be found at [this download page][3] from DB-IP.
++
++[2]: https://creativecommons.org/licenses/by/4.0/
++[3]: https://db-ip.com/db/lite.php
+diff --git a/tests/gis_tests/data/geoip2/dbip-city-lite-test.mmdb b/tests/gis_tests/data/geoip2/dbip-city-lite-test.mmdb
+new file mode 100644
+index 000000000000..5f0d657c841a
+Binary files /dev/null and b/tests/gis_tests/data/geoip2/dbip-city-lite-test.mmdb differ
+diff --git a/tests/gis_tests/data/geoip2/dbip-country-lite-test.mmdb b/tests/gis_tests/data/geoip2/dbip-country-lite-test.mmdb
+new file mode 100644
+index 000000000000..8410d1893c5d
+Binary files /dev/null and b/tests/gis_tests/data/geoip2/dbip-country-lite-test.mmdb differ
+diff --git a/tests/gis_tests/test_geoip2.py b/tests/gis_tests/test_geoip2.py
+index 11c73bec0cd8..61b3565d1c72 100644
+--- a/tests/gis_tests/test_geoip2.py
++++ b/tests/gis_tests/test_geoip2.py
+@@ -32,6 +32,33 @@ class GeoLite2Test(SimpleTestCase):
+     ipv6_addr = ipaddress.ip_address(ipv6_str)
+     query_values = (fqdn, ipv4_str, ipv6_str, ipv4_addr, ipv6_addr)
+ 
++    expected_city = {
++        "accuracy_radius": 100,
++        "city": "Boxford",
++        "continent_code": "EU",
++        "continent_name": "Europe",
++        "country_code": "GB",
++        "country_name": "United Kingdom",
++        "is_in_european_union": False,
++        "latitude": 51.75,
++        "longitude": -1.25,
++        "metro_code": None,
++        "postal_code": "OX1",
++        "region_code": "ENG",
++        "region_name": "England",
++        "time_zone": "Europe/London",
++        # Kept for backward compatibility.
++        "dma_code": None,
++        "region": "ENG",
++    }
++    expected_country = {
++        "continent_code": "EU",
++        "continent_name": "Europe",
++        "country_code": "GB",
++        "country_name": "United Kingdom",
++        "is_in_european_union": False,
++    }
++
+     @classmethod
+     def setUpClass(cls):
+         # Avoid referencing __file__ at module level.
+@@ -97,88 +124,58 @@ def test_bad_query(self):
+ 
+     def test_country(self):
+         g = GeoIP2(city="<invalid>")
+-        self.assertIs(g._metadata.database_type.endswith("Country"), True)
++        self.assertIs(g.is_city, False)
++        self.assertIs(g.is_country, True)
+         for query in self.query_values:
+             with self.subTest(query=query):
++                self.assertEqual(g.country(query), self.expected_country)
++                self.assertEqual(
++                    g.country_code(query), self.expected_country["country_code"]
++                )
+                 self.assertEqual(
+-                    g.country(query),
+-                    {
+-                        "continent_code": "EU",
+-                        "continent_name": "Europe",
+-                        "country_code": "GB",
+-                        "country_name": "United Kingdom",
+-                        "is_in_european_union": False,
+-                    },
++                    g.country_name(query), self.expected_country["country_name"]
+                 )
+-                self.assertEqual(g.country_code(query), "GB")
+-                self.assertEqual(g.country_name(query), "United Kingdom")
+ 
+     def test_country_using_city_database(self):
+         g = GeoIP2(country="<invalid>")
+-        self.assertIs(g._metadata.database_type.endswith("City"), True)
++        self.assertIs(g.is_city, True)
++        self.assertIs(g.is_country, False)
+         for query in self.query_values:
+             with self.subTest(query=query):
++                self.assertEqual(g.country(query), self.expected_country)
++                self.assertEqual(
++                    g.country_code(query), self.expected_country["country_code"]
++                )
+                 self.assertEqual(
+-                    g.country(query),
+-                    {
+-                        "continent_code": "EU",
+-                        "continent_name": "Europe",
+-                        "country_code": "GB",
+-                        "country_name": "United Kingdom",
+-                        "is_in_european_union": False,
+-                    },
++                    g.country_name(query), self.expected_country["country_name"]
+                 )
+-                self.assertEqual(g.country_code(query), "GB")
+-                self.assertEqual(g.country_name(query), "United Kingdom")
+ 
+     def test_city(self):
+         g = GeoIP2(country="<invalid>")
+-        self.assertIs(g._metadata.database_type.endswith("City"), True)
++        self.assertIs(g.is_city, True)
++        self.assertIs(g.is_country, False)
+         for query in self.query_values:
+             with self.subTest(query=query):
+-                self.assertEqual(
+-                    g.city(query),
+-                    {
+-                        "accuracy_radius": 100,
+-                        "city": "Boxford",
+-                        "continent_code": "EU",
+-                        "continent_name": "Europe",
+-                        "country_code": "GB",
+-                        "country_name": "United Kingdom",
+-                        "is_in_european_union": False,
+-                        "latitude": 51.75,
+-                        "longitude": -1.25,
+-                        "metro_code": None,
+-                        "postal_code": "OX1",
+-                        "region_code": "ENG",
+-                        "region_name": "England",
+-                        "time_zone": "Europe/London",
+-                        # Kept for backward compatibility.
+-                        "dma_code": None,
+-                        "region": "ENG",
+-                    },
+-                )
++                self.assertEqual(g.city(query), self.expected_city)
+ 
+                 geom = g.geos(query)
+                 self.assertIsInstance(geom, GEOSGeometry)
+                 self.assertEqual(geom.srid, 4326)
+-                self.assertEqual(geom.tuple, (-1.25, 51.75))
+ 
+-                self.assertEqual(g.lat_lon(query), (51.75, -1.25))
+-                self.assertEqual(g.lon_lat(query), (-1.25, 51.75))
++                expected_lat = self.expected_city["latitude"]
++                expected_lon = self.expected_city["longitude"]
++                self.assertEqual(geom.tuple, (expected_lon, expected_lat))
++                self.assertEqual(g.lat_lon(query), (expected_lat, expected_lon))
++                self.assertEqual(g.lon_lat(query), (expected_lon, expected_lat))
++
+                 # Country queries should still work.
++                self.assertEqual(g.country(query), self.expected_country)
+                 self.assertEqual(
+-                    g.country(query),
+-                    {
+-                        "continent_code": "EU",
+-                        "continent_name": "Europe",
+-                        "country_code": "GB",
+-                        "country_name": "United Kingdom",
+-                        "is_in_european_union": False,
+-                    },
++                    g.country_code(query), self.expected_country["country_code"]
++                )
++                self.assertEqual(
++                    g.country_name(query), self.expected_country["country_name"]
+                 )
+-                self.assertEqual(g.country_code(query), "GB")
+-                self.assertEqual(g.country_name(query), "United Kingdom")
+ 
+     def test_not_found(self):
+         g1 = GeoIP2(city="<invalid>")
+@@ -230,6 +227,27 @@ class GeoIP2Test(GeoLite2Test):
+     """Non-free GeoIP2 databases are supported."""
+ 
+ 
++@skipUnless(HAS_GEOIP2, "GeoIP2 is required.")
++@override_settings(
++    GEOIP_CITY="dbip-city-lite-test.mmdb",
++    GEOIP_COUNTRY="dbip-country-lite-test.mmdb",
++)
++class DBIPLiteTest(GeoLite2Test):
++    """DB-IP Lite databases are supported."""
++
++    expected_city = GeoLite2Test.expected_city | {
++        "accuracy_radius": None,
++        "city": "London (Shadwell)",
++        "latitude": 51.5181,
++        "longitude": -0.0714189,
++        "postal_code": None,
++        "region_code": None,
++        "time_zone": None,
++        # Kept for backward compatibility.
++        "region": None,
++    }
++
++
+ @skipUnless(HAS_GEOIP2, "GeoIP2 is required.")
+ class ErrorTest(SimpleTestCase):
+     def test_missing_path(self):
+diff --git a/tests/migrations/test_operations.py b/tests/migrations/test_operations.py
+index 7e0a3bc8d851..800eb250ee75 100644
+--- a/tests/migrations/test_operations.py
++++ b/tests/migrations/test_operations.py
+@@ -3329,6 +3329,52 @@ def test_rename_field_unique_together(self):
+         self.assertColumnExists("test_rnflut_pony", "pink")
+         self.assertColumnNotExists("test_rnflut_pony", "blue")
+ 
++    def test_rename_field_index_together(self):
++        app_label = "test_rnflit"
++        operations = [
++            migrations.CreateModel(
++                "Pony",
++                fields=[
++                    ("id", models.AutoField(primary_key=True)),
++                    ("pink", models.IntegerField(default=3)),
++                    ("weight", models.FloatField()),
++                ],
++                options={
++                    "index_together": [("weight", "pink")],
++                },
++            ),
++        ]
++        project_state = self.apply_operations(app_label, ProjectState(), operations)
++
++        operation = migrations.RenameField("Pony", "pink", "blue")
++        new_state = project_state.clone()
++        operation.state_forwards("test_rnflit", new_state)
++        self.assertIn("blue", new_state.models["test_rnflit", "pony"].fields)
++        self.assertNotIn("pink", new_state.models["test_rnflit", "pony"].fields)
++        # index_together has the renamed column.
++        self.assertIn(
++            "blue", new_state.models["test_rnflit", "pony"].options["index_together"][0]
++        )
++        self.assertNotIn(
++            "pink", new_state.models["test_rnflit", "pony"].options["index_together"][0]
++        )
++
++        # Rename field.
++        self.assertColumnExists("test_rnflit_pony", "pink")
++        self.assertColumnNotExists("test_rnflit_pony", "blue")
++        with connection.schema_editor() as editor:
++            operation.database_forwards("test_rnflit", editor, project_state, new_state)
++        self.assertColumnExists("test_rnflit_pony", "blue")
++        self.assertColumnNotExists("test_rnflit_pony", "pink")
++        # The index constraint has been ported over.
++        self.assertIndexExists("test_rnflit_pony", ["weight", "blue"])
++        # Reversal.
++        with connection.schema_editor() as editor:
++            operation.database_backwards(
++                "test_rnflit", editor, new_state, project_state
++            )
++        self.assertIndexExists("test_rnflit_pony", ["weight", "pink"])
++
+     def test_rename_field_with_db_column(self):
+         project_state = self.apply_operations(
+             "test_rfwdbc",
+@@ -3822,6 +3868,63 @@ def test_rename_index_arguments(self):
+         with self.assertRaisesMessage(ValueError, msg):
+             migrations.RenameIndex("Pony", new_name="new_idx_name")
+ 
++    def test_rename_index_unnamed_index(self):
++        app_label = "test_rninui"
++        operations = [
++            migrations.CreateModel(
++                "Pony",
++                fields=[
++                    ("id", models.AutoField(primary_key=True)),
++                    ("pink", models.IntegerField(default=3)),
++                    ("weight", models.FloatField()),
++                ],
++                options={
++                    "index_together": [("weight", "pink")],
++                },
++            ),
++        ]
++        project_state = self.apply_operations(app_label, ProjectState(), operations)
++        table_name = app_label + "_pony"
++        self.assertIndexNameNotExists(table_name, "new_pony_test_idx")
++        operation = migrations.RenameIndex(
++            "Pony", new_name="new_pony_test_idx", old_fields=("weight", "pink")
++        )
++        self.assertEqual(
++            operation.describe(),
++            "Rename unnamed index for ('weight', 'pink') on Pony to new_pony_test_idx",
++        )
++        self.assertEqual(
++            operation.migration_name_fragment,
++            "rename_pony_weight_pink_new_pony_test_idx",
++        )
++        new_state = project_state.clone()
++        operation.state_forwards(app_label, new_state)
++        # Rename index.
++        with connection.schema_editor() as editor:
++            operation.database_forwards(app_label, editor, project_state, new_state)
++        self.assertIndexNameExists(table_name, "new_pony_test_idx")
++        # Reverse is a no-op.
++        with connection.schema_editor() as editor, self.assertNumQueries(0):
++            operation.database_backwards(app_label, editor, new_state, project_state)
++        self.assertIndexNameExists(table_name, "new_pony_test_idx")
++        # Reapply, RenameIndex operation is a noop when the old and new name
++        # match.
++        with connection.schema_editor() as editor:
++            operation.database_forwards(app_label, editor, new_state, project_state)
++        self.assertIndexNameExists(table_name, "new_pony_test_idx")
++        # Deconstruction.
++        definition = operation.deconstruct()
++        self.assertEqual(definition[0], "RenameIndex")
++        self.assertEqual(definition[1], [])
++        self.assertEqual(
++            definition[2],
++            {
++                "model_name": "Pony",
++                "new_name": "new_pony_test_idx",
++                "old_fields": ("weight", "pink"),
++            },
++        )
++
+     def test_rename_index_unknown_unnamed_index(self):
+         app_label = "test_rninuui"
+         project_state = self.set_up_test_model(app_label)
+@@ -3892,6 +3995,33 @@ def test_rename_index_state_forwards(self):
+         self.assertIsNot(old_model, new_model)
+         self.assertEqual(new_model._meta.indexes[0].name, "new_pony_pink_idx")
+ 
++    def test_rename_index_state_forwards_unnamed_index(self):
++        app_label = "test_rnidsfui"
++        operations = [
++            migrations.CreateModel(
++                "Pony",
++                fields=[
++                    ("id", models.AutoField(primary_key=True)),
++                    ("pink", models.IntegerField(default=3)),
++                    ("weight", models.FloatField()),
++                ],
++                options={
++                    "index_together": [("weight", "pink")],
++                },
++            ),
++        ]
++        project_state = self.apply_operations(app_label, ProjectState(), operations)
++        old_model = project_state.apps.get_model(app_label, "Pony")
++        new_state = project_state.clone()
++
++        operation = migrations.RenameIndex(
++            "Pony", new_name="new_pony_pink_idx", old_fields=("weight", "pink")
++        )
++        operation.state_forwards(app_label, new_state)
++        new_model = new_state.apps.get_model(app_label, "Pony")
++        self.assertIsNot(old_model, new_model)
++        self.assertEqual(new_model._meta.indexes[0].name, "new_pony_pink_idx")
++
+     @skipUnlessDBFeature("supports_expression_indexes")
+     def test_add_func_index(self):
+         app_label = "test_addfuncin"
+@@ -4011,6 +4141,58 @@ def test_alter_field_with_index(self):
+         # Ensure the index is still there
+         self.assertIndexExists("test_alflin_pony", ["pink"])
+ 
++    def test_alter_index_together(self):
++        """
++        Tests the AlterIndexTogether operation.
++        """
++        project_state = self.set_up_test_model("test_alinto")
++        # Test the state alteration
++        operation = migrations.AlterIndexTogether("Pony", [("pink", "weight")])
++        self.assertEqual(
++            operation.describe(), "Alter index_together for Pony (1 constraint(s))"
++        )
++        self.assertEqual(
++            operation.migration_name_fragment,
++            "alter_pony_index_together",
++        )
++        new_state = project_state.clone()
++        operation.state_forwards("test_alinto", new_state)
++        self.assertEqual(
++            len(
++                project_state.models["test_alinto", "pony"].options.get(
++                    "index_together", set()
++                )
++            ),
++            0,
++        )
++        self.assertEqual(
++            len(
++                new_state.models["test_alinto", "pony"].options.get(
++                    "index_together", set()
++                )
++            ),
++            1,
++        )
++        # Make sure there's no matching index
++        self.assertIndexNotExists("test_alinto_pony", ["pink", "weight"])
++        # Test the database alteration
++        with connection.schema_editor() as editor:
++            operation.database_forwards("test_alinto", editor, project_state, new_state)
++        self.assertIndexExists("test_alinto_pony", ["pink", "weight"])
++        # And test reversal
++        with connection.schema_editor() as editor:
++            operation.database_backwards(
++                "test_alinto", editor, new_state, project_state
++            )
++        self.assertIndexNotExists("test_alinto_pony", ["pink", "weight"])
++        # And deconstruction
++        definition = operation.deconstruct()
++        self.assertEqual(definition[0], "AlterIndexTogether")
++        self.assertEqual(definition[1], [])
++        self.assertEqual(
++            definition[2], {"name": "Pony", "index_together": {("pink", "weight")}}
++        )
++
+     def test_alter_index_together_remove(self):
+         operation = migrations.AlterIndexTogether("Pony", None)
+         self.assertEqual(
+@@ -4021,6 +4203,29 @@ def test_alter_index_together_remove(self):
+             "~ Alter index_together for Pony (0 constraint(s))",
+         )
+ 
++    @skipUnlessDBFeature("allows_multiple_constraints_on_same_fields")
++    def test_alter_index_together_remove_with_unique_together(self):
++        app_label = "test_alintoremove_wunto"
++        table_name = "%s_pony" % app_label
++        project_state = self.set_up_test_model(app_label, unique_together=True)
++        self.assertUniqueConstraintExists(table_name, ["pink", "weight"])
++        # Add index together.
++        new_state = project_state.clone()
++        operation = migrations.AlterIndexTogether("Pony", [("pink", "weight")])
++        operation.state_forwards(app_label, new_state)
++        with connection.schema_editor() as editor:
++            operation.database_forwards(app_label, editor, project_state, new_state)
++        self.assertIndexExists(table_name, ["pink", "weight"])
++        # Remove index together.
++        project_state = new_state
++        new_state = project_state.clone()
++        operation = migrations.AlterIndexTogether("Pony", set())
++        operation.state_forwards(app_label, new_state)
++        with connection.schema_editor() as editor:
++            operation.database_forwards(app_label, editor, project_state, new_state)
++        self.assertIndexNotExists(table_name, ["pink", "weight"])
++        self.assertUniqueConstraintExists(table_name, ["pink", "weight"])
++
+     def test_add_constraint(self):
+         project_state = self.set_up_test_model("test_addconstraint")
+         gt_check = models.Q(pink__gt=2)
+diff --git a/tests/model_fields/test_jsonfield.py b/tests/model_fields/test_jsonfield.py
+index ff42b1a14c38..e517ef682675 100644
+--- a/tests/model_fields/test_jsonfield.py
++++ b/tests/model_fields/test_jsonfield.py
+@@ -29,6 +29,7 @@
+ from django.db.models.expressions import RawSQL
+ from django.db.models.fields.json import (
+     KT,
++    HasKey,
+     KeyTextTransform,
+     KeyTransform,
+     KeyTransformFactory,
+@@ -582,6 +583,14 @@ def test_has_key_deep(self):
+                     [expected],
+                 )
+ 
++    def test_has_key_literal_lookup(self):
++        self.assertSequenceEqual(
++            NullableJSONModel.objects.filter(
++                HasKey(Value({"foo": "bar"}, JSONField()), "foo")
++            ).order_by("id"),
++            self.objs,
++        )
++
+     def test_has_key_list(self):
+         obj = NullableJSONModel.objects.create(value=[{"a": 1}, {"b": "x"}])
+         tests = [
+diff --git a/tests/user_commands/tests.py b/tests/user_commands/tests.py
+index 65e176620db1..2a1e904f3bda 100644
+--- a/tests/user_commands/tests.py
++++ b/tests/user_commands/tests.py
+@@ -400,8 +400,8 @@ def test_subparser_dest_required_args(self):
+         self.assertIn("bar", out.getvalue())
+ 
+     def test_subparser_invalid_option(self):
+-        msg = "invalid choice: 'test' (choose from 'foo')"
+-        with self.assertRaisesMessage(CommandError, msg):
++        msg = r"invalid choice: 'test' \(choose from '?foo'?\)"
++        with self.assertRaisesRegex(CommandError, msg):
+             management.call_command("subparser", "test", 12)
+         msg = "Error: the following arguments are required: subcommand"
+         with self.assertRaisesMessage(CommandError, msg):
+diff --git a/tests/utils_tests/test_html.py b/tests/utils_tests/test_html.py
+index 9bee483dc7ff..75873061de41 100644
+--- a/tests/utils_tests/test_html.py
++++ b/tests/utils_tests/test_html.py
+@@ -1,6 +1,7 @@
+ import os
+ from datetime import datetime
+ 
++from django.core.exceptions import SuspiciousOperation
+ from django.core.serializers.json import DjangoJSONEncoder
+ from django.test import SimpleTestCase
+ from django.utils.deprecation import RemovedInDjango60Warning
+@@ -124,12 +125,18 @@ def test_strip_tags(self):
+             ("<script>alert()</script>&h", "alert()h"),
+             ("><!" + ("&" * 16000) + "D", "><!" + ("&" * 16000) + "D"),
+             ("X<<<<br>br>br>br>X", "XX"),
++            ("<" * 50 + "a>" * 50, ""),
+         )
+         for value, output in items:
+             with self.subTest(value=value, output=output):
+                 self.check_output(strip_tags, value, output)
+                 self.check_output(strip_tags, lazystr(value), output)
+ 
++    def test_strip_tags_suspicious_operation(self):
++        value = "<" * 51 + "a>" * 51, "<a>"
++        with self.assertRaises(SuspiciousOperation):
++            strip_tags(value)
++
+     def test_strip_tags_files(self):
+         # Test with more lengthy content (also catching performance regressions)
+         for filename in ("strip_tags1.html", "strip_tags2.txt"):
+diff --git a/tests/utils_tests/test_ipv6.py b/tests/utils_tests/test_ipv6.py
+index bf78ed91c08f..1754c7b3569b 100644
+--- a/tests/utils_tests/test_ipv6.py
++++ b/tests/utils_tests/test_ipv6.py
+@@ -1,9 +1,16 @@
+-import unittest
++import traceback
++from io import StringIO
+ 
+-from django.utils.ipv6 import clean_ipv6_address, is_valid_ipv6_address
++from django.core.exceptions import ValidationError
++from django.test import SimpleTestCase
++from django.utils.ipv6 import (
++    MAX_IPV6_ADDRESS_LENGTH,
++    clean_ipv6_address,
++    is_valid_ipv6_address,
++)
+ 
+ 
+-class TestUtilsIPv6(unittest.TestCase):
++class TestUtilsIPv6(SimpleTestCase):
+     def test_validates_correct_plain_address(self):
+         self.assertTrue(is_valid_ipv6_address("fe80::223:6cff:fe8a:2e8a"))
+         self.assertTrue(is_valid_ipv6_address("2a02::223:6cff:fe8a:2e8a"))
+@@ -64,3 +71,21 @@ def test_unpacks_ipv4(self):
+         self.assertEqual(
+             clean_ipv6_address("::ffff:18.52.18.52", unpack_ipv4=True), "18.52.18.52"
+         )
++
++    def test_address_too_long(self):
++        addresses = [
++            "0000:0000:0000:0000:0000:ffff:192.168.100.228",  # IPv4-mapped IPv6 address
++            "0000:0000:0000:0000:0000:ffff:192.168.100.228%123456",  # % scope/zone
++            "fe80::223:6cff:fe8a:2e8a:1234:5678:00000",  # MAX_IPV6_ADDRESS_LENGTH + 1
++        ]
++        msg = "This is the error message."
++        value_error_msg = "Unable to convert %s to an IPv6 address (value too long)."
++        for addr in addresses:
++            with self.subTest(addr=addr):
++                self.assertGreater(len(addr), MAX_IPV6_ADDRESS_LENGTH)
++                self.assertEqual(is_valid_ipv6_address(addr), False)
++                with self.assertRaisesMessage(ValidationError, msg) as ctx:
++                    clean_ipv6_address(addr, error_message=msg)
++                exception_traceback = StringIO()
++                traceback.print_exception(ctx.exception, file=exception_traceback)
++                self.assertIn(value_error_msg % addr, exception_traceback.getvalue())
+diff --git a/tests/validators/tests.py b/tests/validators/tests.py
+index ba1db5ea46d3..4ae0f6413e5e 100644
+--- a/tests/validators/tests.py
++++ b/tests/validators/tests.py
+@@ -635,8 +635,8 @@
+     (validate_domain_name, "python-python.com", None),
+     (validate_domain_name, "python.name.uk", None),
+     (validate_domain_name, "python.tips", None),
+-    (validate_domain_name, "http://例子.测试", None),
+-    (validate_domain_name, "http://dashinpunytld.xn---c", None),
++    (validate_domain_name, "例子.测试", None),
++    (validate_domain_name, "dashinpunytld.xn---c", None),
+     (validate_domain_name, "python..org", ValidationError),
+     (validate_domain_name, "python-.org", ValidationError),
+     (validate_domain_name, "too-long-name." * 20 + "com", ValidationError),
+@@ -652,6 +652,16 @@
+     ),
+     (DomainNameValidator(accept_idna=False), "ıçğü.com", ValidationError),
+     (DomainNameValidator(accept_idna=False), "not-domain-name", ValidationError),
++    (
++        DomainNameValidator(accept_idna=False),
++        "not-domain-name, but-has-domain-name-suffix.com",
++        ValidationError,
++    ),
++    (
++        DomainNameValidator(accept_idna=False),
++        "not-domain-name.com, but has domain prefix",
++        ValidationError,
++    ),
+ ]
+ 
+ # Add valid and invalid URL tests.
+diff --git a/tox.ini b/tox.ini
+index c635a129b2d1..7a76693f2116 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -26,7 +26,7 @@ setenv =
+     PYTHONDONTWRITEBYTECODE=1
+ deps =
+     -e .
+-    py{3,310,311,312,py3}: -rtests/requirements/py3.txt
++    py{3,310,311,312,313,py3}: -rtests/requirements/py3.txt
+     postgres: -rtests/requirements/postgres.txt
+     mysql: -rtests/requirements/mysql.txt
+     oracle: -rtests/requirements/oracle.txt

@@ -1,0 +1,1471 @@
+diff --git a/.github/FUNDING.yml b/.github/FUNDING.yml
+index 02a4962ef..fbf5bae1a 100644
+--- a/.github/FUNDING.yml
++++ b/.github/FUNDING.yml
+@@ -1,2 +1,3 @@
+ custom: ["https://psfmember.org/civicrm/contribute/transact/?reset=1&id=42"]
+ github: [ericwb]
++tidelift: pypi/bandit
+diff --git a/.github/ISSUE_TEMPLATE/bug-report.yml b/.github/ISSUE_TEMPLATE/bug-report.yml
+index d79b3b9cf..99399f2d6 100644
+--- a/.github/ISSUE_TEMPLATE/bug-report.yml
++++ b/.github/ISSUE_TEMPLATE/bug-report.yml
+@@ -44,21 +44,14 @@ body:
+       label: Bandit version
+       description: Run "bandit --version" if unsure of version number
+       options:
+-        - 1.7.5 (Default)
++        - 1.7.7 (Default)
++        - 1.7.6
++        - 1.7.5
+         - 1.7.4
+         - 1.7.3
+         - 1.7.2
+         - 1.7.1
+         - 1.7.0
+-        - 1.6.3
+-        - 1.6.2
+-        - 1.6.1
+-        - 1.6.0
+-        - 1.5.1
+-        - 1.5.0
+-        - 1.4.0
+-        - 1.3.0
+-        - 0.17.0-eol
+     validations:
+       required: true
+ 
+@@ -73,9 +66,6 @@ body:
+         - "3.10"
+         - "3.9"
+         - "3.8"
+-        - "3.7"
+-        - "3.6"
+-        - "3.5"
+     validations:
+       required: true
+ 
+diff --git a/.github/workflows/build-publish-image.yml b/.github/workflows/build-publish-image.yml
+new file mode 100644
+index 000000000..d6e3521d2
+--- /dev/null
++++ b/.github/workflows/build-publish-image.yml
+@@ -0,0 +1,67 @@
++name: Build and Publish Bandit Images
++
++on:
++  release:
++    types: [created]
++  schedule:
++    - cron: '0 0 * * 0' # Every Sunday at midnight
++  workflow_dispatch:
++
++jobs:
++  build-and-publish:
++    runs-on: ubuntu-latest
++    permissions:
++      contents: read
++      packages: write
++      id-token: write
++
++    steps:
++
++    - name: Get latest release tag
++      if: github.event_name != 'release'
++      id: get-latest-tag
++      run: |
++        TAG=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
++        echo "Latest tag is $TAG"
++        echo "RELEASE_TAG=$TAG" >> $GITHUB_ENV
++
++    - name: Check out the repo
++      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
++      with:
++        ref: ${{ github.event_name == 'release' && github.ref || env.RELEASE_TAG }}
++
++    - name: Set up Docker Buildx
++      uses: docker/setup-buildx-action@0d103c3126aa41d772a8362f6aa67afac040f80c # v3
++
++    - name: Log in to GitHub Container Registry
++      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
++      with:
++        registry: ghcr.io
++        username: ${{ github.actor }}
++        password: ${{ secrets.GITHUB_TOKEN }}
++
++    - name: Install Cosign
++      uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4 # v3.4.0
++      with:
++        cosign-release: 'v2.2.2'
++
++    - name: Downcase github.repository value
++      run: |
++        echo "IMAGE_NAME=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
++
++    - name: Build and push Docker image
++      id: build-and-push
++      uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 # v5
++      with:
++        context: .
++        file: ./docker/Dockerfile
++        push: true
++        tags: ghcr.io/${{ env.IMAGE_NAME }}/bandit:latest
++        platforms: linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v8
++
++    - name: Sign the image
++      env:
++        TAGS: ghcr.io/${{ env.IMAGE_NAME }}/bandit:latest
++        DIGEST: ${{ steps.build-and-push.outputs.digest }}
++      run: |
++        echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+diff --git a/.github/workflows/dependency-review.yml b/.github/workflows/dependency-review.yml
+index 6ea633951..f6fabc21d 100644
+--- a/.github/workflows/dependency-review.yml
++++ b/.github/workflows/dependency-review.yml
+@@ -11,4 +11,4 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v4
+       - name: 'Dependency Review'
+-        uses: actions/dependency-review-action@v3
++        uses: actions/dependency-review-action@v4
+diff --git a/.github/workflows/publish-to-pypi.yml b/.github/workflows/publish-to-pypi.yml
+index 3172b3576..7f72c66e8 100644
+--- a/.github/workflows/publish-to-pypi.yml
++++ b/.github/workflows/publish-to-pypi.yml
+@@ -6,12 +6,15 @@ jobs:
+   build-n-publish:
+     name: Build and publish to PyPI
+     runs-on: ubuntu-latest
++    permissions:
++      # IMPORTANT: this permission is mandatory for trusted publishing
++      id-token: write
+     steps:
+     - uses: actions/checkout@v4
+       with:
+         fetch-depth: 0
+     - name: Set up Python 3.8
+-      uses: actions/setup-python@v4
++      uses: actions/setup-python@v5
+       with:
+         python-version: 3.8
+ 
+@@ -25,5 +28,3 @@ jobs:
+     - name: Publish distribution to PyPI
+       if: startsWith(github.ref, 'refs/tags')
+       uses: pypa/gh-action-pypi-publish@release/v1
+-      with:
+-        password: ${{ secrets.PYPI_PASSWORD }}
+diff --git a/.github/workflows/publish-to-test-pypi.yml b/.github/workflows/publish-to-test-pypi.yml
+index 4947f1663..89153cf8f 100644
+--- a/.github/workflows/publish-to-test-pypi.yml
++++ b/.github/workflows/publish-to-test-pypi.yml
+@@ -6,12 +6,15 @@ jobs:
+   build-n-publish:
+     name: Build and publish to Test PyPI
+     runs-on: ubuntu-latest
++    permissions:
++      # IMPORTANT: this permission is mandatory for trusted publishing
++      id-token: write
+     steps:
+     - uses: actions/checkout@v4
+       with:
+         fetch-depth: 0
+     - name: Set up Python 3.8
+-      uses: actions/setup-python@v4
++      uses: actions/setup-python@v5
+       with:
+         python-version: 3.8
+ 
+@@ -25,5 +28,4 @@ jobs:
+     - name: Publish distribution to Test PyPI
+       uses: pypa/gh-action-pypi-publish@release/v1
+       with:
+-        password: ${{ secrets.TEST_PYPI_PASSWORD }}
+-        repository_url: https://test.pypi.org/legacy/
++        repository-url: https://test.pypi.org/legacy/
+diff --git a/.github/workflows/pythonpackage.yml b/.github/workflows/pythonpackage.yml
+index 4c42bf823..94dd399ee 100644
+--- a/.github/workflows/pythonpackage.yml
++++ b/.github/workflows/pythonpackage.yml
+@@ -12,7 +12,7 @@ jobs:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+     - name: Set up Python ${{ matrix.python-version }}
+-      uses: actions/setup-python@v4
++      uses: actions/setup-python@v5
+       with:
+         python-version: ${{ matrix.python-version }}
+     - name: Install dependencies
+@@ -33,7 +33,7 @@ jobs:
+       with:
+         fetch-depth: 2
+     - name: Set up Python ${{ matrix.python-version }}
+-      uses: actions/setup-python@v4
++      uses: actions/setup-python@v5
+       with:
+         python-version: ${{ matrix.python-version }}
+     - name: Install dependencies
+@@ -60,7 +60,7 @@ jobs:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+     - name: Set up Python ${{ matrix.python-version[0] }}
+-      uses: actions/setup-python@v4
++      uses: actions/setup-python@v5
+       with:
+         python-version: ${{ matrix.python-version[0] }}
+     - name: Install dependencies
+diff --git a/README.rst b/README.rst
+index e32f8fd7b..fbc6e161d 100644
+--- a/README.rst
++++ b/README.rst
+@@ -83,3 +83,37 @@ https://greentreesnakes.readthedocs.org/en/latest/
+ Documentation of the various types of AST nodes that Bandit currently covers
+ or could be extended to cover:
+ https://greentreesnakes.readthedocs.org/en/latest/nodes.html
++
++Container Images
++----------------
++
++Bandit is available as a container image, built within the bandit repository
++using GitHub Actions. The image is available on ghcr.io:
++
++.. code-block:: console
++
++    docker pull ghcr.io/pycqa/bandit/bandit
++
++The image is built for the following architectures:
++
++* amd64
++* arm64
++* armv7
++* armv8
++
++To pull a specific architecture, use the following format:
++
++.. code-block:: console
++
++    docker pull --platform=<architecture> ghcr.io/pycqa/bandit/bandit:latest
++
++Every image is signed with sigstore cosign and it is possible to verify the
++source of origin using the following cosign command:
++
++.. code-block:: console
++
++    cosign verify ghcr.io/pycqa/bandit/bandit:latest \
++      --certificate-identity https://github.com/pycqa/bandit/.github/workflows/build-publish-image.yml@refs/tags/<version> \
++      --certificate-oidc-issuer https://token.actions.githubusercontent.com
++
++Where `<version>` is the release version of Bandit.
+diff --git a/SECURITY.md b/SECURITY.md
+new file mode 100644
+index 000000000..a627e5f8e
+--- /dev/null
++++ b/SECURITY.md
+@@ -0,0 +1,9 @@
++# Security Policy
++
++Bandit is a tool designed to find security issues, so every effort is made that Bandit itself is also
++free of those issues. However, if you believe you have found a security vulnerability in this repository
++please open it privately via the [Report a security vulnerability](https://github.com/PyCQA/bandit/security/advisories/new) link in the Issues tab.
++
++**Please do not report security vulnerabilities through public issues, discussions, or pull requests.**
++
++Please also inform the [Tidelift security](https://tidelift.com/security). Tidelift will help coordinate the fix and disclosure.
+diff --git a/bandit/__init__.py b/bandit/__init__.py
+index 75f863db2..7c7bf00a8 100644
+--- a/bandit/__init__.py
++++ b/bandit/__init__.py
+@@ -16,4 +16,5 @@
+ from bandit.core.issue import *  # noqa
+ from bandit.core.test_properties import *  # noqa
+ 
++__author__ = metadata.metadata("bandit")["Author"]
+ __version__ = metadata.version("bandit")
+diff --git a/bandit/blacklists/calls.py b/bandit/blacklists/calls.py
+index 9e7ec7447..d69f5dd3c 100644
+--- a/bandit/blacklists/calls.py
++++ b/bandit/blacklists/calls.py
+@@ -198,6 +198,7 @@
+ |      |                     | - random.choices                   |           |
+ |      |                     | - random.uniform                   |           |
+ |      |                     | - random.triangular                |           |
++|      |                     | - random.randbytes                 |           |
+ +------+---------------------+------------------------------------+-----------+
+ 
+ B312: telnetlib
+@@ -523,6 +524,7 @@ def gen_blacklist():
+                 "random.choices",
+                 "random.uniform",
+                 "random.triangular",
++                "random.randbytes",
+             ],
+             "Standard pseudo-random generators are not suitable for "
+             "security/cryptographic purposes.",
+diff --git a/bandit/blacklists/imports.py b/bandit/blacklists/imports.py
+index cca7a4462..58dfcb3c7 100644
+--- a/bandit/blacklists/imports.py
++++ b/bandit/blacklists/imports.py
+@@ -146,8 +146,8 @@
+ ----------------------
+ 
+ XMLRPC is particularly dangerous as it is also concerned with communicating
+-data over a network. Use defused.xmlrpc.monkey_patch() function to monkey-patch
+-xmlrpclib and mitigate remote XML attacks.
++data over a network. Use defusedxml.xmlrpc.monkey_patch() function to
++monkey-patch xmlrpclib and mitigate remote XML attacks.
+ 
+ +------+---------------------+------------------------------------+-----------+
+ | ID   |  Name               |  Imports                           |  Severity |
+@@ -376,7 +376,7 @@ def gen_blacklist():
+             issue.Cwe.IMPROPER_INPUT_VALIDATION,
+             ["xmlrpc"],
+             "Using {name} to parse untrusted XML data is known to be "
+-            "vulnerable to XML attacks. Use defused.xmlrpc.monkey_patch() "
++            "vulnerable to XML attacks. Use defusedxml.xmlrpc.monkey_patch() "
+             "function to monkey-patch xmlrpclib and mitigate XML "
+             "vulnerabilities.",
+             "HIGH",
+diff --git a/bandit/cli/baseline.py b/bandit/cli/baseline.py
+index b9bce8916..252ceb105 100644
+--- a/bandit/cli/baseline.py
++++ b/bandit/cli/baseline.py
+@@ -15,11 +15,14 @@
+ import logging
+ import os
+ import shutil
+-import subprocess
++import subprocess  # nosec: B404
+ import sys
+ import tempfile
+ 
+-import git
++try:
++    import git
++except ImportError:
++    git = None
+ 
+ bandit_args = sys.argv[1:]
+ baseline_tmp_file = "_bandit_baseline_run.json_"
+@@ -101,7 +104,7 @@ def main():
+             bandit_command = ["bandit"] + step["args"]
+ 
+             try:
+-                output = subprocess.check_output(bandit_command)
++                output = subprocess.check_output(bandit_command)  # nosec: B603
+             except subprocess.CalledProcessError as e:
+                 output = e.output
+                 return_code = e.returncode
+@@ -198,6 +201,11 @@ def initialize():
+     report_fname = f"{report_basename}.{output_format}"
+ 
+     # #################### Check Requirements #################################
++    if git is None:
++        LOG.error("Git not available, reinstall with baseline extra")
++        valid = False
++        return (None, None, None)
++
+     try:
+         repo = git.Repo(os.getcwd())
+ 
+diff --git a/bandit/core/manager.py b/bandit/core/manager.py
+index 57e0e8570..ffc13ca99 100644
+--- a/bandit/core/manager.py
++++ b/bandit/core/manager.py
+@@ -249,6 +249,8 @@ def discover_files(self, targets, recursive=False, excluded_paths=""):
+                     excluded_path_globs,
+                     enforce_glob=False,
+                 ):
++                    if fname != "-":
++                        fname = os.path.join(".", fname)
+                     files_list.add(fname)
+                 else:
+                     excluded_files.add(fname)
+diff --git a/bandit/core/utils.py b/bandit/core/utils.py
+index 32d9d4965..7fb775305 100644
+--- a/bandit/core/utils.py
++++ b/bandit/core/utils.py
+@@ -62,7 +62,6 @@ def get_func_name(node):
+ 
+ 
+ def get_qual_attr(node, aliases):
+-    prefix = ""
+     if isinstance(node, ast.Attribute):
+         try:
+             val = deepgetattr(node, "value.id")
+@@ -73,7 +72,7 @@ def get_qual_attr(node, aliases):
+         except Exception:
+             # NOTE(tkelsey): degrade gracefully when we can't get the fully
+             # qualified name for an attr, just return its base name.
+-            pass
++            prefix = ""
+ 
+         return f"{prefix}.{node.attr}"
+     else:
+diff --git a/bandit/formatters/sarif.py b/bandit/formatters/sarif.py
+new file mode 100644
+index 000000000..ce2f03b7b
+--- /dev/null
++++ b/bandit/formatters/sarif.py
+@@ -0,0 +1,372 @@
++# Copyright (c) Microsoft.  All Rights Reserved.
++#
++# SPDX-License-Identifier: Apache-2.0
++#
++# Note: this code mostly incorporated from
++# https://github.com/microsoft/bandit-sarif-formatter
++#
++r"""
++===============
++SARIF formatter
++===============
++
++This formatter outputs the issues in SARIF formatted JSON.
++
++:Example:
++
++.. code-block:: javascript
++
++    {
++      "runs": [
++        {
++          "tool": {
++            "driver": {
++              "name": "Bandit",
++              "organization": "PyCQA",
++              "rules": [
++                {
++                  "id": "B101",
++                  "name": "assert_used",
++                  "properties": {
++                    "tags": [
++                      "security",
++                      "external/cwe/cwe-703"
++                    ],
++                    "precision": "high"
++                  },
++                  "helpUri": "https://bandit.readthedocs.io/en/1.7.8/plugins/b101_assert_used.html"
++                }
++              ],
++              "version": "1.7.8",
++              "semanticVersion": "1.7.8"
++            }
++          },
++          "invocations": [
++            {
++              "executionSuccessful": true,
++              "endTimeUtc": "2024-03-05T03:28:48Z"
++            }
++          ],
++          "properties": {
++            "metrics": {
++              "_totals": {
++                "loc": 1,
++                "nosec": 0,
++                "skipped_tests": 0,
++                "SEVERITY.UNDEFINED": 0,
++                "CONFIDENCE.UNDEFINED": 0,
++                "SEVERITY.LOW": 1,
++                "CONFIDENCE.LOW": 0,
++                "SEVERITY.MEDIUM": 0,
++                "CONFIDENCE.MEDIUM": 0,
++                "SEVERITY.HIGH": 0,
++                "CONFIDENCE.HIGH": 1
++              },
++              "./examples/assert.py": {
++                "loc": 1,
++                "nosec": 0,
++                "skipped_tests": 0,
++                "SEVERITY.UNDEFINED": 0,
++                "SEVERITY.LOW": 1,
++                "SEVERITY.MEDIUM": 0,
++                "SEVERITY.HIGH": 0,
++                "CONFIDENCE.UNDEFINED": 0,
++                "CONFIDENCE.LOW": 0,
++                "CONFIDENCE.MEDIUM": 0,
++                "CONFIDENCE.HIGH": 1
++              }
++            }
++          },
++          "results": [
++            {
++              "message": {
++                "text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code."
++              },
++              "level": "note",
++              "locations": [
++                {
++                  "physicalLocation": {
++                    "region": {
++                      "snippet": {
++                        "text": "assert True\n"
++                      },
++                      "endColumn": 11,
++                      "endLine": 1,
++                      "startColumn": 0,
++                      "startLine": 1
++                    },
++                    "artifactLocation": {
++                      "uri": "examples/assert.py"
++                    },
++                    "contextRegion": {
++                      "snippet": {
++                        "text": "assert True\n"
++                      },
++                      "endLine": 1,
++                      "startLine": 1
++                    }
++                  }
++                }
++              ],
++              "properties": {
++                "issue_confidence": "HIGH",
++                "issue_severity": "LOW"
++              },
++              "ruleId": "B101",
++              "ruleIndex": 0
++            }
++          ]
++        }
++      ],
++      "version": "2.1.0",
++      "$schema": "https://json.schemastore.org/sarif-2.1.0.json"
++    }
++
++.. versionadded:: 1.7.8
++
++"""  # noqa: E501
++import logging
++import pathlib
++import sys
++import urllib.parse as urlparse
++from datetime import datetime
++
++import sarif_om as om
++from jschema_to_python.to_json import to_json
++
++import bandit
++from bandit.core import docs_utils
++
++LOG = logging.getLogger(__name__)
++SCHEMA_URI = "https://json.schemastore.org/sarif-2.1.0.json"
++SCHEMA_VER = "2.1.0"
++TS_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
++
++
++def report(manager, fileobj, sev_level, conf_level, lines=-1):
++    """Prints issues in SARIF format
++
++    :param manager: the bandit manager object
++    :param fileobj: The output file object, which may be sys.stdout
++    :param sev_level: Filtering severity level
++    :param conf_level: Filtering confidence level
++    :param lines: Number of lines to report, -1 for all
++    """
++
++    log = om.SarifLog(
++        schema_uri=SCHEMA_URI,
++        version=SCHEMA_VER,
++        runs=[
++            om.Run(
++                tool=om.Tool(
++                    driver=om.ToolComponent(
++                        name="Bandit",
++                        organization=bandit.__author__,
++                        semantic_version=bandit.__version__,
++                        version=bandit.__version__,
++                    )
++                ),
++                invocations=[
++                    om.Invocation(
++                        end_time_utc=datetime.utcnow().strftime(TS_FORMAT),
++                        execution_successful=True,
++                    )
++                ],
++                properties={"metrics": manager.metrics.data},
++            )
++        ],
++    )
++
++    run = log.runs[0]
++    invocation = run.invocations[0]
++
++    skips = manager.get_skipped()
++    add_skipped_file_notifications(skips, invocation)
++
++    issues = manager.get_issue_list(sev_level=sev_level, conf_level=conf_level)
++
++    add_results(issues, run)
++
++    serializedLog = to_json(log)
++
++    with fileobj:
++        fileobj.write(serializedLog)
++
++    if fileobj.name != sys.stdout.name:
++        LOG.info("SARIF output written to file: %s", fileobj.name)
++
++
++def add_skipped_file_notifications(skips, invocation):
++    if skips is None or len(skips) == 0:
++        return
++
++    if invocation.tool_configuration_notifications is None:
++        invocation.tool_configuration_notifications = []
++
++    for skip in skips:
++        (file_name, reason) = skip
++
++        notification = om.Notification(
++            level="error",
++            message=om.Message(text=reason),
++            locations=[
++                om.Location(
++                    physical_location=om.PhysicalLocation(
++                        artifact_location=om.ArtifactLocation(
++                            uri=to_uri(file_name)
++                        )
++                    )
++                )
++            ],
++        )
++
++        invocation.tool_configuration_notifications.append(notification)
++
++
++def add_results(issues, run):
++    if run.results is None:
++        run.results = []
++
++    rules = {}
++    rule_indices = {}
++    for issue in issues:
++        result = create_result(issue, rules, rule_indices)
++        run.results.append(result)
++
++    if len(rules) > 0:
++        run.tool.driver.rules = list(rules.values())
++
++
++def create_result(issue, rules, rule_indices):
++    issue_dict = issue.as_dict()
++
++    rule, rule_index = create_or_find_rule(issue_dict, rules, rule_indices)
++
++    physical_location = om.PhysicalLocation(
++        artifact_location=om.ArtifactLocation(
++            uri=to_uri(issue_dict["filename"])
++        )
++    )
++
++    add_region_and_context_region(
++        physical_location,
++        issue_dict["line_range"],
++        issue_dict["col_offset"],
++        issue_dict["end_col_offset"],
++        issue_dict["code"],
++    )
++
++    return om.Result(
++        rule_id=rule.id,
++        rule_index=rule_index,
++        message=om.Message(text=issue_dict["issue_text"]),
++        level=level_from_severity(issue_dict["issue_severity"]),
++        locations=[om.Location(physical_location=physical_location)],
++        properties={
++            "issue_confidence": issue_dict["issue_confidence"],
++            "issue_severity": issue_dict["issue_severity"],
++        },
++    )
++
++
++def level_from_severity(severity):
++    if severity == "HIGH":
++        return "error"
++    elif severity == "MEDIUM":
++        return "warning"
++    elif severity == "LOW":
++        return "note"
++    else:
++        return "warning"
++
++
++def add_region_and_context_region(
++    physical_location, line_range, col_offset, end_col_offset, code
++):
++    if code:
++        first_line_number, snippet_lines = parse_code(code)
++        snippet_line = snippet_lines[line_range[0] - first_line_number]
++        snippet = om.ArtifactContent(text=snippet_line)
++    else:
++        snippet = None
++
++    physical_location.region = om.Region(
++        start_line=line_range[0],
++        end_line=line_range[1] if len(line_range) > 1 else line_range[0],
++        start_column=col_offset + 1,
++        end_column=end_col_offset + 1,
++        snippet=snippet,
++    )
++
++    if code:
++        physical_location.context_region = om.Region(
++            start_line=first_line_number,
++            end_line=first_line_number + len(snippet_lines) - 1,
++            snippet=om.ArtifactContent(text="".join(snippet_lines)),
++        )
++
++
++def parse_code(code):
++    code_lines = code.split("\n")
++
++    # The last line from the split has nothing in it; it's an artifact of the
++    # last "real" line ending in a newline. Unless, of course, it doesn't:
++    last_line = code_lines[len(code_lines) - 1]
++
++    last_real_line_ends_in_newline = False
++    if len(last_line) == 0:
++        code_lines.pop()
++        last_real_line_ends_in_newline = True
++
++    snippet_lines = []
++    first_line_number = 0
++    first = True
++    for code_line in code_lines:
++        number_and_snippet_line = code_line.split(" ", 1)
++        if first:
++            first_line_number = int(number_and_snippet_line[0])
++            first = False
++
++        snippet_line = number_and_snippet_line[1] + "\n"
++        snippet_lines.append(snippet_line)
++
++    if not last_real_line_ends_in_newline:
++        last_line = snippet_lines[len(snippet_lines) - 1]
++        snippet_lines[len(snippet_lines) - 1] = last_line[: len(last_line) - 1]
++
++    return first_line_number, snippet_lines
++
++
++def create_or_find_rule(issue_dict, rules, rule_indices):
++    rule_id = issue_dict["test_id"]
++    if rule_id in rules:
++        return rules[rule_id], rule_indices[rule_id]
++
++    rule = om.ReportingDescriptor(
++        id=rule_id,
++        name=issue_dict["test_name"],
++        help_uri=docs_utils.get_url(rule_id),
++        properties={
++            "tags": [
++                "security",
++                f"external/cwe/cwe-{issue_dict['issue_cwe'].get('id')}",
++            ],
++            "precision": issue_dict["issue_confidence"].lower(),
++        },
++    )
++
++    index = len(rules)
++    rules[rule_id] = rule
++    rule_indices[rule_id] = index
++    return rule, index
++
++
++def to_uri(file_path):
++    pure_path = pathlib.PurePath(file_path)
++    if pure_path.is_absolute():
++        return pure_path.as_uri()
++    else:
++        # Replace backslashes with slashes.
++        posix_path = pure_path.as_posix()
++        # %-encode special characters.
++        return urlparse.quote(posix_path)
+diff --git a/bandit/formatters/xml.py b/bandit/formatters/xml.py
+index 36352f046..6e196d92f 100644
+--- a/bandit/formatters/xml.py
++++ b/bandit/formatters/xml.py
+@@ -35,7 +35,7 @@
+ """
+ import logging
+ import sys
+-from xml.etree import ElementTree as ET
++from xml.etree import ElementTree as ET  # nosec: B405
+ 
+ from bandit.core import docs_utils
+ 
+diff --git a/bandit/plugins/general_bind_all_interfaces.py b/bandit/plugins/general_bind_all_interfaces.py
+index 4659167af..58b840e86 100644
+--- a/bandit/plugins/general_bind_all_interfaces.py
++++ b/bandit/plugins/general_bind_all_interfaces.py
+@@ -43,7 +43,7 @@
+ @test.checks("Str")
+ @test.test_id("B104")
+ def hardcoded_bind_all_interfaces(context):
+-    if context.string_val == "0.0.0.0":
++    if context.string_val == "0.0.0.0":  # nosec: B104
+         return bandit.Issue(
+             severity=bandit.MEDIUM,
+             confidence=bandit.MEDIUM,
+diff --git a/bandit/plugins/general_hardcoded_tmp.py b/bandit/plugins/general_hardcoded_tmp.py
+index 53f8cd137..2855c9c6d 100644
+--- a/bandit/plugins/general_hardcoded_tmp.py
++++ b/bandit/plugins/general_hardcoded_tmp.py
+@@ -59,7 +59,7 @@
+ 
+ def gen_config(name):
+     if name == "hardcoded_tmp_directory":
+-        return {"tmp_dirs": ["/tmp", "/var/tmp", "/dev/shm"]}
++        return {"tmp_dirs": ["/tmp", "/var/tmp", "/dev/shm"]}  # nosec: B108
+ 
+ 
+ @test.takes_config
+@@ -69,7 +69,7 @@ def hardcoded_tmp_directory(context, config):
+     if config is not None and "tmp_dirs" in config:
+         tmp_dirs = config["tmp_dirs"]
+     else:
+-        tmp_dirs = ["/tmp", "/var/tmp", "/dev/shm"]
++        tmp_dirs = ["/tmp", "/var/tmp", "/dev/shm"]  # nosec: B108
+ 
+     if any(context.string_val.startswith(s) for s in tmp_dirs):
+         return bandit.Issue(
+diff --git a/bandit/plugins/injection_shell.py b/bandit/plugins/injection_shell.py
+index c138a523c..5bd9c9654 100644
+--- a/bandit/plugins/injection_shell.py
++++ b/bandit/plugins/injection_shell.py
+@@ -49,6 +49,8 @@ def gen_config(name):
+                 "popen2.Popen4",
+                 "commands.getoutput",
+                 "commands.getstatusoutput",
++                "subprocess.getoutput",
++                "subprocess.getstatusoutput",
+             ],
+             # Start a process with a function that is not vulnerable to shell
+             # injection.
+@@ -447,6 +449,8 @@ def start_process_with_a_shell(context, config):
+                 - popen2.Popen4
+                 - commands.getoutput
+                 - commands.getstatusoutput
++                - subprocess.getoutput
++                - subprocess.getstatusoutput
+ 
+     :Example:
+ 
+diff --git a/bandit/plugins/injection_sql.py b/bandit/plugins/injection_sql.py
+index dd9b5c0ed..eed3e52ba 100644
+--- a/bandit/plugins/injection_sql.py
++++ b/bandit/plugins/injection_sql.py
+@@ -27,6 +27,13 @@
+ 
+  - cursor.execute("SELECT %s FROM derp;" % var)
+ 
++Use of str.replace in the string construction can also be dangerous.
++For example:
++
++- "SELECT * FROM foo WHERE id = '[VALUE]'".replace("[VALUE]", identifier)
++
++However, such cases are always reported with LOW confidence to compensate
++for false positives, since valid uses of str.replace can be common.
+ 
+ :Example:
+ 
+@@ -52,6 +59,9 @@
+ .. versionchanged:: 1.7.3
+     CWE information added
+ 
++.. versionchanged:: 1.7.7
++    Flag when str.replace is used in the string construction
++
+ """  # noqa: E501
+ import ast
+ import re
+@@ -77,18 +87,20 @@ def _check_string(data):
+ def _evaluate_ast(node):
+     wrapper = None
+     statement = ""
++    str_replace = False
+ 
+     if isinstance(node._bandit_parent, ast.BinOp):
+         out = utils.concat_string(node, node._bandit_parent)
+         wrapper = out[0]._bandit_parent
+         statement = out[1]
+-    elif (
+-        isinstance(node._bandit_parent, ast.Attribute)
+-        and node._bandit_parent.attr == "format"
+-    ):
++    elif isinstance(
++        node._bandit_parent, ast.Attribute
++    ) and node._bandit_parent.attr in ("format", "replace"):
+         statement = node.s
+         # Hierarchy for "".format() is Wrapper -> Call -> Attribute -> Str
+         wrapper = node._bandit_parent._bandit_parent._bandit_parent
++        if node._bandit_parent.attr == "replace":
++            str_replace = True
+     elif hasattr(ast, "JoinedStr") and isinstance(
+         node._bandit_parent, ast.JoinedStr
+     ):
+@@ -108,19 +120,21 @@ def _evaluate_ast(node):
+     if isinstance(wrapper, ast.Call):  # wrapped in "execute" call?
+         names = ["execute", "executemany"]
+         name = utils.get_called_name(wrapper)
+-        return (name in names, statement)
++        return (name in names, statement, str_replace)
+     else:
+-        return (False, statement)
++        return (False, statement, str_replace)
+ 
+ 
+ @test.checks("Str")
+ @test.test_id("B608")
+ def hardcoded_sql_expressions(context):
+-    val = _evaluate_ast(context.node)
+-    if _check_string(val[1]):
++    execute_call, statement, str_replace = _evaluate_ast(context.node)
++    if _check_string(statement):
+         return bandit.Issue(
+             severity=bandit.MEDIUM,
+-            confidence=bandit.MEDIUM if val[0] else bandit.LOW,
++            confidence=bandit.MEDIUM
++            if execute_call and not str_replace
++            else bandit.LOW,
+             cwe=issue.Cwe.SQL_INJECTION,
+             text="Possible SQL injection vector through string-based "
+             "query construction.",
+diff --git a/bandit/plugins/ssh_no_host_key_verification.py b/bandit/plugins/ssh_no_host_key_verification.py
+index e8edaf93a..51be2eb4a 100644
+--- a/bandit/plugins/ssh_no_host_key_verification.py
++++ b/bandit/plugins/ssh_no_host_key_verification.py
+@@ -55,8 +55,13 @@ def ssh_no_host_key_verification(context):
+         policy_argument_value = None
+         if isinstance(policy_argument, ast.Attribute):
+             policy_argument_value = policy_argument.attr
++        elif isinstance(policy_argument, ast.Name):
++            policy_argument_value = policy_argument.id
+         elif isinstance(policy_argument, ast.Call):
+-            policy_argument_value = policy_argument.func.attr
++            if isinstance(policy_argument.func, ast.Attribute):
++                policy_argument_value = policy_argument.func.attr
++            elif isinstance(policy_argument.func, ast.Name):
++                policy_argument_value = policy_argument.func.id
+ 
+         if policy_argument_value in ["AutoAddPolicy", "WarningPolicy"]:
+             return bandit.Issue(
+diff --git a/bandit/plugins/tarfile_unsafe_members.py b/bandit/plugins/tarfile_unsafe_members.py
+index 32c1e6127..5ad145c1a 100644
+--- a/bandit/plugins/tarfile_unsafe_members.py
++++ b/bandit/plugins/tarfile_unsafe_members.py
+@@ -42,6 +42,9 @@
+ 
+ .. versionadded:: 1.7.5
+ 
++.. versionchanged:: 1.7.8
++    Added check for filter parameter
++
+ """
+ import ast
+ 
+@@ -91,6 +94,13 @@ def get_members_value(context):
+                 return {"Other": value}
+ 
+ 
++def is_filter_data(context):
++    for keyword in context.node.keywords:
++        if keyword.arg == "filter":
++            arg = keyword.value
++            return isinstance(arg, ast.Str) and arg.s == "data"
++
++
+ @test.test_id("B202")
+ @test.checks("Call")
+ def tarfile_unsafe_members(context):
+@@ -100,6 +110,8 @@ def tarfile_unsafe_members(context):
+             "extractall" in context.call_function_name,
+         ]
+     ):
++        if "filter" in context.call_keywords and is_filter_data(context):
++            return None
+         if "members" in context.call_keywords:
+             members = get_members_value(context)
+             if "Function" in members:
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 869c1b3a8..f2a991c11 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: Apache-2.0
++from datetime import datetime
+ import os
+ import sys
+ 
+@@ -27,7 +28,7 @@
+ 
+ # General information about the project.
+ project = "Bandit"
+-copyright = "2023, Bandit Developers"
++copyright = f"{datetime.now():%Y}, Bandit Developers"
+ 
+ # If true, '()' will be appended to :func: etc. cross-reference text.
+ add_function_parentheses = True
+diff --git a/doc/source/formatters/sarif.rst b/doc/source/formatters/sarif.rst
+new file mode 100644
+index 000000000..58b9633a7
+--- /dev/null
++++ b/doc/source/formatters/sarif.rst
+@@ -0,0 +1,5 @@
++-----
++sarif
++-----
++
++.. automodule:: bandit.formatters.sarif
+diff --git a/doc/source/man/bandit.rst b/doc/source/man/bandit.rst
+index 46125e613..eef10d271 100644
+--- a/doc/source/man/bandit.rst
++++ b/doc/source/man/bandit.rst
+@@ -44,7 +44,7 @@ OPTIONS
+                         (-l for LOW, -ll for MEDIUM, -lll for HIGH)
+   -i, --confidence      report only issues of a given confidence level or
+                         higher (-i for LOW, -ii for MEDIUM, -iii for HIGH)
+-  -f {csv,custom,html,json,screen,txt,xml,yaml}, --format {csv,custom,html,json,screen,txt,xml,yaml}
++  -f {csv,custom,html,json,sarif,screen,txt,xml,yaml}, --format {csv,custom,html,json,sarif,screen,txt,xml,yaml}
+                         specify output format
+   --msg-template MSG_TEMPLATE
+                         specify output message template (only usable with
+diff --git a/doc/source/start.rst b/doc/source/start.rst
+index 06a2206a3..cd8f3dadf 100644
+--- a/doc/source/start.rst
++++ b/doc/source/start.rst
+@@ -31,6 +31,20 @@ If you want to include TOML support, install it with the `toml` extras:
+ 
+     pip install bandit[toml]
+ 
++If you want to use the bandit-baseline CLI, install it with the `baseline`
++extras:
++
++.. code-block:: console
++
++    pip install bandit[baseline]
++
++If you want to include SARIF output formatter support, install it with the
++`sarif` extras:
++
++.. code-block:: console
++
++    pip install bandit[sarif]
++
+ Run Bandit:
+ 
+ .. code-block:: console
+diff --git a/docker/Dockerfile b/docker/Dockerfile
+new file mode 100644
+index 000000000..ab33e8709
+--- /dev/null
++++ b/docker/Dockerfile
+@@ -0,0 +1,16 @@
++FROM python:3.12-alpine
++
++# Install Git (required for pbr versioning)
++RUN apk add --no-cache git
++
++# Copy the source code into the container
++COPY . /bandit
++
++# Set the working directory
++WORKDIR /bandit
++
++# Install Bandit from the source code using pip
++RUN pip install .
++
++# Define entrypoint and default command
++ENTRYPOINT ["bandit"]
+diff --git a/examples/no_host_key_verification.py b/examples/no_host_key_verification.py
+index 2e092fe4d..1ac01e6c6 100644
+--- a/examples/no_host_key_verification.py
++++ b/examples/no_host_key_verification.py
+@@ -1,7 +1,14 @@
+ from paramiko import client
++from paramiko import AutoAddPolicy
++from paramiko import WarningPolicy
+ 
+ ssh_client = client.SSHClient()
+ ssh_client.set_missing_host_key_policy(client.AutoAddPolicy)
+ ssh_client.set_missing_host_key_policy(client.WarningPolicy)
+ ssh_client.set_missing_host_key_policy(client.AutoAddPolicy())
+ ssh_client.set_missing_host_key_policy(client.WarningPolicy())
++
++ssh_client.set_missing_host_key_policy(AutoAddPolicy)
++ssh_client.set_missing_host_key_policy(WarningPolicy)
++ssh_client.set_missing_host_key_policy(AutoAddPolicy())
++ssh_client.set_missing_host_key_policy(WarningPolicy())
+diff --git a/examples/random_module.py b/examples/random_module.py
+index 2bf80d037..224f2513c 100644
+--- a/examples/random_module.py
++++ b/examples/random_module.py
+@@ -10,6 +10,7 @@
+ bad = random.choices()
+ bad = random.uniform()
+ bad = random.triangular()
++bad = random.randbytes()
+ 
+ good = os.urandom()
+ good = random.SystemRandom()
+diff --git a/examples/sql_statements.py b/examples/sql_statements.py
+index ff88a926b..53a5306b3 100644
+--- a/examples/sql_statements.py
++++ b/examples/sql_statements.py
+@@ -10,6 +10,7 @@
+ # bad alternate forms
+ query = "SELECT * FROM foo WHERE id = '" + identifier + "'"
+ query = "SELECT * FROM foo WHERE id = '{}'".format(identifier)
++query = "SELECT * FROM foo WHERE id = '[VALUE]'".replace("[VALUE]", identifier)
+ 
+ # bad
+ cur.execute("SELECT * FROM foo WHERE id = '%s'" % identifier)
+@@ -19,6 +20,7 @@
+ # bad alternate forms
+ cur.execute("SELECT * FROM foo WHERE id = '" + identifier + "'")
+ cur.execute("SELECT * FROM foo WHERE id = '{}'".format(identifier))
++cur.execute("SELECT * FROM foo WHERE id = '[VALUE]'".replace("[VALUE]", identifier))
+ 
+ # bad f-strings
+ cur.execute(f"SELECT {column_name} FROM foo WHERE id = 1")
+diff --git a/examples/subprocess_shell.py b/examples/subprocess_shell.py
+index 049ed05bc..d8076d534 100644
+--- a/examples/subprocess_shell.py
++++ b/examples/subprocess_shell.py
+@@ -26,6 +26,9 @@ def __len__(self):
+ subprocess.check_output(['/bin/ls', '-l'])
+ subprocess.check_output('/bin/ls -l', shell=True)
+ 
++subprocess.getoutput('/bin/ls -l')
++subprocess.getstatusoutput('/bin/ls -l')
++
+ subprocess.run(['/bin/ls', '-l'])
+ subprocess.run('/bin/ls -l', shell=True)
+ 
+diff --git a/examples/tarfile_extractall.py b/examples/tarfile_extractall.py
+index 2af3eb544..b32736afb 100644
+--- a/examples/tarfile_extractall.py
++++ b/examples/tarfile_extractall.py
+@@ -15,6 +15,18 @@ def managed_members_archive_handler(filename):
+     tar.close()
+ 
+ 
++def filter_data_archive_handler(filename):
++    tar = tarfile.open(filename)
++    tar.extractall(path=tempfile.mkdtemp(), filter="data")
++    tar.close()
++
++
++def filter_fully_trusted_archive_handler(filename):
++    tar = tarfile.open(filename)
++    tar.extractall(path=tempfile.mkdtemp(), filter="fully_trusted")
++    tar.close()
++
++
+ def list_members_archive_handler(filename):
+     tar = tarfile.open(filename)
+     tar.extractall(path=tempfile.mkdtemp(), members=[])
+@@ -45,3 +57,5 @@ def members_filter(tarfile):
+         filename = sys.argv[1]
+         unsafe_archive_handler(filename)
+         managed_members_archive_handler(filename)
++        filter_data_archive_handler(filename)
++        filter_fully_trusted_archive_handler(filename)
+diff --git a/requirements.txt b/requirements.txt
+index 289782022..3bc89154a 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,7 +1,6 @@
+ # The order of packages is significant, because pip processes them in the order
+ # of appearance. Changing the order has an impact on the overall integration
+ # process, which may cause wedges in the gate later.
+-GitPython>=3.1.30 # BSD License (3 clause)
+ PyYAML>=5.3.1 # MIT
+ stevedore>=1.20.0 # Apache-2.0
+ colorama>=0.3.9;platform_system=="Windows" # BSD License (3 clause)
+diff --git a/setup.cfg b/setup.cfg
+index 2cd658aad..2dbee597c 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -35,6 +35,11 @@ yaml =
+     PyYAML
+ toml =
+     tomli>=1.1.0; python_version < "3.11"
++baseline =
++    GitPython>=3.1.30
++sarif =
++    sarif-om>=1.0.4
++    jschema-to-python>=1.2.3
+ 
+ [entry_points]
+ console_scripts =
+@@ -50,6 +55,7 @@ bandit.formatters =
+     txt = bandit.formatters.text:report
+     xml = bandit.formatters.xml:report
+     html = bandit.formatters.html:report
++    sarif = bandit.formatters.sarif:report
+     screen = bandit.formatters.screen:report
+     yaml = bandit.formatters.yaml:report
+     custom = bandit.formatters.custom:report
+diff --git a/test-requirements.txt b/test-requirements.txt
+index 6c8c57e7f..fb00e57e1 100644
+--- a/test-requirements.txt
++++ b/test-requirements.txt
+@@ -7,6 +7,5 @@ flake8>=4.0.0 # Apache-2.0
+ stestr>=2.5.0 # Apache-2.0
+ testscenarios>=0.5.0 # Apache-2.0/BSD
+ testtools>=2.3.0 # MIT
+-tomli>=1.1.0;python_version<"3.11" # MIT
+ beautifulsoup4>=4.8.0 # MIT
+ pylint==1.9.4 # GPLv2
+diff --git a/tests/functional/test_functional.py b/tests/functional/test_functional.py
+index 6917462dd..2d27cdde8 100644
+--- a/tests/functional/test_functional.py
++++ b/tests/functional/test_functional.py
+@@ -396,8 +396,8 @@ def test_popen_wrappers(self):
+     def test_random_module(self):
+         """Test for the `random` module."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 8, "MEDIUM": 0, "HIGH": 0},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 8},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 9, "MEDIUM": 0, "HIGH": 0},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 9},
+         }
+         self.check_example("random_module.py", expect)
+ 
+@@ -439,12 +439,12 @@ def test_sql_statements(self):
+             "SEVERITY": {
+                 "UNDEFINED": 0,
+                 "LOW": 0,
+-                "MEDIUM": 18,
++                "MEDIUM": 20,
+                 "HIGH": 0,
+             },
+             "CONFIDENCE": {
+                 "UNDEFINED": 0,
+-                "LOW": 8,
++                "LOW": 10,
+                 "MEDIUM": 10,
+                 "HIGH": 0,
+             },
+@@ -493,8 +493,8 @@ def test_ssl_insecure_version(self):
+     def test_subprocess_shell(self):
+         """Test for `subprocess.Popen` with `shell=True`."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 21, "MEDIUM": 1, "HIGH": 11},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 0, "HIGH": 32},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 23, "MEDIUM": 1, "HIGH": 11},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 0, "HIGH": 34},
+         }
+         self.check_example("subprocess_shell.py", expect)
+ 
+@@ -543,8 +543,8 @@ def test_yaml(self):
+     def test_host_key_verification(self):
+         """Test for ignoring host key verification."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 4},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 4, "HIGH": 0},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 8},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 0, "MEDIUM": 8, "HIGH": 0},
+         }
+         self.check_example("no_host_key_verification.py", expect)
+ 
+@@ -926,7 +926,7 @@ def test_snmp_security_check(self):
+     def test_tarfile_unsafe_members(self):
+         """Test insecure usage of tarfile."""
+         expect = {
+-            "SEVERITY": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 1},
+-            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 1},
++            "SEVERITY": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 2},
++            "CONFIDENCE": {"UNDEFINED": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 2},
+         }
+         self.check_example("tarfile_extractall.py", expect)
+diff --git a/tests/unit/core/test_manager.py b/tests/unit/core/test_manager.py
+index df815f588..5d20c56f8 100644
+--- a/tests/unit/core/test_manager.py
++++ b/tests/unit/core/test_manager.py
+@@ -289,7 +289,7 @@ def test_discover_files_exclude_glob(self, isdir):
+         self.manager.discover_files(
+             ["a.py", "test_a.py", "test.py"], True, excluded_paths="test_*.py"
+         )
+-        self.assertEqual(["a.py", "test.py"], self.manager.files_list)
++        self.assertEqual(["./a.py", "./test.py"], self.manager.files_list)
+         self.assertEqual(["test_a.py"], self.manager.excluded_files)
+ 
+     @mock.patch("os.path.isdir")
+@@ -298,7 +298,7 @@ def test_discover_files_include(self, isdir):
+         with mock.patch.object(manager, "_is_file_included") as m:
+             m.return_value = True
+             self.manager.discover_files(["thing"], True)
+-            self.assertEqual(["thing"], self.manager.files_list)
++            self.assertEqual(["./thing"], self.manager.files_list)
+             self.assertEqual([], self.manager.excluded_files)
+ 
+     def test_run_tests_keyboardinterrupt(self):
+diff --git a/tests/unit/formatters/test_sarif.py b/tests/unit/formatters/test_sarif.py
+new file mode 100644
+index 000000000..a5306fa81
+--- /dev/null
++++ b/tests/unit/formatters/test_sarif.py
+@@ -0,0 +1,139 @@
++# SPDX-License-Identifier: Apache-2.0
++import collections
++import json
++import tempfile
++from unittest import mock
++
++import testtools
++
++import bandit
++from bandit.core import config
++from bandit.core import constants
++from bandit.core import issue
++from bandit.core import manager
++from bandit.core import metrics
++from bandit.formatters import sarif
++
++
++class SarifFormatterTests(testtools.TestCase):
++    def setUp(self):
++        super().setUp()
++        conf = config.BanditConfig()
++        self.manager = manager.BanditManager(conf, "file")
++        (tmp_fd, self.tmp_fname) = tempfile.mkstemp()
++        self.context = {
++            "filename": self.tmp_fname,
++            "lineno": 4,
++            "linerange": [4],
++            "code": (
++                "import socket\n\n"
++                "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
++                "s.bind(('0.0.0.0', 31137))"
++            ),
++        }
++        self.check_name = "hardcoded_bind_all_interfaces"
++        self.issue = issue.Issue(
++            severity=bandit.MEDIUM,
++            cwe=issue.Cwe.MULTIPLE_BINDS,
++            confidence=bandit.MEDIUM,
++            text="Possible binding to all interfaces.",
++            test_id="B104",
++        )
++
++        self.candidates = [
++            issue.Issue(
++                issue.Cwe.MULTIPLE_BINDS,
++                bandit.LOW,
++                bandit.LOW,
++                "Candidate A",
++                lineno=1,
++            ),
++            issue.Issue(
++                bandit.HIGH,
++                issue.Cwe.MULTIPLE_BINDS,
++                bandit.HIGH,
++                "Candiate B",
++                lineno=2,
++            ),
++        ]
++
++        self.manager.out_file = self.tmp_fname
++
++        self.issue.fname = self.context["filename"]
++        self.issue.lineno = self.context["lineno"]
++        self.issue.linerange = self.context["linerange"]
++        self.issue.code = self.context["code"]
++        self.issue.test = self.check_name
++
++        self.manager.results.append(self.issue)
++        self.manager.metrics = metrics.Metrics()
++
++        # mock up the metrics
++        for key in ["_totals", "binding.py"]:
++            self.manager.metrics.data[key] = {"loc": 4, "nosec": 2}
++            for criteria, default in constants.CRITERIA:
++                for rank in constants.RANKING:
++                    self.manager.metrics.data[key][f"{criteria}.{rank}"] = 0
++
++    @mock.patch("bandit.core.manager.BanditManager.get_issue_list")
++    def test_report(self, get_issue_list):
++        self.manager.files_list = ["binding.py"]
++        self.manager.scores = [
++            {
++                "SEVERITY": [0] * len(constants.RANKING),
++                "CONFIDENCE": [0] * len(constants.RANKING),
++            }
++        ]
++
++        get_issue_list.return_value = collections.OrderedDict(
++            [(self.issue, self.candidates)]
++        )
++
++        with open(self.tmp_fname, "w") as tmp_file:
++            sarif.report(
++                self.manager,
++                tmp_file,
++                self.issue.severity,
++                self.issue.confidence,
++            )
++
++        with open(self.tmp_fname) as f:
++            data = json.loads(f.read())
++            run = data["runs"][0]
++            self.assertEqual(sarif.SCHEMA_URI, data["$schema"])
++            self.assertEqual(sarif.SCHEMA_VER, data["version"])
++            driver = run["tool"]["driver"]
++            self.assertEqual("Bandit", driver["name"])
++            self.assertEqual(bandit.__author__, driver["organization"])
++            self.assertEqual(bandit.__version__, driver["semanticVersion"])
++            self.assertEqual("B104", driver["rules"][0]["id"])
++            self.assertEqual(self.check_name, driver["rules"][0]["name"])
++            self.assertIn("security", driver["rules"][0]["properties"]["tags"])
++            self.assertIn(
++                "external/cwe/cwe-605",
++                driver["rules"][0]["properties"]["tags"],
++            )
++            self.assertEqual(
++                "medium", driver["rules"][0]["properties"]["precision"]
++            )
++            invocation = run["invocations"][0]
++            self.assertTrue(invocation["executionSuccessful"])
++            self.assertIsNotNone(invocation["endTimeUtc"])
++            result = run["results"][0]
++            # If the level is "warning" like in this case, SARIF will remove
++            # from output, as "warning" is the default value.
++            self.assertIsNone(result.get("level"))
++            self.assertEqual(self.issue.text, result["message"]["text"])
++            physicalLocation = result["locations"][0]["physicalLocation"]
++            self.assertEqual(
++                self.context["linerange"][0],
++                physicalLocation["region"]["startLine"],
++            )
++            self.assertEqual(
++                self.context["linerange"][0],
++                physicalLocation["region"]["endLine"],
++            )
++            self.assertIn(
++                self.tmp_fname,
++                physicalLocation["artifactLocation"]["uri"],
++            )
+diff --git a/tox.ini b/tox.ini
+index f8fddff99..13e3458de 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -10,6 +10,11 @@ setenv =
+ deps =
+        -r{toxinidir}/requirements.txt
+        -r{toxinidir}/test-requirements.txt
++extras =
++    yaml
++    toml
++    baseline
++    sarif
+ commands =
+     find bandit -type f -name "*.pyc" -delete
+     stestr run {posargs}
+@@ -34,7 +39,6 @@ commands = flake8 {posargs} bandit
+            bandit-baseline -r bandit -ll -ii
+ 
+ [testenv:pep8]
+-skip_install = true
+ ignore_errors = true
+ deps = {[testenv]deps}
+        .

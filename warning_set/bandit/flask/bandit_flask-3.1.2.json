@@ -1,0 +1,323 @@
+[
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B106",
+    "rule_name": "hardcoded_password_funcarg",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "examples/tutorial/flaskr/__init__.py",
+    "line": 9,
+    "message": "Possible hardcoded password: 'dev'",
+    "cwe": [
+      259
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b106_hardcoded_password_funcarg.html",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "code_snippet": "8     app = Flask(__name__, instance_relative_config=True)\n9     app.config.from_mapping(\n10         # a default secret that should be overridden by instance config\n11         SECRET_KEY=\"dev\",\n12         # store the database in the instance folder\n13         DATABASE=os.path.join(app.instance_path, \"flaskr.sqlite\"),\n14     )\n15 \n",
+      "line_range": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "col_offset": 4,
+      "end_col_offset": 5
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/app.py",
+    "line": 268,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "267         if self.has_static_folder:\n268             assert bool(static_host) == host_matching, (\n269                 \"Invalid static_host/host_matching combination\"\n270             )\n271             # Use a weakref to avoid creating a reference cycle between the app\n",
+      "line_range": [
+        268,
+        269,
+        270
+      ],
+      "col_offset": 12,
+      "end_col_offset": 13
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B307",
+    "rule_name": "blacklist",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "src/flask/cli.py",
+    "line": 1031,
+    "message": "Use of possibly insecure function - consider using safer ast.literal_eval.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b307-eval",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "1030         with open(startup) as f:\n1031             eval(compile(f.read(), startup, \"exec\"), ctx)\n1032 \n",
+      "line_range": [
+        1031
+      ],
+      "col_offset": 12,
+      "end_col_offset": 57
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B110",
+    "rule_name": "try_except_pass",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/config.py",
+    "line": 163,
+    "message": "Try, Except, Pass detected.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "162                 value = loads(value)\n163             except Exception:\n164                 # Keep the value as a string if loading failed.\n165                 pass\n166 \n",
+      "line_range": [
+        163,
+        164,
+        165
+      ],
+      "col_offset": 12,
+      "end_col_offset": 20
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B102",
+    "rule_name": "exec_used",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "src/flask/config.py",
+    "line": 209,
+    "message": "Use of exec detected.",
+    "cwe": [
+      78
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b102_exec_used.html",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "code_snippet": "208             with open(filename, mode=\"rb\") as config_file:\n209                 exec(compile(config_file.read(), filename, \"exec\"), d.__dict__)\n210         except OSError as e:\n",
+      "line_range": [
+        209
+      ],
+      "col_offset": 16,
+      "end_col_offset": 79
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/debughelpers.py",
+    "line": 59,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "58         exc = request.routing_exception\n59         assert isinstance(exc, RequestRedirect)\n60         buf = [\n",
+      "line_range": [
+        59
+      ],
+      "col_offset": 8,
+      "end_col_offset": 47
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B704",
+    "rule_name": "markupsafe_markup_xss",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "src/flask/json/tag.py",
+    "line": 188,
+    "message": "Potential XSS with ``markupsafe.Markup`` detected. Do not use ``Markup`` on untrusted data.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b704_markupsafe_markup_xss.html",
+      "issue_cwe": {
+        "id": 79,
+        "link": "https://cwe.mitre.org/data/definitions/79.html"
+      },
+      "code_snippet": "187     def to_python(self, value: t.Any) -> t.Any:\n188         return Markup(value)\n189 \n",
+      "line_range": [
+        188
+      ],
+      "col_offset": 15,
+      "end_col_offset": 28
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/sansio/scaffold.py",
+    "line": 705,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "704     \"\"\"\n705     assert view_func is not None, \"expected view func if endpoint is not provided.\"\n706     return view_func.__name__\n",
+      "line_range": [
+        705
+      ],
+      "col_offset": 4,
+      "end_col_offset": 83
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B324",
+    "rule_name": "hashlib",
+    "severity": "HIGH",
+    "confidence": "HIGH",
+    "file": "src/flask/sessions.py",
+    "line": 295,
+    "message": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+    "cwe": [
+      327
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "code_snippet": "294     \"\"\"\n295     return hashlib.sha1(string)\n296 \n",
+      "line_range": [
+        295
+      ],
+      "col_offset": 11,
+      "end_col_offset": 31
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/testing.py",
+    "line": 59,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "58     ) -> None:\n59         assert not (base_url or subdomain or url_scheme) or (\n60             base_url is not None\n61         ) != bool(subdomain or url_scheme), (\n62             'Cannot pass \"subdomain\" or \"url_scheme\" with \"base_url\".'\n63         )\n64 \n",
+      "line_range": [
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "col_offset": 8,
+      "end_col_offset": 9
+    }
+  },
+  {
+    "tool": "bandit",
+    "project_name": "flask",
+    "project_version": "3.1.2",
+    "rule_id": "B101",
+    "rule_name": "assert_used",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "src/flask/views.py",
+    "line": 190,
+    "message": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [
+      703
+    ],
+    "extra": {
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "code_snippet": "189 \n190         assert meth is not None, f\"Unimplemented method {request.method!r}\"\n191         return current_app.ensure_sync(meth)(**kwargs)  # type: ignore[no-any-return]\n",
+      "line_range": [
+        190
+      ],
+      "col_offset": 8,
+      "end_col_offset": 75
+    }
+  }
+]

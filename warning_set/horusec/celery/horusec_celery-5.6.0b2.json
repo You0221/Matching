@@ -1,0 +1,3511 @@
+[
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/gevent/celeryconfig.py",
+    "line": "9",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = 'amqp://guest:guest@localhost:5672//'",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "201433b211b57f99380ffafc0067eaafe7652310861d1cdf634d1b88f015e5a8",
+        "05935c76b000ac96ab08fd03cc619a90c64344028d6d9e68ceab58e4608be957"
+      ],
+      "vulnHash": "25a7e6157966b86dba91b9d0e32c0e0c63d3352866bba4a8a36db3dfda503c02"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "celery/backends/s3.py",
+    "line": "42",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "self.aws_access_key_id = conf.get('s3_access_key_id', None)",
+      "column": "17",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a4fb16b880f0336c7f296c67f8d7a85c491cc10bb7e4f1845012a7087178cf48",
+        "b8aa251fcb479013f93baf9e0d01fdb408ae9dff17b1df6a885bca3e4c19ca09"
+      ],
+      "vulnHash": "cabe354b577d2f9a9f89dd7ad8faa9eb2ab2629f3d0c02bea693d3e88660bde4"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "celery/backends/s3.py",
+    "line": "43",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "self.aws_secret_access_key = conf.get('s3_secret_access_key', None)",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2bfa0e88b638d0473ebc0a0936a2c9af719879cd10a7ee52e10df3158de7031f",
+        "0c99f886a10a89509caa04ceecf6ed78abb6f1e8e29e0f4fc62af7f4055cbc4b"
+      ],
+      "vulnHash": "1326445a41066c61dc93f99ea905b47a39086db3d9ef43fa7cbf334d8a73427d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/monitoring.rst",
+    "line": "302",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "$ celery --broker=amqp://guest:guest@localhost:5672// flower",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7d3cd59f2277c4c7ffd73dc8b8a2c8adc38ddd2e9e31768d80f94bb10b21381e",
+        "b8eb302d28a0646677b23fca5a4f03efb9185afea0cd7a660627026c676f2e01"
+      ],
+      "vulnHash": "30c2e656c9b57a1c9871602f5bce0d535f7af782136a3fbd5374e4e73984244a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/monitoring.rst",
+    "line": "304",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "$ celery --broker=redis://guest:guest@localhost:6379/0 flower",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3f82bcb0b806407ac0597057f23716162fdcaff33796b53f6175268e14053954",
+        "5f6a48d2778452212e254575a036812229db51fb8f97097c6cdaffc072054ed4"
+      ],
+      "vulnHash": "ccef51f544a53cdb8c062c29b6eb240eed157c60d21919ca29093d187a3f77f2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/security/ssl/worker.key",
+    "line": "1",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "-----BEGIN RSA PRIVATE KEY-----",
+      "column": "0",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "291251d45058a8d48656b7151a814534f2df911a9907c038088bd1448da2948f",
+        "621e0a51b62885a11f565f63f554246190fd41256b5776c3aa497ec522d0e2e0"
+      ],
+      "vulnHash": "30ad401f05ea0b48637adb2358b72dde6bc092cd598618f71a5d8183389ba6d7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "9",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "KEY1 = \"\"\"-----BEGIN RSA PRIVATE KEY-----",
+      "column": "10",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0c2025ad53c6a36578f6e72363bff11a92360b61f29173cc217299bc3eaad6e3",
+        "c637895f42c74c1cead7fb2ea5d28ccf608b6a95796ad40ca73ad76b7d76cb8e"
+      ],
+      "vulnHash": "3bcf4ca52e1b50acd4d5ea9f8d1a262bcd9a37645f7bd37e5cf6e0549c00b675"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "44",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "KEY2 = \"\"\"-----BEGIN RSA PRIVATE KEY-----",
+      "column": "10",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "78a30f839fec59135f5aa6c4e31e91ddccab46dd3829d8edadc20953e760a2d2",
+        "ef6c642abc0b1c8ef03ee6345c2a524805233f0c64e94671d69da49f15988a40"
+      ],
+      "vulnHash": "869f0d70eb1bdd72a7ac82e7c11cba66348a1e3240c02a2b29a923d20616d36c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "133",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "-----BEGIN EC PRIVATE KEY-----",
+      "column": "0",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "63b18c2537d8fb5f2fa82732792257c5d76905b7ba2c5937a5b9675066b09825",
+        "73a3012e96e29098bb244d4e2380c9981dc50372d11d316f63b35e8e6b4e77f5"
+      ],
+      "vulnHash": "855383b8224ebac6a7663ee0edab116336bad433559d2732f047c1c0950d6e89"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "79",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CERT1 = \"\"\"-----BEGIN CERTIFICATE-----",
+      "column": "11",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4e8daf0473889803ca87ebd0934c98acde581c72cf135692f1381e465ce80ee8",
+        "3659f9c051b1c4640a0361cd24409f100b8fabfceb790c5f65a9fa8e8ca7d6df"
+      ],
+      "vulnHash": "a6d989725e1f8db02c29b9808a567f43418c8845d6c13bb34c075be3a3b0c9bd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "95",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CERT2 = \"\"\"-----BEGIN CERTIFICATE-----",
+      "column": "11",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1a33c6177517a34758257bbedf0136313122dc86b6538569eddf973f08ead262",
+        "0b0ffcd208421999506971bd8db98266621a3a4462ea968ab527b125e9efc132"
+      ],
+      "vulnHash": "f3e745043b1ca24a8c18ab8b2dfffab3783f3222ec99e1e0cdf44eac7bec26d2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "t/unit/security/__init__.py",
+    "line": "109",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CERT_ECDSA = \"\"\"-----BEGIN CERTIFICATE-----",
+      "column": "16",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1341f5593b2affd7b4b79b5924684449c0c86446546f12920e84d75e2f9a2b21",
+        "a562ce4caea125810dfa1b11b2ce81cac784ef4def790f0309d15eef50e957af"
+      ],
+      "vulnHash": "31d4a83ee472544ab60475ee6dab9a9880383becb1193e8dc092ffa9f0d4bf58"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-12",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/security/ssl/worker.pem",
+    "line": "1",
+    "message": "(1/1) * Possible vulnerability detected: Asymmetric Private Key\nFound SSH and/or x.509 Cerficates among the files of your project, make sure you want this kind of information inside your Git repo, since it can be missused by someone with access to any kind of copy.  For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "-----BEGIN CERTIFICATE-----",
+      "column": "0",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fac35dd7e122aa2be8c95c2f3fbdda51fce2c12c894e224facf013fec6ec9e20",
+        "0780946cc35be92a7042144721d83a6584f1c21ccaa38fe197c7571ee21a734f"
+      ],
+      "vulnHash": "ca1a0f4bb4b3ef1e4807dc85a27145c646bfb96060a7982ceb8cde9074d0f059"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "celery/backends/arangodb.py",
+    "line": "27",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "\"arangodb://username:password@host:port/database/collection\"",
+      "column": "5",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d24b3d7cba8312e4bd22966bbc1777f03fa5b945fc6cd24f12ec54e171c3f37f",
+        "1312fd3038973656d4141eb5d2539dc3d686049001acbf0f052905ea9b177038"
+      ],
+      "vulnHash": "8452fd674737feb2f347665b2a1dd969bdf6a3602c205b4a6d928b2e9a635618"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/eventlet/celeryconfig.py",
+    "line": "10",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = 'amqp://guest:guest@localhost:5672//'",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c11c4dbf5e4490ff88a30db5d257bd6b5a322e90fe3e161fef793a10d47a998f",
+        "9c6ab51569515a04ce4df74d548e939bb506c63ce1fb904de341090ffbc2b687"
+      ],
+      "vulnHash": "046a8f930153fc36fdab0632eb2e53e84eeb2849e45fb6b6fe1a69235fc16e9e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.4.rst",
+    "line": "175",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "transport://user:password@hostname:port/virtual_host",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9d5f3aacad72a73987f70c3d64a159a5cc444de92c3e5169c62e0979178620f7",
+        "aa177ece4583aae62150732e824a5f9c95a7c9931ebf383a0e5fe9369d43c3c3"
+      ],
+      "vulnHash": "c9df80a598b0c7fbf3c3bf3b4db4ec1b17dfa331ea9d9258f7ee8c67c8124c36"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.4.rst",
+    "line": "181",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "amqp://guest:guest@localhost:5672//",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "51499abc933a9ad5553a648b899bea2504e05353d02cd2f7402e9cfad6338a27",
+        "c9686235c6a55e69b670cda7be4918b47bf071ac4754fc4df1a54550e7df7660"
+      ],
+      "vulnHash": "60b53fb53dfdbf544aeb475de34581d778e43d39bf11c629ff55a4bb31f00906"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.4.rst",
+    "line": "205",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "amqp://guest:guest@localhost:5672/",
+      "column": "12",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4d51b2caa73629633a69613b8f0efd40df50969823c6dd0bd9651aecab140465",
+        "e271dfdf9ab89b8cd6828697ce12704f4f6ca83973adc04f765e009469673435"
+      ],
+      "vulnHash": "8f7621c2751f0b981410c062436fc7b2c9553753266da12f63aa20c0d10aed37"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.4.rst",
+    "line": "221",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "$ celery inspect -b amqp://guest:guest@localhost//e",
+      "column": "28",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5caa8607bf0684a0dfbcd9961903cd8c6f3d7ea13bf5f17e03cf9572d4723f50",
+        "8b1962594cf68db4bee8be2c14f67c57aa6f928565774d258d19c93a858c0821"
+      ],
+      "vulnHash": "54333a74c05ca7631293b9dd0aea70020e77c84f0c227c801e54e42cad75866d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/kafka.rst",
+    "line": "25",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "# result_backend = 'db+postgresql://postgres:example@localhost/postgres'",
+      "column": "27",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "877f51001f6b5c5f92f302e1ceae79bfc767e988e84ab055fda351dc4e178a2a",
+        "a72d64ef72808512bbf85b2142d0d8637b16d8c15a8932bba9701bf9fb5b7f6f"
+      ],
+      "vulnHash": "1547cc1bf22cce486e65a7878518271bd819ad606fd619f8c605b9b8531a6c2b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/kafka.rst",
+    "line": "33",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = f\"confluentkafka://{sasl_username}:{sasl_password}@broker:9094\"",
+      "column": "23",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1beb9d1023b1f386fee8d8d9cb85a231ca341e93873719fc72f3c6352b62822d",
+        "793ae42b40033761f151071eba98eaba3295e53480267b68b9038bb077be272f"
+      ],
+      "vulnHash": "b7ddbe06653afad0452c1b331e5a391da587ce3e2079f93706a9992fb7a0950a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/django/proj/settings.py",
+    "line": "10",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CELERY_BROKER_URL = 'amqp://guest:guest@localhost'",
+      "column": "21",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "713042ee67b865fd58896cd8a85b7955e2d1afa3cd3c70e177cdc4b9d31edaf3",
+        "2812316342a64c89b8d3a73ed99cdfcd879c55686c6c18ef28a7c5a896341d09"
+      ],
+      "vulnHash": "dec1c729b7a804fd5ae8958eba1cac07273a95187c895352cae8128b30dfa55d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/whatsnew-4.4.rst",
+    "line": "207",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "``mongodb://user:password@example.com/?authSource=the_database&authMechanism=SCRAM-SHA-256``",
+      "column": "6",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5bf783e288f4a2bee8ab2b89db5c1b52fb9b23c114f4f4058a030c80277b0eec",
+        "1bb446c8a541371e842b16b62f038a1088d394fba503ab6db003e6c7d79fe1ae"
+      ],
+      "vulnHash": "79217a8ac96ab9457dedbe5a684db1ec8d51cc8a80bc4d9e1113a77d5bab5e1c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "celery/app/defaults.py",
+    "line": "128",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "access_key_id=Option(type='string'),",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d5e3c21c715f264c9555515d7250ac43b14236d6a763c1c817604311f73ad52b",
+        "b73fb6d0dc9c93f3084ffa09743ef37b8caea9affb8a3a689cd832db92e1154c"
+      ],
+      "vulnHash": "f52d4666d387c4c0632a385fa28b2a667011bd1e59e853de355d482d7cb0b6be"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "celery/app/defaults.py",
+    "line": "129",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "secret_access_key=Option(type='string'),",
+      "column": "15",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5d33c259750be86d254cd18eef34c115e0e0ed1bda0bc20eea3a477e61f2f965",
+        "713cb1e732d631e2912db09d012d73d6ba3b4a74e44a18a2812fbda0b6e8c582"
+      ],
+      "vulnHash": "20f6899bbfde3ab0789081f6079f1a20d06b5d866551f38cdd94368380fd1861"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.0.rst",
+    "line": "509",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CELERY_RESULT_DBURI = 'mysql://scott:tiger@localhost/foo'",
+      "column": "27",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1836c8ecbb768c27953cdbd32cf0520d8d8ead61c3ed6ae9ffefdf960c6ae746",
+        "cf7957a84d6e04f605ecc1f00b74eb826cf026bfd57bbc76558b48b71581ede8"
+      ],
+      "vulnHash": "74a5c2e9ede05a847f3fd0e4e7b6523e34bbe4b4f52291ae7e6ba4b63798bc8c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.0.rst",
+    "line": "512",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CELERY_RESULT_DBURI = 'postgresql://scott:tiger@localhost/mydatabase'",
+      "column": "27",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c79145c44b6708c61f90c212a6c73a1bbeae9f717fc85a6bc2f161028d82c760",
+        "13918bdd2b01651a9e445c16dd9743191b434dd5517f68f55a790f00c42b3dba"
+      ],
+      "vulnHash": "f8aac03061b1eef0bf5c81f700ff779992354899412595d0cf53bd8709ed6fdc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-2.0.rst",
+    "line": "515",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "CELERY_RESULT_DBURI = 'oracle://scott:tiger@127.0.0.1:1521/sidname'",
+      "column": "27",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f51fb6f5e7483f675588e65491083db0e89aa89e17f0665c71b5c0a5ea105827",
+        "66ac198278115e416d3e5534acc0ca91e48426a9600b6cc77c6c70a538375f05"
+      ],
+      "vulnHash": "b0dcd30969393251646a7405adb63f7bda248f71232979da52021b2fbe0af99d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/sqs.rst",
+    "line": "42",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "aws_access_key = safequote(\"ABCDEFGHIJKLMNOPQRST\")",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "db28fb0d86e360e0e64a06c03da36bc72df0dd18d966dd1f216fc21002db2ae9",
+        "5ed655d818cee8ce4b470b84160a89bb1784de37e8a7c5ba6f2920733e5d8d9a"
+      ],
+      "vulnHash": "fc366d1d85245b7f71fee699ba492ba30a8b35b251d425e5950522dfa048b8fd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/sqs.rst",
+    "line": "43",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "aws_secret_key = safequote(\"ZYXK7NiynG/TogH8Nj+P9nlE73sq3\")",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6469e829f467e0fc1251c1c0ebc559dc62cef607116a9feba8b14cc46c7b6202",
+        "bcc5d986852d91ac424b1112ae198a1299406bce6a6f166513b9d7e28d8e8ec3"
+      ],
+      "vulnHash": "fd090e1c1b2839650408f3758f227387a740d5225357e338c09b0a0d3cf318ee"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/sqs.rst",
+    "line": "190",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "AWS_ACCESS_KEY_ID = os.getenv(\"AWS_ACCESS_KEY_ID\")",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8d3d9aef022eb6ac6664e5b58733283c1f591880675d3fd4f713ec2ca8e9a932",
+        "d8ad03c83d2b6f0bcbf5db7c590b4a85ce3491e9eb338dde8b1b4b6543097b15"
+      ],
+      "vulnHash": "0f3f418f5cd70db263df26bf5d17875bfc25166748c62d7bacfdcdfa89595ed3"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/sqs.rst",
+    "line": "191",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "AWS_SECRET_ACCESS_KEY = os.getenv(\"AWS_SECRET_ACCESS_KEY\")",
+      "column": "15",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "fe4e927f00a3869f0153e5ff23c56f4d593ea15f0a6f3b659727f9a6673cedf5",
+        "d6cfdd1d68d3ee961926295ebba1f2bd7ef6a4ed70ead83fe29aa3013dbd65ee"
+      ],
+      "vulnHash": "2d0417290d969e4578d024d107a5f1c3d0a45249f05c5903dd722e39ee42f86e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/sqs.rst",
+    "line": "45",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = \"sqs://{aws_access_key}:{aws_secret_key}@\".format(",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "672f559480a923fa1c6104605130ff823f017b1121f9f5b1744c548a4b4e5bf2",
+        "e32fb72847b9ac574bbc36fc11c9dfe7af98bbdad8bb3fe06334c6270dd92557"
+      ],
+      "vulnHash": "1b3ca1a1de241579561b7cd88641edcac9f56eb4e9d9072a37785e729c8bda4b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/rabbitmq.rst",
+    "line": "19",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = 'amqp://myuser:mypassword@localhost:5672/myvhost'",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a24815c74049a41d5cbf561c08967920419c77efe1a05486d8c066a29eaf88c6",
+        "ff418e3fe8bee7f823fe0195dcca3366d5b9c36d0eadf1e4ef0138a2958d8227"
+      ],
+      "vulnHash": "24cba6c08d4a1a6cd889838916c642e260dd674b15f82fceb67fbf07ec302e1d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": "10",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "BROKER_URL = 'amqp://guest:guest@localhost:5672//'",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8428f054819aa0d7ef8e1ebbf3dddf658ab4513b335d344db4c309dded7c96c6",
+        "56d8db6a5f95c07597124f6631e0ac2da1dda03a748ca00877d0a7c9e148cda7"
+      ],
+      "vulnHash": "cf6f9265a16a4ed25b489ef917ffc148cdfe3f23a099e1c893e05246c11255fe"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/getting-started/backends-and-brokers/redis.rst",
+    "line": "72",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "app.conf.broker_transport_options = { 'sentinel_kwargs': { 'password': \"password\" } }",
+      "column": "64",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2b421f8263dcc60e2ca0849e974ff098663551698a9fe37e697091c792bc62cc",
+        "83571553ed5fc8701870d5cd174f8e95d5e7de91a74197dc8484dff4eea009a1"
+      ],
+      "vulnHash": "96a212b559a1551c8e278eb0e997241c963c0be1aa333c8db0e33c657e233145"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-7",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-1.0.rst",
+    "line": "1271",
+    "message": "(1/1) * Possible vulnerability detected: Twitter Client ID\nWhen use Twitter Client ID is recommended use vault or environment variable encrypted for the best security. For more information checkout the CWE-312 (https://cwe.mitre.org/data/definitions/312.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "example `\"djangotwitter.tasks.UpdateStatusesTask\"`. Very convenient.",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d1b9173c2f77b57c811b95ca6c134934aa1557489bf46991ae20dd5ce3bad749",
+        "b57103dee74790eddecdf64cfb2869ef7bc06bbfa3bf26576f6a5395f8d28d1b"
+      ],
+      "vulnHash": "59ce8d7a5e96b975e133a9d23ff53f4bb50268a29284eab04d5c3bd59e65a58e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-1.0.rst",
+    "line": "1038",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "AMQP_PASSWORD = 'mypassword'",
+      "column": "13",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a60059df20b21c7d4de42b64d0d98e7041dfc489f406149b95462c1fa6a46445",
+        "8d2109964293f9401478ddfa474b7230d302c99dc1b9ad4bcca9e5898bdb4cca"
+      ],
+      "vulnHash": "d1c1d47f456bc16ff2fef2c1976f329896c4b911a5ac5aa8328952e6d6226266"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/history/changelog-1.0.rst",
+    "line": "1046",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "BROKER_PASSWORD = 'mypassword'",
+      "column": "15",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5a521a9233acdf73cd87fd4e467d33890b3156e40b33ed7860645bdbb5c2a0a1",
+        "f740ff434f1c503555d7f6b9a642c8b38ae4598e1d8dbc1ba4e246392b847fe4"
+      ],
+      "vulnHash": "a856f9d55fd27b0c1305bb427d872b895fb2bca6cf8686f69202d2485a60decc"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1705",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "s3_access_key_id = 'access_key_id'",
+      "column": "7",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "77f96114292228f864a1a75a8c4de9b5d1a9c821cc207a5ab652938db016530d",
+        "277f397fb224fb4f31c0da81649655af4226b20dba8315ac70da523bf9cdad01"
+      ],
+      "vulnHash": "1776c66c2d009f155b37e3d64c3e5774d7d2f770e655c7f65bbeb7ed5ec0a117"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1716",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "s3_secret_access_key = 'access_secret_access_key'",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3c62690995e945dd212fe70ceba50d1ba9125fa0cd87a6ec10f99c8f1eae3fe0",
+        "a35060d8392c37a2086a0ebe76e491f71c9a32e43cbd085d62ad27f431f5ca9a"
+      ],
+      "vulnHash": "80effebebd7aa7e54af2dd7726d5a2880bf3643fb72513a2c2ce70ca1efb0004"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1767",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "s3_access_key_id = 's3-access-key-id'",
+      "column": "7",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "be0679e3d8ad3a4254e46f3512edbc07d9ac02d70d8dd7c4d5fbf55384b80405",
+        "2350ac82b6b769d6eebe10a49fbb60b45b0f0837196b1edcec7cb4ce1cce58b7"
+      ],
+      "vulnHash": "da1e4398f83a1e0c9ab24a289fcee0c64be1f5e028220a5c094415d5758f28f5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-25",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1768",
+    "message": "(1/1) * Possible vulnerability detected: Potential Hard-coded credential\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "s3_secret_access_key = 's3-secret-access-key'",
+      "column": "14",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "046770fa4ce71f9564f182dc14d35d10594f76004877a4eca28b4c366da2c41c",
+        "ac9c1c1f53011f350158b46c3fd2a4326f21e32f562f467c75bb0bfea6b24905"
+      ],
+      "vulnHash": "a93cf65337126a9b6f016d4228402d5ace8c3520e3ca4b89f31a780b603253cd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-26",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1578",
+    "message": "(1/1) * Possible vulnerability detected: Hard-coded password\nThe software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data. For more information checkout the CWE-798 (https://cwe.mitre.org/data/definitions/798.html) advisory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "password: 'cassandra'",
+      "column": "8",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ba877867a5b88de5135d68931a7b254aadfd714682ace0dcf956a55c0511af0e",
+        "b2c08617e41dc5ed33cbdc388ef200fcec9c3953e2f81a9ac5dc3221e69fa935"
+      ],
+      "vulnHash": "9aab1259a8384e418b09f42395a1422850f4c0d72d2a8c3ac64c2be5a600a653"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "27",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_url = 'amqp://guest:guest@localhost:5672//'",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "cccd47e532bd391b36b94214f0b17691eae4c88ef0d22068cc5c215033f00ea2",
+        "87e61ba434e5a2cb80609d01634fb96b4851f5083400d209264b909f90c28b11"
+      ],
+      "vulnHash": "b2a494e62310278318addc50e023a9cecfc213bf0866570b7a041b230f5ac5f7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "970",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'db+scheme://user:password@host:port/dbname'",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dbb1bce7cdbd288db7a6a43fbdd037f2ae566acca0b96862a519350c0cd721b1",
+        "a518f7fadd48c4c00e77afc1305fb484c8491d4cef1a46663c4f0752b127de21"
+      ],
+      "vulnHash": "7987a38d308ccf23b7782415ce9b0b4318bb53b81a712dd223d896a8167058f7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "978",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'db+mysql://scott:tiger@localhost/foo'",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a9459d7bb0a34a5d1be42af256c3e00e8d4853681cebda71c2d221a0d6f3b29d",
+        "6f52bfa90795ea3d65d61066f0b5b994fb637f7cbd5498b5582ac0054c6d9908"
+      ],
+      "vulnHash": "4cd41f0cf5f758aaaed1d630c5ee2c682a31b0cd0218f6828c8cd02e5c6a34bf"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "981",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'db+postgresql://scott:tiger@localhost/mydatabase'",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "6e1816175f966b5901e5568a79c95af5a6f7fbf237dc97bf375b6b47681eff33",
+        "fcc90d8436024ee05c6bf9b58a4de361acb3689c5aab3241b07e141f2a7c6953"
+      ],
+      "vulnHash": "06a28f02ce6b5d6768e33a4e8b24a3a2db7e8f3099a292e0d461c368b2ed6cfd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "984",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'db+oracle://scott:tiger@127.0.0.1:1521/sidname'",
+      "column": "25",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "8b09c7a0f07caa3a39062d708ff0fd1119bd8dc42cc9c301a996ed0d51199eee",
+        "a6d1108381e0c61c69f47ec70ea03533a7cb1b631edd119d428a1794ebd2add4"
+      ],
+      "vulnHash": "6cb2e071abd422fc670067a74908cad77613df6cd9f8389828bb4de9fdd6ec82"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1248",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'redis://username:password@host:port/db'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ac55b7920aa0a820f5331c4e0a5a28c29ee52ffa977ab966b870c7c8858dfd4e",
+        "dc7ab8af3eaf438e71a66232eefadd54f87c63591ebf71f12bbc31d59422c08a"
+      ],
+      "vulnHash": "27a4d9891833bfa1012610514223e27a45f4df1cb2659599886424ea5137a4fe"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "1263",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'rediss://username:password@host:port/db?ssl_cert_reqs=required'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "a12c8393b5db86a9efce1aafd78860f67bbc030ff1beb535e17df79c3aa12aca",
+        "940e9d9c5d58dfe602b571a95c43f8da11e16c7cb8d5899433e273d32d75ad38"
+      ],
+      "vulnHash": "b0c1babc21cba4822ee291adfa6e7829976d7f0e2c2bf51a0d954ef28c5c5346"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2122",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'ironcache://project_id:token@'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "144eb61ba094182b70a532bc6fa0d71d3bd153048538ff69d75288b69543867f",
+        "02de39eb0adcf578fc8b373cbfd20080668d2a6403db34c765c30bb990c2449c"
+      ],
+      "vulnHash": "67ba64bf80e7999e390649c5753e3ae4faeb1a6be8e60079e6cdc151cc4bdb41"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2153",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'couchbase://username:password@host:port/bucket'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "55c423f5dedd3632565ef625b594013a1006aeb6870c665eb8c89970c46e3a06",
+        "43647568334d50653844fa4602218131467d745e8817a31ca0d8f24e8e278ed9"
+      ],
+      "vulnHash": "239f7244dca22f969b1e9d11cc79a37e8570461cfd6fa825a19ee25a611bfc73"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2208",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'arangodb://username:password@host:port/database/collection'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0915346b32fd60c6b3e7c465b9073dfb303390b18548eefdd3f9c6fd367b85c0",
+        "f9a30f88f14c5c891e434fe914bfaec59ce568eb7ee646b38de07443ce6936a6"
+      ],
+      "vulnHash": "9fc8e1aa32b9e6d5a7614407b8d992c1a2326bff7ace19ac58fc87b2c3d3155c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2338",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "result_backend = 'couchdb://username:password@host:port/container'",
+      "column": "22",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0da53b12521ac7e79dfb29649538e4ad09d083dbd12c26ac25a4348f44d2ce6d",
+        "081097b8db7cad3c80c9fe66ef2bd26aa18168bc743b115abf25d94e058a3b24"
+      ],
+      "vulnHash": "af3dd6384978bfca90be50ae3a7983a18828e4dac3cd9613bf060e3249a1d113"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2800",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "transport://userid:password@hostname:port/virtual_host",
+      "column": "4",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b1b15d6d982455c023315eaa616529f005cc2ab6b6f3078d363e67902af81c39",
+        "1977459f50062d5b59635e6537fe70fa1f2bc373a9be33c4f26d6868b16218c7"
+      ],
+      "vulnHash": "3a46abca34f77d4dc7e2b16f86cf6e3eee319b9a1e2295d6fccb04ad99a4b40d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2818",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "sport://userid:password@hostname:port//;transport://userid:password@hostname:port//'",
+      "column": "18",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0b52d27aa4ab4987bef0942bec430a03bc58a81ed16e537ca7aac5215f54cee5",
+        "6fd4cf836853da15a62d8079d468afa44ae5fa3206f0d90cdd8a5f5c986374bb"
+      ],
+      "vulnHash": "2b1a045bc9f6f2497edb918292be74f98d58981e02d7ea2a71635b0e9197f7e0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2823",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'transport://userid:password@localhost:port//',",
+      "column": "9",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e758ae42eda4ae82f5023c1c77249d161899a45d8afe12c6bf06e5f04410ef3b",
+        "12404df0a222aff65a3e38659a23cf84ebea9b781ea4a0441d977354d0b053da"
+      ],
+      "vulnHash": "cf4d89d9ab91e1266d36e6bb096c4a5211b3d79ff7b5a069be743e4294a9b6ba"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2824",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "'transport://userid:password@hostname:port//'",
+      "column": "9",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2c6656cea76abadbd1d56ff77647cb35c489737009b6db19681814301f8e74da",
+        "50f2779ff0097d1a0d180548c0a4dc14db2f7bdf49c825bd63eaabd2dc9af908"
+      ],
+      "vulnHash": "a476751ad102a6a6a754b74f2d253cc62b1dc60ad0c9586ab529136afccd0dc4"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2847",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_read_url = 'amqp://user:pass@broker.example.com:56721'",
+      "column": "23",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2a35de65d4c0673faa583e36328cd946e955537d6f87d0309075b350de5f2ad7",
+        "25417da143bf10045eb0b5623043b3303c99f1fd74f794882a1d41675816aa64"
+      ],
+      "vulnHash": "53af12416a868fc907e5ad5d1c010af048cdcee2e55ef2244c22d96a3fbfed3a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "HS-LEAKS-27",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docs/userguide/configuration.rst",
+    "line": "2848",
+    "message": "(1/1) * Possible vulnerability detected: Password found in a hardcoded URL\nA password was found in a hardcoded URL, this can lead to not only the leak of this password but also a failure point to some more sophisticated CSRF and SSRF attacks. Check CWE-352 (https://cwe.mitre.org/data/definitions/352.html) and CWE-918 (https://cwe.mitre.org/data/definitions/918.html) for more details.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "broker_write_url = 'amqp://user:pass@broker.example.com:56722'",
+      "column": "24",
+      "language": "Leaks",
+      "securityTool": "HorusecEngine",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "19c57cb7525805ec0e2e1c19a3f4ac12d560c041f7fe0369695f41d62aca6db2",
+        "486cc2708ee7df5e3d4a80382052099f549e12554685792c78956a533236b42d"
+      ],
+      "vulnHash": "b3f2b08a6a915d8e44cebac415ffcc2a4adcc5096e78c3f851c519e1c6e43e11"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "38749",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/django/requirements.txt",
+    "line": "1",
+    "message": "(1/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.16\nMore Information: Django 2.2.16, 3.0.10 and 3.1.1 include a fix for CVE-2020-24583: An issue was discovered in Django 2.2 before 2.2.16, 3.0 before 3.0.10, and 3.1 before 3.1.1 (when Python 3.7+ is used). FILE_UPLOAD_DIRECTORY_PERMISSIONS mode was not applied to intermediate-level directories created in the process of uploading files. It was also not applied to intermediate-level collected static directories when using the collectstatic management command.\r\n#NOTE: This vulnerability affects only users of Python versions above 3.7.\r\nhttps://www.djangoproject.com/weblog/2020/sep/01/security-releases\n         \n(2/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.16\nMore Information: An issue was discovered in Django 2.2 before 2.2.16, 3.0 before 3.0.10, and 3.1 before 3.1.1 (when Python 3.7+ is used). The intermediate-level directories of the filesystem cache had the system's standard umask rather than 0o077.\n         \n(3/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.19\nMore Information: Django versions 2.2.19, 3.0.13 and 3.1.7 include a fix for CVE-2021-23336: Web cache poisoning via 'django.utils.http.limited_parse_qsl()'. Django contains a copy of 'urllib.parse.parse_qsl' which was added to backport some security fixes. A further security fix has been issued recently such that 'parse_qsl(' no longer allows using ';' as a query parameter separator by default.\n         \n(4/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.21\nMore Information: Django 2.2.21, 3.1.9 and 3.2.1 include a fix for CVE-2021-31542: MultiPartParser, UploadedFile, and FieldFile allowed directory traversal via uploaded files with suitably crafted file names.\r\nhttps://www.djangoproject.com/weblog/2021/may/04/security-releases\n         \n(5/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.24\nMore Information: Django 2.2.24, 3.1.12, and 3.2.4 include a fix for CVE-2021-33571: In Django 2.2 before 2.2.24, 3.x before 3.1.12, and 3.2 before 3.2.4, URLValidator, validate_ipv4_address, and validate_ipv46_address do not prohibit leading zero characters in octal literals. This may allow a bypass of access control that is based on IP addresses. (validate_ipv4_address and validate_ipv46_address are unaffected with Python 3.9.5+).\r\nhttps://www.djangoproject.com/weblog/2021/jun/02/security-releases\n         \n(6/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.25\nMore Information: Django versions 2.2.25, 3.1.14 and 3.2.10 include a fix for CVE-2021-44420: In Django 2.2 before 2.2.25, 3.1 before 3.1.14, and 3.2 before 3.2.10, HTTP requests for URLs with trailing newlines could bypass upstream access control based on URL paths.\r\nhttps://www.djangoproject.com/weblog/2021/dec/07/security-releases/\n         \n(7/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.26\nMore Information: Django 2.2.26, 3.2.11 and 4.0.1 include a fix for CVE-2021-45116: An issue was discovered in Django 2.2 before 2.2.26, 3.2 before 3.2.11, and 4.0 before 4.0.1. Due to leveraging the Django Template Language's variable resolution logic, the dictsort template filter was potentially vulnerable to information disclosure, or an unintended method call, if passed a suitably crafted key.\r\nhttps://www.djangoproject.com/weblog/2022/jan/04/security-releases\n         \n(8/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.26\nMore Information: Django 2.2.26, 3.2.11 and 4.0.1 include a fix for CVE-2021-45452: Storage.save in Django 2.2 before 2.2.26, 3.2 before 3.2.11, and 4.0 before 4.0.1 allows directory traversal if crafted filenames are directly passed to it.\r\nhttps://www.djangoproject.com/weblog/2022/jan/04/security-releases/\n         \n(9/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.26\nMore Information: Django 2.2.26, 3.2.11 and 4.0.1 include a fix for CVE-2021-45115: UserAttributeSimilarityValidator incurred significant overhead in evaluating a submitted password that was artificially large in relation to the comparison values. In a situation where access to user registration was unrestricted, this provided a potential vector for a denial-of-service attack.\r\nhttps://www.djangoproject.com/weblog/2022/jan/04/security-releases/\n         \n(10/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.27\nMore Information: Django 2.2.27, 3.2.12 and 4.0.2 include a fix for CVE-2022-23833: Denial-of-service possibility in file uploads.\r\nhttps://www.djangoproject.com/weblog/2022/feb/01/security-releases\n         \n(11/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.27\nMore Information: The {% debug %} template tag in Django 2.2 before 2.2.27, 3.2 before 3.2.12, and 4.0 before 4.0.2 does not properly encode the current context. This may lead to XSS.\n         \n(12/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.28\nMore Information: Django 2.2.28, 3.2.13 and 4.0.4 include a fix for CVE-2022-28347: A SQL injection issue was discovered in QuerySet.explain() in Django 2.2 before 2.2.28, 3.2 before 3.2.13, and 4.0 before 4.0.4. This occurs by passing a crafted dictionary (with dictionary expansion) as the **options argument, and placing the injection payload in an option name.\r\nhttps://www.djangoproject.com/weblog/2022/apr/11/security-releases\n         \n(13/56) * Possible vulnerability detected:  Versions Unsafes: <2.2.28\nMore Information: Django 2.2.28, 3.2.13 and 4.0.4 include a fix for CVE-2022-28346: An issue was discovered in Django 2.2 before 2.2.28, 3.2 before 3.2.13, and 4.0 before 4.0.4. QuerySet.annotate(), aggregate(), and extra() methods are subject to SQL injection in column aliases via a crafted dictionary (with dictionary expansion) as the passed **kwargs.\r\nhttps://www.djangoproject.com/weblog/2022/apr/11/security-releases\n         \n(14/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.14\nMore Information: Django 3.2.14 and 4.0.6 include a fix for CVE-2022-34265: Potential SQL injection via Trunc(kind) and Extract(lookup_name) arguments.\r\nhttps://www.djangoproject.com/weblog/2022/jul/04/security-releases\n         \n(15/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.16\nMore Information: In Django 3.2 before 3.2.16, 4.0 before 4.0.8, and 4.1 before 4.1.2, internationalized URLs were subject to a potential denial of service attack via the locale parameter, which is treated as a regular expression.\n         \n(16/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.17\nMore Information: Django 3.2.17, 4.0.9 and 4.1.6 includes a fix for CVE-2023-23969: In Django 3.2 before 3.2.17, 4.0 before 4.0.9, and 4.1 before 4.1.6, the parsed values of Accept-Language headers are cached in order to avoid repetitive parsing. This leads to a potential denial-of-service vector via excessive memory usage if the raw value of Accept-Language headers is very large.\r\nhttps://www.djangoproject.com/weblog/2023/feb/01/security-releases\n         \n(17/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.18\nMore Information: Django 4.1.7, 4.0.10 and 3.2.18 include a fix for CVE-2023-24580: Potential denial-of-service vulnerability in file uploads.\r\nhttps://www.djangoproject.com/weblog/2023/feb/14/security-releases\n         \n(18/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.19\nMore Information: Django 4.2.1, 4.1.9 and 3.2.19 include a fix for CVE-2023-31047: In Django 3.2 before 3.2.19, 4.x before 4.1.9, and 4.2 before 4.2.1, it was possible to bypass validation when using one form field to upload multiple files. This multiple upload has never been supported by forms.FileField or forms.ImageField (only the last uploaded file was validated). However, Django's \"Uploading multiple files\" documentation suggested otherwise.\r\nhttps://www.djangoproject.com/weblog/2023/may/03/security-releases\n         \n(19/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.20\nMore Information: Affected versions of Django are vulnerable to a potential ReDoS (regular expression denial of service) in EmailValidator and URLValidator via a very large number of domain name labels of emails and URLs.\n         \n(20/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.21\nMore Information: Affected versions of Django are vulnerable to potential Denial of Service via certain inputs with a very large number of Unicode characters in django.utils.encoding.uri_to_iri().\n         \n(21/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.22\nMore Information: Affected versions of Django are vulnerable to Denial-of-Service via django.utils.text.Truncator. The django.utils.text.Truncator chars() and words() methods (when used with html=True) are subject to a potential DoS (denial of service) attack via certain inputs with very long, potentially malformed HTML text. The chars() and words() methods are used to implement the truncatechars_html and truncatewords_html template filters, which are thus also vulnerable. NOTE: this issue exists because of an incomplete fix for CVE-2019-14232.\n         \n(22/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.23\nMore Information: Django 4.2.7, 4.1.13 and 3.2.23 include a fix for CVE-2023-46695: Potential denial of service vulnerability in UsernameField on Windows.\r\nhttps://www.djangoproject.com/weblog/2023/nov/01/security-releases\n         \n(23/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.24\nMore Information: Affected versions of Django are vulnerable to potential denial-of-service in intcomma template filter when used with very long strings.\n         \n(24/56) * Possible vulnerability detected:  Versions Unsafes: <3.2.25\nMore Information: Affected versions of Django are vulnerable to potential regular expression denial-of-service (REDoS). django.utils.text.Truncator.words() method (with html=True) and truncatewords_html template filter were subject to a potential regular expression denial-of-service attack using a suitably crafted string (follow up to CVE-2019-14232 and CVE-2023-43665).\n         \n(25/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.14\nMore Information: Affected versions of Django are affected by a potential denial-of-service vulnerability in the django.utils.html.urlize() function. The urlize and urlizetrunc template filters were susceptible to a denial-of-service attack via certain inputs containing many brackets. An attacker could exploit this vulnerability to cause significant delays or crashes in the affected application.\n         \n(26/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.14\nMore Information: Affected versions of Django are affected by a directory-traversal vulnerability in the Storage.save() method. Derived classes of the django.core.files.storage.Storage base class that overrides the generate_filename() method without replicating the file path validations existing in the parent class could allow for directory traversal via certain inputs when calling save(). This could enable an attacker to manipulate file paths and access unintended directories.\n         \n(27/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.14\nMore Information: Affected versions of Django are affected by a username enumeration vulnerability caused by timing differences in the django.contrib.auth.backends.ModelBackend.authenticate() method. This method allowed remote attackers to enumerate users through a timing attack involving login requests for users with unusable passwords. The timing difference in the authentication process exposed whether a username was valid or not, potentially aiding attackers in gaining unauthorized access.\n         \n(28/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.14\nMore Information: Affected versions of Django are potentially vulnerable to denial-of-service via the get_supported_language_variant() method. This method was susceptible to a denial-of-service attack when used with very long strings containing specific characters. Exploiting this vulnerability could cause significant delays or crashes in the affected application, potentially leading to service disruption.\n         \n(29/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.15\nMore Information: Django has a potential denial-of-service vulnerability in django.utils.html.urlize() and AdminURLFieldWidget. The urlize and urlizetrunc functions, along with AdminURLFieldWidget, are vulnerable to denial-of-service attacks when handling inputs with a very large number of Unicode characters.\n         \n(30/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.15\nMore Information: Django addresses a memory exhaustion issue in django.utils.numberformat.floatformat(). When floatformat receives a string representation of a number in scientific notation with a large exponent, it could lead to excessive memory consumption. To prevent this, decimals with more than 200 digits are now returned as-is.\n         \n(31/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.15\nMore Information: Affected versions of Django has a potential SQL injection vulnerability in the QuerySet.values() and QuerySet.values_list() methods. When used on models with a JSONField, these methods are susceptible to SQL injection through column aliases if a crafted JSON object key is passed as an argument.\n         \n(32/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.16\nMore Information: A potential denial-of-service vulnerability has been identified in Django's urlize() and urlizetrunc() functions in django.utils.html. This vulnerability can be triggered by inputting huge strings containing a specific sequence of characters.\n         \n(33/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.16\nMore Information: A security vulnerability has been discovered in certain versions of Django, affecting the password reset functionality. The PasswordResetForm class in django.contrib.auth.forms inadvertently allowed attackers to enumerate user email addresses by exploiting unhandled exceptions during the email sending process. This could be done by issuing password reset requests and observing the responses. Django has implemented a fix where these exceptions are now caught and logged using the django.contrib.auth logger, preventing potential information leakage through error responses.\n         \n(34/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.17\nMore Information: Affected versions of Django are vulnerable to a potential denial-of-service (DoS) attack in the `django.utils.html.strip_tags()` method. The vulnerability occurs when the `strip_tags()` method or the `striptags` template filter processes inputs containing large sequences of nested, incomplete HTML entities.\n         \n(35/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.17\nMore Information: Django affected versions are vulnerable to a potential SQL injection in the HasKey(lhs, rhs) lookup on Oracle databases. The vulnerability arises when untrusted data is directly used as the lhs value in the django.db.models.fields.json.HasKey lookup. However, applications using the jsonfield.has_key lookup with the __ syntax remain unaffected by this issue.\n         \n(36/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.21\nMore Information: An issue was discovered in Django 4.2 before 4.2.21, 5.1 before 5.1.9, and 5.2 before 5.2.1. The django.utils.html.strip_tags() function is vulnerable to a potential denial-of-service (slow performance) when processing inputs containing large sequences of incomplete HTML tags. The template filter striptags is also vulnerable, because it is built on top of strip_tags().\n         \n(37/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.22\nMore Information: An issue was discovered in Django 5.2 before 5.2.3, 5.1 before 5.1.11, and 4.2 before 4.2.23. Internal HTTP response logging does not escape request.path, which allows remote attackers to potentially manipulate log output via crafted URLs. This may lead to log injection or forgery when logs are viewed in terminals or processed by external systems.\n         \n(38/56) * Possible vulnerability detected:  Versions Unsafes: <4.2.24\nMore Information: Affected versions of the Django package are vulnerable to SQL Injection due to insufficient input sanitization in FilteredRelation column aliases. The FilteredRelation class fails to properly validate or escape column alias names when they are provided through dictionary expansion as keyword arguments to QuerySet.annotate() or QuerySet.alias() methods, allowing malicious SQL code to be injected directly into the generated database queries.\n         \n(39/56) * Possible vulnerability detected:  Versions Unsafes: >=1.7,<2.2.24\nMore Information: Affected versions of the Django package are vulnerable to Path Traversal due to improper validation of file paths in the django.contrib.admindocs module. The `TemplateDetailView` view allows staff members to verify the existence of arbitrary files by manipulating the file path. An attacker with staff privileges can exploit this vulnerability to check for the presence of files outside the template root directories, and if the `admindocs` templates are customized to display file contents, they can also access the contents of these files.\n         \n(40/56) * Possible vulnerability detected:  Versions Unsafes: >=2.0a1,<2.2.10\nMore Information: Django 1.11.28, 2.2.10 and 3.0.3 include a fix for CVE-2020-7471: SQL Injection if untrusted data is used as a StringAgg delimiter (e.g., in Django applications that offer downloads of data as a series of rows with a user-specified column delimiter). By passing a suitably crafted delimiter to a contrib.postgres.aggregates.StringAgg instance, it was possible to break escaping and inject malicious SQL.\n         \n(41/56) * Possible vulnerability detected:  Versions Unsafes: >=2.0a1,<2.2.18\nMore Information: Django 2.2.18, 3.0.12 and 3.1.6 include a fix for CVE-2021-3281: The django.utils.archive.extract method (used by \"startapp --template\" and \"startproject --template\") allows directory traversal via an archive with absolute paths or relative paths with dot segments.\n         \n(42/56) * Possible vulnerability detected:  Versions Unsafes: >=2.0a1,<2.2.9\nMore Information: Django 1.11.27, 2.2.9 and 3.0.1 include a fix for CVE-2019-19844: Account takeover. A suitably crafted email address (that is equal to an existing user's email address after case transformation of Unicode characters) would allow an attacker to be sent a password reset token for the matched user account. One mitigation in the new releases is to send password reset tokens only to the registered user email address.\n         \n(43/56) * Possible vulnerability detected:  Versions Unsafes: >=2.1a1, <3.2.15\nMore Information: Affected versions of the `django` package are vulnerable to Download of Code Without Integrity Check due to improper handling of user-supplied input in the HTTP FileResponse class. The vulnerability arises because the Content-Disposition header of a FileResponse can be set using a filename derived from user input without sufficient validation. An attacker can exploit this by crafting a request that causes a file with malicious content to be downloaded, potentially executing arbitrary code on the client system when the file is opened.\n         \n(44/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.11\nMore Information: Django 1.11.29, 2.2.11 and 3.0.4 includes a fix for CVE-2020-9402: Django 1.11 before 1.11.29, 2.2 before 2.2.11, and 3.0 before 3.0.4 allows SQL Injection if untrusted data is used as a tolerance parameter in GIS functions and aggregates on Oracle. By passing a suitably crafted tolerance to GIS functions and aggregates on Oracle, it was possible to break escaping and inject malicious SQL.\r\nhttps://www.djangoproject.com/weblog/2020/mar/04/security-releases\n         \n(45/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.13\nMore Information: An issue was discovered in Django 2.2 before 2.2.13 and 3.0 before 3.0.7. In cases where a memcached backend does not perform key validation, passing malformed cache keys could result in a key collision, and potential data leakage.\n         \n(46/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.13\nMore Information: An issue was discovered in Django 2.2 before 2.2.13 and 3.0 before 3.0.7. Query parameters generated by the Django admin ForeignKeyRawIdWidget were not properly URL encoded, leading to a possibility of an XSS attack.\n         \n(47/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.2\nMore Information: Django versions 2.1.9 and 2.2.2 include a patched bundled jQuery version to avoid a Prototype Pollution vulnerability.\n         \n(48/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.2\nMore Information: Django 1.11.21, 2.1.9 and 2.2.2 include a fix for CVE-2019-12308: The clickable Current URL value displayed by the AdminURLFieldWidget displays the provided value without validating it as a safe URL. Thus, a non validated value stored in the database, or a value provided as a URL query parameter payload, could result in an clickable JavaScript link.\n         \n(49/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.20\nMore Information: In Django 2.2 before 2.2.20, 3.0 before 3.0.14, and 3.1 before 3.1.8, MultiPartParser allowed directory traversal via uploaded files with suitably crafted file names. Built-in upload handlers were not affected by this vulnerability.\n         \n(50/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.22\nMore Information: Django versions 3.2.2, 3.1.10 and 2.2.22 include a fix for CVE-2021-32052: In Django 2.2 before 2.2.22, 3.1 before 3.1.10, and 3.2 before 3.2.2 (with Python 3.9.5+), URLValidator does not prohibit newlines and tabs (unless the URLField form field is used). If an application uses values with newlines in an HTTP response, header injection can occur. Django itself is unaffected because HttpResponse prohibits newlines in HTTP headers.\r\nhttps://www.djangoproject.com/weblog/2021/may/06/security-releases\n         \n(51/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.3\nMore Information: An issue was discovered in Django 1.11 before 1.11.22, 2.1 before 2.1.10, and 2.2 before 2.2.3. An HTTP request is not redirected to HTTPS when the SECURE_PROXY_SSL_HEADER and SECURE_SSL_REDIRECT settings are used, and the proxy connects to Django via HTTPS. In other words, django.http.HttpRequest.scheme has incorrect behavior when a client uses HTTP.\n         \n(52/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.4\nMore Information: Django 1.11.23, 2.1.11 and 2.2.4 includes a fix for CVE-2019-14235: If passed certain inputs, django.utils.encoding.uri_to_iri could lead to significant memory usage due to a recursion when repercent-encoding invalid UTF-8 octet sequences.\n         \n(53/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.4\nMore Information: Django 1.11.23, 2.1.11 and 2.2.4 include a fix for CVE-2019-14234: Due to an error in shallow key transformation, key and index lookups for django.contrib.postgres.fields.JSONField, and key lookups for django.contrib.postgres.fields.HStoreField, were subject to SQL injection. This could, for example, be exploited via crafted use of \"OR 1=1\" in a key or index name to return all records, using a suitably crafted dictionary, with dictionary expansion, as the **kwargs passed to the QuerySet.filter() function.\n         \n(54/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.4\nMore Information: Django 1.11.23, 2.1.11, and 2.2.4 include a fix for CVE-2019-14233: Due to the behavior of the underlying HTMLParser, django.utils.html.strip_tags would be extremely slow to evaluate certain inputs containing large sequences of nested incomplete HTML entities.\n         \n(55/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.4\nMore Information: Django 1.11.23, 2.1.11 and 2.2.4 include a fix for CVE-2019-14232: If django.utils.text.Truncator's chars() and words() methods were passed the html=True argument, they were extremely slow to evaluate certain inputs due to a catastrophic backtracking vulnerability in a regular expression. The chars() and words() methods are used to implement the truncatechars_html and truncatewords_html template filters, which were thus vulnerable.\n         \n(56/56) * Possible vulnerability detected:  Versions Unsafes: >=2.2a1,<2.2.8\nMore Information: Django 2.1.15 and 2.2.8 includes a fix for CVE-2019-19118: A Django model admin displaying inline related models, where the user has view-only permissions to a parent model but edit permissions to the inline model, would be presented with an editing UI, allowing POST requests, for updating the inline model. Directly editing the view-only parent model was not possible, but the parent model's save() method was called, triggering potential side effects, and causing pre and post-save signal handlers to be invoked. To resolve this, the Django admin is adjusted to require edit permissions on the parent model in order for inline models to be editable.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "django>=2.2.1",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Safety",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e65d82493bf76e774b7415af8dcd05ff5e67b982aeda473a310d8e98b0089814",
+        "4bacdfece881e7e0a828bc8cc232b4ce13e090fa95a88dd85fdcc59b3dc2fd13"
+      ],
+      "vulnHash": "2782f69068a0e190f598514eba8c711876a41ee503f353ccaa53b5b54ba3d516"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "71592",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/django/requirements.txt",
+    "line": "2",
+    "message": "(1/2) * Possible vulnerability detected:  Versions Unsafes: <1.3.0\nMore Information: SQLAlchemy affected versions has SQL Injection when the group_by parameter can be controlled.\n         \n(2/2) * Possible vulnerability detected:  Versions Unsafes: <2.0.0b1\nMore Information: Sqlalchemy 2.0.0b1 avoids leaking cleartext passwords to the open for careless uses of str(engine.URL()) in logs and prints.\r\nhttps://github.com/sqlalchemy/sqlalchemy/pull/8563",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "sqlalchemy>=1.2.18",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Safety",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "35203ff894b4c33e278833e8f60cc570e6a8fa5ed9cc72b9470bfd0c404f3ed1",
+        "d2eeea8a6ca3ced0366d2277c46197760c1e1b7034c7769c305526dc4b053509"
+      ],
+      "vulnHash": "cb6c6d4ed5d0544cc206b001bd42a11d2ce118203f96297f30f6fdb0e68777ee"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "42498",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "examples/django/requirements.txt",
+    "line": "3",
+    "message": "(1/2) * Possible vulnerability detected:  Versions Unsafes: <5.2.0\nMore Information: Celery 5.2.0 updates 'kombu' to v5.2.1, which includes dependencies updates that resolve security issues.\n         \n(2/2) * Possible vulnerability detected:  Versions Unsafes: <5.2.2\nMore Information: Celery 5.2.2 includes a fix for CVE-2021-23727: Celery before 5.2.2. by default trusts the messages and metadata stored in backends (result stores). When reading task metadata from the backend, the data is deserialized. Given that an attacker can gain access to, or somehow manipulate the metadata within a celery backend, they could trigger a stored command injection vulnerability and potentially gain further access to the system.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "celery>=5.0.5",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Safety",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "eceb659acec928952e52aa8f62b9a2be5d36fa4d89fe426fbea884b25b4a2461",
+        "e0496b7ffdfe2f54354d10a044e11bbe1b44d34bd36392532a2335c0490b1f4e"
+      ],
+      "vulnHash": "732dda57432d90d530aa66e635fcb96efeade6c1c0d36f7333a980c917958b51"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "",
+    "rule_name": "Vulnerability",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "docker/docs/dockerfile",
+    "line": "0",
+    "message": "(1/1) * Possible vulnerability detected: MissConfiguration\n      Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.\n      Message: Specify at least 1 USER command in Dockerfile with non-root user as argument\n      Resolution: Add 'USER <non root user name>' line to the Dockerfile\n      References: [https://docs.docker.com/develop/develop-images/dockerfile_best-practices/ https://avd.aquasec.com/appshield/ds002]",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "root user",
+      "column": "0",
+      "language": "Generic",
+      "securityTool": "Trivy",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "267d8a081eb2baed23f8ca9095d71dc60afd0305218b36257cf840a0aee95216",
+        "916a64e1ca61b1762233c37017622876abfb6ff295fae6b41ee67e8ac38b4557"
+      ],
+      "vulnHash": "7c4e383c23b791e39122c97b0c29473e568b5a37e7979087cc8172e194ceda23"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B102",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "celery/utils/functional.py",
+    "line": "339",
+    "message": "(1/1) * Possible vulnerability detected: Use of exec detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "338     # Tasks are rarely, if ever, created at runtime - exec here is fine.\n339     exec(definition",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "c1630028ff8d9d1599ca0f5cb44b3bed1d9bb3df901ce38e99b14f379c2a1499",
+        "6eb89bfe529e186ba8b25298c5f14b467ba4e48e454c5ea999cf14dd7dd7b22a"
+      ],
+      "vulnHash": "f6ca5fc7617d27da03752c1164bc8571a9de905ebffec5d2baf20b823ad996a6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B301",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "132",
+    "message": "(1/1) * Possible vulnerability detected: Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "131         safe_exc_args = ensure_serializable(\n132             exc_args, lambda v: pickle.loads(pi",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "54926d997d68532f6a9ff404bc93997b556403665a14dc4a50b95da36102d4d4",
+        "e9d3dba138dcfdba548c421c0cd167b1efe3c18c8be4f7d4aa804355ffae4ea0"
+      ],
+      "vulnHash": "5bf2171e33913445ff62b69b76fb65c05d0a99731c2cd34ac4165d2cc0946037"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B301",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "164",
+    "message": "(1/1) * Possible vulnerability detected: Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "163     try:\n164         pickle.loads(pickle.dumps(exc))\n165     except Exception:  # pylint: disabl",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e4a31173fc9e184f894ff72cd06df8ce5f7888ec5094d4d2508298b9d54bc05d",
+        "d7f04fa6e6a45ff0898c134ecbd9d25f83e4d27d2a4cf101e1519ade5f88b1dc"
+      ],
+      "vulnHash": "a6d9f73a0b44b0f0263c4c0cd6579b3df942e04dddf2800e04bd40c9f10afd45"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "3",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "2 \n3 beat_pidfile = \"/tmp/beat.test.pid\"\n4 beat_logfile = \"/tmp/beat.test.log\"\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1a48c352f6b7eb67415173cc6f09ab4acba278edb8f55996f5bd4c23c9160e49",
+        "be1f8e086636d0ee4d8bd085ee59cec6e56ad51f0382e130acc7a85705f74a30"
+      ],
+      "vulnHash": "180b358f8309c42b95b97d469a517f5ea788c0de3bda78cdff19fd56f31bbc3f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "4",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "3 beat_pidfile = \"/tmp/beat.test.pid\"\n4 beat_logfile = \"/tmp/beat.test.log\"\n5 beat_uid = 42\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ccbd9b823482028a14f026843a3fe1ccd1936a33c660bb1dfee36d5987d5d6cf",
+        "f2f5798a1f595dc68b5176cb68b71d232b13e1b70c8656574be597def51f4e94"
+      ],
+      "vulnHash": "5c37ed4e4fab2de4fd9a48b586be3057deec45efa7d8ab5d8ca434165211851f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "10",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "9 \n10 events_pidfile = \"/tmp/events.test.pid\"\n11 events_logfile = \"/tmp/events.test.log\"\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7165962ee55065a1aeab9692790cdcde7393186ebf3a920fe8436ec675ca26a2",
+        "0b54b8d2bfeb23d1db2d4707f970f01224fd28358dbf31e44064547760cc8c2e"
+      ],
+      "vulnHash": "0b727cc2df33b39681f44ae697f3d1e5c4e7e674d700f5ae830c066091316ae8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "11",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "10 events_pidfile = \"/tmp/events.test.pid\"\n11 events_logfile = \"/tmp/events.test.log\"\n12 events_uid ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0f476958df319b6d0c2e8a9ad62c23509dd1fd4995a41fbe0ede18980f8232b8",
+        "d6f6bd0da2da1f4313b03ffa3a5fc971f7bb72af1727fdac85847502c2a1ab9a"
+      ],
+      "vulnHash": "5e8e6fa8abe14225cbd0c62eb5df2b4b95b39d8e412692105994467c544b0040"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "17",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "16 \n17 worker_pidfile = \"/tmp/worker.test.pid\"\n18 worker_logfile = \"/tmp/worker.test.log\"\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d2d694a7abe558ca7c9de3eb434b06d1539af786b2846398aa7af9e52a74cda0",
+        "df3f0fd9e7ed3602bf607fc5c5e5280849f6d3b9f71517514dbc478b2b3943cc"
+      ],
+      "vulnHash": "372935476be97d00baa418356bb6db312f095e79b74f126a0b5b57125c9e08d9"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B108",
+    "rule_name": "Vulnerability",
+    "severity": "MEDIUM",
+    "confidence": "MEDIUM",
+    "file": "t/unit/bin/proj/daemon_config.py",
+    "line": "18",
+    "message": "(1/1) * Possible vulnerability detected: Probable insecure usage of temp file/directory.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "17 worker_pidfile = \"/tmp/worker.test.pid\"\n18 worker_logfile = \"/tmp/worker.test.log\"\n19 worker_uid ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "bfe4a111a9ceefb45eea64dbbbde214c96bc031a720d41c3a2dc8c9f331b7baa",
+        "7233a2f333b71aad86c403c59be6df7773a075e40197d00bc266df749233c7cf"
+      ],
+      "vulnHash": "3f39a1e9ad59c811411388d1c3b744a16e050b103438334e86e9196fa44dcdc8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B404",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/apps/multi.py",
+    "line": "9",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with the subprocess module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "8 from functools import partial\n9 from subprocess import Popen\n10 from time import sleep\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "480c7c240b3ef724d0eaa026c6f21f69a35a7e1e3ef89a2da8207e80a8d8351d",
+        "aa54b1125507cbc8e32e4b423a834a75d7cb5c9c328d47d41a313294d6ae045c"
+      ],
+      "vulnHash": "cb4473858a238ba92a2e287871cdb067d9aa9a40a130267b9f0bf2f4f8d914ce"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B603",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/apps/multi.py",
+    "line": "216",
+    "message": "(1/1) * Possible vulnerability detected: subprocess call - check for execution of untrusted input.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "215         maybe_call(on_spawn, self, argstr=' '.join(argstr), env=env)\n216         pipe = Popen(ar",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4a394eb074b771a987980f460de1e64ff2bfb030b65e7b993c6c8013f0e16a5b",
+        "564eebf90d71910863cc7eed38d3cd4bf28a68ffd85927ce2ea7b297429fffef"
+      ],
+      "vulnHash": "45e92f33b3e59d3735efd2f9903cb87154c7cb68b7c7470bf5af3b4d9eae6bbd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B606",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "celery/apps/worker.py",
+    "line": "459",
+    "message": "(1/1) * Possible vulnerability detected: Starting a process without a shell.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "458     ])\n459     os.execv(sys.executable, [sys.executable] + sys.argv)\n460 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f891f607dae58cc6897ce6c3adfc2ffcfd610e075a2a9d3df583e6c0d4a4174f",
+        "09ada777a579b095b08b82c838ededf2a55bdccd8f1091552ffe343b80035a06"
+      ],
+      "vulnHash": "e851f50196377bc8ebabe35ca3a638334c669b5203bc7a036da2dff50a0e1396"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/backends/base.py",
+    "line": "375",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "374                             backend._call_task_errbacks(fake_request, original_exc, None)\n375   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "485b8234888e1674bfa64bf29915b261fbbd5d395c641c42b907ac9c91d48373",
+        "da606816e51a533266f79b4f474692376748687bffb3ca1dc55ad8f854a59b6e"
+      ],
+      "vulnHash": "1b1481f28d25e2ec30a00b241f65731c1b3ec2058a12002f6b8de31d29467e69"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/backends/filesystem.py",
+    "line": "72",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "71             self.set(key, b'test value')\n72             assert self.get(key) == b'test value'\n73 ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d5403433f3526d0735d09c3d5e3594a6064638a2108114829cb1a0534eb3bc5a",
+        "868f6795fe283b16601ab6af32f0ee0a2658683e8f76c39cba8eecd8b3e01071"
+      ],
+      "vulnHash": "d63da27acf860d00e85c39a06a6bb8b0378372fd0f6e0cccf35388a34974b0e0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/beat.py",
+    "line": "8",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with shelve module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "7 import os\n8 import shelve\n9 import sys\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "347e8fa9201edfc26bd35a89c0d68318a9fc26beaa5e42ac16366fd6813faeba",
+        "2a0461b843803063181d97ca1d141adbc849d3a6bf6f55c9df9efdc5625239eb"
+      ],
+      "vulnHash": "4f4ca6bacebb5e582eedf04083b665b2302fb2cbb4e68bc6afd5ab9166b14fda"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B606",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "celery/bin/worker.py",
+    "line": "123",
+    "message": "(1/1) * Possible vulnerability detected: Starting a process without a shell.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "122                 path = executable\n123             os.execv(path, [path] + argv)\n124             ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "77cb0fa2f075f12f1b3b0ec15da94dd77b9632d18d709bfd91df413d4478cb0f",
+        "b6fa9578cfde584fbed00f0a50aa5ae1be4e2fd2ae8c46a002b6be6e6c90294e"
+      ],
+      "vulnHash": "7129a1eeb209509de2992c1d21f616ad6f6fff202b6f6a343974381291c583aa"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "24",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with HIGHEST_PROTOCOL module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "23 from numbers import Integral\n24 from pickle import HIGHEST_PROTOCOL\n25 from struct import pack, u",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b68c2184856d0b2ac1e6ed56d5109ebfca70b19b50f649eed8be17241d9382cd",
+        "27e35677f5ceaaf61c9406a0dff1b26537a0b9384d8c4188e0174025a797afd1"
+      ],
+      "vulnHash": "6efbac5e6f1e83c41bb4e67791d0fd2a649844de9cf7f66341f0b61532e33956"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "626",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "625                     proc in waiting_to_start):\n626                 assert proc.outqR_fd in filen",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "d32ba9d4a08a4bb713ae05493d4980fa3c88ff9ea80f9eeed1743628dec4d9dd",
+        "f478a9c809a66996cb54ca8b18471054147a34b7fb70de57e16afd07ccc7e2f1"
+      ],
+      "vulnHash": "09f8d4d24498f6672435cc77e02062146d11047b71c404ed4a77db2f368e698c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "627",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "626                 assert proc.outqR_fd in fileno_to_outq\n627                 assert fileno_to_outq",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f8ddc8d20051b883434a5d1d0939ef1ec96bf2bb0b3e152f7fc0f31a804a1a0a",
+        "4a7184ba436eec8459d4a11abea03e8428407aceeb759577478ba630936a7b7b"
+      ],
+      "vulnHash": "b2210fa37aeb859658912ad62318eaecefb6d2c640c7faebe2871901133adefe"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "628",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "627                 assert fileno_to_outq[proc.outqR_fd] is proc\n628                 assert proc.out",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "dcfd3dbb32a9bb4411572ed39dc911bbdfeba4d28b1985da762dc07ee5517192",
+        "b2c18935ad32897ed65fbe95b574335acd88c6dbfbd52c521fc31a5eb5604603"
+      ],
+      "vulnHash": "941e6b9272b7846448ecbe905863b5ce35a6852d1b3979a41b1227f2b0172955"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "649",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "648 \n649             assert not isblocking(proc.outq._reader)\n650 \n651             # handle_result_e",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0f80da2ff9bba62fb926d08fff0ecef807e29ea20d5ee25ebb70903733d02306",
+        "77e9ddaaef219bf43e0cd51fc5f1acc8098c20c17a9e104861a2fbbba19ec422"
+      ],
+      "vulnHash": "7341153e3d9ca7b209ffa9db441184ec3cd7360f7c9a88a80de6ef00ca150343"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1113",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1112         synq = None\n1113         assert isblocking(inq._reader)\n1114         assert not isblock",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "2d0e4aa31d2e027b90c1223245dfb01bb030882a0e57e0ad1dba944b696756cd",
+        "aec2b0b0be1078722541feb5149ffca90f77c6b4d2cc6f27e0f59edd2d626afb"
+      ],
+      "vulnHash": "3e659e8d828f263e8d87f37d79c6bcda8880cb3bb6fcd06de805a8226f08587f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1114",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1113         assert isblocking(inq._reader)\n1114         assert not isblocking(inq._writer)\n1115    ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "0fbeeddb45cc5d15023b0c88ba2dd2934965f06cf432adf69a39f7a82cbe0d7a",
+        "4acdec33e9d9d35e557d863e9c2187db4686dbe978af72aa94a7381474e46af4"
+      ],
+      "vulnHash": "39098c34b248c7c8035ec557c7e0070873bcd8e999e1a548770d47a870dfaa43"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1115",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1114         assert not isblocking(inq._writer)\n1115         assert not isblocking(outq._reader)\n111",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e6ea7aa9d08fc665ddf71a14f2579cabc6ec96f4a3328fbcb02007c6f968d35e",
+        "a868aa8ddcd4d936fa7acb4cec29582ac922b31c52747231c58429dbda58ddb0"
+      ],
+      "vulnHash": "63a2641d6c671846ae17c299d1390e04c6d8930d5559bbced2825bfe942c61b5"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1116",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1115         assert not isblocking(outq._reader)\n1116         assert isblocking(outq._writer)\n1117  ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "4a4f659b74e94b4bc2bfb7dccedb2a3663a28439ddecc176b82817cedbe3cef5",
+        "6965e9334682579d6de8f55cf220b64f3f57f05f4773e086a2faa5ff75253241"
+      ],
+      "vulnHash": "21df64dbd5067e55c3b8f84bebe4a20128a65534c2f76cf240a41dfb2fc39c9e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1119",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1118             synq = _SimpleQueue(wnonblock=True)\n1119             assert isblocking(synq._reader",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "376968b40fdc0f953d58a68deb5ff0028fed13c260b0c255d1d7b79883cf37fa",
+        "6635e6a74dbda98a8217d3b4a6d51cb9a1092d25d9073dbc15572bdf9951dd15"
+      ],
+      "vulnHash": "590d0c2ef6f57111655ec6af5906aace89732d6bdaa49f49b9eea46761cd0c06"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1120",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1119             assert isblocking(synq._reader)\n1120             assert not isblocking(synq._writer",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f2adec0cf8725d9b2204b3f04e4284a48356f2868747b8ce475acfd837d1cc03",
+        "b0e1a8ad029b966826db0eaa8c35242313f647673eb0364545c3111823ee6056"
+      ],
+      "vulnHash": "e822ffe860b0a99c3b4d9b280022beea7154385b8761d0f8c7c0958a2b00d580"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1132",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1131             return logger.warning('process with pid=%s already exited', pid)\n1132         asser",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7dfe0086a86b6a2b1e5e7585e6d4024a20ec5c328faa58b53c623763056ec7c0",
+        "f357f0ac93258f3e5fd3a0b630f5e30fc0aa22857455360eebf735db2d3ce909"
+      ],
+      "vulnHash": "50c590a704ac207670f7e9244da30064bef3265eb8047deba578d4f868a03bee"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1133",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1132         assert proc.inqW_fd not in self._fileno_to_inq\n1133         assert proc.inqW_fd not in ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e5a86e4b823a49653c8c066bc4c427f2bf5df77a4422aa089e35f55a906f2e45",
+        "b73c7456b47384c98e513dacb34ecdcc675617705721ff68beda9d637bf6f5f4"
+      ],
+      "vulnHash": "76b9863e184f98a262961a8643ae842500ec3b00ee43a20fdf402acc07d7de3e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1212",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1211         \"\"\"Mark new ownership for ``queues`` to update fileno indices.\"\"\"\n1212         assert q",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f67943e605ebec0627eb183b65b8412a5617a69a64d07f22085822edf2a714a6",
+        "08e4594937a545e6b9fa356a2b940dc1466c12da76f87cf3fc6238a979339d50"
+      ],
+      "vulnHash": "346367daf611a849c8aecdf2ef2cc8010eef268e82ce22c3c4a9cfde96674d2a"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1215",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1214         self._queues[queues] = proc\n1215         assert b == len(self._queues)\n1216 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "552df4e8f09e3bbe8dbfe06c114cd503ac3eb43fee51ad45aa02a07171c75852",
+        "892e33ce6e4900c11fe043cf0b51acc8c5dfadeeed9dc95306889bb875285667"
+      ],
+      "vulnHash": "7b5f7357fc3a9700f12fc23ae70461bfcd768f0f1293df46cbcb7fd6b44e477f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1295",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1294                 pass\n1295             assert len(self._queues) == before\n1296 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "76a024b44e6df2b0a90ed48e793a75b2d11ebb23a91590566e815d6dcea88f75",
+        "51385c4db5f8fe8cfdf384b82cc0660519116f17a17caa3edf8a187f9f496ec3"
+      ],
+      "vulnHash": "7e6d9a62c8d668d121807e4ca8e01eb33e74589b084617c9712520fd5ecfb2dd"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/concurrency/asynpool.py",
+    "line": "1302",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "1301         \"\"\"\n1302         assert not proc._is_alive()\n1303         self._waiting_to_start.discar",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "7d80fe706b30683585ac78a4f5ffa304c18d76c3053ef441f2558623a1e71f75",
+        "d31b8eedb16e4b40d1bdabaece6d8a0a74af3314af4cc7cafd9d0a0e5e89df82"
+      ],
+      "vulnHash": "3d77911ce5fbabef37129647554713ee16bf0cd89469b116acbed533d9aad224"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/contrib/testing/worker.py",
+    "line": "130",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "129                 with allow_join_result():\n130                     assert ping.delay().get(timeou",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "44c9a0a1fef8c4551f9e236569a13c637e396502d4444105e899b7f4181198cf",
+        "1cfc80f0b41c3d266ef1a905b3e41109f77ae134b2e93fcde15d1f03028c27ea"
+      ],
+      "vulnHash": "66482832ce67fa2b50602b89221c4c1a4b7700cd2dee697e2a980270276e151c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/contrib/testing/worker.py",
+    "line": "154",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "153     if perform_ping_check:\n154         assert 'celery.ping' in app.tasks\n155     # Make sure we ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "09d4eab9c9c601d727408fa646c05978ee50a91cb0db91e33e87783602758b9f",
+        "3c1916c22e01599396f351c4419840cea19655f08533c4b660b54c09034e948e"
+      ],
+      "vulnHash": "f0b20cf8646c4c0939f3f3ebd611682118bd70128af0699ab8f3d765759305b1"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/events/cursesmon.py",
+    "line": "170",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "169                 return self.win.getkey().upper()\n170             except Exception:  # pylint: di",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "53c5d26837ae29d71525b5675c5a847ab7a2ca890cb626484816a822d5eeefd2",
+        "b0b6a7308c3a3cbf39baadd2a07807eafb433a6c13e98ec7d5e7bba4a9ede1c9"
+      ],
+      "vulnHash": "1ea243b5074a0ef85245d7546b992fddd57715c19bde44287b82b59e1d2b128c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/platforms.py",
+    "line": "490",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "489         max_groups = os.sysconf('SC_NGROUPS_MAX')\n490     except Exception:  # pylint: disable=b",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1e3c8999b41f9d42cb8c2bfb2f9ebf625273de18b2c86542aed4a2c0a18381e7",
+        "233812622852ff5f965c9f12486247f85c749748f5d8ec9c7b3a5ba687d55ed8"
+      ],
+      "vulnHash": "94fb42bea18c2af2493c9934c4f73312f42beccc2eb6a3ff3ddfe69e777b7f1e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/security/serialization.py",
+    "line": "33",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "32         \"\"\"Serialize data structure into string.\"\"\"\n33         assert self._key is not None\n34   ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "51d5a1cedba993c4620e8273f4fec02fcbd3607a81f8a4de401fca5bf325f7ea",
+        "71eddf0275a367df181155f80b940819299c7499658d012cdc54c5304db179a9"
+      ],
+      "vulnHash": "64bfcf337e2695195e4fc8fe962613643d948ce4ae442d79581e23f45e981d67"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/security/serialization.py",
+    "line": "34",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "33         assert self._key is not None\n34         assert self._cert is not None\n35         with rer",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "ea82905f50048f68b74fad885d6a6fba2ae9f7e96fb8999f2984ea616a4a0d9b",
+        "c7c419adf7fbec195172155ebab58be6fe9cb0884d89f536b39a79eb1f4c131b"
+      ],
+      "vulnHash": "b4c4394f5cd4907d1f0591c4481ea4a1093e612cdb79904603c67f6dcf1ed7b7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/security/serialization.py",
+    "line": "50",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "49         \"\"\"Deserialize data structure from string.\"\"\"\n50         assert self._cert_store is not N",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "5aea667656f77f5e3f8ece75e662c94999d5c95ca63fefcfd08016fda9a78b74",
+        "62240488a266880ac46690115802c00b20b45375b0efb8897902dfb7d9603c97"
+      ],
+      "vulnHash": "8d04aef342584c8c638aa2a9aaf1acfe9a798eb2c82675e6a354aa911cda5588"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/security/utils.py",
+    "line": "15",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "14     \"\"\"Convert string to hash object of cryptography library.\"\"\"\n15     assert digest is not None",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "9d459ef717e5833acae2e4a4d671601b1b8943372b0ec42cc9802a2b2b2bfb3d",
+        "fd1c918e44190dfc8a4f9c2fbeb51e50abb55224574fb658d45b8a21ced24e80"
+      ],
+      "vulnHash": "bc4f134849aaec8f71af639ed5c04f0f73eae6a47be6cf6a6830abc25ec42af2"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/dispatch/signal.py",
+    "line": "189",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "188     def _connect_signal(self, receiver, sender, weak, dispatch_uid):\n189         assert callable",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e48d2ade6fd76fbc778aecdc3d5fefb9b737ac81076985035a88dde760800bd2",
+        "2efe497c11562ff2ac767bde9a763165d9b27e7a3527aaaa124bac033d6b76a0"
+      ],
+      "vulnHash": "38a31be3593de22842a9c04e2150d09cae0058c603d3adb7b38311f7fbaebc80"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "14",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with cPickle module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "13 try:\n14     import cPickle as pickle\n15 except ImportError:\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e9acfa6ad49956b5205ed209987693ea616ed02ef634d3bc77d8a617da4196e1",
+        "17d636ddff548ed7f90f73ec09ce5f02585c9324ea5403e3c77995577c63c667"
+      ],
+      "vulnHash": "fa60cf1cc4a9d469c19c92447f47fd6c2348d4da29a5150ca66332f76cc9a6e7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "16",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with pickle module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "15 except ImportError:\n16     import pickle\n17 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "3da7724842fcf971a9f47b1ef6fa0a90f4bc1a27ac5a96ac9f26dc5a3f2a8ef3",
+        "6c85b3ba8b2595a0cdfcc3db93c6d64a84ac8f0cc980cc02c3607013c8a1f619"
+      ],
+      "vulnHash": "d43f254635bcc894ed9c9c77929788ab36b041650b415bc7a05ac85a00daea23"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "63",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "62             loads(dumps(superexc))\n63         except Exception:  # pylint: disable=broad-except\n6",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f54f97088ee1e81ae6864c5951012ac681ade9e6b069f7dc70be8d7fb814e56a",
+        "8f8a9da7c3afec97489b99bf2f61b94ae9df98e96b9872475df71d182d03ad88"
+      ],
+      "vulnHash": "8dfa95d5afb77bc56e00d0d239ef2c2a9d835a84a9b53bcc0e67e88fbbd8ccd0"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/serialization.py",
+    "line": "165",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "164         pickle.loads(pickle.dumps(exc))\n165     except Exception:  # pylint: disable=broad-excep",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "86d3cd54cce7a4706ea833f58f811d6e9ed71616edb445974a4a0ba7fb741fe2",
+        "7fc850edf7fa93c56d2c07a7041e8733c9d9bba9aeb3c04f8f8f0157c44603cf"
+      ],
+      "vulnHash": "d986a989e977a9438a622a7feba6028f01672a56cb041e9a8718b79ec1d60ea6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B311",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/utils/time.py",
+    "line": "460",
+    "message": "(1/1) * Possible vulnerability detected: Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "459     if full_jitter:\n460         countdown = random.randrange(countdown + 1)\n461     # Adjust acc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "b943020f9dd77010ab3a63516804ed34ea6f683aef2846bccf2572faa61df44a",
+        "29634884811f417539dae316f9293c01511d4b8a1624a01cb23aad8dd5bed137"
+      ],
+      "vulnHash": "2de7225bcd40bce88d85eefcdd8651430680c6f4a6b7348b0b4298adcca8951c"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/worker/autoscale.py",
+    "line": "76",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "75 \n76         assert self.keepalive, 'cannot scale down too fast.'\n77 \n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1a7de496096c89159dc65a5b64e99480e4fb12a7bc1c7f37342a237c360c2b37",
+        "4a453862bcd20910229c96021e5126968ab8587d6e4de936edf003fe1993db6f"
+      ],
+      "vulnHash": "6a58550dc7937ac7f7d9d80cc8a160f1bbf0d6e1bc836725b1ae5837cdef037d"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B110",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/worker/consumer/consumer.py",
+    "line": "386",
+    "message": "(1/1) * Possible vulnerability detected: Try, Except, Pass detected.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "385             self.connection.collect()\n386         except Exception:  # pylint: disable=broad-exc",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "352c8ebcdb17a6f47b8f68c8ed5c7b2cdbf4a8714a035f7504ad30f5b35a1a87",
+        "8ebbc5370a79c0d1f54a35f17b08a5fa0614532e9b33d80b69a2173c0a17c1cd"
+      ],
+      "vulnHash": "82106ace99c559385eab6acb99dfa28730fae8b01643207b23b1abaa51ae1828"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B403",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "celery/worker/state.py",
+    "line": "8",
+    "message": "(1/1) * Possible vulnerability detected: Consider possible security implications associated with shelve module.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "7 import platform\n8 import shelve\n9 import sys\n",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "92acdbd38e511ec3c6143125058d66a7fcb2ba7e8bba89ca428fb50fa3637b03",
+        "6431aa63bce624366379890c138f6d4cbed83d8ef7144a9b3754a14848bbe68a"
+      ],
+      "vulnHash": "2d36f599fdfb1171e6151ee3beeba08a5a5230bbbfd263a1182882e14cae14d6"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "examples/celery_http_gateway/settings.py",
+    "line": "70",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'This is not a secret, be sure to change this.'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "69 # XXX TODO FIXME Set this secret key to anything you want, just change it!\n70 SECRET_KEY = 'This ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "30af6c0604db83e682bda0828206824d521d75016b3e335030d98c68267eabda",
+        "3d0e5a38e0b6192dca17e0f538773cfd092cb318392d2de1ce719f399362f1c3"
+      ],
+      "vulnHash": "8cf46f189004ea88d9f1c69337863103389681b1edeb8361b82c391acd5b22f8"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B105",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "MEDIUM",
+    "file": "examples/django/proj/settings.py",
+    "line": "40",
+    "message": "(1/1) * Possible vulnerability detected: Possible hardcoded password: 'l!t+dmzf97rt9s*yrsux1py_1@odvz1szr&6&m!f@-nxq6k%%p'",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "39 # SECURITY WARNING: keep the secret key used in production secret!\n40 SECRET_KEY = 'l!t+dmzf97rt9",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "e8b31acf2e5090cb0732cb6f9c6e032118ef52e98c06d64874fde2b8105ca248",
+        "7db4a81d93048fe475dd691d4809e86b6aef7c62335c5909e488aff0ec608a61"
+      ],
+      "vulnHash": "6dc79e0af779fc4103cd17d8d6fb18bbdae3dc9c8bc7ee0d98b826ba2013cce7"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "examples/pydantic/tasks.py",
+    "line": "19",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "18     # args/kwargs type hinted as Pydantic model will be converted\n19     assert isinstance(arg, A",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f80fd817d5e9c7a960c28e17a9a7260eb6fb4743087a7e6f9d31596e17b34290",
+        "f5e14d1fff8d1dd5a1dc35860a3e409a2fc63a13f496f16b10fd4745af28423a"
+      ],
+      "vulnHash": "8434d9761da846ec5418da0dfb37a958fc7b74157b707cbc4f8d7ce2539e598b"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "t/benchmarks/bench_worker.py",
+    "line": "86",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "85     except SystemExit:\n86         assert sum(worker.state.total_count.values()) == n + 1\n87      ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "f4524fc19e31df0982a738b29265463381e0aa0f311c84168474159cdee356f8",
+        "f56616457fb8ac478cacf40be2bb6d446dfa8b02d32479ff6bb42187e67cb266"
+      ],
+      "vulnHash": "b7c4bb1feeb27c83a66357972d3f7e13dfe9ba968067b0258fc0bd3f1072815e"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "t/smoke/operations/worker_kill.py",
+    "line": "33",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "32 \n33             assert worker.container.status == \"exited\", (\n34                 f\"Worker contain",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "1c95a8bd389cc27647a3d602e3f195a4b6182b2f34f32c10ea4aa1ff5962c3f8",
+        "37612ca165a4f13105d0cc70422232fb6b868539aad3a99ae215478a60e24291"
+      ],
+      "vulnHash": "cd785832eb98d4c4c9a5bc8d5058ec3144c210fcaae0f68bdc99bce0141e768f"
+    }
+  },
+  {
+    "tool": "horusec",
+    "project_name": "celery",
+    "project_version": "5.6.0b2",
+    "rule_id": "B101",
+    "rule_name": "Vulnerability",
+    "severity": "LOW",
+    "confidence": "HIGH",
+    "file": "t/smoke/operations/worker_restart.py",
+    "line": "39",
+    "message": "(1/1) * Possible vulnerability detected: Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+    "cwe": [],
+    "extra": {
+      "code_snippet": "38         if assertion:\n39             assert worker.container.status == \"running\", (\n40           ",
+      "column": "0",
+      "language": "Python",
+      "securityTool": "Bandit",
+      "securityToolVersion": "",
+      "commitAuthor": "-",
+      "commitEmail": "-",
+      "commitHash": "-",
+      "commitDate": "-",
+      "deprecatedHashes": [
+        "40c182ce9e9ea8a5e6b06acd55c428ab6bbef4504bac1abfbab1b5dddc5bc37f",
+        "e8e33924879d52b686f06ff75a86da3b5bee080492b166787a6d56546193e8ce"
+      ],
+      "vulnHash": "2840298edd202b32f89694b906f3d365628f7875304bfb69d8188e80cd99fe97"
+    }
+  }
+]

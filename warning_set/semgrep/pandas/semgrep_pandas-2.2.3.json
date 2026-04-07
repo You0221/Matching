@@ -1,0 +1,829 @@
+[
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "rule_name": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pandas/_testing/_io.py",
+    "line": 61,
+    "message": "Functions reliant on pickle can result in arbitrary code execution. Consider using fickling or switching to a safer serialization method",
+    "cwe": [],
+    "extra": {
+      "end_line": 61,
+      "start_col": 9,
+      "end_col": 37,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "pandas"
+      ],
+      "owasp": null,
+      "references": [
+        "https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "rule_name": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pandas/_testing/_io.py",
+    "line": 62,
+    "message": "Functions reliant on pickle can result in arbitrary code execution. Consider using fickling or switching to a safer serialization method",
+    "cwe": [],
+    "extra": {
+      "end_line": 62,
+      "start_col": 16,
+      "end_col": 41,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "pandas"
+      ],
+      "owasp": null,
+      "references": [
+        "https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/compat/_optional.py",
+    "line": 135,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 135,
+      "start_col": 18,
+      "end_col": 47,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/compat/compressors.py",
+    "line": 40,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 40,
+      "start_col": 13,
+      "end_col": 28,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.eval-detected.eval-detected",
+    "rule_name": "python.lang.security.audit.eval-detected.eval-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/core/computation/ops.py",
+    "line": 431,
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "cwe": [
+      95
+    ],
+    "extra": {
+      "end_line": 431,
+      "start_col": 23,
+      "end_col": 79,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A03_2021-Injection"
+      ],
+      "bandit_code": null,
+      "source_rule_url": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "rule_name": "trailofbits.python.pickles-in-pandas.pickles-in-pandas",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pandas/core/generic.py",
+    "line": 3165,
+    "message": "Functions reliant on pickle can result in arbitrary code execution. Consider using fickling or switching to a safer serialization method",
+    "cwe": [],
+    "extra": {
+      "end_line": 3171,
+      "start_col": 9,
+      "end_col": 10,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "pandas"
+      ],
+      "owasp": null,
+      "references": [
+        "https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "rule_name": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/common.py",
+    "line": 289,
+    "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.",
+    "cwe": [
+      939
+    ],
+    "extra": {
+      "end_line": 289,
+      "start_col": 12,
+      "end_col": 51,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": "A01:2017 - Injection",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html"
+      ],
+      "bandit_code": "B310",
+      "source_rule_url": "https://github.com/PyCQA/bandit/blob/b1411bfb43795d3ffd268bef17a839dee954c2b1/bandit/blacklists/calls.py#L163",
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/style.py",
+    "line": 3609,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 3609,
+      "start_col": 19,
+      "end_col": 52,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "rule_name": "python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/style_render.py",
+    "line": 73,
+    "message": "Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method 'render_template()' and templates with a '.html' extension in order to prevent XSS.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 73,
+      "start_col": 11,
+      "end_col": 62,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "flask"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://jinja.palletsprojects.com/en/2.11.x/api/#basics"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "rule_name": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/templates/html_table.tpl",
+    "line": 24,
+    "message": "Detected template variable interpolation in an HTML tag. This is potentially vulnerable to cross-site scripting (XSS) attacks because a malicious actor has control over HTML but without the need to use escaped characters. Use explicit tags instead.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 24,
+      "start_col": 7,
+      "end_col": 36,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "generic"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/golang/go/issues/19669",
+        "https://blogtitle.github.io/robn-go-security-pearls-cross-site-scripting-xss/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "rule_name": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/templates/html_table.tpl",
+    "line": 30,
+    "message": "Detected template variable interpolation in an HTML tag. This is potentially vulnerable to cross-site scripting (XSS) attacks because a malicious actor has control over HTML but without the need to use escaped characters. Use explicit tags instead.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 30,
+      "start_col": 7,
+      "end_col": 120,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "generic"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/golang/go/issues/19669",
+        "https://blogtitle.github.io/robn-go-security-pearls-cross-site-scripting-xss/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "rule_name": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/templates/html_table.tpl",
+    "line": 48,
+    "message": "Detected template variable interpolation in an HTML tag. This is potentially vulnerable to cross-site scripting (XSS) attacks because a malicious actor has control over HTML but without the need to use escaped characters. Use explicit tags instead.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 48,
+      "start_col": 7,
+      "end_col": 36,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "generic"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/golang/go/issues/19669",
+        "https://blogtitle.github.io/robn-go-security-pearls-cross-site-scripting-xss/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "rule_name": "go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/formats/templates/html_table.tpl",
+    "line": 52,
+    "message": "Detected template variable interpolation in an HTML tag. This is potentially vulnerable to cross-site scripting (XSS) attacks because a malicious actor has control over HTML but without the need to use escaped characters. Use explicit tags instead.",
+    "cwe": [
+      79
+    ],
+    "extra": {
+      "end_line": 52,
+      "start_col": 7,
+      "end_col": 120,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "generic"
+      ],
+      "owasp": [
+        "A07:2017 - Cross-Site Scripting (XSS)",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://github.com/golang/go/issues/19669",
+        "https://blogtitle.github.io/robn-go-security-pearls-cross-site-scripting-xss/"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/pickle.py",
+    "line": 111,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 111,
+      "start_col": 9,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "rule_name": "python.lang.security.deserialization.pickle.avoid-pickle",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/pickle.py",
+    "line": 202,
+    "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.",
+    "cwe": [
+      502
+    ],
+    "extra": {
+      "end_line": 202,
+      "start_col": 28,
+      "end_col": 55,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A08:2017 - Insecure Deserialization",
+        "A08:2021 - Software and Data Integrity Failures"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/pickle.html"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "rule_name": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/sql.py",
+    "line": 2391,
+    "message": "Detected possible formatted SQL query. Use parameterized queries instead.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 2391,
+      "start_col": 21,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/775296/mysql-parameterized-queries"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "pandas/io/sql.py",
+    "line": 2391,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 2391,
+      "start_col": 21,
+      "end_col": 60,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "pandas/io/sql.py",
+    "line": 2865,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 2865,
+      "start_col": 20,
+      "end_col": 47,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "rule_name": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/io/sql.py",
+    "line": 2872,
+    "message": "Detected possible formatted SQL query. Use parameterized queries instead.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 2872,
+      "start_col": 9,
+      "end_col": 31,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://stackoverflow.com/questions/775296/mysql-parameterized-queries"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "rule_name": "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+    "severity": "HIGH",
+    "confidence": "LOW",
+    "file": "pandas/io/sql.py",
+    "line": 2872,
+    "message": "Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.",
+    "cwe": [
+      89
+    ],
+    "extra": {
+      "end_line": 2872,
+      "start_col": 9,
+      "end_col": 31,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "sqlalchemy"
+      ],
+      "owasp": [
+        "A01:2017 - Injection",
+        "A03:2021 - Injection"
+      ],
+      "references": [
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+        "https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_quick_guide.htm",
+        "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-more-specific-text-with-table-expression-literal-column-and-expression-column"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.use-defused-xml-parse.use-defused-xml-parse",
+    "rule_name": "python.lang.security.use-defused-xml-parse.use-defused-xml-parse",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "file": "pandas/io/xml.py",
+    "line": 533,
+    "message": "The native Python `xml` library is vulnerable to XML External Entity (XXE) attacks.  These attacks can leak confidential data and \"XML bombs\" can cause denial of service. Do not use this library to parse untrusted input. Instead  the Python documentation recommends using `defusedxml`.",
+    "cwe": [
+      611
+    ],
+    "extra": {
+      "end_line": 533,
+      "start_col": 24,
+      "end_col": 59,
+      "category": "security",
+      "subcategory": [
+        "vuln"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A04:2017 - XML External Entities (XXE)",
+        "A05:2021 - Security Misconfiguration"
+      ],
+      "references": [
+        "https://docs.python.org/3/library/xml.html",
+        "https://github.com/tiran/defusedxml",
+        "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  },
+  {
+    "tool": "semgrep",
+    "project_name": "pandas",
+    "project_version": "2.2.3",
+    "rule_id": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "rule_name": "python.lang.security.audit.non-literal-import.non-literal-import",
+    "severity": "MEDIUM",
+    "confidence": "LOW",
+    "file": "pandas/plotting/_core.py",
+    "line": 1901,
+    "message": "Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running untrusted code.",
+    "cwe": [
+      706
+    ],
+    "extra": {
+      "end_line": 1901,
+      "start_col": 22,
+      "end_col": 54,
+      "category": "security",
+      "subcategory": [
+        "audit"
+      ],
+      "technology": [
+        "python"
+      ],
+      "owasp": [
+        "A01:2021 - Broken Access Control"
+      ],
+      "references": [
+        "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+      ],
+      "bandit_code": null,
+      "source_rule_url": null,
+      "fingerprint": "requires login",
+      "validation_state": "NO_VALIDATOR"
+    }
+  }
+]

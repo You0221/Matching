@@ -3,7 +3,7 @@ from typing import List, Dict, Optional
 
 class DifflibMatcher:
     """
-    将文件划分为行范围，分为匹配对和差异对
+    将文件划分为行范围
     """
 
     def __init__(self, epsilon: int = 3):
