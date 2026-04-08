@@ -1,0 +1,39 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 6e5e9330612..170464016f7 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -282,7 +271,7 @@ def collect_dataclass_fields(
+     Returns:
+         The dataclass fields.
+     """
+-    from ..fields import FieldInfo
++    FieldInfo_ = import_cached_field_info()
+ 
+     fields: dict[str, FieldInfo] = {}
+     dataclass_fields: dict[str, dataclasses.Field] = cls.__dataclass_fields__
+@@ -306,7 +295,7 @@ def collect_dataclass_fields(
+             #   Issue: https://github.com/pydantic/pydantic/issues/5470
+             continue
+ 
+-        if isinstance(dataclass_field.default, FieldInfo):
++        if isinstance(dataclass_field.default, FieldInfo_):
+             if dataclass_field.default.init_var:
+                 if dataclass_field.default.init is False:
+                     raise PydanticUserError(
+@@ -316,13 +305,13 @@ def collect_dataclass_fields(
+ 
+                 # TODO: same note as above re validate_assignment
+                 continue
+-            field_info = FieldInfo.from_annotated_attribute(ann_type, dataclass_field.default)
++            field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field.default)
+         else:
+-            field_info = FieldInfo.from_annotated_attribute(ann_type, dataclass_field)
++            field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field)
+ 
+         fields[ann_name] = field_info
+ 
+-        if field_info.default is not PydanticUndefined and isinstance(getattr(cls, ann_name, field_info), FieldInfo):
++        if field_info.default is not PydanticUndefined and isinstance(getattr(cls, ann_name, field_info), FieldInfo_):
+             # We need this to fix the default when the "default" from __dataclass_fields__ is a pydantic.FieldInfo
+             setattr(cls, ann_name, field_info.default)
+ 

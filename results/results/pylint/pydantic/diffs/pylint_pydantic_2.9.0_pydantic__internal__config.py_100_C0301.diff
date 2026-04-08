@@ -1,0 +1,37 @@
+diff --git a/pydantic/_internal/_config.py b/pydantic/_internal/_config.py
+index 2634fcd8809..43c856859c3 100644
+--- a/pydantic/_internal/_config.py
++++ b/pydantic/_internal/_config.py
+@@ -97,7 +96,13 @@ def __init__(self, config: ConfigDict | dict[str, Any] | type[Any] | None, *, ch
+             self.config_dict = cast(ConfigDict, config)
+ 
+     @classmethod
+-    def for_model(cls, bases: tuple[type[Any], ...], namespace: dict[str, Any], kwargs: dict[str, Any]) -> Self:
++    def for_model(
++        cls,
++        bases: tuple[type[Any], ...],
++        namespace: dict[str, Any],
++        raw_annotations: dict[str, Any],
++        kwargs: dict[str, Any],
++    ) -> Self:
+         """Build a new `ConfigWrapper` instance for a `BaseModel`.
+ 
+         The config wrapper built based on (in descending order of priority):
+@@ -108,6 +113,7 @@ def for_model(cls, bases: tuple[type[Any], ...], namespace: dict[str, Any], kwar
+         Args:
+             bases: A tuple of base classes.
+             namespace: The namespace of the class being created.
++            raw_annotations: The (non-evaluated) annotations of the model.
+             kwargs: The kwargs passed to the class being created.
+ 
+         Returns:
+@@ -122,8 +128,7 @@ def for_model(cls, bases: tuple[type[Any], ...], namespace: dict[str, Any], kwar
+         config_class_from_namespace = namespace.get('Config')
+         config_dict_from_namespace = namespace.get('model_config')
+ 
+-        raw_annotations = namespace.get('__annotations__', {})
+-        if raw_annotations.get('model_config') and not config_dict_from_namespace:
++        if raw_annotations.get('model_config') and config_dict_from_namespace is None:
+             raise PydanticUserError(
+                 '`model_config` cannot be used as a model field name. Use `model_config` for model configuration.',
+                 code='model-config-invalid-field-name',

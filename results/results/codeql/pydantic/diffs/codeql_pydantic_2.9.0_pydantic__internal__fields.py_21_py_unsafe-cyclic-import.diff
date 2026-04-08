@@ -1,0 +1,15 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 170464016f7..5c760abc292 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -17,8 +18,9 @@
+ from ._config import ConfigWrapper
+ from ._docs_extraction import extract_docstrings_from_cls
+ from ._import_utils import import_cached_base_model, import_cached_field_info
++from ._namespace_utils import NsResolver
+ from ._repr import Representation
+-from ._typing_extra import get_cls_type_hints_lenient, is_classvar, is_finalvar
++from ._utils import can_be_positional
+ 
+ if TYPE_CHECKING:
+     from annotated_types import BaseMetadata

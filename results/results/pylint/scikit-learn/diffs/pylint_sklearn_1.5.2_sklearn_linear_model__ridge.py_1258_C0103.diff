@@ -1,0 +1,33 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -1239,18 +1236,25 @@ def fit(self, X, y, sample_weight=None):
+         """
+         _accept_sparse = _get_valid_accept_sparse(sparse.issparse(X), self.solver)
+         xp, _ = get_namespace(X, y, sample_weight)
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse=_accept_sparse,
+             dtype=[xp.float64, xp.float32],
++            force_writeable=True,
+             multi_output=True,
+             y_numeric=True,
+         )
+         return super().fit(X, y, sample_weight=sample_weight)
+ 
+-    def _more_tags(self):
+-        return {"array_api_support": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.array_api_support = True
++        tags.input_tags.sparse = (self.solver != "svd") and (
++            self.solver != "cholesky" or not self.fit_intercept
++        )
++        return tags
+ 
+ 
+ class _RidgeClassifierMixin(LinearClassifierMixin):

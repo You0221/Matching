@@ -1,0 +1,67 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -766,49 +791,46 @@ def warning(
+         obj: t.Any = None
+     ) -> None:
+         """Display a warning message."""
++        _skip_stackwalk = True
++
++        # deprecated: description='The formatted argument has no effect.' core_version='2.23'
+ 
+         # This is the pre-proxy half of the `warning` implementation.
+         # Any logic that must occur on workers needs to be implemented here.
+ 
+-        if source_context := _utils.SourceContext.from_value(obj):
++        if source_context := _error_utils.SourceContext.from_value(obj):
+             formatted_source_context = str(source_context)
+         else:
+             formatted_source_context = None
+ 
+-        warning = WarningSummary(
+-            details=(
+-                Detail(
+-                    msg=msg,
+-                    help_text=help_text,
+-                    formatted_source_context=formatted_source_context,
+-                ),
++        warning = _messages.WarningSummary(
++            event=_messages.Event(
++                msg=msg,
++                help_text=help_text,
++                formatted_source_context=formatted_source_context,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.WARNING),
+             ),
+-            formatted_traceback=_traceback.maybe_capture_traceback(_traceback.TracebackEvent.WARNING),
+         )
+ 
+         if warning_ctx := _DeferredWarningContext.current(optional=True):
+             warning_ctx.capture(warning)
+-            # DTFIX-RELEASE: what to do about propagating wrap_text?
+             return
+ 
+-        self._warning(warning, wrap_text=not formatted)
++        self._warning(warning)
+ 
+     @_proxy
+-    def _warning(self, warning: WarningSummary, wrap_text: bool) -> None:
++    def _warning(self, warning: _messages.WarningSummary) -> None:
+         """Internal implementation detail, use `warning` instead."""
+ 
+         # This is the post-proxy half of the `warning` implementation.
+         # Any logic that must occur in the primary controller process needs to be implemented here.
+ 
+-        msg = format_message(warning)
++        msg = _format_message(warning, _traceback.is_traceback_enabled(_traceback.TracebackEvent.WARNING))
+         msg = f"[WARNING]: {msg}"
+ 
+         if self._deduplicate(msg, self._warns):
+             return
+ 
+-        # DTFIX-RELEASE: what should we do with wrap_message?
+-        msg = self._wrap_message(msg=msg, wrap_text=wrap_text)
+-
+         self.display(msg, color=C.config.get_config_value('COLOR_WARN'), stderr=True, caplevel=-2)
+ 
+     @_proxy

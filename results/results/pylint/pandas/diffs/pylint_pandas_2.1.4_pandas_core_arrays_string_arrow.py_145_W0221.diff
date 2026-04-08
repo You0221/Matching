@@ -1,0 +1,24 @@
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index 4a70fcf6b5a93..e8f614ff855c0 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -137,14 +172,17 @@ def __len__(self) -> int:
+         return len(self._pa_array)
+ 
+     @classmethod
+-    def _from_sequence(cls, scalars, dtype: Dtype | None = None, copy: bool = False):
++    def _from_sequence(cls, scalars, *, dtype: Dtype | None = None, copy: bool = False):
+         from pandas.core.arrays.masked import BaseMaskedArray
+ 
+         _chk_pyarrow_available()
+ 
+         if dtype and not (isinstance(dtype, str) and dtype == "string"):
+             dtype = pandas_dtype(dtype)
+-            assert isinstance(dtype, StringDtype) and dtype.storage == "pyarrow"
++            assert isinstance(dtype, StringDtype) and dtype.storage in (
++                "pyarrow",
++                "pyarrow_numpy",
++            )
+ 
+         if isinstance(scalars, BaseMaskedArray):
+             # avoid costly conversion to object dtype in ensure_string_array and

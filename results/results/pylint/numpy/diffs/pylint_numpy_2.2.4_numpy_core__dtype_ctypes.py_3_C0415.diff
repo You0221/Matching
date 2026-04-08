@@ -1,0 +1,11 @@
+diff --git a/numpy/core/_dtype_ctypes.py b/numpy/core/_dtype_ctypes.py
+index 0dadd7949ecb..10cfba25ec6a 100644
+--- a/numpy/core/_dtype_ctypes.py
++++ b/numpy/core/_dtype_ctypes.py
+@@ -1,5 +1,6 @@
+ def __getattr__(attr_name):
+     from numpy._core import _dtype_ctypes
++
+     from ._utils import _raise_warning
+     ret = getattr(_dtype_ctypes, attr_name, None)
+     if ret is None:

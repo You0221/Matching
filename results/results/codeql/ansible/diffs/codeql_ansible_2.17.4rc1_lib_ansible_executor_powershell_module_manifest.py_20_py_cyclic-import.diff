@@ -1,0 +1,80 @@
+diff --git a/lib/ansible/executor/powershell/module_manifest.py b/lib/ansible/executor/powershell/module_manifest.py
+index 99b18e5ff4b26e..490fd3b6c2b8cb 100644
+--- a/lib/ansible/executor/powershell/module_manifest.py
++++ b/lib/ansible/executor/powershell/module_manifest.py
+@@ -4,38 +4,61 @@
+ from __future__ import annotations
+ 
+ import base64
++import dataclasses
+ import errno
+ import json
+ import os
+ import pkgutil
+-import random
++import secrets
+ import re
++import typing as t
++
+ from importlib import import_module
+ 
+ from ansible.module_utils.compat.version import LooseVersion
+ 
+ from ansible import constants as C
+-from ansible.errors import AnsibleError
+-from ansible.module_utils.common.text.converters import to_bytes, to_native, to_text
++from ansible.module_utils.common.json import Direction, get_module_encoder
++from ansible.errors import AnsibleError, AnsibleFileNotFound
++from ansible.module_utils.common.text.converters import to_bytes, to_text
++from ansible.plugins.become import BecomeBase
++from ansible.plugins.become.runas import BecomeModule as RunasBecomeModule
+ from ansible.plugins.loader import ps_module_utils_loader
+-from ansible.utils.collection_loader import resource_from_fqcr
++
++
++@dataclasses.dataclass(frozen=True)
++class _ExecManifest:
++    scripts: dict[str, _ScriptInfo] = dataclasses.field(default_factory=dict)
++    actions: list[_ManifestAction] = dataclasses.field(default_factory=list)
++
++
++@dataclasses.dataclass(frozen=True, kw_only=True)
++class _ScriptInfo:
++    content: dataclasses.InitVar[bytes]
++    path: str
++    script: str = dataclasses.field(init=False)
++
++    def __post_init__(self, content: bytes) -> None:
++        object.__setattr__(self, 'script', base64.b64encode(content).decode())
++
++
++@dataclasses.dataclass(frozen=True, kw_only=True)
++class _ManifestAction:
++    name: str
++    params: dict[str, object] = dataclasses.field(default_factory=dict)
++    secure_params: dict[str, object] = dataclasses.field(default_factory=dict)
+ 
+ 
+ class PSModuleDepFinder(object):
+ 
+-    def __init__(self):
++    def __init__(self) -> None:
+         # This is also used by validate-modules to get a module's required utils in base and a collection.
+-        self.ps_modules = dict()
+-        self.exec_scripts = dict()
++        self.scripts: dict[str, _ScriptInfo] = {}
+ 
+-        # by defining an explicit dict of cs utils and where they are used, we
+-        # can potentially save time by not adding the type multiple times if it
+-        # isn't needed
+-        self.cs_utils_wrapper = dict()
+-        self.cs_utils_module = dict()
++        self._util_deps: dict[str, set[str]] = {}
+ 
+-        self.ps_version = None
+-        self.os_version = None
++        self.ps_version: str | None = None
++        self.os_version: str | None = None
+         self.become = False
+ 
+         self._re_cs_module = [

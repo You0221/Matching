@@ -1,0 +1,23 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1464,14 +1411,14 @@ def _typed_dict_schema(self, typed_dict_cls: Any, origin: Any) -> core_schema.Co
+                 )
+ 
+             try:
++                # if a typed dictionary class doesn't have config, we use the parent's config, hence a default of `None`
++                # see https://github.com/pydantic/pydantic/issues/10917
+                 config: ConfigDict | None = get_attribute_from_bases(typed_dict_cls, '__pydantic_config__')
+             except AttributeError:
+                 config = None
+ 
+-            with self._config_wrapper_stack.push(config), self._types_namespace_stack.push(typed_dict_cls):
+-                core_config = self._config_wrapper.core_config(typed_dict_cls)
+-
+-                self = self._current_generate_schema
++            with self._config_wrapper_stack.push(config):
++                core_config = self._config_wrapper.core_config(title=typed_dict_cls.__name__)
+ 
+                 required_keys: frozenset[str] = typed_dict_cls.__required_keys__
+ 

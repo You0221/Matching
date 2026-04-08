@@ -1,0 +1,24 @@
+diff --git a/pydantic/_internal/_core_metadata.py b/pydantic/_internal/_core_metadata.py
+index 296d49f5989..b3caf7d807f 100644
+--- a/pydantic/_internal/_core_metadata.py
++++ b/pydantic/_internal/_core_metadata.py
+@@ -1,15 +1,15 @@
+ from __future__ import annotations as _annotations
+ 
+ import typing
+-from typing import Any
++from typing import Any, cast
+ 
+ import typing_extensions
+ 
+ if typing.TYPE_CHECKING:
++    from pydantic_core import CoreSchema
++
+     from ._schema_generation_shared import (
+-        CoreSchemaOrField as CoreSchemaOrField,
+-    )
+-    from ._schema_generation_shared import (
++        CoreSchemaOrField,
+         GetJsonSchemaFunction,
+     )
+ 

@@ -1,0 +1,28 @@
+diff --git a/pydantic/_internal/_core_metadata.py b/pydantic/_internal/_core_metadata.py
+index 296d49f5989..b3caf7d807f 100644
+--- a/pydantic/_internal/_core_metadata.py
++++ b/pydantic/_internal/_core_metadata.py
+@@ -29,15 +29,18 @@ class CoreMetadata(typing_extensions.TypedDict, total=False):
+     # If `pydantic_js_prefer_positional_arguments` is True, the JSON schema generator will
+     # prefer positional over keyword arguments for an 'arguments' schema.
+     pydantic_js_prefer_positional_arguments: bool | None
+-
+-    pydantic_typed_dict_cls: type[Any] | None  # TODO: Consider moving this into the pydantic-core TypedDictSchema
++    pydantic_js_input_core_schema: CoreSchema | None
+ 
+ 
+ class CoreMetadataHandler:
+-    """Because the metadata field in pydantic_core is of type `Any`, we can't assume much about its contents.
++    """Because the metadata field in pydantic_core is of type `Dict[str, Any]`, we can't assume much about its contents.
++
++    This class is used to interact with the metadata field on a CoreSchema object in a consistent way throughout pydantic.
+ 
+-    This class is used to interact with the metadata field on a CoreSchema object in a consistent
+-    way throughout pydantic.
++    TODO: We'd like to refactor the storage of json related metadata to be more explicit, and less functionally oriented.
++    This should make its way into our v2.10 release. It's inevitable that we need to store some json schema related information
++    on core schemas, given that we generate JSON schemas directly from core schemas. That being said, debugging related
++    issues is quite difficult when JSON schema information is disguised via dynamically defined functions.
+     """
+ 
+     __slots__ = ('_schema',)

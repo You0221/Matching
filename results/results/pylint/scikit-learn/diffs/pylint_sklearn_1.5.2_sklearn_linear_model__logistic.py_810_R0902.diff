@@ -1,0 +1,31 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -798,12 +796,11 @@ def _log_reg_scoring_path(
+             log_reg.intercept_ = 0.0
+ 
+         if scoring is None:
+-            scores.append(log_reg.score(X_test, y_test))
++            scores.append(log_reg.score(X_test, y_test, sample_weight=sw_test))
+         else:
+             score_params = score_params or {}
+             score_params = _check_method_params(X=X, params=score_params, indices=test)
+             scores.append(scoring(log_reg, X_test, y_test, **score_params))
+-
+     return coefs, Cs, np.array(scores), n_iter
+ 
+ 
+@@ -811,12 +808,6 @@ class LogisticRegression(LinearClassifierMixin, SparseCoefMixin, BaseEstimator):
+     """
+     Logistic Regression (aka logit, MaxEnt) classifier.
+ 
+-    In the multiclass case, the training algorithm uses the one-vs-rest (OvR)
+-    scheme if the 'multi_class' option is set to 'ovr', and uses the
+-    cross-entropy loss if the 'multi_class' option is set to 'multinomial'.
+-    (Currently the 'multinomial' option is supported only by the 'lbfgs',
+-    'sag', 'saga' and 'newton-cg' solvers.)
+-
+     This class implements regularized logistic regression using the
+     'liblinear' library, 'newton-cg', 'sag', 'saga' and 'lbfgs' solvers. **Note
+     that regularization is applied by default**. It can handle both dense

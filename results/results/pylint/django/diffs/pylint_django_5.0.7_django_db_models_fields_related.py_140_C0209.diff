@@ -1,0 +1,13 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -154,7 +154,7 @@ def _check_related_name_is_valid(self):
+         return []
+ 
+     def _check_related_query_name_is_valid(self):
+-        if self.remote_field.is_hidden():
++        if self.remote_field.hidden:
+             return []
+         rel_query_name = self.related_query_name()
+         errors = []

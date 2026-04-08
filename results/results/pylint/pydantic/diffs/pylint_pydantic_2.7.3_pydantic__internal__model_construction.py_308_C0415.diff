@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..86c9bf05fe4 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -305,7 +324,7 @@ def get_model_post_init(namespace: dict[str, Any], bases: tuple[type[Any], ...])
+     if 'model_post_init' in namespace:
+         return namespace['model_post_init']
+ 
+-    from ..main import BaseModel
++    BaseModel = import_cached_base_model()
+ 
+     model_post_init = get_attribute_from_bases(bases, 'model_post_init')
+     if model_post_init is not BaseModel.model_post_init:

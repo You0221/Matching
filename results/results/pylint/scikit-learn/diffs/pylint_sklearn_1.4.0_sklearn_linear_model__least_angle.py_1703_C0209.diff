@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index f5766ac0d6154..81e8abb8bc5d6 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -1701,8 +1738,7 @@ def fit(self, X, y, **params):
+         if hasattr(Gram, "__array__"):
+             warnings.warn(
+                 'Parameter "precompute" cannot be an array in '
+-                '%s. Automatically switch to "auto" instead.'
+-                % self.__class__.__name__
++                '%s. Automatically switch to "auto" instead.' % self.__class__.__name__
+             )
+             Gram = "auto"
+ 

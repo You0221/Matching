@@ -1,0 +1,22 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index dd39b8cb607a8..34b613b15281a 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -952,6 +1031,8 @@ def predict_proba(self, X):
+                 self.estimators_features_[starts[i] : starts[i + 1]],
+                 X,
+                 self.n_classes_,
++                predict_params=routed_params.estimator.get("predict", None),
++                predict_proba_params=routed_params.estimator.get("predict_proba", None),
+             )
+             for i in range(n_jobs)
+         )
+@@ -961,7 +1042,7 @@ def predict_proba(self, X):
+ 
+         return proba
+ 
+-    def predict_log_proba(self, X):
++    def predict_log_proba(self, X, **params):
+         """Predict class log-probabilities for X.
+ 
+         The predicted class log-probabilities of an input sample is computed as

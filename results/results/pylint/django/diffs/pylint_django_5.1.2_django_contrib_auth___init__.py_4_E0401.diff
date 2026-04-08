@@ -1,0 +1,20 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 3db1445d9ea9..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -1,13 +1,13 @@
+ import inspect
+ import re
+-
+-from asgiref.sync import sync_to_async
++import warnings
+ 
+ from django.apps import apps as django_apps
+ from django.conf import settings
+ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+ from django.middleware.csrf import rotate_token
+ from django.utils.crypto import constant_time_compare
++from django.utils.deprecation import RemovedInDjango61Warning
+ from django.utils.module_loading import import_string
+ from django.views.decorators.debug import sensitive_variables
+ 

@@ -1,0 +1,81 @@
+diff --git a/numpy/_typing/_dtype_like.py b/numpy/_typing/_dtype_like.py
+index b68b5337219d..c406b3098384 100644
+--- a/numpy/_typing/_dtype_like.py
++++ b/numpy/_typing/_dtype_like.py
+@@ -1,63 +1,32 @@
+-from collections.abc import Sequence
++from collections.abc import Sequence  # noqa: F811
+ from typing import (
+     Any,
+-    TypeAlias,
+-    TypeVar,
+     Protocol,
++    TypeAlias,
+     TypedDict,
++    TypeVar,
+     runtime_checkable,
+ )
+ 
+ import numpy as np
+ 
+-from ._shape import _ShapeLike
+-
+ from ._char_codes import (
+     _BoolCodes,
+-    _UInt8Codes,
+-    _UInt16Codes,
+-    _UInt32Codes,
+-    _UInt64Codes,
+-    _Int8Codes,
+-    _Int16Codes,
+-    _Int32Codes,
+-    _Int64Codes,
+-    _Float16Codes,
+-    _Float32Codes,
+-    _Float64Codes,
+-    _Complex64Codes,
+-    _Complex128Codes,
+-    _ByteCodes,
+-    _ShortCodes,
+-    _IntCCodes,
+-    _LongCodes,
+-    _LongLongCodes,
+-    _IntPCodes,
+-    _IntCodes,
+-    _UByteCodes,
+-    _UShortCodes,
+-    _UIntCCodes,
+-    _ULongCodes,
+-    _ULongLongCodes,
+-    _UIntPCodes,
+-    _UIntCodes,
+-    _HalfCodes,
+-    _SingleCodes,
+-    _DoubleCodes,
+-    _LongDoubleCodes,
+-    _CSingleCodes,
+-    _CDoubleCodes,
+-    _CLongDoubleCodes,
++    _BytesCodes,
++    _ComplexFloatingCodes,
+     _DT64Codes,
+-    _TD64Codes,
++    _FloatingCodes,
++    _NumberCodes,
++    _ObjectCodes,
++    _SignedIntegerCodes,
+     _StrCodes,
+-    _BytesCodes,
++    _TD64Codes,
++    _UnsignedIntegerCodes,
+     _VoidCodes,
+-    _ObjectCodes,
+ )
+ 
+-_SCT = TypeVar("_SCT", bound=np.generic)
+-_DType_co = TypeVar("_DType_co", covariant=True, bound=np.dtype[Any])
++_ScalarT = TypeVar("_ScalarT", bound=np.generic)
++_DTypeT_co = TypeVar("_DTypeT_co", bound=np.dtype, covariant=True)
+ 
+ _DTypeLikeNested: TypeAlias = Any  # TODO: wait for support for recursive types
+ 

@@ -1,0 +1,23 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -262,16 +268,14 @@ def fit(self, X, y, sample_weight=None):
+ 
+         self.X_offset_ = X_offset_
+         self.X_scale_ = X_scale_
+-        n_samples, n_features = X.shape
+ 
+         # Initialization of the values of the parameters
+         eps = np.finfo(np.float64).eps
+-        # Add `eps` in the denominator to omit division by zero if `np.var(y)`
+-        # is zero
++        # Add `eps` in the denominator to omit division by zero
+         alpha_ = self.alpha_init
+         lambda_ = self.lambda_init
+         if alpha_ is None:
+-            alpha_ = 1.0 / (np.var(y) + eps)
++            alpha_ = 1.0 / (y_var + eps)
+         if lambda_ is None:
+             lambda_ = 1.0
+ 

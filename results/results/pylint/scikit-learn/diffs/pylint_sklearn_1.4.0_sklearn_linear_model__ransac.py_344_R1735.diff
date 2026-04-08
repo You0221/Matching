@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -336,10 +360,10 @@ def fit(self, X, y, sample_weight=None):
+             `is_data_valid` and `is_model_valid` return False for all
+             `max_trials` randomly chosen sub-samples.
+         """
+-        _raise_for_unsupported_routing(self, "fit", sample_weight=sample_weight)
+         # Need to validate separately here. We can't pass multi_output=True
+         # because that would allow y to be csr. Delay expensive finiteness
+         # check to the estimator's own input validation.
++        _raise_for_params(fit_params, self, "fit")
+         check_X_params = dict(accept_sparse="csr", force_all_finite=False)
+         check_y_params = dict(ensure_2d=False)
+         X, y = self._validate_data(

@@ -1,0 +1,61 @@
+diff --git a/lib/ansible/cli/config.py b/lib/ansible/cli/config.py
+index da9231af74b46c..ed42545df47fe3 100755
+--- a/lib/ansible/cli/config.py
++++ b/lib/ansible/cli/config.py
+@@ -187,54 +184,16 @@ def run(self):
+         # run the requested action
+         context.CLIARGS['func']()
+ 
+-    def execute_update(self):
+-        '''
+-        Updates a single setting in the specified ansible.cfg
+-        '''
+-        raise AnsibleError("Option not implemented yet")
+-
+-        # pylint: disable=unreachable
+-        if context.CLIARGS['setting'] is None:
+-            raise AnsibleOptionsError("update option requires a setting to update")
+-
+-        (entry, value) = context.CLIARGS['setting'].split('=')
+-        if '.' in entry:
+-            (section, option) = entry.split('.')
+-        else:
+-            section = 'defaults'
+-            option = entry
+-        subprocess.call([
+-            'ansible',
+-            '-m', 'ini_file',
+-            'localhost',
+-            '-c', 'local',
+-            '-a', '"dest=%s section=%s option=%s value=%s backup=yes"' % (self.config_file, section, option, value)
+-        ])
+-
+     def execute_view(self):
+-        '''
++        """
+         Displays the current config file
+-        '''
++        """
+         try:
+             with open(self.config_file, 'rb') as f:
+                 self.pager(to_text(f.read(), errors='surrogate_or_strict'))
+         except Exception as e:
+             raise AnsibleError("Failed to open config file: %s" % to_native(e))
+ 
+-    def execute_edit(self):
+-        '''
+-        Opens ansible.cfg in the default EDITOR
+-        '''
+-        raise AnsibleError("Option not implemented yet")
+-
+-        # pylint: disable=unreachable
+-        try:
+-            editor = shlex.split(C.config.get_config_value('EDITOR'))
+-            editor.append(self.config_file)
+-            subprocess.call(editor)
+-        except Exception as e:
+-            raise AnsibleError("Failed to open editor: %s" % to_native(e))
+-
+     def _list_plugin_settings(self, ptype, plugins=None):
+         entries = {}
+         loader = getattr(plugin_loader, '%s_loader' % ptype)

@@ -1,0 +1,70 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -533,7 +548,7 @@ def new_handler_func(
+ 
+             current_handler = _schema_generation_shared.GenerateJsonSchemaHandler(self, new_handler_func)
+ 
+-        for js_modify_function in metadata_handler.metadata.get('pydantic_js_annotation_functions', ()):
++        for js_modify_function in metadata.get('pydantic_js_annotation_functions', ()):
+ 
+             def new_handler_func(
+                 schema_or_field: CoreSchemaOrField,
+@@ -543,7 +558,6 @@ def new_handler_func(
+                 json_schema = js_modify_function(schema_or_field, current_handler)
+                 if _core_utils.is_core_schema(schema_or_field):
+                     json_schema = populate_defs(schema_or_field, json_schema)
+-                    json_schema = convert_to_all_of(json_schema)
+                 return json_schema
+ 
+             current_handler = _schema_generation_shared.GenerateJsonSchemaHandler(self, new_handler_func)
+@@ -551,10 +565,47 @@ def new_handler_func(
+         json_schema = current_handler(schema)
+         if _core_utils.is_core_schema(schema):
+             json_schema = populate_defs(schema, json_schema)
+-            json_schema = convert_to_all_of(json_schema)
+         return json_schema
+ 
++    def sort(self, value: JsonSchemaValue, parent_key: str | None = None) -> JsonSchemaValue:
++        """Override this method to customize the sorting of the JSON schema (e.g., don't sort at all, sort all keys unconditionally, etc.)
++
++        By default, alphabetically sort the keys in the JSON schema, skipping the 'properties' and 'default' keys to preserve field definition order.
++        This sort is recursive, so it will sort all nested dictionaries as well.
++        """
++        sorted_dict: dict[str, JsonSchemaValue] = {}
++        keys = value.keys()
++        if parent_key not in ('properties', 'default'):
++            keys = sorted(keys)
++        for key in keys:
++            sorted_dict[key] = self._sort_recursive(value[key], parent_key=key)
++        return sorted_dict
++
++    def _sort_recursive(self, value: Any, parent_key: str | None = None) -> Any:
++        """Recursively sort a JSON schema value."""
++        if isinstance(value, dict):
++            sorted_dict: dict[str, JsonSchemaValue] = {}
++            keys = value.keys()
++            if parent_key not in ('properties', 'default'):
++                keys = sorted(keys)
++            for key in keys:
++                sorted_dict[key] = self._sort_recursive(value[key], parent_key=key)
++            return sorted_dict
++        elif isinstance(value, list):
++            sorted_list: list[JsonSchemaValue] = []
++            for item in value:
++                sorted_list.append(self._sort_recursive(item, parent_key))
++            return sorted_list
++        else:
++            return value
++
+     # ### Schema generation methods
++
++    def invalid_schema(self, schema: core_schema.InvalidSchema) -> JsonSchemaValue:
++        """Placeholder - should never be called."""
++
++        raise RuntimeError('Cannot generate schema for invalid_schema. This is a bug! Please report it.')
++
+     def any_schema(self, schema: core_schema.AnySchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches any value.
+ 

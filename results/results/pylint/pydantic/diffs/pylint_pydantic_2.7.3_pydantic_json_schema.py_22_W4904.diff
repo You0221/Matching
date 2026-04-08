@@ -1,0 +1,55 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..62be321eb6b 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -8,39 +8,40 @@
+ [`BaseModel.model_json_schema`][pydantic.BaseModel.model_json_schema] and
+ [`TypeAdapter.json_schema`][pydantic.TypeAdapter.json_schema].
+ """
++
+ from __future__ import annotations as _annotations
+ 
+ import dataclasses
+ import inspect
+ import math
++import os
+ import re
+ import warnings
+-from collections import defaultdict
++from collections import Counter, defaultdict
++from collections.abc import Hashable, Iterable, Sequence
+ from copy import deepcopy
+-from dataclasses import is_dataclass
+ from enum import Enum
++from re import Pattern
+ from typing import (
+     TYPE_CHECKING,
++    Annotated,
+     Any,
+     Callable,
+-    Counter,
+-    Dict,
+-    Hashable,
+-    Iterable,
++    Literal,
+     NewType,
+-    Sequence,
+-    Tuple,
+     TypeVar,
+     Union,
+     cast,
++    overload,
+ )
+ 
+ import pydantic_core
+ from pydantic_core import CoreSchema, PydanticOmit, core_schema, to_jsonable_python
+ from pydantic_core.core_schema import ComputedField
+-from typing_extensions import Annotated, Literal, TypeAlias, assert_never, deprecated, final
++from typing_extensions import TypeAlias, assert_never, deprecated, final
++from typing_inspection.introspection import get_literal_values
+ 
+-from pydantic.warnings import PydanticDeprecatedSince26
++from pydantic.warnings import PydanticDeprecatedSince26, PydanticDeprecatedSince29
+ 
+ from ._internal import (
+     _config,

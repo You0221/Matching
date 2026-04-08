@@ -1,0 +1,12 @@
+diff --git a/django/forms/utils.py b/django/forms/utils.py
+index f4fbf3e2418a..27eabe57dc58 100644
+--- a/django/forms/utils.py
++++ b/django/forms/utils.py
+@@ -162,6 +163,7 @@ def as_data(self):
+     def copy(self):
+         copy = super().copy()
+         copy.error_class = self.error_class
++        copy.renderer = self.renderer
+         return copy
+ 
+     def get_json_data(self, escape_html=False):

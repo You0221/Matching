@@ -1,0 +1,15 @@
+diff --git a/pydantic/root_model.py b/pydantic/root_model.py
+index b408c5c8fa8..8351651dfa2 100644
+--- a/pydantic/root_model.py
++++ b/pydantic/root_model.py
+@@ -148,7 +148,9 @@ def model_dump(  # type: ignore
+     def __eq__(self, other: Any) -> bool:
+         if not isinstance(other, RootModel):
+             return NotImplemented
+-        return self.model_fields['root'].annotation == other.model_fields['root'].annotation and super().__eq__(other)
++        return self.__pydantic_fields__['root'].annotation == other.__pydantic_fields__[
++            'root'
++        ].annotation and super().__eq__(other)
+ 
+     def __repr_args__(self) -> _repr.ReprArgs:
+         yield 'root', self.root

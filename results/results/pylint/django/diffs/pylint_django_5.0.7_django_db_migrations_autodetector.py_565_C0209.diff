@@ -1,0 +1,22 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -566,11 +621,12 @@ def generate_renamed_models(self):
+                                 rem_model_state.app_label,
+                                 rem_model_state.name_lower,
+                             )
+-                            self.renamed_models_rel[
+-                                renamed_models_rel_key
+-                            ] = "%s.%s" % (
+-                                model_state.app_label,
+-                                model_state.name_lower,
++                            self.renamed_models_rel[renamed_models_rel_key] = (
++                                "%s.%s"
++                                % (
++                                    model_state.app_label,
++                                    model_state.name_lower,
++                                )
+                             )
+                             self.old_model_keys.remove((rem_app_label, rem_model_name))
+                             self.old_model_keys.add((app_label, model_name))

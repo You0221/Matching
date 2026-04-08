@@ -1,0 +1,158 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 6b6fd82e822..4be1a09cb32 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -23,139 +26,45 @@
+     from types import EllipsisType as EllipsisType
+     from types import NoneType as NoneType
+ 
++if TYPE_CHECKING:
++    from pydantic import BaseModel
+ 
+-# See https://typing-extensions.readthedocs.io/en/latest/#runtime-use-of-types:
+-
+-
+-@lru_cache(maxsize=None)
+-def _get_typing_objects_by_name_of(name: str) -> tuple[Any, ...]:
+-    """Get the member named `name` from both `typing` and `typing-extensions` (if it exists)."""
+-    result = tuple(getattr(module, name) for module in (typing, typing_extensions) if hasattr(module, name))
+-    if not result:
+-        raise ValueError(f'Neither `typing` nor `typing_extensions` has an object called {name!r}')
+-    return result
+-
+-
+-# As suggested by the `typing-extensions` documentation, we could apply caching to this method,
+-# but it doesn't seem to improve performance. This also requires `obj` to be hashable, which
+-# might not be always the case:
+-def _is_typing_name(obj: object, name: str) -> bool:
+-    """Return whether `obj` is the member of the typing modules (includes the `typing-extensions` one) named `name`."""
+-    # Using `any()` is slower:
+-    for thing in _get_typing_objects_by_name_of(name):
+-        if obj is thing:
+-            return True
+-    return False
+-
+-
+-def is_any(tp: Any, /) -> bool:
+-    """Return whether the provided argument is the `Any` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_any(Any)
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(tp, name='Any')
+-
+-
+-def is_union(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `Union` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_union(Union[int, str])
+-    #> True
+-    is_union(int | str)
+-    #> False
+-    ```
+-    """
+-    return _is_typing_name(get_origin(tp), name='Union')
+-
+-
+-def is_literal(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `Literal` special form.
++# As per https://typing-extensions.readthedocs.io/en/latest/#runtime-use-of-types,
++# always check for both `typing` and `typing_extensions` variants of a typing construct.
++# (this is implemented differently than the suggested approach in the `typing_extensions`
++# docs for performance).
+ 
+-    ```python test="skip" lint="skip"
+-    is_literal(Literal[42])
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(get_origin(tp), name='Literal')
+ 
+-
+-# TODO remove and replace with `get_args` when we drop support for Python 3.8
+-# (see https://docs.python.org/3/whatsnew/3.9.html#id4).
+-def literal_values(tp: Any, /) -> list[Any]:
+-    """Return the values contained in the provided `Literal` special form."""
+-    if not is_literal(tp):
+-        return [tp]
+-
+-    values = get_args(tp)
+-    return [x for value in values for x in literal_values(value)]
++_t_annotated = typing.Annotated
++_te_annotated = typing_extensions.Annotated
+ 
+ 
+ def is_annotated(tp: Any, /) -> bool:
+     """Return whether the provided argument is a `Annotated` special form.
+ 
+-    ```python test="skip" lint="skip"
++    ```python {test="skip" lint="skip"}
+     is_annotated(Annotated[int, ...])
+     #> True
+     ```
+     """
+-    return _is_typing_name(get_origin(tp), name='Annotated')
++    origin = get_origin(tp)
++    return origin is _t_annotated or origin is _te_annotated
+ 
+ 
+ def annotated_type(tp: Any, /) -> Any | None:
+     """Return the type of the `Annotated` special form, or `None`."""
+-    return get_args(tp)[0] if is_annotated(tp) else None
+-
+-
+-def is_unpack(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `Unpack` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_unpack(Unpack[Ts])
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(get_origin(tp), name='Unpack')
++    return tp.__origin__ if typing_objects.is_annotated(get_origin(tp)) else None
+ 
+ 
+ def unpack_type(tp: Any, /) -> Any | None:
+     """Return the type wrapped by the `Unpack` special form, or `None`."""
+-    return get_args(tp)[0] if is_unpack(tp) else None
+-
+-
+-def is_self(tp: Any, /) -> bool:
+-    """Return whether the provided argument is the `Self` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_self(Self)
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(tp, name='Self')
+-
+-
+-def is_new_type(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `NewType`.
+-
+-    ```python test="skip" lint="skip"
+-    is_new_type(NewType('MyInt', int))
+-    #> True
+-    ```
+-    """
+-    if sys.version_info < (3, 10):
+-        # On Python < 3.10, `typing.NewType` is a function
+-        return hasattr(tp, '__supertype__')
+-    else:
+-        return _is_typing_name(type(tp), name='NewType')
++    return get_args(tp)[0] if typing_objects.is_unpack(get_origin(tp)) else None
+ 
+ 
+ def is_hashable(tp: Any, /) -> bool:
+     """Return whether the provided argument is the `Hashable` class.
+ 
+-    ```python test="skip" lint="skip"
++    ```python {test="skip" lint="skip"}
+     is_hashable(Hashable)
+     #> True
+     ```

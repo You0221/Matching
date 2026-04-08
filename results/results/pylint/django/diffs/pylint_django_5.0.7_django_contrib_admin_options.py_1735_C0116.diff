@@ -1,0 +1,14 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1771,6 +1836,9 @@ def _get_obj_does_not_exist_redirect(self, request, opts, object_id):
+ 
+     @csrf_protect_m
+     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
++        if request.method in ("GET", "HEAD", "OPTIONS", "TRACE"):
++            return self._changeform_view(request, object_id, form_url, extra_context)
++
+         with transaction.atomic(using=router.db_for_write(self.model)):
+             return self._changeform_view(request, object_id, form_url, extra_context)
+ 

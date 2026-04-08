@@ -1,0 +1,24 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 087353713f6..50566e5a24a 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -104,14 +105,15 @@ def all_literal_values(type_: type[Any]) -> list[Any]:
+         return [type_]
+ 
+     values = literal_values(type_)
+-    return list(x for value in values for x in all_literal_values(value))
++    return [x for value in values for x in all_literal_values(value)]
+ 
+ 
+ def is_annotated(ann_type: Any) -> bool:
+-    from ._utils import lenient_issubclass
++    return get_origin(ann_type) is Annotated
+ 
+-    origin = get_origin(ann_type)
+-    return origin is not None and lenient_issubclass(origin, Annotated)
++
++def annotated_type(type_: Any) -> Any | None:
++    return get_args(type_)[0] if is_annotated(type_) else None
+ 
+ 
+ def is_namedtuple(type_: type[Any]) -> bool:

@@ -1,0 +1,26 @@
+diff --git a/django/db/models/options.py b/django/db/models/options.py
+index 76017fc8b523..11b2742f7d10 100644
+--- a/django/db/models/options.py
++++ b/django/db/models/options.py
+@@ -243,15 +238,16 @@ def contribute_to_class(self, cls, name):
+                 self.db_table, connection.ops.max_name_length()
+             )
+ 
+-    def _format_names_with_class(self, cls, objs):
++        if self.swappable:
++            setting_changed.connect(self.setting_changed)
++
++    def _format_names(self, objs):
+         """App label/class name interpolation for object names."""
++        names = {"app_label": self.app_label.lower(), "class": self.model_name}
+         new_objs = []
+         for obj in objs:
+             obj = obj.clone()
+-            obj.name = obj.name % {
+-                "app_label": cls._meta.app_label.lower(),
+-                "class": cls.__name__.lower(),
+-            }
++            obj.name %= names
+             new_objs.append(obj)
+         return new_objs
+ 

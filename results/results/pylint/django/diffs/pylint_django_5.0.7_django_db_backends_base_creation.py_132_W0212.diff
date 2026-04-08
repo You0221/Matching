@@ -1,0 +1,16 @@
+diff --git a/django/db/backends/base/creation.py b/django/db/backends/base/creation.py
+index cbac8a7f7672..6856fdb59676 100644
+--- a/django/db/backends/base/creation.py
++++ b/django/db/backends/base/creation.py
+@@ -135,7 +135,10 @@ def get_objects():
+                             queryset = model._base_manager.using(
+                                 self.connection.alias,
+                             ).order_by(model._meta.pk.name)
+-                            yield from queryset.iterator()
++                            chunk_size = (
++                                2000 if queryset._prefetch_related_lookups else None
++                            )
++                            yield from queryset.iterator(chunk_size=chunk_size)
+ 
+         # Serialize to a string
+         out = StringIO()

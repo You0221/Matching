@@ -1,0 +1,37 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 4b3d8eff730..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -754,21 +786,26 @@ def __class_getitem__(
+             )  # use dict as ordered set
+ 
+             with _generics.generic_recursion_self_type(origin, args) as maybe_self_type:
+-                if maybe_self_type is not None:
+-                    return maybe_self_type
+-
++                # Check cached first otherwise `mro` may return `PydanticRecursiveRef`
+                 cached = _generics.get_cached_generic_type_late(cls, typevar_values, origin, args)
+                 if cached is not None:
+                     return cached
+ 
++                if maybe_self_type is not None:
++                    return maybe_self_type
++
+                 # Attempt to rebuild the origin in case new types have been defined
+                 try:
+-                    # depth 3 gets you above this __class_getitem__ call
+-                    origin.model_rebuild(_parent_namespace_depth=3)
++                    # depth 2 gets you above this __class_getitem__ call.
++                    # Note that we explicitly provide the parent ns, otherwise
++                    # `model_rebuild` will use the parent ns no matter if it is the ns of a module.
++                    # We don't want this here, as this has unexpected effects when a model
++                    # is being parametrized during a forward annotation evaluation.
++                    parent_ns = _typing_extra.parent_frame_namespace(parent_depth=2) or {}
++                    origin.model_rebuild(_types_namespace=parent_ns)
+                 except PydanticUndefinedAnnotation:
+                     # It's okay if it fails, it just means there are still undefined types
+                     # that could be evaluated later.
+-                    # TODO: Make sure validation fails if there are still undefined types, perhaps using MockValidator
+                     pass
+ 
+                 submodel = _generics.create_generic_submodel(model_name, origin, args, params)

@@ -1,0 +1,29 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index 56bb9fbc50570..0a55291a70ace 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2733,7 +2686,7 @@ def fit(self, X, y, sample_weight=None, **params):
+         Notes
+         -----
+         When sample_weight is provided, the selected hyperparameter may depend
+-        on whether we use leave-one-out cross-validation (cv=None or cv='auto')
++        on whether we use leave-one-out cross-validation (cv=None)
+         or another form of cross-validation, because only leave-one-out
+         cross-validation takes the sample weights into account when computing
+         the validation score.
+@@ -2741,15 +2694,6 @@ def fit(self, X, y, sample_weight=None, **params):
+         super().fit(X, y, sample_weight=sample_weight, **params)
+         return self
+ 
+-    def __sklearn_tags__(self):
+-        tags = super().__sklearn_tags__()
+-        tags._xfail_checks = {
+-            "check_sample_weight_equivalence": (
+-                "GridSearchCV does not forward the weights to the scorer by default."
+-            ),
+-        }
+-        return tags
+-
+ 
+ class RidgeClassifierCV(_RidgeClassifierMixin, _BaseRidgeCV):
+     """Ridge classifier with built-in cross-validation.

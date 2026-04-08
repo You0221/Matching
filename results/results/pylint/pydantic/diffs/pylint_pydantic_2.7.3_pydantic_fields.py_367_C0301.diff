@@ -1,0 +1,124 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index 312bd92921b..5149d3127df 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -350,62 +395,77 @@ class MyModel(pydantic.BaseModel):
+         if annotation is default:
+             raise PydanticUserError(
+                 'Error when building FieldInfo from annotated attribute. '
+-                "Make sure you don't have any field name clashing with a type annotation ",
++                "Make sure you don't have any field name clashing with a type annotation.",
+                 code='unevaluable-type-annotation',
+             )
+ 
+-        final = False
+-        if _typing_extra.is_finalvar(annotation):
+-            final = True
+-            if annotation is not typing_extensions.Final:
+-                annotation = typing_extensions.get_args(annotation)[0]
++        try:
++            inspected_ann = inspect_annotation(
++                annotation,
++                annotation_source=_source,
++                unpack_type_aliases='skip',
++            )
++        except ForbiddenQualifier as e:
++            raise PydanticForbiddenQualifier(e.qualifier, annotation)
++
++        # TODO check for classvar and error?
++
++        # TODO infer from the default, this can be done in v3 once we treat final fields with
++        # a default as proper fields and not class variables:
++        type_expr: Any = Any if inspected_ann.type is UNKNOWN else inspected_ann.type
++        final = 'final' in inspected_ann.qualifiers
++        metadata = inspected_ann.metadata
+ 
+         if isinstance(default, FieldInfo):
+-            default.annotation, annotation_metadata = FieldInfo._extract_metadata(annotation)
+-            default.metadata += annotation_metadata
+-            default = default.merge_field_infos(
+-                *[x for x in annotation_metadata if isinstance(x, FieldInfo)], default, annotation=default.annotation
++            # e.g. `field: int = Field(...)`
++            default.annotation = type_expr
++            default.metadata += metadata
++            merged_default = FieldInfo.merge_field_infos(
++                *[x for x in metadata if isinstance(x, FieldInfo)],
++                default,
++                annotation=default.annotation,
+             )
+-            default.frozen = final or default.frozen
+-            return default
+-        elif isinstance(default, dataclasses.Field):
+-            init_var = False
+-            if annotation is dataclasses.InitVar:
+-                init_var = True
+-                annotation = Any
+-            elif isinstance(annotation, dataclasses.InitVar):
+-                init_var = True
+-                annotation = annotation.type
++            merged_default.frozen = final or merged_default.frozen
++            merged_default._qualifiers = inspected_ann.qualifiers
++            return merged_default
++
++        if isinstance(default, dataclasses.Field):
++            # `collect_dataclass_fields()` passes the dataclass Field as a default.
+             pydantic_field = FieldInfo._from_dataclass_field(default)
+-            pydantic_field.annotation, annotation_metadata = FieldInfo._extract_metadata(annotation)
+-            pydantic_field.metadata += annotation_metadata
+-            pydantic_field = pydantic_field.merge_field_infos(
+-                *[x for x in annotation_metadata if isinstance(x, FieldInfo)],
++            pydantic_field.annotation = type_expr
++            pydantic_field.metadata += metadata
++            pydantic_field = FieldInfo.merge_field_infos(
++                *[x for x in metadata if isinstance(x, FieldInfo)],
+                 pydantic_field,
+                 annotation=pydantic_field.annotation,
+             )
+             pydantic_field.frozen = final or pydantic_field.frozen
+-            pydantic_field.init_var = init_var
++            pydantic_field.init_var = 'init_var' in inspected_ann.qualifiers
+             pydantic_field.init = getattr(default, 'init', None)
+             pydantic_field.kw_only = getattr(default, 'kw_only', None)
++            pydantic_field._qualifiers = inspected_ann.qualifiers
+             return pydantic_field
+-        else:
+-            if _typing_extra.is_annotated(annotation):
+-                first_arg, *extra_args = typing_extensions.get_args(annotation)
+-                field_infos = [a for a in extra_args if isinstance(a, FieldInfo)]
+-                field_info = FieldInfo.merge_field_infos(*field_infos, annotation=first_arg, default=default)
+-                metadata: list[Any] = []
+-                for a in extra_args:
+-                    if _typing_extra.is_deprecated_instance(a):
+-                        field_info.deprecated = a.message
+-                    elif not isinstance(a, FieldInfo):
+-                        metadata.append(a)
+-                    else:
+-                        metadata.extend(a.metadata)
+-                field_info.metadata = metadata
+-                return field_info
+-
+-            return FieldInfo(annotation=annotation, default=default, frozen=final or None)
++
++        if not metadata:
++            # No metadata, e.g. `field: int = ...`, or `field: Final[str] = ...`:
++            field_info = FieldInfo(annotation=type_expr, default=default, frozen=final or None)
++            field_info._qualifiers = inspected_ann.qualifiers
++            return field_info
++
++        # With metadata, e.g. `field: Annotated[int, Field(...), Gt(1)] = ...`:
++        field_infos = [a for a in metadata if isinstance(a, FieldInfo)]
++        field_info = FieldInfo.merge_field_infos(*field_infos, annotation=type_expr, default=default)
++        field_metadata: list[Any] = []
++        for a in metadata:
++            if typing_objects.is_deprecated(a):
++                field_info.deprecated = a.message
++            elif not isinstance(a, FieldInfo):
++                field_metadata.append(a)
++            else:
++                field_metadata.extend(a.metadata)
++        field_info.metadata = field_metadata
++        field_info._qualifiers = inspected_ann.qualifiers
++        return field_info
+ 
+     @staticmethod
+     def merge_field_infos(*field_infos: FieldInfo, **overrides: Any) -> FieldInfo:

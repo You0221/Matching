@@ -1,0 +1,20 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1420,9 +1447,14 @@ def try_transform(self, lhs, name):
+                 suggestion = ", perhaps you meant %s?" % " or ".join(suggested_lookups)
+             else:
+                 suggestion = "."
++            if lookups is not None:
++                name_index = lookups.index(name)
++                unsupported_lookup = LOOKUP_SEP.join(lookups[name_index:])
++            else:
++                unsupported_lookup = name
+             raise FieldError(
+                 "Unsupported lookup '%s' for %s or join on the field not "
+-                "permitted%s" % (name, output_field.__name__, suggestion)
++                "permitted%s" % (unsupported_lookup, output_field.__name__, suggestion)
+             )
+ 
+     def build_filter(

@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -73,23 +91,23 @@
+     inspect_validator,
+ )
+ from ._docs_extraction import extract_docstrings_from_cls
+-from ._fields import collect_dataclass_fields, get_type_hints_infer_globalns
++from ._fields import collect_dataclass_fields, takes_validated_data_argument
+ from ._forward_ref import PydanticRecursiveRef
+ from ._generics import get_standard_typevars_map, has_instance_in_type, recursively_defined_type_refs, replace_types
++from ._import_utils import import_cached_base_model, import_cached_field_info
++from ._mock_val_ser import MockCoreSchema
++from ._namespace_utils import NamespacesTuple, NsResolver
+ from ._schema_generation_shared import CallbackGetCoreSchemaHandler
+-from ._typing_extra import is_finalvar, is_self_type
+-from ._utils import lenient_issubclass
++from ._utils import lenient_issubclass, smart_deepcopy
+ 
+ if TYPE_CHECKING:
+     from ..fields import ComputedFieldInfo, FieldInfo
+     from ..main import BaseModel
+     from ..types import Discriminator
+-    from ..validators import FieldValidatorModes
+     from ._dataclasses import StandardDataclass
+     from ._schema_generation_shared import GetJsonSchemaFunction
+ 
+ _SUPPORTS_TYPEDDICT = sys.version_info >= (3, 12)
+-_AnnotatedType = type(Annotated[int, 123])
+ 
+ FieldDecoratorInfo = Union[ValidatorDecoratorInfo, FieldValidatorDecoratorInfo, FieldSerializerDecoratorInfo]
+ FieldDecoratorInfoType = TypeVar('FieldDecoratorInfoType', bound=FieldDecoratorInfo)

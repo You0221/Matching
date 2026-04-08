@@ -1,0 +1,30 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -403,6 +448,25 @@ def decision_function(self, X):
+             The anomaly score of the input samples.
+             The lower, the more abnormal. Negative scores represent outliers,
+             positive scores represent inliers.
++
++        Notes
++        -----
++        The decision_function method can be parallelized by setting a joblib context.
++        This inherently does NOT use the ``n_jobs`` parameter initialized in the class,
++        which is used during ``fit``. This is because, calculating the score may
++        actually be faster without parallelization for a small number of samples,
++        such as for 1000 samples or less.
++        The user can set the number of jobs in the joblib context to control the
++        number of parallel jobs.
++
++        .. code-block:: python
++
++            from joblib import parallel_backend
++
++            # Note, we use threading here as the decision_function method is
++            # not CPU bound.
++            with parallel_backend("threading", n_jobs=4):
++                model.decision_function(X)
+         """
+         # We subtract self.offset_ to make 0 be the threshold value for being
+         # an outlier:

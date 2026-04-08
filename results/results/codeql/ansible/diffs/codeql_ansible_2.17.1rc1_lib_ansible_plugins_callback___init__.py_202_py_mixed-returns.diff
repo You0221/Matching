@@ -1,0 +1,238 @@
+diff --git a/lib/ansible/plugins/callback/__init__.py b/lib/ansible/plugins/callback/__init__.py
+index 5659887b7318ee..2fc52c45c748c4 100644
+--- a/lib/ansible/plugins/callback/__init__.py
++++ b/lib/ansible/plugins/callback/__init__.py
+@@ -155,49 +169,105 @@ def __init__(self, display=None, options=None):
+         self.disabled = False
+         self.wants_implicit_tasks = False
+ 
+-        self._plugin_options = {}
++        self._plugin_options: dict[str, t.Any] = {}
++
+         if options is not None:
+             self.set_options(options)
+ 
+-        self._hide_in_debug = ('changed', 'failed', 'skipped', 'invocation', 'skip_reason')
++        self._hide_in_debug = (
++            'changed', 'failed', 'skipped', 'invocation', 'skip_reason',
++            'ansible_loop_var', 'ansible_index_var', 'ansible_loop',
++        )
++
++        self._current_task_result: CallbackTaskResult | None = None
+ 
+     # helper for callbacks, so they don't all have to include deepcopy
+     _copy_result = deepcopy
+ 
++    def _init_callback_methods(self) -> None:
++        """Record analysis of callback methods on each callback instance for dispatch optimization and deprecation warnings."""
++        implemented_callback_methods: set[str] = set()
++        deprecated_v1_method_overrides: set[str] = set()
++        plugin_file = sys.modules[type(self).__module__].__file__
++
++        if plugin_info := _deprecator._path_as_plugininfo(plugin_file):
++            plugin_name = plugin_info.resolved_name
++        else:
++            plugin_name = plugin_file
++
++        for base_v2_method, base_v1_method in CallbackBase._v2_v1_method_map.items():
++            method_name = None
++
++            if not inspect.ismethod(method := getattr(self, (v2_method_name := base_v2_method.__name__))) or method.__func__ is not base_v2_method:
++                implemented_callback_methods.add(v2_method_name)  # v2 method directly implemented by subclass
++                method_name = v2_method_name
++            elif base_v1_method is None:
++                pass  # no corresponding v1 method
++            elif not inspect.ismethod(method := getattr(self, (v1_method_name := base_v1_method.__name__))) or method.__func__ is not base_v1_method:
++                implemented_callback_methods.add(v2_method_name)  # v1 method directly implemented by subclass
++                deprecated_v1_method_overrides.add(v1_method_name)
++                method_name = v1_method_name
++
++            if method_name and v2_method_name == 'v2_on_any':
++                deprecated_v1_method_overrides.discard(method_name)  # avoid including v1 on_any in the v1 deprecation below
++
++                global_display.deprecated(
++                    msg=f'The {plugin_name!r} callback plugin implements deprecated method {method_name!r}.',
++                    version='2.23',
++                    help_text='Use event-specific callback methods instead.',
++                )
++
++        self._implemented_callback_methods = frozenset(implemented_callback_methods)
++
++        if deprecated_v1_method_overrides:
++            global_display.deprecated(
++                msg=f'The {plugin_name!r} callback plugin implements the following deprecated method(s): {", ".join(sorted(deprecated_v1_method_overrides))}',
++                version='2.23',
++                help_text='Implement the `v2_*` equivalent callback method(s) instead.',
++            )
++
+     def set_option(self, k, v):
+         self._plugin_options[k] = C.config.get_config_value(k, plugin_type=self.plugin_type, plugin_name=self._load_name, direct={k: v})
+ 
+-    def get_option(self, k):
++    def get_option(self, k, hostvars=None):
+         return self._plugin_options[k]
+ 
++    def has_option(self, option):
++        return (option in self._plugin_options)
++
+     def set_options(self, task_keys=None, var_options=None, direct=None):
+-        ''' This is different than the normal plugin method as callbacks get called early and really don't accept keywords.
++        """ This is different than the normal plugin method as callbacks get called early and really don't accept keywords.
+             Also _options was already taken for CLI args and callbacks use _plugin_options instead.
+-        '''
++        """
+ 
+         # load from config
+         self._plugin_options = C.config.get_plugin_options(self.plugin_type, self._load_name, keys=task_keys, variables=var_options, direct=direct)
+ 
+     @staticmethod
+-    def host_label(result):
+-        """Return label for the hostname (& delegated hostname) of a task
+-        result.
+-        """
+-        label = "%s" % result._host.get_name()
+-        if result._task.delegate_to and result._task.delegate_to != result._host.get_name():
++    def host_label(result: CallbackTaskResult) -> str:
++        """Return label for the hostname (& delegated hostname) of a task result."""
++        label = result.host.get_name()
++        if result.task.delegate_to and result.task.delegate_to != result.host.get_name():
+             # show delegated host
+-            label += " -> %s" % result._task.delegate_to
++            label += " -> %s" % result.task.delegate_to
+             # in case we have 'extra resolution'
+-            ahost = result._result.get('_ansible_delegated_vars', {}).get('ansible_host', result._task.delegate_to)
+-            if result._task.delegate_to != ahost:
++            ahost = result.result.get('_ansible_delegated_vars', {}).get('ansible_host', result.task.delegate_to)
++            if result.task.delegate_to != ahost:
+                 label += "(%s)" % ahost
+         return label
+ 
+-    def _run_is_verbose(self, result, verbosity=0):
+-        return ((self._display.verbosity > verbosity or result._result.get('_ansible_verbose_always', False) is True)
+-                and result._result.get('_ansible_verbose_override', False) is False)
+-
+-    def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=False, serialize=True):
++    def _run_is_verbose(self, result: CallbackTaskResult, verbosity: int = 0) -> bool:
++        return ((self._display.verbosity > verbosity or result.result.get('_ansible_verbose_always', False) is True)
++                and result.result.get('_ansible_verbose_override', False) is False)
++
++    def _dump_results(
++        self,
++        result: _c.Mapping[str, t.Any],
++        indent: int | None = None,
++        sort_keys: bool = True,
++        keep_invocation: bool = False,
++        serialize: bool = True,
++    ) -> str:
+         try:
+             result_format = self.get_option('result_format')
+         except KeyError:
+@@ -234,9 +304,12 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+         if self._display.verbosity < 3 and 'diff' in result:
+             del abridged_result['diff']
+ 
+-        # remove exception from screen output
+-        if 'exception' in abridged_result:
+-            del abridged_result['exception']
++        # remove error/warning values; the stdout callback should have already handled them
++        abridged_result.pop('exception', None)
++        abridged_result.pop('warnings', None)
++        abridged_result.pop('deprecations', None)
++
++        abridged_result = _engine.TemplateEngine().transform(abridged_result)  # ensure the dumped view matches the transformed view a playbook sees
+ 
+         if not serialize:
+             # Just return ``abridged_result`` without going through serialization
+@@ -245,18 +318,9 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+             return abridged_result
+ 
+         if result_format == 'json':
+-            try:
+-                return json.dumps(abridged_result, cls=AnsibleJSONEncoder, indent=indent, ensure_ascii=False, sort_keys=sort_keys)
+-            except TypeError:
+-                # Python3 bug: throws an exception when keys are non-homogenous types:
+-                # https://bugs.python.org/issue25457
+-                # sort into an OrderedDict and then json.dumps() that instead
+-                if not OrderedDict:
+-                    raise
+-                return json.dumps(OrderedDict(sorted(abridged_result.items(), key=to_text)),
+-                                  cls=AnsibleJSONEncoder, indent=indent,
+-                                  ensure_ascii=False, sort_keys=False)
+-        elif result_format == 'yaml':
++            return json.dumps(abridged_result, cls=_fallback_to_str.Encoder, indent=indent, ensure_ascii=False, sort_keys=sort_keys)
++
++        if result_format == 'yaml':
+             # None is a sentinel in this case that indicates default behavior
+             # default behavior for yaml is to prettify results
+             lossy = pretty_results in (None, True)
+@@ -273,7 +337,7 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+                 yaml.dump(
+                     abridged_result,
+                     allow_unicode=True,
+-                    Dumper=_AnsibleCallbackDumper(lossy=lossy),
++                    Dumper=functools.partial(_AnsibleCallbackDumper, lossy=lossy),
+                     default_flow_style=False,
+                     indent=indent,
+                     # sort_keys=sort_keys  # This requires PyYAML>=5.1
+@@ -281,32 +345,36 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+                 ' ' * (indent or 4)
+             )
+ 
+-    def _handle_warnings(self, res):
+-        ''' display warnings, if enabled and any exist in the result '''
+-        if C.ACTION_WARNINGS:
+-            if 'warnings' in res and res['warnings']:
+-                for warning in res['warnings']:
+-                    self._display.warning(warning)
+-                del res['warnings']
+-            if 'deprecations' in res and res['deprecations']:
+-                for warning in res['deprecations']:
+-                    self._display.deprecated(**warning)
+-                del res['deprecations']
+-
+-    def _handle_exception(self, result, use_stderr=False):
+-
+-        if 'exception' in result:
+-            msg = "An exception occurred during task execution. "
+-            exception_str = to_text(result['exception'])
+-            if self._display.verbosity < 3:
+-                # extract just the actual error message from the exception text
+-                error = exception_str.strip().split('\n')[-1]
+-                msg += "To see the full traceback, use -vvv. The error was: %s" % error
+-            else:
+-                msg = "The full traceback is:\n" + exception_str
+-                del result['exception']
++        # DTFIX5: add test to exercise this case
++        raise ValueError(f'Unsupported result_format {result_format!r}.')
++
++    def _handle_warnings(self, res: _c.MutableMapping[str, t.Any]) -> None:
++        """Display warnings and deprecation warnings sourced by task execution."""
++        if res.pop('warnings', None) and self._current_task_result and (warnings := self._current_task_result.warnings):
++            # display warnings from the current task result if `warnings` was not removed from `result` (or made falsey)
++            for warning in warnings:
++                self._display._warning(warning)
++
++        if res.pop('deprecations', None) and self._current_task_result and (deprecations := self._current_task_result.deprecations):
++            # display deprecations from the current task result if `deprecations` was not removed from `result` (or made falsey)
++            for deprecation in deprecations:
++                self._display._deprecated(deprecation)
++
++    def _handle_exception(self, result: _c.MutableMapping[str, t.Any], use_stderr: bool = False) -> None:
++        if result.pop('exception', None) and self._current_task_result and (exception := self._current_task_result.exception):
++            # display exception from the current task result if `exception` was not removed from `result` (or made falsey)
++            self._display._error(exception, stderr=use_stderr)
++
++    def _handle_warnings_and_exception(self, result: CallbackTaskResult) -> None:
++        """Standardized handling of warnings/deprecations and exceptions from a task/item result."""
++        # DTFIX5: make/doc/porting-guide a public version of this method?
++        try:
++            use_stderr = self.get_option('display_failed_stderr')
++        except KeyError:
++            use_stderr = False
+ 
+-            self._display.display(msg, color=C.COLOR_ERROR, stderr=use_stderr)
++        self._handle_warnings(result.result)
++        self._handle_exception(result.result, use_stderr=use_stderr)
+ 
+     def _serialize_diff(self, diff):
+         try:

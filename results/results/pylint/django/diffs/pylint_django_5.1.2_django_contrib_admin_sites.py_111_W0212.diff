@@ -1,0 +1,16 @@
+diff --git a/django/contrib/admin/sites.py b/django/contrib/admin/sites.py
+index dc67262afc50..201f28ef3744 100644
+--- a/django/contrib/admin/sites.py
++++ b/django/contrib/admin/sites.py
+@@ -113,6 +113,11 @@ def register(self, model_or_iterable, admin_class=None, **options):
+                     "The model %s is abstract, so it cannot be registered with admin."
+                     % model.__name__
+                 )
++            if model._meta.is_composite_pk:
++                raise ImproperlyConfigured(
++                    "The model %s has a composite primary key, so it cannot be "
++                    "registered with admin." % model.__name__
++                )
+ 
+             if self.is_registered(model):
+                 registered_admin = str(self.get_model_admin(model))

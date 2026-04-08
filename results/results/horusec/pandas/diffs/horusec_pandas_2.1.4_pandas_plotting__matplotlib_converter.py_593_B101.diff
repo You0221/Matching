@@ -1,0 +1,166 @@
+diff --git a/pandas/plotting/_matplotlib/converter.py b/pandas/plotting/_matplotlib/converter.py
+index cd7823ba15e44..0eb3318ac96c5 100644
+--- a/pandas/plotting/_matplotlib/converter.py
++++ b/pandas/plotting/_matplotlib/converter.py
+@@ -595,45 +628,38 @@ def first_label(label_flags):
+ 
+     # Case 1. Less than a month
+     if span <= periodspermonth:
+-        day_start = period_break(dates_, "day")
+-        month_start = period_break(dates_, "month")
++        day_start = _period_break(dates_, "day")
++        month_start = _period_break(dates_, "month")
++        year_start = _period_break(dates_, "year")
+ 
+-        def _hour_finder(label_interval, force_year_start) -> None:
+-            _hour = dates_.hour
+-            _prev_hour = (dates_ - 1 * dates_.freq).hour
+-            hour_start = (_hour - _prev_hour) != 0
++        def _hour_finder(label_interval: int, force_year_start: bool) -> None:
++            target = dates_.hour
++            mask = _period_break_mask(dates_, "hour")
+             info_maj[day_start] = True
+-            info_min[hour_start & (_hour % label_interval == 0)] = True
+-            year_start = period_break(dates_, "year")
+-            info_fmt[hour_start & (_hour % label_interval == 0)] = "%H:%M"
++            info_min[mask & (target % label_interval == 0)] = True
++            info_fmt[mask & (target % label_interval == 0)] = "%H:%M"
+             info_fmt[day_start] = "%H:%M\n%d-%b"
+             info_fmt[year_start] = "%H:%M\n%d-%b\n%Y"
+             if force_year_start and not has_level_label(year_start, vmin_orig):
+                 info_fmt[first_label(day_start)] = "%H:%M\n%d-%b\n%Y"
+ 
+-        def _minute_finder(label_interval) -> None:
+-            hour_start = period_break(dates_, "hour")
+-            _minute = dates_.minute
+-            _prev_minute = (dates_ - 1 * dates_.freq).minute
+-            minute_start = (_minute - _prev_minute) != 0
++        def _minute_finder(label_interval: int) -> None:
++            target = dates_.minute
++            hour_start = _period_break(dates_, "hour")
++            mask = _period_break_mask(dates_, "minute")
+             info_maj[hour_start] = True
+-            info_min[minute_start & (_minute % label_interval == 0)] = True
+-            year_start = period_break(dates_, "year")
+-            info_fmt = info["fmt"]
+-            info_fmt[minute_start & (_minute % label_interval == 0)] = "%H:%M"
++            info_min[mask & (target % label_interval == 0)] = True
++            info_fmt[mask & (target % label_interval == 0)] = "%H:%M"
+             info_fmt[day_start] = "%H:%M\n%d-%b"
+             info_fmt[year_start] = "%H:%M\n%d-%b\n%Y"
+ 
+-        def _second_finder(label_interval) -> None:
+-            minute_start = period_break(dates_, "minute")
+-            _second = dates_.second
+-            _prev_second = (dates_ - 1 * dates_.freq).second
+-            second_start = (_second - _prev_second) != 0
+-            info["maj"][minute_start] = True
+-            info["min"][second_start & (_second % label_interval == 0)] = True
+-            year_start = period_break(dates_, "year")
+-            info_fmt = info["fmt"]
+-            info_fmt[second_start & (_second % label_interval == 0)] = "%H:%M:%S"
++        def _second_finder(label_interval: int) -> None:
++            target = dates_.second
++            minute_start = _period_break(dates_, "minute")
++            mask = _period_break_mask(dates_, "second")
++            info_maj[minute_start] = True
++            info_min[mask & (target % label_interval == 0)] = True
++            info_fmt[mask & (target % label_interval == 0)] = "%H:%M:%S"
+             info_fmt[day_start] = "%H:%M:%S\n%d-%b"
+             info_fmt[year_start] = "%H:%M:%S\n%d-%b\n%Y"
+ 
+@@ -672,8 +698,6 @@ def _second_finder(label_interval) -> None:
+         else:
+             info_maj[month_start] = True
+             info_min[day_start] = True
+-            year_start = period_break(dates_, "year")
+-            info_fmt = info["fmt"]
+             info_fmt[day_start] = "%d"
+             info_fmt[month_start] = "%d\n%b"
+             info_fmt[year_start] = "%d\n%b\n%Y"
+@@ -685,15 +709,15 @@ def _second_finder(label_interval) -> None:
+ 
+     # Case 2. Less than three months
+     elif span <= periodsperyear // 4:
+-        month_start = period_break(dates_, "month")
++        month_start = _period_break(dates_, "month")
+         info_maj[month_start] = True
+         if dtype_code < FreqGroup.FR_HR.value:
+             info["min"] = True
+         else:
+-            day_start = period_break(dates_, "day")
++            day_start = _period_break(dates_, "day")
+             info["min"][day_start] = True
+-        week_start = period_break(dates_, "week")
+-        year_start = period_break(dates_, "year")
++        week_start = _period_break(dates_, "week")
++        year_start = _period_break(dates_, "year")
+         info_fmt[week_start] = "%d"
+         info_fmt[month_start] = "\n\n%b"
+         info_fmt[year_start] = "\n\n%b\n%Y"
+@@ -704,9 +728,9 @@ def _second_finder(label_interval) -> None:
+                 info_fmt[first_label(month_start)] = "\n\n%b\n%Y"
+     # Case 3. Less than 14 months ...............
+     elif span <= 1.15 * periodsperyear:
+-        year_start = period_break(dates_, "year")
+-        month_start = period_break(dates_, "month")
+-        week_start = period_break(dates_, "week")
++        year_start = _period_break(dates_, "year")
++        month_start = _period_break(dates_, "month")
++        week_start = _period_break(dates_, "week")
+         info_maj[month_start] = True
+         info_min[week_start] = True
+         info_min[year_start] = False
+@@ -717,17 +741,17 @@ def _second_finder(label_interval) -> None:
+             info_fmt[first_label(month_start)] = "%b\n%Y"
+     # Case 4. Less than 2.5 years ...............
+     elif span <= 2.5 * periodsperyear:
+-        year_start = period_break(dates_, "year")
+-        quarter_start = period_break(dates_, "quarter")
+-        month_start = period_break(dates_, "month")
++        year_start = _period_break(dates_, "year")
++        quarter_start = _period_break(dates_, "quarter")
++        month_start = _period_break(dates_, "month")
+         info_maj[quarter_start] = True
+         info_min[month_start] = True
+         info_fmt[quarter_start] = "%b"
+         info_fmt[year_start] = "%b\n%Y"
+     # Case 4. Less than 4 years .................
+     elif span <= 4 * periodsperyear:
+-        year_start = period_break(dates_, "year")
+-        month_start = period_break(dates_, "month")
++        year_start = _period_break(dates_, "year")
++        month_start = _period_break(dates_, "month")
+         info_maj[year_start] = True
+         info_min[month_start] = True
+         info_min[year_start] = False
+@@ -738,15 +762,15 @@ def _second_finder(label_interval) -> None:
+         info_fmt[year_start] = "%b\n%Y"
+     # Case 5. Less than 11 years ................
+     elif span <= 11 * periodsperyear:
+-        year_start = period_break(dates_, "year")
+-        quarter_start = period_break(dates_, "quarter")
++        year_start = _period_break(dates_, "year")
++        quarter_start = _period_break(dates_, "quarter")
+         info_maj[year_start] = True
+         info_min[quarter_start] = True
+         info_min[year_start] = False
+         info_fmt[year_start] = "%Y"
+     # Case 6. More than 12 years ................
+     else:
+-        year_start = period_break(dates_, "year")
++        year_start = _period_break(dates_, "year")
+         year_break = dates_[year_start].year
+         nyears = span / periodsperyear
+         (min_anndef, maj_anndef) = _get_default_annual_spacing(nyears)
+@@ -759,8 +783,8 @@ def _second_finder(label_interval) -> None:
+     return info
+ 
+ 
+-def _monthly_finder(vmin, vmax, freq):
+-    periodsperyear = 12
++def _monthly_finder(vmin, vmax, freq: BaseOffset) -> np.ndarray:
++    _, _, periodsperyear = _get_periods_per_ymd(freq)
+ 
+     vmin_orig = vmin
+     (vmin, vmax) = (int(vmin), int(vmax))

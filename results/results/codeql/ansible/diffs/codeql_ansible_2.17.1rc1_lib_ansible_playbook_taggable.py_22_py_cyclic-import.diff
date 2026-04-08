@@ -1,0 +1,17 @@
+diff --git a/lib/ansible/playbook/taggable.py b/lib/ansible/playbook/taggable.py
+index fa1d5b203f396d..163e3380018033 100644
+--- a/lib/ansible/playbook/taggable.py
++++ b/lib/ansible/playbook/taggable.py
+@@ -19,9 +19,10 @@
+ 
+ from ansible.errors import AnsibleError
+ from ansible.module_utils.six import string_types
++from ansible.module_utils.common.sentinel import Sentinel
++from ansible.module_utils._internal._datatag import AnsibleTagHelper
+ from ansible.playbook.attribute import FieldAttribute
+-from ansible.template import Templar
+-from ansible.utils.sentinel import Sentinel
++from ansible._internal._templating._engine import TemplateEngine
+ 
+ 
+ def _flatten_tags(tags: list) -> list:

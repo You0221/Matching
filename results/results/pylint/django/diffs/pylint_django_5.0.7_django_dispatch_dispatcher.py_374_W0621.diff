@@ -1,0 +1,15 @@
+diff --git a/django/dispatch/dispatcher.py b/django/dispatch/dispatcher.py
+index 26ef09ce49ae..fe0e1fa59933 100644
+--- a/django/dispatch/dispatcher.py
++++ b/django/dispatch/dispatcher.py
+@@ -380,7 +382,9 @@ def sync_send():
+                 return responses
+ 
+         else:
+-            sync_send = list
++
++            async def sync_send():
++                return []
+ 
+         async def asend_and_wrap_exception(receiver):
+             try:

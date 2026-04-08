@@ -1,0 +1,13 @@
+diff --git a/pandas/util/_decorators.py b/pandas/util/_decorators.py
+index 4c2122c3fdff1..4e8189e72c427 100644
+--- a/pandas/util/_decorators.py
++++ b/pandas/util/_decorators.py
+@@ -371,7 +371,7 @@ def decorator(decorated: F) -> F:
+                 continue
+             if hasattr(docstring, "_docstring_components"):
+                 docstring_components.extend(
+-                    docstring._docstring_components  # pyright: ignore[reportGeneralTypeIssues] # noqa: E501
++                    docstring._docstring_components  # pyright: ignore[reportGeneralTypeIssues]
+                 )
+             elif isinstance(docstring, str) or docstring.__doc__:
+                 docstring_components.append(docstring)

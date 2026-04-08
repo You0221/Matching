@@ -1,0 +1,21 @@
+diff --git a/pydantic/functional_serializers.py b/pydantic/functional_serializers.py
+index 1a9e5563637..d1579bbd8ae 100644
+--- a/pydantic/functional_serializers.py
++++ b/pydantic/functional_serializers.py
+@@ -1,12 +1,13 @@
+ """This module contains related classes and functions for serialization."""
++
+ from __future__ import annotations
+ 
+ import dataclasses
+-from functools import partialmethod
+-from typing import TYPE_CHECKING, Any, Callable, TypeVar, Union, overload
++from functools import partial, partialmethod
++from typing import TYPE_CHECKING, Any, Callable, TypeVar, overload
+ 
+ from pydantic_core import PydanticUndefined, core_schema
+-from pydantic_core import core_schema as _core_schema
++from pydantic_core.core_schema import SerializationInfo, SerializerFunctionWrapHandler, WhenUsed
+ from typing_extensions import Annotated, Literal, TypeAlias
+ 
+ from . import PydanticUndefinedAnnotation

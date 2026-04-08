@@ -1,0 +1,15 @@
+diff --git a/django/contrib/auth/backends.py b/django/contrib/auth/backends.py
+index dd3c2e527b97..83525306655b 100644
+--- a/django/contrib/auth/backends.py
++++ b/django/contrib/auth/backends.py
+@@ -227,6 +332,10 @@ def configure_user(self, request, user, created=True):
+         """
+         return user
+ 
++    async def aconfigure_user(self, request, user, created=True):
++        """See configure_user()"""
++        return await sync_to_async(self.configure_user)(request, user, created)
++
+ 
+ class AllowAllUsersRemoteUserBackend(RemoteUserBackend):
+     def user_can_authenticate(self, user):

@@ -1,0 +1,23 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index bc569fbd0a2e..302a4f6473e0 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -17,13 +17,17 @@
+ # for Spanish in contrib.admin, run:
+ #
+ #  $ python scripts/manage_translations.py lang_stats --language=es --resources=admin
++#
++# Also each command supports a --verbosity option to get progress feedback.
+ 
++import json
+ import os
++import subprocess
+ from argparse import ArgumentParser
+ from collections import defaultdict
+ from configparser import ConfigParser
+ from datetime import datetime
+-from subprocess import run
++from itertools import product
+ 
+ import requests
+ 

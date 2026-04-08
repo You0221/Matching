@@ -1,0 +1,19 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -109,9 +109,11 @@ def __iter__(self):
+                 related_objs,
+                 operator.attrgetter(
+                     *[
+-                        field.attname
+-                        if from_field == "self"
+-                        else queryset.model._meta.get_field(from_field).attname
++                        (
++                            field.attname
++                            if from_field == "self"
++                            else queryset.model._meta.get_field(from_field).attname
++                        )
+                         for from_field in field.from_fields
+                     ]
+                 ),

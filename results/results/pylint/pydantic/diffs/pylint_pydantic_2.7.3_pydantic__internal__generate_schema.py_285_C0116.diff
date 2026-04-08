@@ -1,0 +1,34 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -272,29 +308,6 @@ def _add_custom_serialization_from_json_encoders(
+     return schema
+ 
+ 
+-TypesNamespace = Union[Dict[str, Any], None]
+-
+-
+-class TypesNamespaceStack:
+-    """A stack of types namespaces."""
+-
+-    def __init__(self, types_namespace: TypesNamespace):
+-        self._types_namespace_stack: list[TypesNamespace] = [types_namespace]
+-
+-    @property
+-    def tail(self) -> TypesNamespace:
+-        return self._types_namespace_stack[-1]
+-
+-    @contextmanager
+-    def push(self, for_type: type[Any]):
+-        types_namespace = {**_typing_extra.get_cls_types_namespace(for_type), **(self.tail or {})}
+-        self._types_namespace_stack.append(types_namespace)
+-        try:
+-            yield
+-        finally:
+-            self._types_namespace_stack.pop()
+-
+-
+ def _get_first_non_null(a: Any, b: Any) -> Any:
+     """Return the first argument if it is not None, otherwise return the second argument.
+ 

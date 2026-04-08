@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 19dbb1d15415ae..731f8ded7d1002 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -654,9 +661,8 @@ def is_special_selinux_path(self, path):
+         NFS or other 'special' fs  mount point, otherwise the return will be (False, None).
+         """
+         try:
+-            f = open('/proc/mounts', 'r')
+-            mount_data = f.readlines()
+-            f.close()
++            with open('/proc/mounts', 'r') as f:
++                mount_data = f.readlines()
+         except Exception:
+             return (False, None)
+ 

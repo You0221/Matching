@@ -1,0 +1,19 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 796c4d23c458..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -983,13 +987,7 @@ def get_internal_type(self):
+ 
+     def pre_save(self, model_instance, add):
+         """Return field's value just before saving."""
+-        value = getattr(model_instance, self.attname)
+-        if not connection.features.supports_default_keyword_in_insert:
+-            from django.db.models.expressions import DatabaseDefault
+-
+-            if isinstance(value, DatabaseDefault):
+-                return self._db_default_expression
+-        return value
++        return getattr(model_instance, self.attname)
+ 
+     def get_prep_value(self, value):
+         """Perform preliminary non-db specific value checks and conversions."""

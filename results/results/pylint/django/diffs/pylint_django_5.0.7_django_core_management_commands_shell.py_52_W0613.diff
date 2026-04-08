@@ -1,0 +1,26 @@
+diff --git a/django/core/management/commands/shell.py b/django/core/management/commands/shell.py
+index f55b346406aa..132e7f89d24a 100644
+--- a/django/core/management/commands/shell.py
++++ b/django/core/management/commands/shell.py
+@@ -47,18 +57,18 @@ def add_arguments(self, parser):
+     def ipython(self, options):
+         from IPython import start_ipython
+ 
+-        start_ipython(argv=[])
++        start_ipython(argv=[], user_ns=self.get_namespace(**options))
+ 
+     def bpython(self, options):
+         import bpython
+ 
+-        bpython.embed()
++        bpython.embed(self.get_namespace(**options))
+ 
+     def python(self, options):
+         import code
+ 
+         # Set up a dictionary to serve as the environment for the shell.
+-        imported_objects = {}
++        imported_objects = self.get_namespace(**options)
+ 
+         # We want to honor both $PYTHONSTARTUP and .pythonrc.py, so follow system
+         # conventions and get $PYTHONSTARTUP first then .pythonrc.py.

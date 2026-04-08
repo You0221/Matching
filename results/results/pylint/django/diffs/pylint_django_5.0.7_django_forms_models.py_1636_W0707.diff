@@ -1,0 +1,12 @@
+diff --git a/django/forms/models.py b/django/forms/models.py
+index ff4b83fe5960..be59dbe4a0a5 100644
+--- a/django/forms/models.py
++++ b/django/forms/models.py
+@@ -1626,6 +1637,7 @@ def _check_values(self, value):
+                 code="invalid_list",
+             )
+         for pk in value:
++            self.validate_no_null_characters(pk)
+             try:
+                 self.queryset.filter(**{key: pk})
+             except (ValueError, TypeError):

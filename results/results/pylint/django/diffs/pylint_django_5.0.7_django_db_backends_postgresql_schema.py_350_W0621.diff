@@ -1,0 +1,21 @@
+diff --git a/django/db/backends/postgresql/schema.py b/django/db/backends/postgresql/schema.py
+index 40fef6660e88..964009988cbb 100644
+--- a/django/db/backends/postgresql/schema.py
++++ b/django/db/backends/postgresql/schema.py
+@@ -372,3 +365,16 @@ def _create_index_sql(
+             include=include,
+             expressions=expressions,
+         )
++
++    def _is_collation_deterministic(self, collation_name):
++        with self.connection.cursor() as cursor:
++            cursor.execute(
++                """
++                SELECT collisdeterministic
++                FROM pg_collation
++                WHERE collname = %s
++                """,
++                [collation_name],
++            )
++            row = cursor.fetchone()
++            return row[0] if row else None

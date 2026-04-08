@@ -1,0 +1,34 @@
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 00197a150fb97..9c8dc2054106a 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -536,11 +975,29 @@ def max(self, axis=None, skipna: bool = True, **kwargs) -> Scalar:
+         )
+         return self._wrap_reduction_result(axis, result)
+ 
++    def sum(
++        self,
++        *,
++        axis: AxisInt | None = None,
++        skipna: bool = True,
++        min_count: int = 0,
++        **kwargs,
++    ) -> Scalar:
++        nv.validate_sum((), kwargs)
++        result = masked_reductions.sum(
++            values=self._ndarray, mask=self.isna(), skipna=skipna
++        )
++        return self._wrap_reduction_result(axis, result)
++
+     def value_counts(self, dropna: bool = True) -> Series:
+         from pandas.core.algorithms import value_counts_internal as value_counts
+ 
+         result = value_counts(self._ndarray, dropna=dropna).astype("Int64")
++        result = value_counts(self._ndarray, sort=False, dropna=dropna)
+         result.index = result.index.astype(self.dtype)
++
++        if self.dtype.na_value is libmissing.NA:
++            result = result.astype("Int64")
+         return result
+ 
+     def memory_usage(self, deep: bool = False) -> int:

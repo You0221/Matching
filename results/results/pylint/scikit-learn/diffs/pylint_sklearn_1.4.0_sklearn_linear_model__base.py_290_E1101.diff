@@ -1,0 +1,29 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index f07e974542a5b..eac754f3f88b4 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -287,11 +307,22 @@ def predict(self, X):
+ 
+     def _set_intercept(self, X_offset, y_offset, X_scale):
+         """Set the intercept_"""
++
++        xp, _ = get_namespace(X_offset, y_offset, X_scale)
++
+         if self.fit_intercept:
+             # We always want coef_.dtype=X.dtype. For instance, X.dtype can differ from
+             # coef_.dtype if warm_start=True.
+-            self.coef_ = np.divide(self.coef_, X_scale, dtype=X_scale.dtype)
+-            self.intercept_ = y_offset - np.dot(X_offset, self.coef_.T)
++            coef_ = xp.astype(self.coef_, X_scale.dtype, copy=False)
++            coef_ = self.coef_ = xp.divide(coef_, X_scale)
++
++            if coef_.ndim == 1:
++                intercept_ = y_offset - X_offset @ coef_
++            else:
++                intercept_ = y_offset - X_offset @ coef_.T
++
++            self.intercept_ = intercept_
++
+         else:
+             self.intercept_ = 0.0
+ 

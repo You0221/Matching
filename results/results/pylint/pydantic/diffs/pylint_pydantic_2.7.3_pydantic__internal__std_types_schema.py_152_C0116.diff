@@ -1,0 +1,79 @@
+diff --git a/pydantic/_internal/_std_types_schema.py b/pydantic/_internal/_std_types_schema.py
+index 0b65a89ca04..57bd7275e1d 100644
+--- a/pydantic/_internal/_std_types_schema.py
++++ b/pydantic/_internal/_std_types_schema.py
+@@ -149,64 +63,20 @@ def __get_pydantic_core_schema__(self, _source_type: Any, _handler: GetCoreSchem
+         return self.core_schema
+ 
+ 
+-def decimal_prepare_pydantic_annotations(
+-    source: Any, annotations: Iterable[Any], config: ConfigDict
+-) -> tuple[Any, list[Any]] | None:
+-    if source is not decimal.Decimal:
+-        return None
+-
+-    metadata, remaining_annotations = _known_annotated_metadata.collect_known_metadata(annotations)
+-
+-    config_allow_inf_nan = config.get('allow_inf_nan')
+-    if config_allow_inf_nan is not None:
+-        metadata.setdefault('allow_inf_nan', config_allow_inf_nan)
+-
+-    _known_annotated_metadata.check_metadata(
+-        metadata, {*_known_annotated_metadata.FLOAT_CONSTRAINTS, 'max_digits', 'decimal_places'}, decimal.Decimal
+-    )
+-    return source, [InnerSchemaValidator(core_schema.decimal_schema(**metadata)), *remaining_annotations]
+-
+-
+-def datetime_prepare_pydantic_annotations(
+-    source_type: Any, annotations: Iterable[Any], _config: ConfigDict
+-) -> tuple[Any, list[Any]] | None:
+-    import datetime
+-
+-    metadata, remaining_annotations = _known_annotated_metadata.collect_known_metadata(annotations)
+-    if source_type is datetime.date:
+-        sv = InnerSchemaValidator(core_schema.date_schema(**metadata))
+-    elif source_type is datetime.datetime:
+-        sv = InnerSchemaValidator(core_schema.datetime_schema(**metadata))
+-    elif source_type is datetime.time:
+-        sv = InnerSchemaValidator(core_schema.time_schema(**metadata))
+-    elif source_type is datetime.timedelta:
+-        sv = InnerSchemaValidator(core_schema.timedelta_schema(**metadata))
+-    else:
+-        return None
+-    # check now that we know the source type is correct
+-    _known_annotated_metadata.check_metadata(metadata, _known_annotated_metadata.DATE_TIME_CONSTRAINTS, source_type)
+-    return (source_type, [sv, *remaining_annotations])
+-
+-
+-def uuid_prepare_pydantic_annotations(
+-    source_type: Any, annotations: Iterable[Any], _config: ConfigDict
+-) -> tuple[Any, list[Any]] | None:
+-    # UUIDs have no constraints - they are fixed length, constructing a UUID instance checks the length
+-
+-    from uuid import UUID
+-
+-    if source_type is not UUID:
+-        return None
+-
+-    return (source_type, [InnerSchemaValidator(core_schema.uuid_schema()), *annotations])
+-
+-
+ def path_schema_prepare_pydantic_annotations(
+-    source_type: Any, annotations: Iterable[Any], _config: ConfigDict
++    source_type: Any, annotations: Iterable[Any]
+ ) -> tuple[Any, list[Any]] | None:
+     import pathlib
+ 
+-    if source_type not in {
++    orig_source_type: Any = get_origin(source_type) or source_type
++    if (
++        (source_type_args := get_args(source_type))
++        and orig_source_type is os.PathLike
++        and source_type_args[0] not in {str, bytes, Any}
++    ):
++        return None
++
++    if orig_source_type not in {
+         os.PathLike,
+         pathlib.Path,
+         pathlib.PurePath,

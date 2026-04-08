@@ -1,0 +1,33 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index 85660b41d743b1..ece6fd7d44e028 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -1298,22 +1252,22 @@ def _iter_modules_impl(paths, prefix=''):
+                     continue
+ 
+                 # TODO: proper string handling?
+-                yield prefix + to_native(b_basename), True
++                yield prefix + _to_text(b_basename), True
+             else:
+                 # FIXME: match builtin ordering for package/dir/file, support compiled?
+                 if b_basename.endswith(b'.py') and b_basename != b'__init__.py':
+-                    yield prefix + to_native(os.path.splitext(b_basename)[0]), False
++                    yield prefix + _to_text(os.path.splitext(b_basename)[0]), False
+ 
+ 
+ def _get_collection_metadata(collection_name):
+-    collection_name = to_native(collection_name)
+-    if not collection_name or not isinstance(collection_name, string_types) or len(collection_name.split('.')) != 2:
++    collection_name = _to_text(collection_name)
++    if not collection_name or not isinstance(collection_name, str) or len(collection_name.split('.')) != 2:
+         raise ValueError('collection_name must be a non-empty string of the form namespace.collection')
+ 
+     try:
+         collection_pkg = import_module('ansible_collections.' + collection_name)
+-    except ImportError:
+-        raise ValueError('unable to locate collection {0}'.format(collection_name))
++    except ImportError as ex:
++        raise ValueError('unable to locate collection {0}'.format(collection_name)) from ex
+ 
+     _collection_meta = getattr(collection_pkg, '_collection_meta', None)
+ 

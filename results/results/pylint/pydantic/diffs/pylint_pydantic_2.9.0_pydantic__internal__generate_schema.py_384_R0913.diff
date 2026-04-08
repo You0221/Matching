@@ -1,0 +1,79 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -369,62 +332,37 @@ class GenerateSchema:
+     def __init__(
+         self,
+         config_wrapper: ConfigWrapper,
+-        types_namespace: dict[str, Any] | None,
++        ns_resolver: NsResolver | None = None,
+         typevars_map: dict[Any, Any] | None = None,
+     ) -> None:
+-        # we need a stack for recursing into child models
++        # we need a stack for recursing into nested models
+         self._config_wrapper_stack = ConfigWrapperStack(config_wrapper)
+-        self._types_namespace_stack = TypesNamespaceStack(types_namespace)
++        self._ns_resolver = ns_resolver or NsResolver()
+         self._typevars_map = typevars_map
+         self.field_name_stack = _FieldNameStack()
+         self.model_type_stack = _ModelTypeStack()
+         self.defs = _Definitions()
+ 
+-    @classmethod
+-    def __from_parent(
+-        cls,
+-        config_wrapper_stack: ConfigWrapperStack,
+-        types_namespace_stack: TypesNamespaceStack,
+-        model_type_stack: _ModelTypeStack,
+-        typevars_map: dict[Any, Any] | None,
+-        defs: _Definitions,
+-    ) -> GenerateSchema:
+-        obj = cls.__new__(cls)
+-        obj._config_wrapper_stack = config_wrapper_stack
+-        obj._types_namespace_stack = types_namespace_stack
+-        obj.model_type_stack = model_type_stack
+-        obj._typevars_map = typevars_map
+-        obj.field_name_stack = _FieldNameStack()
+-        obj.defs = defs
+-        return obj
++    def __init_subclass__(cls) -> None:
++        super().__init_subclass__()
++        warnings.warn(
++            'Subclassing `GenerateSchema` is not supported. The API is highly subject to change in minor versions.',
++            UserWarning,
++            stacklevel=2,
++        )
+ 
+     @property
+     def _config_wrapper(self) -> ConfigWrapper:
+         return self._config_wrapper_stack.tail
+ 
+     @property
+-    def _types_namespace(self) -> dict[str, Any] | None:
+-        return self._types_namespace_stack.tail
+-
+-    @property
+-    def _current_generate_schema(self) -> GenerateSchema:
+-        cls = self._config_wrapper.schema_generator or GenerateSchema
+-        return cls.__from_parent(
+-            self._config_wrapper_stack,
+-            self._types_namespace_stack,
+-            self.model_type_stack,
+-            self._typevars_map,
+-            self.defs,
+-        )
++    def _types_namespace(self) -> NamespacesTuple:
++        return self._ns_resolver.types_namespace
+ 
+     @property
+     def _arbitrary_types(self) -> bool:
+         return self._config_wrapper.arbitrary_types_allowed
+ 
+-    def str_schema(self) -> CoreSchema:
+-        """Generate a CoreSchema for `str`"""
+-        return core_schema.str_schema()
+-
+     # the following methods can be overridden but should be considered
+     # unstable / private APIs
+     def _list_schema(self, items_type: Any) -> CoreSchema:

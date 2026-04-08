@@ -1,0 +1,21 @@
+diff --git a/django/contrib/admin/helpers.py b/django/contrib/admin/helpers.py
+index 90ca7affc8c8..51450d1d9e09 100644
+--- a/django/contrib/admin/helpers.py
++++ b/django/contrib/admin/helpers.py
+@@ -116,10 +117,14 @@ def __init__(
+ 
+     @property
+     def media(self):
+-        if "collapse" in self.classes:
+-            return forms.Media(js=["admin/js/collapse.js"])
+         return forms.Media()
+ 
++    @cached_property
++    def is_collapsible(self):
++        if any(field in self.fields for field in self.form.errors):
++            return False
++        return "collapse" in self.classes
++
+     def __iter__(self):
+         for field in self.fields:
+             yield Fieldline(

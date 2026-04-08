@@ -1,0 +1,40 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -432,9 +496,34 @@ def score_samples(self, X):
+         scores : ndarray of shape (n_samples,)
+             The anomaly score of the input samples.
+             The lower, the more abnormal.
++
++        Notes
++        -----
++        The score function method can be parallelized by setting a joblib context. This
++        inherently does NOT use the ``n_jobs`` parameter initialized in the class,
++        which is used during ``fit``. This is because, calculating the score may
++        actually be faster without parallelization for a small number of samples,
++        such as for 1000 samples or less.
++        The user can set the number of jobs in the joblib context to control the
++        number of parallel jobs.
++
++        .. code-block:: python
++
++            from joblib import parallel_backend
++
++            # Note, we use threading here as the score_samples method is not CPU bound.
++            with parallel_backend("threading", n_jobs=4):
++                model.score(X)
+         """
+         # Check data
+-        X = self._validate_data(X, accept_sparse="csr", dtype=tree_dtype, reset=False)
++        X = validate_data(
++            self,
++            X,
++            accept_sparse="csr",
++            dtype=tree_dtype,
++            reset=False,
++            ensure_all_finite=False,
++        )
+ 
+         return self._score_samples(X)
+ 

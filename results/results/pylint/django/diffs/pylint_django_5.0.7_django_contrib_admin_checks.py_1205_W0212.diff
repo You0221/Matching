@@ -1,0 +1,23 @@
+diff --git a/django/contrib/admin/checks.py b/django/contrib/admin/checks.py
+index 166502343470..a4d7066d10b8 100644
+--- a/django/contrib/admin/checks.py
++++ b/django/contrib/admin/checks.py
+@@ -1197,13 +1194,12 @@ def _check_date_hierarchy(self, obj):
+                 else:
+                     return []
+ 
+-    def _check_action_permission_methods(self, obj):
+-        """
+-        Actions with an allowed_permission attribute require the ModelAdmin to
+-        implement a has_<perm>_permission() method for each permission.
+-        """
+-        actions = obj._get_base_actions()
++    def _check_actions(self, obj):
+         errors = []
++        actions = obj._get_base_actions()
++
++        # Actions with an allowed_permission attribute require the ModelAdmin
++        # to implement a has_<perm>_permission() method for each permission.
+         for func, name, _ in actions:
+             if not hasattr(func, "allowed_permissions"):
+                 continue

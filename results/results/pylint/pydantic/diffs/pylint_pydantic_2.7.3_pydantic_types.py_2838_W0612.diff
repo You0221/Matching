@@ -1,0 +1,13 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index f1025a5102a..58b7899645f 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2835,7 +2872,7 @@ def _convert_schema(self, original_schema: core_schema.CoreSchema) -> core_schem
+             original_schema = core_schema.union_schema([original_schema])
+ 
+         tagged_union_choices = {}
+-        for i, choice in enumerate(original_schema['choices']):
++        for choice in original_schema['choices']:
+             tag = None
+             if isinstance(choice, tuple):
+                 choice, tag = choice

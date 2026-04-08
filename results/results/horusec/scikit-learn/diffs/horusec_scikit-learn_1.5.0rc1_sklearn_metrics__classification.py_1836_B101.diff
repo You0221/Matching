@@ -1,0 +1,18 @@
+diff --git a/sklearn/metrics/_classification.py b/sklearn/metrics/_classification.py
+index 04894a4d7a7e7..2e31320ddb1f4 100644
+--- a/sklearn/metrics/_classification.py
++++ b/sklearn/metrics/_classification.py
+@@ -1833,10 +2037,9 @@ def precision_recall_fscore_support(
+         weights = None
+ 
+     if average is not None:
+-        assert average != "binary" or len(precision) == 1
+-        precision = _nanaverage(precision, weights=weights)
+-        recall = _nanaverage(recall, weights=weights)
+-        f_score = _nanaverage(f_score, weights=weights)
++        precision = float(_nanaverage(precision, weights=weights))
++        recall = float(_nanaverage(recall, weights=weights))
++        f_score = float(_nanaverage(f_score, weights=weights))
+         true_sum = None  # return no support
+ 
+     return precision, recall, f_score, true_sum

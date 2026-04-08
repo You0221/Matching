@@ -1,0 +1,14 @@
+diff --git a/django/contrib/sessions/backends/cached_db.py b/django/contrib/sessions/backends/cached_db.py
+index 3125a71cd0ea..2195f57acccd 100644
+--- a/django/contrib/sessions/backends/cached_db.py
++++ b/django/contrib/sessions/backends/cached_db.py
+@@ -24,6 +28,9 @@ def __init__(self, session_key=None):
+     def cache_key(self):
+         return self.cache_key_prefix + self._get_or_create_session_key()
+ 
++    async def acache_key(self):
++        return self.cache_key_prefix + await self._aget_or_create_session_key()
++
+     def load(self):
+         try:
+             data = self._cache.get(self.cache_key)

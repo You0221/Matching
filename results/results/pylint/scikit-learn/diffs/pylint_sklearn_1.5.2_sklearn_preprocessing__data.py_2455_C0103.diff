@@ -1,0 +1,18 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2448,8 +2510,11 @@ def _n_features_out(self):
+         # implement get_feature_names_out for this class.
+         return self.n_features_in_
+ 
+-    def _more_tags(self):
+-        return {"pairwise": True, "array_api_support": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.pairwise = True
++        tags.array_api_support = True
++        return tags
+ 
+ 
+ @validate_params(

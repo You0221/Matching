@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/playbook/task.py b/lib/ansible/playbook/task.py
+index ee7c9fce0000da..0876c0fa0d6623 100644
+--- a/lib/ansible/playbook/task.py
++++ b/lib/ansible/playbook/task.py
+@@ -455,9 +516,9 @@ def set_loader(self, loader):
+             self._parent.set_loader(loader)
+ 
+     def _get_parent_attribute(self, attr, omit=False):
+-        '''
++        """
+         Generic logic to get the attribute or parent attribute for a task value.
+-        '''
++        """
+         fattr = self.fattributes[attr]
+ 
+         extend = fattr.extend

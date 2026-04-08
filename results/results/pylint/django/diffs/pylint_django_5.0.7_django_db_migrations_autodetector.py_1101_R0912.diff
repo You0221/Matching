@@ -1,0 +1,13 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -1191,7 +1294,7 @@ def generate_altered_fields(self):
+                         old_field.null
+                         and not new_field.null
+                         and not new_field.has_default()
+-                        and new_field.db_default is models.NOT_PROVIDED
++                        and not new_field.has_db_default()
+                         and not new_field.many_to_many
+                     ):
+                         field = new_field.clone()

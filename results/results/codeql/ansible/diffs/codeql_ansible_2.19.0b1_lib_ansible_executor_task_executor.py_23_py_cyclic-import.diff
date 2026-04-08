@@ -1,0 +1,23 @@
+diff --git a/lib/ansible/executor/task_executor.py b/lib/ansible/executor/task_executor.py
+index ef292dac9f7645..60c6b392cbc15e 100644
+--- a/lib/ansible/executor/task_executor.py
++++ b/lib/ansible/executor/task_executor.py
+@@ -17,14 +16,13 @@
+ from ansible import constants as C
+ from ansible.cli import scripts
+ from ansible.errors import (
+-    AnsibleError, AnsibleParserError, AnsibleUndefinedVariable, AnsibleConnectionFailure, AnsibleActionFail, AnsibleActionSkip, AnsibleTaskError,
++    AnsibleError, AnsibleParserError, AnsibleUndefinedVariable, AnsibleTaskError,
+     AnsibleValueOmittedError,
+ )
+-from ansible.executor.task_result import TaskResult
++from ansible.executor.task_result import _RawTaskResult
+ from ansible._internal._datatag import _utils
+-from ansible.module_utils._internal._plugin_exec_context import PluginExecContext
+-from ansible.module_utils.common.messages import Detail, WarningSummary, DeprecationSummary
+-from ansible.module_utils.datatag import native_type_name
++from ansible.module_utils._internal import _messages
++from ansible.module_utils.datatag import native_type_name, deprecator_from_collection_name
+ from ansible._internal._datatag._tags import TrustedAsTemplate
+ from ansible.module_utils.parsing.convert_bool import boolean
+ from ansible.module_utils.common.text.converters import to_text, to_native

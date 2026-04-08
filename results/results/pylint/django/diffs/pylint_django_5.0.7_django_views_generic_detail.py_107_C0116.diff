@@ -1,0 +1,17 @@
+diff --git a/django/views/generic/detail.py b/django/views/generic/detail.py
+index e4428c8036b5..70e427c59b29 100644
+--- a/django/views/generic/detail.py
++++ b/django/views/generic/detail.py
+@@ -102,7 +102,11 @@ def get_context_data(self, **kwargs):
+ 
+ 
+ class BaseDetailView(SingleObjectMixin, View):
+-    """A base view for displaying a single object."""
++    """
++    Base view for displaying a single object.
++
++    This requires subclassing to provide a response mixin.
++    """
+ 
+     def get(self, request, *args, **kwargs):
+         self.object = self.get_object()

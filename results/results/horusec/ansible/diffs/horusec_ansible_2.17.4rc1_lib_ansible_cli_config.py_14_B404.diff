@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/cli/config.py b/lib/ansible/cli/config.py
+index e7457c18f434a9..ed42545df47fe3 100755
+--- a/lib/ansible/cli/config.py
++++ b/lib/ansible/cli/config.py
+@@ -9,9 +9,9 @@
+ from ansible.cli import CLI
+ 
+ import os
+-import yaml
+ import shlex
+-import subprocess
++import sys
++import yaml
+ 
+ from collections.abc import Mapping
+ 

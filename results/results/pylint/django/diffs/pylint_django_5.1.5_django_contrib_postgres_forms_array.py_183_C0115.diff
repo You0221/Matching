@@ -1,0 +1,13 @@
+diff --git a/django/contrib/postgres/forms/array.py b/django/contrib/postgres/forms/array.py
+index ddb022afc35b..fd5cd219f85d 100644
+--- a/django/contrib/postgres/forms/array.py
++++ b/django/contrib/postgres/forms/array.py
+@@ -228,7 +228,7 @@ def clean(self, value):
+                         params={"nth": index + 1},
+                     )
+                 )
+-                cleaned_data.append(None)
++                cleaned_data.append(item)
+             else:
+                 errors.append(None)
+         cleaned_data, null_index = self._remove_trailing_nulls(cleaned_data)

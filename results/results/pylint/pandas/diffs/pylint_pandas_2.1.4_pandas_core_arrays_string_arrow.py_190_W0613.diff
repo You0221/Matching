@@ -1,0 +1,86 @@
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index 4a70fcf6b5a93..a57ada5a5b3b3 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -174,37 +213,75 @@ def dtype(self) -> StringDtype:  # type: ignore[override]
+         return self._dtype
+ 
+     def insert(self, loc: int, item) -> ArrowStringArray:
++        if self.dtype.na_value is np.nan and item is np.nan:
++            item = libmissing.NA
+         if not isinstance(item, str) and item is not libmissing.NA:
+-            raise TypeError("Scalar must be NA or str")
++            raise TypeError(
++                f"Invalid value '{item}' for dtype 'str'. Value should be a "
++                f"string or missing value, got '{type(item).__name__}' instead."
++            )
+         return super().insert(loc, item)
+ 
++    def _convert_bool_result(self, values, na=lib.no_default, method_name=None):
++        if na is not lib.no_default and not isna(na) and not isinstance(na, bool):
++            # GH#59561
++            warnings.warn(
++                f"Allowing a non-bool 'na' in obj.str.{method_name} is deprecated "
++                "and will raise in a future version.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++            na = bool(na)
++
++        if self.dtype.na_value is np.nan:
++            if na is lib.no_default or isna(na):
++                # NaN propagates as False
++                values = values.fill_null(False)
++            else:
++                values = values.fill_null(na)
++            return values.to_numpy()
++        else:
++            if na is not lib.no_default and not isna(
++                na
++            ):  # pyright: ignore [reportGeneralTypeIssues]
++                values = values.fill_null(na)
++        return BooleanDtype().__from_arrow__(values)
++
+     def _maybe_convert_setitem_value(self, value):
+         """Maybe convert value to be pyarrow compatible."""
+         if is_scalar(value):
+             if isna(value):
+                 value = None
+             elif not isinstance(value, str):
+-                raise TypeError("Scalar must be NA or str")
++                raise TypeError(
++                    f"Invalid value '{value}' for dtype 'str'. Value should be a "
++                    f"string or missing value, got '{type(value).__name__}' instead."
++                )
+         else:
+             value = np.array(value, dtype=object, copy=True)
+             value[isna(value)] = None
+             for v in value:
+                 if not (v is None or isinstance(v, str)):
+-                    raise TypeError("Scalar must be NA or str")
++                    raise TypeError(
++                        "Invalid value for dtype 'str'. Value should be a "
++                        "string or missing value (or array of those)."
++                    )
+         return super()._maybe_convert_setitem_value(value)
+ 
+-    def isin(self, values) -> npt.NDArray[np.bool_]:
++    def isin(self, values: ArrayLike) -> npt.NDArray[np.bool_]:
+         value_set = [
+             pa_scalar.as_py()
+             for pa_scalar in [pa.scalar(value, from_pandas=True) for value in values]
+-            if pa_scalar.type in (pa.string(), pa.null())
++            if pa_scalar.type in (pa.string(), pa.null(), pa.large_string())
+         ]
+ 
+         # short-circuit to return all False array.
+         if not len(value_set):
+             return np.zeros(len(self), dtype=bool)
+ 
+-        result = pc.is_in(self._pa_array, value_set=pa.array(value_set))
++        result = pc.is_in(
++            self._pa_array, value_set=pa.array(value_set, type=self._pa_array.type)
++        )
+         # pyarrow 2.0.0 returned nulls, so we explicily specify dtype to convert nulls
+         # to False
+         return np.array(result, dtype=np.bool_)

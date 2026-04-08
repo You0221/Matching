@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index a572c82e6e158..c4356ac526a34 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -620,7 +622,12 @@ def fit(self, X, y):
+             Fitted estimator.
+         """
+         X, y = self._validate_data(
+-            X, y, dtype=[np.float64, np.float32], y_numeric=True, ensure_min_samples=2
++            X,
++            y,
++            dtype=[np.float64, np.float32],
++            force_writeable=True,
++            y_numeric=True,
++            ensure_min_samples=2,
+         )
+         dtype = X.dtype
+ 

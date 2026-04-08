@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -89,13 +85,13 @@ def _check_multi_class(multi_class, solver, n_classes):
+     For all other cases, in particular binary classification, return "ovr".
+     """
+     if multi_class == "auto":
+-        if solver in ("liblinear", "newton-cholesky"):
++        if solver in ("liblinear",):
+             multi_class = "ovr"
+         elif n_classes > 2:
+             multi_class = "multinomial"
+         else:
+             multi_class = "ovr"
+-    if multi_class == "multinomial" and solver in ("liblinear", "newton-cholesky"):
++    if multi_class == "multinomial" and solver in ("liblinear",):
+         raise ValueError("Solver %s does not support a multinomial backend." % solver)
+     return multi_class
+ 

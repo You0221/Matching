@@ -1,0 +1,58 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -332,23 +379,48 @@ def fit(self, X, y, sample_weight=None):
+ 
+             .. versionadded:: 0.18
+ 
++        **fit_params : dict
++            Parameters to pass to the underlying estimators.
++
++            .. versionadded:: 1.5
++
++                Only available if `enable_metadata_routing=True`,
++                which can be set by using
++                ``sklearn.set_config(enable_metadata_routing=True)``.
++                See :ref:`Metadata Routing User Guide <metadata_routing>` for
++                more details.
++
+         Returns
+         -------
+         self : object
+             Returns the instance itself.
+         """
+-        _raise_for_unsupported_routing(self, "fit", sample_weight=sample_weight)
+-        check_classification_targets(y)
+-        if isinstance(y, np.ndarray) and len(y.shape) > 1 and y.shape[1] > 1:
++        _raise_for_params(fit_params, self, "fit")
++        y_type = type_of_target(y, input_name="y")
++        if y_type in ("unknown", "continuous"):
++            # raise a specific ValueError for non-classification tasks
++            raise ValueError(
++                f"Unknown label type: {y_type}. Maybe you are trying to fit a "
++                "classifier, which expects discrete classes on a "
++                "regression target with continuous values."
++            )
++        elif y_type not in ("binary", "multiclass"):
++            # raise a NotImplementedError for backward compatibility for non-supported
++            # classification tasks
+             raise NotImplementedError(
+-                "Multilabel and multi-output classification is not supported."
++                f"{self.__class__.__name__} only supports binary or multiclass "
++                "classification. Multilabel and multi-output classification are not "
++                "supported."
+             )
+ 
+         self.le_ = LabelEncoder().fit(y)
+         self.classes_ = self.le_.classes_
+         transformed_y = self.le_.transform(y)
+ 
+-        return super().fit(X, transformed_y, sample_weight)
++        if sample_weight is not None:
++            fit_params["sample_weight"] = sample_weight
++
++        return super().fit(X, transformed_y, **fit_params)
+ 
+     def predict(self, X):
+         """Predict class labels for X.

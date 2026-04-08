@@ -1,0 +1,28 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -562,15 +644,19 @@ class LineString(OGRGeometry):
+     def __getitem__(self, index):
+         "Return the Point at the given index."
+         if 0 <= index < self.point_count:
+-            x, y, z = c_double(), c_double(), c_double()
+-            capi.get_point(self.ptr, index, byref(x), byref(y), byref(z))
++            x, y, z, m = c_double(), c_double(), c_double(), c_double()
++            capi.get_point(self.ptr, index, byref(x), byref(y), byref(z), byref(m))
++            if self.is_3d and self.is_measured:
++                return x.value, y.value, z.value, m.value
++            if self.is_3d:
++                return x.value, y.value, z.value
++            if self.is_measured:
++                return x.value, y.value, m.value
+             dim = self.coord_dim
+             if dim == 1:
+                 return (x.value,)
+             elif dim == 2:
+                 return (x.value, y.value)
+-            elif dim == 3:
+-                return (x.value, y.value, z.value)
+         else:
+             raise IndexError(
+                 "Index out of range when accessing points of a line string: %s." % index

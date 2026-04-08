@@ -1,0 +1,27 @@
+diff --git a/tornado/util.py b/tornado/util.py
+index 3a3a52f1f2..2e5eee792b 100644
+--- a/tornado/util.py
++++ b/tornado/util.py
+@@ -47,22 +46,6 @@
+ unicode_type = str
+ basestring_type = str
+ 
+-try:
+-    from sys import is_finalizing
+-except ImportError:
+-    # Emulate it
+-    def _get_emulated_is_finalizing() -> Callable[[], bool]:
+-        L = []  # type: List[None]
+-        atexit.register(lambda: L.append(None))
+-
+-        def is_finalizing() -> bool:
+-            # Not referencing any globals here
+-            return L != []
+-
+-        return is_finalizing
+-
+-    is_finalizing = _get_emulated_is_finalizing()
+-
+ 
+ # versionchanged:: 6.2
+ # no longer our own TimeoutError, use standard asyncio class

@@ -1,0 +1,36 @@
+diff --git a/django/contrib/auth/management/__init__.py b/django/contrib/auth/management/__init__.py
+index ad31a6e68fa7..a8639cb25858 100644
+--- a/django/contrib/auth/management/__init__.py
++++ b/django/contrib/auth/management/__init__.py
+@@ -90,20 +85,22 @@ def create_permissions(
+     all_perms = set(
+         Permission.objects.using(using)
+         .filter(
+-            content_type__in=ctypes,
++            content_type__in=set(ctypes.values()),
+         )
+         .values_list("content_type", "codename")
+     )
+ 
+     perms = []
+-    for ct, (codename, name) in searched_perms:
+-        if (ct.pk, codename) not in all_perms:
+-            permission = Permission()
+-            permission._state.db = using
+-            permission.codename = codename
+-            permission.name = name
+-            permission.content_type = ct
+-            perms.append(permission)
++    for model in models:
++        ctype = ctypes[model]
++        for codename, name in _get_all_permissions(model._meta):
++            if (ctype.pk, codename) not in all_perms:
++                permission = Permission()
++                permission._state.db = using
++                permission.codename = codename
++                permission.name = name
++                permission.content_type = ctype
++                perms.append(permission)
+ 
+     Permission.objects.using(using).bulk_create(perms)
+     if verbosity >= 2:

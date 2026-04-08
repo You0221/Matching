@@ -1,0 +1,37 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -323,24 +320,19 @@ def _make_validation_score_cb(
+             classes=classes,
+         )
+ 
+-    # TODO(1.6): Remove
+-    # mypy error: Decorated property not supported
+-    @deprecated(  # type: ignore
+-        "Attribute `loss_function_` was deprecated in version 1.4 and will be removed "
+-        "in 1.6."
+-    )
+-    @property
+-    def loss_function_(self):
+-        return self._loss_function_
+-
+ 
+-def _prepare_fit_binary(est, y, i, input_dtye):
++def _prepare_fit_binary(est, y, i, input_dtype, label_encode=True):
+     """Initialization for fit_binary.
+ 
+     Returns y, coef, intercept, average_coef, average_intercept.
+     """
+-    y_i = np.ones(y.shape, dtype=input_dtye, order="C")
+-    y_i[y != est.classes_[i]] = -1.0
++    y_i = np.ones(y.shape, dtype=input_dtype, order="C")
++    if label_encode:
++        # y in {0, 1}
++        y_i[y != est.classes_[i]] = 0.0
++    else:
++        # y in {-1, +1}
++        y_i[y != est.classes_[i]] = -1.0
+     average_intercept = 0
+     average_coef = None
+ 

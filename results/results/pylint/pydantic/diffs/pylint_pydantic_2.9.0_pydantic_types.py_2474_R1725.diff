@@ -1,0 +1,32 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 58b7899645f..5ba60605e54 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2468,14 +2586,25 @@ class Model(BaseModel):
+     ```
+     """
+ 
++    encoder: type[EncoderProtocol]
++
++    def __get_pydantic_json_schema__(
++        self, core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
++    ) -> JsonSchemaValue:
++        field_schema = handler(core_schema)
++        field_schema.update(type='string', format=self.encoder.get_json_format())
++        return field_schema
++
+     def __get_pydantic_core_schema__(self, source: type[Any], handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
++        schema = handler(source)
++        _check_annotated_type(schema['type'], 'str', self.__class__.__name__)
+         return core_schema.with_info_after_validator_function(
+             function=self.decode_str,
+-            schema=super(EncodedStr, self).__get_pydantic_core_schema__(source=source, handler=handler),  # noqa: UP008
++            schema=schema,
+             serialization=core_schema.plain_serializer_function_ser_schema(function=self.encode_str),
+         )
+ 
+-    def decode_str(self, data: bytes, _: core_schema.ValidationInfo) -> str:
++    def decode_str(self, data: str, _: core_schema.ValidationInfo) -> str:
+         """Decode the data using the specified encoder.
+ 
+         Args:

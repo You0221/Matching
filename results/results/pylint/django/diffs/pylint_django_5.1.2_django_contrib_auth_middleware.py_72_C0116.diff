@@ -1,0 +1,69 @@
+diff --git a/django/contrib/auth/middleware.py b/django/contrib/auth/middleware.py
+index 761929d67dcd..880563bc5b77 100644
+--- a/django/contrib/auth/middleware.py
++++ b/django/contrib/auth/middleware.py
+@@ -74,8 +76,8 @@ def handle_no_permission(self, request, view_func):
+         resolved_login_url = resolve_url(self.get_login_url(view_func))
+         # If the login url is the same scheme and net location then use the
+         # path as the "next" url.
+-        login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
+-        current_scheme, current_netloc = urlparse(path)[:2]
++        login_scheme, login_netloc = urlsplit(resolved_login_url)[:2]
++        current_scheme, current_netloc = urlsplit(path)[:2]
+         if (not login_scheme or login_scheme == current_scheme) and (
+             not login_netloc or login_netloc == current_netloc
+         ):
+@@ -88,27 +90,44 @@ def handle_no_permission(self, request, view_func):
+         )
+ 
+ 
+-class RemoteUserMiddleware(MiddlewareMixin):
++class RemoteUserMiddleware:
+     """
+     Middleware for utilizing web-server-provided authentication.
+ 
+     If request.user is not authenticated, then this middleware attempts to
+-    authenticate the username passed in the ``REMOTE_USER`` request header.
++    authenticate the username from the ``REMOTE_USER`` key in ``request.META``,
++    an environment variable commonly set by the webserver.
++
+     If authentication is successful, the user is automatically logged in to
+     persist the user in the session.
+ 
+-    The header used is configurable and defaults to ``REMOTE_USER``.  Subclass
+-    this class and change the ``header`` attribute if you need to use a
+-    different header.
++    The ``request.META`` key is configurable and defaults to ``REMOTE_USER``.
++    Subclass this class and change the ``header`` attribute if you need to
++    use a different key from ``request.META``, for example a HTTP request
++    header.
+     """
+ 
+-    # Name of request header to grab username from.  This will be the key as
+-    # used in the request.META dictionary, i.e. the normalization of headers to
+-    # all uppercase and the addition of "HTTP_" prefix apply.
++    sync_capable = True
++    async_capable = True
++
++    def __init__(self, get_response):
++        if get_response is None:
++            raise ValueError("get_response must be provided.")
++        self.get_response = get_response
++        self.is_async = iscoroutinefunction(get_response)
++        if self.is_async:
++            markcoroutinefunction(self)
++        super().__init__()
++
++    # Name of request.META key to grab username from. Note that for
++    # request headers, normalization to all uppercase and the addition
++    # of a "HTTP_" prefix apply.
+     header = "REMOTE_USER"
+     force_logout_if_no_header = True
+ 
+-    def process_request(self, request):
++    def __call__(self, request):
++        if self.is_async:
++            return self.__acall__(request)
+         # AuthenticationMiddleware is required so that request.user exists.
+         if not hasattr(request, "user"):
+             raise ImproperlyConfigured(

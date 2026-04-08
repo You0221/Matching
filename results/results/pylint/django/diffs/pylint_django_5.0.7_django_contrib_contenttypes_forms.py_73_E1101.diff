@@ -1,0 +1,17 @@
+diff --git a/django/contrib/contenttypes/forms.py b/django/contrib/contenttypes/forms.py
+index c0ff4f725749..34a88f655fa7 100644
+--- a/django/contrib/contenttypes/forms.py
++++ b/django/contrib/contenttypes/forms.py
+@@ -67,10 +67,10 @@ def get_default_prefix(cls):
+     def save_new(self, form, commit=True):
+         setattr(
+             form.instance,
+-            self.ct_field.get_attname(),
++            self.ct_field.attname,
+             ContentType.objects.get_for_model(self.instance).pk,
+         )
+-        setattr(form.instance, self.ct_fk_field.get_attname(), self.instance.pk)
++        setattr(form.instance, self.ct_fk_field.attname, self.instance.pk)
+         return form.save(commit=commit)
+ 
+ 

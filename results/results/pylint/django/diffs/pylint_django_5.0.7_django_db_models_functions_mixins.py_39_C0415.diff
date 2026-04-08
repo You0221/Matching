@@ -1,0 +1,16 @@
+diff --git a/django/db/models/functions/mixins.py b/django/db/models/functions/mixins.py
+index caf20e131d87..0f6f0a2aa8f5 100644
+--- a/django/db/models/functions/mixins.py
++++ b/django/db/models/functions/mixins.py
+@@ -31,7 +33,10 @@ def as_mysql(self, compiler, connection, **extra_context):
+         return sql, params
+ 
+     def as_oracle(self, compiler, connection, **extra_context):
+-        if self.output_field.get_internal_type() == "DurationField":
++        if (
++            self.output_field.get_internal_type() == "DurationField"
++            and not connection.features.supports_aggregation_over_interval_types
++        ):
+             expression = self.get_source_expressions()[0]
+             options = self._get_repr_options()
+             from django.db.backends.oracle.functions import (

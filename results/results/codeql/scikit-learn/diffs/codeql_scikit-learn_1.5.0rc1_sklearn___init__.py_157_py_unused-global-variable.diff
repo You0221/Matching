@@ -1,0 +1,17 @@
+diff --git a/sklearn/__init__.py b/sklearn/__init__.py
+index 63b08e022f23d..38e79e2d3abd8 100644
+--- a/sklearn/__init__.py
++++ b/sklearn/__init__.py
+@@ -150,12 +138,6 @@
+     except ModuleNotFoundError:
+         pass
+ 
+-    # Set a global controller that can be used to locally limit the number of
+-    # threads without looping through all shared libraries every time.
+-    # This instantitation should not happen earlier because it needs all BLAS and
+-    # OpenMP libs to be loaded first.
+-    _threadpool_controller = ThreadpoolController()
+-
+ 
+ def setup_module(module):
+     """Fixture for the tests to assure globally controllable seeding of RNGs"""

@@ -1,0 +1,59 @@
+diff --git a/numpy/_utils/_pep440.py b/numpy/_utils/_pep440.py
+index 73d0afb5e95f..035a0695e5ee 100644
+--- a/numpy/_utils/_pep440.py
++++ b/numpy/_utils/_pep440.py
+@@ -293,7 +292,7 @@ def __init__(self, version):
+         # Validate the version and parse it into pieces
+         match = self._regex.search(version)
+         if not match:
+-            raise InvalidVersion("Invalid version: '{0}'".format(version))
++            raise InvalidVersion(f"Invalid version: '{version}'")
+ 
+         # Store the parsed out pieces of the version
+         self._version = _Version(
+@@ -325,14 +324,14 @@ def __init__(self, version):
+         )
+ 
+     def __repr__(self):
+-        return "<Version({0})>".format(repr(str(self)))
++        return f"<Version({str(self)!r})>"
+ 
+     def __str__(self):
+         parts = []
+ 
+         # Epoch
+         if self._version.epoch != 0:
+-            parts.append("{0}!".format(self._version.epoch))
++            parts.append(f"{self._version.epoch}!")
+ 
+         # Release segment
+         parts.append(".".join(str(x) for x in self._version.release))
+@@ -343,16 +342,16 @@ def __str__(self):
+ 
+         # Post-release
+         if self._version.post is not None:
+-            parts.append(".post{0}".format(self._version.post[1]))
++            parts.append(f".post{self._version.post[1]}")
+ 
+         # Development release
+         if self._version.dev is not None:
+-            parts.append(".dev{0}".format(self._version.dev[1]))
++            parts.append(f".dev{self._version.dev[1]}")
+ 
+         # Local version segment
+         if self._version.local is not None:
+             parts.append(
+-                "+{0}".format(".".join(str(x) for x in self._version.local))
++                f"+{'.'.join(str(x) for x in self._version.local)}"
+             )
+ 
+         return "".join(parts)
+@@ -367,7 +366,7 @@ def base_version(self):
+ 
+         # Epoch
+         if self._version.epoch != 0:
+-            parts.append("{0}!".format(self._version.epoch))
++            parts.append(f"{self._version.epoch}!")
+ 
+         # Release segment
+         parts.append(".".join(str(x) for x in self._version.release))

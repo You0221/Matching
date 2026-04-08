@@ -1,0 +1,16 @@
+diff --git a/sklearn/svm/_base.py b/sklearn/svm/_base.py
+index 47d4027c50754..f5b35f39a7daf 100644
+--- a/sklearn/svm/_base.py
++++ b/sklearn/svm/_base.py
+@@ -991,6 +1000,11 @@ def probB_(self):
+         """
+         return self._probB
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = self.kernel != "precomputed"
++        return tags
++
+ 
+ def _get_liblinear_solver_type(multi_class, penalty, loss, dual):
+     """Find the liblinear magic number for the solver.

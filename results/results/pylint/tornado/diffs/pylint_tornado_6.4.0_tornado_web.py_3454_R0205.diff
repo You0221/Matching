@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 039396470f..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -3451,7 +3516,7 @@ def html_body(self) -> str:
+         return "".join(self._get_resources("html_body"))
+ 
+ 
+-class _UIModuleNamespace(object):
++class _UIModuleNamespace:
+     """Lazy namespace which creates UIModule proxies bound to a handler."""
+ 
+     def __init__(

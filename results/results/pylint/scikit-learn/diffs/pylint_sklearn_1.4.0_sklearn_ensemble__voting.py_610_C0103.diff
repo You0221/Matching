@@ -1,0 +1,34 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -598,14 +674,27 @@ def fit(self, X, y, sample_weight=None):
+             Note that this is supported only if all underlying estimators
+             support sample weights.
+ 
++        **fit_params : dict
++            Parameters to pass to the underlying estimators.
++
++            .. versionadded:: 1.5
++
++                Only available if `enable_metadata_routing=True`,
++                which can be set by using
++                ``sklearn.set_config(enable_metadata_routing=True)``.
++                See :ref:`Metadata Routing User Guide <metadata_routing>` for
++                more details.
++
+         Returns
+         -------
+         self : object
+             Fitted estimator.
+         """
+-        _raise_for_unsupported_routing(self, "fit", sample_weight=sample_weight)
++        _raise_for_params(fit_params, self, "fit")
+         y = column_or_1d(y, warn=True)
+-        return super().fit(X, y, sample_weight)
++        if sample_weight is not None:
++            fit_params["sample_weight"] = sample_weight
++        return super().fit(X, y, **fit_params)
+ 
+     def predict(self, X):
+         """Predict regression target for X.

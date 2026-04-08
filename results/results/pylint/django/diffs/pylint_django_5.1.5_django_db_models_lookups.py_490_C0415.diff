@@ -1,0 +1,29 @@
+diff --git a/django/db/models/lookups.py b/django/db/models/lookups.py
+index 18c4f2ca08d6..c5b2a7a0bbd0 100644
+--- a/django/db/models/lookups.py
++++ b/django/db/models/lookups.py
+@@ -478,18 +519,16 @@ class IntegerLessThanOrEqual(IntegerFieldOverflow, LessThanOrEqual):
+ class In(FieldGetDbPrepValueIterableMixin, BuiltinLookup):
+     lookup_name = "in"
+ 
+-    def get_refs(self):
+-        refs = super().get_refs()
+-        if self.rhs_is_direct_value():
+-            for rhs in self.rhs:
+-                if get_rhs_refs := getattr(rhs, "get_refs", None):
+-                    refs |= get_rhs_refs()
+-        return refs
+-
+     def get_prep_lookup(self):
+         from django.db.models.sql.query import Query  # avoid circular import
+ 
+         if isinstance(self.rhs, Query):
++            lhs_len = len(self.lhs) if isinstance(self.lhs, (ColPairs, tuple)) else 1
++            if (rhs_len := self.rhs._subquery_fields_len) != lhs_len:
++                raise ValueError(
++                    f"The QuerySet value for the 'in' lookup must have {lhs_len} "
++                    f"selected fields (received {rhs_len})"
++                )
+             self.rhs.clear_ordering(clear_default=True)
+             if not self.rhs.has_select_fields:
+                 self.rhs.clear_select_clause()

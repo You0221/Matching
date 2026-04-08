@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index fe5ee918066fa..f0c97268c612d 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1231,7 +1248,7 @@ def fit(self, X, y, sample_weight=None):
+         check_classification_targets(y)
+         self.classes_ = np.unique(y)
+ 
+-        # TODO(1.7) remove multi_class
++        # TODO(1.8) remove multi_class
+         multi_class = self.multi_class
+         if self.multi_class == "multinomial" and len(self.classes_) == 2:
+             warnings.warn(

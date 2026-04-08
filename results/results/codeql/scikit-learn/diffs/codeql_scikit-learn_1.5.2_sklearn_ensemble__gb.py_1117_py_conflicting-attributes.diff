@@ -1,0 +1,50 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index 960e469a090cd..fded8a535413d 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -1113,6 +1117,11 @@ def apply(self, X):
+ 
+         return leaves
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
+     """Gradient Boosting for classification.
+@@ -1124,8 +1133,9 @@ class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
+     classification is a special case where only a single regression tree is
+     induced.
+ 
+-    :class:`sklearn.ensemble.HistGradientBoostingClassifier` is a much faster
+-    variant of this algorithm for intermediate datasets (`n_samples >= 10_000`).
++    :class:`~sklearn.ensemble.HistGradientBoostingClassifier` is a much faster variant
++    of this algorithm for intermediate and large datasets (`n_samples >= 10_000`) and
++    supports monotonic constraints.
+ 
+     Read more in the :ref:`User Guide <gradient_boosting>`.
+ 
+@@ -1307,7 +1317,9 @@ class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
+         subtree with the largest cost complexity that is smaller than
+         ``ccp_alpha`` will be chosen. By default, no pruning is performed.
+         Values must be in the range `[0.0, inf)`.
+-        See :ref:`minimal_cost_complexity_pruning` for details.
++        See :ref:`minimal_cost_complexity_pruning` for details. See
++        :ref:`sphx_glr_auto_examples_tree_plot_cost_complexity_pruning.py`
++        for an example of such pruning.
+ 
+         .. versionadded:: 0.22
+ 
+@@ -1561,8 +1573,8 @@ def decision_function(self, X):
+             :term:`classes_`. Regression and binary classification produce an
+             array of shape (n_samples,).
+         """
+-        X = self._validate_data(
+-            X, dtype=DTYPE, order="C", accept_sparse="csr", reset=False
++        X = validate_data(
++            self, X, dtype=DTYPE, order="C", accept_sparse="csr", reset=False
+         )
+         raw_predictions = self._raw_predict(X)
+         if raw_predictions.shape[1] == 1:

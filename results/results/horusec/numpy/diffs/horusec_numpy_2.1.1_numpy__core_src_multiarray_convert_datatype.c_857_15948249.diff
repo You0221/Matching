@@ -1,0 +1,88 @@
+diff --git a/numpy/_core/src/multiarray/convert_datatype.c b/numpy/_core/src/multiarray/convert_datatype.c
+index 550d3e253868..1dff38a1d1ef 100644
+--- a/numpy/_core/src/multiarray/convert_datatype.c
++++ b/numpy/_core/src/multiarray/convert_datatype.c
+@@ -789,83 +685,6 @@ static int min_scalar_type_num(char *valueptr, int type_num,
+                                             int *is_small_unsigned);
+ 
+ 
+-/*
+- * NOTE: This function uses value based casting logic for scalars. It will
+- *       require updates when we phase out value-based-casting.
+- */
+-NPY_NO_EXPORT npy_bool
+-can_cast_scalar_to(PyArray_Descr *scal_type, char *scal_data,
+-                    PyArray_Descr *to, NPY_CASTING casting)
+-{
+-    /*
+-     * If the two dtypes are actually references to the same object
+-     * or if casting type is forced unsafe then always OK.
+-     *
+-     * TODO: Assuming that unsafe casting always works is not actually correct
+-     */
+-    if (scal_type == to || casting == NPY_UNSAFE_CASTING ) {
+-        return 1;
+-    }
+-
+-    int valid = PyArray_CheckCastSafety(casting, scal_type, to, NPY_DTYPE(to));
+-    if (valid == 1) {
+-        /* This is definitely a valid cast. */
+-        return 1;
+-    }
+-    if (valid < 0) {
+-        /* Probably must return 0, but just keep trying for now. */
+-        PyErr_Clear();
+-    }
+-
+-    /*
+-     * If the scalar isn't a number, value-based casting cannot kick in and
+-     * we must not attempt it.
+-     * (Additional fast-checks would be possible, but probably unnecessary.)
+-     */
+-    if (!PyTypeNum_ISNUMBER(scal_type->type_num)) {
+-        return 0;
+-    }
+-
+-    /*
+-     * At this point we have to check value-based casting.
+-     */
+-    PyArray_Descr *dtype;
+-    int is_small_unsigned = 0, type_num;
+-    /* An aligned memory buffer large enough to hold any builtin numeric type */
+-    npy_longlong value[4];
+-
+-    int swap = !PyArray_ISNBO(scal_type->byteorder);
+-    PyDataType_GetArrFuncs(scal_type)->copyswap(&value, scal_data, swap, NULL);
+-
+-    type_num = min_scalar_type_num((char *)&value, scal_type->type_num,
+-                                    &is_small_unsigned);
+-
+-    /*
+-     * If we've got a small unsigned scalar, and the 'to' type
+-     * is not unsigned, then make it signed to allow the value
+-     * to be cast more appropriately.
+-     */
+-    if (is_small_unsigned && !(PyTypeNum_ISUNSIGNED(to->type_num))) {
+-        type_num = type_num_unsigned_to_signed(type_num);
+-    }
+-
+-    dtype = PyArray_DescrFromType(type_num);
+-    if (dtype == NULL) {
+-        return 0;
+-    }
+-#if 0
+-    printf("min scalar cast ");
+-    PyObject_Print(dtype, stdout, 0);
+-    printf(" to ");
+-    PyObject_Print(to, stdout, 0);
+-    printf("\n");
+-#endif
+-    npy_bool ret = PyArray_CanCastTypeTo(dtype, to, casting);
+-    Py_DECREF(dtype);
+-    return ret;
+-}
+-
+-
+ NPY_NO_EXPORT npy_bool
+ can_cast_pyscalar_scalar_to(
+         int flags, PyArray_Descr *to, NPY_CASTING casting)

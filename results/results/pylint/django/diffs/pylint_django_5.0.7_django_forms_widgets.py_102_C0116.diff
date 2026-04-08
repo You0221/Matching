@@ -1,0 +1,19 @@
+diff --git a/django/forms/widgets.py b/django/forms/widgets.py
+index 2c734052d5bd..9b5ad1b2b954 100644
+--- a/django/forms/widgets.py
++++ b/django/forms/widgets.py
+@@ -101,9 +152,11 @@ def render(self):
+ 
+     def render_js(self):
+         return [
+-            path.__html__()
+-            if hasattr(path, "__html__")
+-            else format_html('<script src="{}"></script>', self.absolute_path(path))
++            (
++                path.__html__()
++                if hasattr(path, "__html__")
++                else format_html('<script src="{}"></script>', self.absolute_path(path))
++            )
+             for path in self._js
+         ]
+ 

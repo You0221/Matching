@@ -1,0 +1,18 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..5401bcabbebc 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1524,7 +1564,12 @@ def response_change(self, request, obj):
+                 current_app=self.admin_site.name,
+             )
+             redirect_url = add_preserved_filters(
+-                {"preserved_filters": preserved_filters, "opts": opts}, redirect_url
++                {
++                    "preserved_filters": preserved_filters,
++                    "preserved_qsl": preserved_qsl,
++                    "opts": opts,
++                },
++                redirect_url,
+             )
+             return HttpResponseRedirect(redirect_url)
+ 

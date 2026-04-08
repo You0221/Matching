@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_utils.py b/pydantic/_internal/_utils.py
+index abe89c83449..47a61575a81 100644
+--- a/pydantic/_internal/_utils.py
++++ b/pydantic/_internal/_utils.py
+@@ -213,7 +215,7 @@ def _normalize_indexes(self, items: MappingIntStrAny, v_length: int) -> dict[int
+         normalized_items: dict[int | str, Any] = {}
+         all_items = None
+         for i, v in items.items():
+-            if not (isinstance(v, typing.Mapping) or isinstance(v, typing.AbstractSet) or self.is_true(v)):
++            if not (isinstance(v, Mapping) or isinstance(v, AbstractSet) or self.is_true(v)):
+                 raise TypeError(f'Unexpected type of exclude value for index "{i}" {v.__class__}')
+             if i == '__all__':
+                 all_items = self._coerce_value(v)

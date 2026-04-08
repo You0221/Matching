@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 3e854a612b591f..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -1161,7 +1173,7 @@ def _bare_run(self, cmd: list[bytes], in_data: bytes | None, sudoable: bool = Tr
+ 
+         # Are we requesting privilege escalation? Right now, we may be invoked
+         # to execute sftp/scp with sudoable=True, but we can request escalation
+-        # only when using ssh. Otherwise we can send initial data straightaway.
++        # only when using ssh. Otherwise, we can send initial data straight away.
+ 
+         state = states.index('ready_to_send')
+         if to_bytes(self.get_option('ssh_executable')) in cmd and sudoable:

@@ -1,0 +1,55 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 6b6fd82e822..4be1a09cb32 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -363,44 +183,18 @@ def is_namedtuple(tp: Any, /) -> bool:
+     return lenient_issubclass(tp, tuple) and hasattr(tp, '_fields')
+ 
+ 
+-if sys.version_info < (3, 9):
+-
+-    def is_zoneinfo_type(tp: Any, /) -> bool:
+-        """Return whether the provided argument is the `zoneinfo.ZoneInfo` type."""
+-        return False
+-
+-else:
+-    from zoneinfo import ZoneInfo
+-
+-    def is_zoneinfo_type(tp: Any, /) -> TypeIs[type[ZoneInfo]]:
+-        """Return whether the provided argument is the `zoneinfo.ZoneInfo` type."""
+-        return tp is ZoneInfo
+-
+-
+-if sys.version_info < (3, 10):
+-
+-    def origin_is_union(tp: Any, /) -> bool:
+-        """Return whether the provided argument is the `Union` special form."""
+-        return _is_typing_name(tp, name='Union')
+-
+-    def is_generic_alias(type_: type[Any]) -> bool:
+-        return isinstance(type_, typing._GenericAlias)  # pyright: ignore[reportAttributeAccessIssue]
++# TODO In 2.12, delete this export. It is currently defined only to not break
++# pydantic-settings which relies on it:
++origin_is_union = is_union_origin
+ 
+-else:
+ 
+-    def origin_is_union(tp: Any, /) -> bool:
+-        """Return whether the provided argument is the `Union` special form or the `UnionType`."""
+-        return _is_typing_name(tp, name='Union') or tp is types.UnionType
+-
+-    def is_generic_alias(tp: Any, /) -> bool:
+-        return isinstance(tp, (types.GenericAlias, typing._GenericAlias))  # pyright: ignore[reportAttributeAccessIssue]
++def is_generic_alias(tp: Any, /) -> bool:
++    return isinstance(tp, (types.GenericAlias, typing._GenericAlias))  # pyright: ignore[reportAttributeAccessIssue]
+ 
+ 
+ # TODO: Ideally, we should avoid relying on the private `typing` constructs:
+ 
+-if sys.version_info < (3, 9):
+-    WithArgsTypes: tuple[Any, ...] = (typing._GenericAlias,)  # pyright: ignore[reportAttributeAccessIssue]
+-elif sys.version_info < (3, 10):
++if sys.version_info < (3, 10):
+     WithArgsTypes: tuple[Any, ...] = (typing._GenericAlias, types.GenericAlias)  # pyright: ignore[reportAttributeAccessIssue]
+ else:
+     WithArgsTypes: tuple[Any, ...] = (typing._GenericAlias, types.GenericAlias, types.UnionType)  # pyright: ignore[reportAttributeAccessIssue]

@@ -1,0 +1,25 @@
+diff --git a/django/forms/models.py b/django/forms/models.py
+index ff4b83fe5960..be59dbe4a0a5 100644
+--- a/django/forms/models.py
++++ b/django/forms/models.py
+@@ -1235,17 +1241,17 @@ def _get_foreign_key(parent_model, model, fk_name=None, can_fail=False):
+             )
+     else:
+         # Try to discover what the ForeignKey from model to parent_model is
+-        parent_list = parent_model._meta.get_parent_list()
++        all_parents = (*parent_model._meta.all_parents, parent_model)
+         fks_to_parent = [
+             f
+             for f in opts.fields
+             if isinstance(f, ForeignKey)
+             and (
+                 f.remote_field.model == parent_model
+-                or f.remote_field.model in parent_list
++                or f.remote_field.model in all_parents
+                 or (
+                     f.remote_field.model._meta.proxy
+-                    and f.remote_field.model._meta.proxy_for_model in parent_list
++                    and f.remote_field.model._meta.proxy_for_model in all_parents
+                 )
+             )
+         ]

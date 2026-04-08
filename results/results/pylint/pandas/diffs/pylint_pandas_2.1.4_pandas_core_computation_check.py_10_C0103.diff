@@ -1,0 +1,15 @@
+diff --git a/pandas/core/computation/check.py b/pandas/core/computation/check.py
+index 3221b158241f5..caccf34f81111 100644
+--- a/pandas/core/computation/check.py
++++ b/pandas/core/computation/check.py
+@@ -4,9 +4,5 @@
+ 
+ ne = import_optional_dependency("numexpr", errors="warn")
+ NUMEXPR_INSTALLED = ne is not None
+-if NUMEXPR_INSTALLED:
+-    NUMEXPR_VERSION = ne.__version__
+-else:
+-    NUMEXPR_VERSION = None
+ 
+-__all__ = ["NUMEXPR_INSTALLED", "NUMEXPR_VERSION"]
++__all__ = ["NUMEXPR_INSTALLED"]

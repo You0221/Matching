@@ -1,0 +1,27 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -585,6 +594,7 @@ def get_aggregation(self, using, aggregate_exprs):
+         else:
+             outer_query = self
+             self.select = ()
++            self.selected = None
+             self.default_cols = False
+             self.extra = {}
+             if self.annotations:
+@@ -617,8 +627,12 @@ def get_aggregation(self, using, aggregate_exprs):
+         if result is None:
+             result = empty_set_result
+         else:
+-            converters = compiler.get_converters(outer_query.annotation_select.values())
+-            result = next(compiler.apply_converters((result,), converters))
++            cols = outer_query.annotation_select.values()
++            converters = compiler.get_converters(cols)
++            rows = compiler.apply_converters((result,), converters)
++            if compiler.has_composite_fields(cols):
++                rows = compiler.composite_fields_to_tuples(rows, cols)
++            result = next(rows)
+ 
+         return dict(zip(outer_query.annotation_select, result))
+ 

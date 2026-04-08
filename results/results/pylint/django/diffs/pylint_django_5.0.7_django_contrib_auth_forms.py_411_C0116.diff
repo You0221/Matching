@@ -1,0 +1,61 @@
+diff --git a/django/contrib/auth/forms.py b/django/contrib/auth/forms.py
+index eaae0bf6953b..edf672a6e516 100644
+--- a/django/contrib/auth/forms.py
++++ b/django/contrib/auth/forms.py
+@@ -375,48 +494,27 @@ def save(
+             )
+ 
+ 
+-class SetPasswordForm(forms.Form):
++class SetPasswordForm(SetPasswordMixin, forms.Form):
+     """
+     A form that lets a user set their password without entering the old
+     password
+     """
+ 
+-    error_messages = {
+-        "password_mismatch": _("The two password fields didn’t match."),
+-    }
+-    new_password1 = forms.CharField(
+-        label=_("New password"),
+-        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+-        strip=False,
+-        help_text=password_validation.password_validators_help_text_html(),
+-    )
+-    new_password2 = forms.CharField(
+-        label=_("New password confirmation"),
+-        strip=False,
+-        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
++    new_password1, new_password2 = SetPasswordMixin.create_password_fields(
++        label1=_("New password"), label2=_("New password confirmation")
+     )
+ 
+     def __init__(self, user, *args, **kwargs):
+         self.user = user
+         super().__init__(*args, **kwargs)
+ 
+-    def clean_new_password2(self):
+-        password1 = self.cleaned_data.get("new_password1")
+-        password2 = self.cleaned_data.get("new_password2")
+-        if password1 and password2 and password1 != password2:
+-            raise ValidationError(
+-                self.error_messages["password_mismatch"],
+-                code="password_mismatch",
+-            )
+-        password_validation.validate_password(password2, self.user)
+-        return password2
++    def clean(self):
++        self.validate_passwords("new_password1", "new_password2")
++        self.validate_password_for_user(self.user, "new_password2")
++        return super().clean()
+ 
+     def save(self, commit=True):
+-        password = self.cleaned_data["new_password1"]
+-        self.user.set_password(password)
+-        if commit:
+-            self.user.save()
+-        return self.user
++        return self.set_password_and_save(self.user, "new_password1", commit=commit)
+ 
+ 
+ class PasswordChangeForm(SetPasswordForm):

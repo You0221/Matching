@@ -1,0 +1,16 @@
+diff --git a/django/db/models/constraints.py b/django/db/models/constraints.py
+index 56d547e6b086..1601fc993390 100644
+--- a/django/db/models/constraints.py
++++ b/django/db/models/constraints.py
+@@ -134,9 +268,9 @@ def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+             pass
+ 
+     def __repr__(self):
+-        return "<%s: check=%s name=%s%s%s>" % (
++        return "<%s: condition=%s name=%s%s%s>" % (
+             self.__class__.__qualname__,
+-            self.check,
++            self.condition,
+             repr(self.name),
+             (
+                 ""

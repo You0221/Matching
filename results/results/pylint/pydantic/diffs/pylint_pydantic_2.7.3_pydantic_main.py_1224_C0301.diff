@@ -1,0 +1,13 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..4b3d8eff730 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1221,7 +1264,7 @@ def from_orm(cls: type[Model], obj: Any) -> Model:  # noqa: D102
+ 
+     @classmethod
+     @typing_extensions.deprecated('The `construct` method is deprecated; use `model_construct` instead.', category=None)
+-    def construct(cls: type[Model], _fields_set: set[str] | None = None, **values: Any) -> Model:  # noqa: D102
++    def construct(cls, _fields_set: set[str] | None = None, **values: Any) -> Self:  # noqa: D102
+         warnings.warn(
+             'The `construct` method is deprecated; use `model_construct` instead.', category=PydanticDeprecatedSince20
+         )

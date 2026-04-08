@@ -1,0 +1,55 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -289,27 +293,45 @@ def fit(self, X, y, sample_weight=None):
+         coef_old_ = None
+ 
+         XT_y = np.dot(X.T, y)
+-        U, S, Vh = linalg.svd(X, full_matrices=False)
++        # Let M, N = n_samples, n_features and K = min(M, N).
++        # The posterior covariance matrix needs Vh_full: (N, N).
++        # The full SVD is only required when n_samples < n_features.
++        # When n_samples < n_features, K=M and full_matrices=True
++        # U: (M, M), S: M, Vh_full: (N, N), Vh: (M, N)
++        # When n_samples > n_features, K=N and full_matrices=False
++        # U: (M, N), S: N, Vh_full: (N, N), Vh: (N, N)
++        U, S, Vh_full = linalg.svd(X, full_matrices=(n_samples < n_features))
++        K = len(S)
+         eigen_vals_ = S**2
++        eigen_vals_full = np.zeros(n_features, dtype=dtype)
++        eigen_vals_full[0:K] = eigen_vals_
++        Vh = Vh_full[0:K, :]
+ 
+         # Convergence loop of the bayesian ridge regression
+         for iter_ in range(self.max_iter):
+             # update posterior mean coef_ based on alpha_ and lambda_ and
+-            # compute corresponding rmse
+-            coef_, rmse_ = self._update_coef_(
++            # compute corresponding sse (sum of squared errors)
++            coef_, sse_ = self._update_coef_(
+                 X, y, n_samples, n_features, XT_y, U, Vh, eigen_vals_, alpha_, lambda_
+             )
+             if self.compute_score:
+                 # compute the log marginal likelihood
+                 s = self._log_marginal_likelihood(
+-                    n_samples, n_features, eigen_vals_, alpha_, lambda_, coef_, rmse_
++                    n_samples,
++                    n_features,
++                    sw_sum,
++                    eigen_vals_,
++                    alpha_,
++                    lambda_,
++                    coef_,
++                    sse_,
+                 )
+                 self.scores_.append(s)
+ 
+             # Update alpha and lambda according to (MacKay, 1992)
+             gamma_ = np.sum((alpha_ * eigen_vals_) / (lambda_ + alpha_ * eigen_vals_))
+             lambda_ = (gamma_ + 2 * lambda_1) / (np.sum(coef_**2) + 2 * lambda_2)
+-            alpha_ = (n_samples - gamma_ + 2 * alpha_1) / (rmse_ + 2 * alpha_2)
++            alpha_ = (sw_sum - gamma_ + 2 * alpha_1) / (sse_ + 2 * alpha_2)
+ 
+             # Check for convergence
+             if iter_ != 0 and np.sum(np.abs(coef_old_ - coef_)) < self.tol:

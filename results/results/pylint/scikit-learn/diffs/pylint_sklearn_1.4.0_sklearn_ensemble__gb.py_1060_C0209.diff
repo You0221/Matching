@@ -1,0 +1,23 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index f478d94a5828f..960e469a090cd 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -1052,8 +1058,7 @@ def _compute_partial_dependence_recursion(self, grid, target_features):
+             warnings.warn(
+                 "Using recursion method with a non-constant init predictor "
+                 "will lead to incorrect partial dependence values. "
+-                "Got init=%s."
+-                % self.init,
++                "Got init=%s." % self.init,
+                 UserWarning,
+             )
+         grid = np.asarray(grid, dtype=DTYPE, order="C")
+@@ -1061,6 +1066,8 @@ def _compute_partial_dependence_recursion(self, grid, target_features):
+         averaged_predictions = np.zeros(
+             (n_trees_per_stage, grid.shape[0]), dtype=np.float64, order="C"
+         )
++        target_features = np.asarray(target_features, dtype=np.intp, order="C")
++
+         for stage in range(n_estimators):
+             for k in range(n_trees_per_stage):
+                 tree = self.estimators_[stage, k].tree_

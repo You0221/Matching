@@ -1,0 +1,15 @@
+diff --git a/lib/ansible/module_utils/parsing/convert_bool.py b/lib/ansible/module_utils/parsing/convert_bool.py
+index 594ede436f2269..e6f1405af970bd 100644
+--- a/lib/ansible/module_utils/parsing/convert_bool.py
++++ b/lib/ansible/module_utils/parsing/convert_bool.py
+@@ -3,7 +3,9 @@
+ 
+ from __future__ import annotations
+ 
+-from ansible.module_utils.six import binary_type, text_type
++import collections.abc as c
++
++from ansible.module_utils._internal import _no_six
+ from ansible.module_utils.common.text.converters import to_text
+ 
+ 

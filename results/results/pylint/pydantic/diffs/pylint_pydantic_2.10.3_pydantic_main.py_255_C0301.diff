@@ -1,0 +1,55 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 0929b0935d9..03cb511eb30 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -223,34 +252,27 @@ def __init__(self, /, **data: Any) -> None:
+     # The following line sets a flag that we use to determine when `__init__` gets overridden by the user
+     __init__.__pydantic_base_init__ = True  # pyright: ignore[reportFunctionMemberAccess]
+ 
+-    # TODO: V3 - remove `model_fields` and `model_computed_fields` properties from the `BaseModel` class - they should only
+-    # be accessible on the model class, not on instances. We have these purely for backwards compatibility with Pydantic <v2.10.
+-    # This is similar to the fact that we have __fields__ defined here (on `BaseModel`) and on `ModelMetaClass`.
+-    @property
+-    def model_fields(self) -> dict[str, FieldInfo]:
+-        """Get metadata about the fields defined on the model.
+-
+-        Deprecation warning: you should be getting this information from the model class, not from an instance.
+-        In V3, this property will be removed from the `BaseModel` class.
++    @_utils.deprecated_instance_property
++    @classmethod
++    def model_fields(cls) -> dict[str, FieldInfo]:
++        """A mapping of field names to their respective [`FieldInfo`][pydantic.fields.FieldInfo] instances.
+ 
+-        Returns:
+-            A mapping of field names to [`FieldInfo`][pydantic.fields.FieldInfo] objects.
++        !!! warning
++            Accessing this attribute from a model instance is deprecated, and will not work in Pydantic V3.
++            Instead, you should access this attribute from the model class.
+         """
+-        # Must be set for `GenerateSchema.model_schema` to work for a plain `BaseModel` annotation, hence the default here.
+-        return getattr(self, '__pydantic_fields__', {})
++        return getattr(cls, '__pydantic_fields__', {})
+ 
+-    @property
+-    def model_computed_fields(self) -> dict[str, ComputedFieldInfo]:
+-        """Get metadata about the computed fields defined on the model.
+-
+-        Deprecation warning: you should be getting this information from the model class, not from an instance.
+-        In V3, this property will be removed from the `BaseModel` class.
++    @_utils.deprecated_instance_property
++    @classmethod
++    def model_computed_fields(cls) -> dict[str, ComputedFieldInfo]:
++        """A mapping of computed field names to their respective [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] instances.
+ 
+-        Returns:
+-            A mapping of computed field names to [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
++        !!! warning
++            Accessing this attribute from a model instance is deprecated, and will not work in Pydantic V3.
++            Instead, you should access this attribute from the model class.
+         """
+-        # Must be set for `GenerateSchema.model_schema` to work for a plain `BaseModel` annotation, hence the default here.
+-        return getattr(self, '__pydantic_computed_fields__', {})
++        return getattr(cls, '__pydantic_computed_fields__', {})
+ 
+     @property
+     def model_extra(self) -> dict[str, Any] | None:

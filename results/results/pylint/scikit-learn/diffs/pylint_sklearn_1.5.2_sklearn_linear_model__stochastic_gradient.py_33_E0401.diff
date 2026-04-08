@@ -1,0 +1,30 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -22,23 +22,20 @@
+ )
+ from ..exceptions import ConvergenceWarning
+ from ..model_selection import ShuffleSplit, StratifiedShuffleSplit
+-from ..utils import check_random_state, compute_class_weight, deprecated
++from ..utils import check_random_state, compute_class_weight
+ from ..utils._param_validation import Hidden, Interval, StrOptions
+ from ..utils.extmath import safe_sparse_dot
+ from ..utils.metaestimators import available_if
+ from ..utils.multiclass import _check_partial_fit_first_call
+ from ..utils.parallel import Parallel, delayed
+-from ..utils.validation import _check_sample_weight, check_is_fitted
++from ..utils.validation import _check_sample_weight, check_is_fitted, validate_data
+ from ._base import LinearClassifierMixin, SparseCoefMixin, make_dataset
+ from ._sgd_fast import (
+     EpsilonInsensitive,
+     Hinge,
+-    Huber,
+-    Log,
+     ModifiedHuber,
+     SquaredEpsilonInsensitive,
+     SquaredHinge,
+-    SquaredLoss,
+     _plain_sgd32,
+     _plain_sgd64,
+ )

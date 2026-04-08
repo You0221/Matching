@@ -1,0 +1,20 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -388,8 +407,13 @@ def _order_by_pairs(self):
+                 )
+                 continue
+ 
+-            ref, *transforms = col.split(LOOKUP_SEP)
+-            if expr := self.query.annotations.get(ref):
++            if expr := self.query.annotations.get(col):
++                ref = col
++                transforms = []
++            else:
++                ref, *transforms = col.split(LOOKUP_SEP)
++                expr = self.query.annotations.get(ref)
++            if expr:
+                 if self.query.combinator and self.select:
+                     if transforms:
+                         raise NotImplementedError(

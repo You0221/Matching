@@ -1,0 +1,12 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/binning.py b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+index c428c742af883..eee26e68842b7 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/binning.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+@@ -14,7 +14,6 @@
+ from ...base import BaseEstimator, TransformerMixin
+ from ...utils import check_array, check_random_state
+ from ...utils._openmp_helpers import _openmp_effective_n_threads
+-from ...utils.fixes import percentile
+ from ...utils.parallel import Parallel, delayed
+ from ...utils.validation import check_is_fitted
+ from ._binning import _map_to_bins

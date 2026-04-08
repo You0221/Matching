@@ -1,0 +1,67 @@
+diff --git a/django/db/backends/mysql/features.py b/django/db/backends/mysql/features.py
+index 4d68b2bf3e93..414f552d94c0 100644
+--- a/django/db/backends/mysql/features.py
++++ b/django/db/backends/mysql/features.py
+@@ -99,10 +89,6 @@ def django_test_skips(self):
+                 "db_functions.comparison.test_least.LeastTests."
+                 "test_coalesce_workaround",
+             },
+-            "Running on MySQL requires utf8mb4 encoding (#18392).": {
+-                "model_fields.test_textfield.TextFieldTests.test_emoji",
+-                "model_fields.test_charfield.TestCharField.test_emoji",
+-            },
+             "MySQL doesn't support functional indexes on a function that "
+             "returns JSON": {
+                 "schema.tests.SchemaTests.test_func_index_json_key_transform",
+@@ -120,10 +106,8 @@ def django_test_skips(self):
+             },
+         }
+         if self.connection.mysql_is_mariadb and (
+-            10,
+-            4,
+-            3,
+-        ) < self.connection.mysql_version < (10, 5, 2):
++            self.connection.mysql_version < (10, 5, 2)
++        ):
+             skips.update(
+                 {
+                     "https://jira.mariadb.org/browse/MDEV-19598": {
+@@ -132,19 +116,6 @@ def django_test_skips(self):
+                     },
+                 }
+             )
+-        if self.connection.mysql_is_mariadb and (
+-            10,
+-            4,
+-            12,
+-        ) < self.connection.mysql_version < (10, 5):
+-            skips.update(
+-                {
+-                    "https://jira.mariadb.org/browse/MDEV-22775": {
+-                        "schema.tests.SchemaTests."
+-                        "test_alter_pk_with_self_referential_field",
+-                    },
+-                }
+-            )
+         if not self.supports_explain_analyze:
+             skips.update(
+                 {
+@@ -173,6 +144,18 @@ def django_test_skips(self):
+                     },
+                 }
+             )
++        if not self.connection.mysql_is_mariadb:
++            skips.update(
++                {
++                    "MySQL doesn't allow renaming columns referenced by generated "
++                    "columns": {
++                        "migrations.test_operations.OperationTests."
++                        "test_invalid_generated_field_changes_on_rename_stored",
++                        "migrations.test_operations.OperationTests."
++                        "test_invalid_generated_field_changes_on_rename_virtual",
++                    },
++                }
++            )
+         return skips
+ 
+     @cached_property

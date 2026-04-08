@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -262,10 +258,10 @@ def _preprocess_X(self, X, *, reset):
+         """
+         # If there is a preprocessor, we let the preprocessor handle the validation.
+         # Otherwise, we validate the data ourselves.
+-        check_X_kwargs = dict(dtype=[X_DTYPE], force_all_finite=False)
++        check_X_kwargs = dict(dtype=[X_DTYPE], ensure_all_finite=False)
+         if not reset:
+             if self._preprocessor is None:
+-                return self._validate_data(X, reset=False, **check_X_kwargs)
++                return validate_data(self, X, reset=False, **check_X_kwargs)
+             return self._preprocessor.transform(X)
+ 
+         # At this point, reset is False, which runs during `fit`.

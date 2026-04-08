@@ -1,0 +1,49 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -737,7 +744,7 @@ def _apply_rel_filters(self, queryset):
+         def _remove_prefetched_objects(self):
+             try:
+                 self.instance._prefetched_objects_cache.pop(
+-                    self.field.remote_field.get_cache_name()
++                    self.field.remote_field.cache_name
+                 )
+             except (AttributeError, KeyError):
+                 pass  # nothing to clear from cache
+@@ -746,14 +753,14 @@ def get_queryset(self):
+             # Even if this relation is not to pk, we require still pk value.
+             # The wish is that the instance has been already saved to DB,
+             # although having a pk value isn't a guarantee of that.
+-            if self.instance.pk is None:
++            if not self.instance._is_pk_set():
+                 raise ValueError(
+                     f"{self.instance.__class__.__name__!r} instance needs to have a "
+                     f"primary key value before this relationship can be used."
+                 )
+             try:
+                 return self.instance._prefetched_objects_cache[
+-                    self.field.remote_field.get_cache_name()
++                    self.field.remote_field.cache_name
+                 ]
+             except (AttributeError, KeyError):
+                 queryset = super().get_queryset()
+@@ -790,8 +797,8 @@ def get_prefetch_querysets(self, instances, querysets=None):
+             for rel_obj in queryset:
+                 if not self.field.is_cached(rel_obj):
+                     instance = instances_dict[rel_obj_attr(rel_obj)]
+-                    setattr(rel_obj, self.field.name, instance)
+-            cache_name = self.field.remote_field.get_cache_name()
++                    self.field.set_cached_value(rel_obj, instance)
++            cache_name = self.field.remote_field.cache_name
+             return queryset, rel_obj_attr, instance_attr, False, cache_name, False
+ 
+         def add(self, *objs, bulk=True):
+@@ -840,6 +847,7 @@ async def aadd(self, *objs, bulk=True):
+ 
+         def create(self, **kwargs):
+             self._check_fk_val()
++            self._remove_prefetched_objects()
+             kwargs[self.field.name] = self.instance
+             db = router.db_for_write(self.model, instance=self.instance)
+             return super(RelatedManager, self.db_manager(db)).create(**kwargs)

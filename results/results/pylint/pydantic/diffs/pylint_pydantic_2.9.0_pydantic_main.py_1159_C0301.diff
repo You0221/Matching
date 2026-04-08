@@ -1,0 +1,15 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 4b3d8eff730..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1156,7 +1216,9 @@ def json(  # noqa: D102
+     @typing_extensions.deprecated('The `parse_obj` method is deprecated; use `model_validate` instead.', category=None)
+     def parse_obj(cls, obj: Any) -> Self:  # noqa: D102
+         warnings.warn(
+-            'The `parse_obj` method is deprecated; use `model_validate` instead.', category=PydanticDeprecatedSince20
++            'The `parse_obj` method is deprecated; use `model_validate` instead.',
++            category=PydanticDeprecatedSince20,
++            stacklevel=2,
+         )
+         return cls.model_validate(obj)
+ 

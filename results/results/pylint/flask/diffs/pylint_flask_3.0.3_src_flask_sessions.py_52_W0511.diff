@@ -1,0 +1,14 @@
+diff --git a/src/flask/sessions.py b/src/flask/sessions.py
+index ee19ad6387..375de06574 100644
+--- a/src/flask/sessions.py
++++ b/src/flask/sessions.py
+@@ -49,8 +49,7 @@ def permanent(self, value: bool) -> None:
+     accessed = True
+ 
+ 
+-# TODO generic when Python > 3.8
+-class SecureCookieSession(CallbackDict, SessionMixin):  # type: ignore[type-arg]
++class SecureCookieSession(CallbackDict[str, t.Any], SessionMixin):
+     """Base class for sessions based on signed cookies.
+ 
+     This session backend will set the :attr:`modified` and

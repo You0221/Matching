@@ -1,0 +1,16 @@
+diff --git a/django/db/models/constraints.py b/django/db/models/constraints.py
+index 56d547e6b086..1601fc993390 100644
+--- a/django/db/models/constraints.py
++++ b/django/db/models/constraints.py
+@@ -124,9 +258,9 @@ def remove_sql(self, model, schema_editor):
+         return schema_editor._delete_check_sql(model, self.name)
+ 
+     def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+-        against = instance._get_field_value_map(meta=model._meta, exclude=exclude)
++        against = instance._get_field_expression_map(meta=model._meta, exclude=exclude)
+         try:
+-            if not Q(self.check).check(against, using=using):
++            if not Q(self.condition).check(against, using=using):
+                 raise ValidationError(
+                     self.get_violation_error_message(), code=self.violation_error_code
+                 )

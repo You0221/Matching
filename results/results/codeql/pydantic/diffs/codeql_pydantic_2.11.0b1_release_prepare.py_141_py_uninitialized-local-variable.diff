@@ -1,0 +1,30 @@
+diff --git a/release/prepare.py b/release/prepare.py
+index f1ac96b6097..e407a3b8b33 100644
+--- a/release/prepare.py
++++ b/release/prepare.py
+@@ -137,23 +125,14 @@ def update_history(new_version: str, dry_run: bool, force_update: bool) -> None:
+     citation_path = ROOT_DIR / 'CITATION.cff'
+     citation_text = citation_path.read_text()
+ 
+-    is_release_version = not ('a' in new_version or 'b' in new_version)
+-    if not is_release_version:
+-        version_typ = 'alpha' if 'a' in new_version else 'beta'
+-        warnings.warn(
+-            f'WARNING: not updating CITATION.cff because version is {version_typ} version {new_version}'
+-        )
+-        return
+-    else:
+-        citation_text = re.sub(r'(?<=\nversion: ).*', f'v{new_version}', citation_text)
+-        citation_text = re.sub(r'(?<=date-released: ).*', date_today_str, citation_text)
++    citation_text = re.sub(r'(?<=\nversion: ).*', f'v{new_version}', citation_text)
++    citation_text = re.sub(r'(?<=date-released: ).*', date_today_str, citation_text)
+     if dry_run:
+         print(
+             f'Would update version=v{new_version} and date-released={date_today_str} in '
+             f'{citation_path.relative_to(ROOT_DIR)}'
+         )
+         print(f'Updated content:\n{citation_text}')
+-
+     else:
+         citation_path.write_text(citation_text)
+         print(

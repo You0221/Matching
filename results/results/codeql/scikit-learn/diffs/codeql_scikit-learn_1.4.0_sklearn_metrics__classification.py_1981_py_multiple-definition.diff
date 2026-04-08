@@ -1,0 +1,114 @@
+diff --git a/sklearn/metrics/_classification.py b/sklearn/metrics/_classification.py
+index f0a13f8a04830..2e31320ddb1f4 100644
+--- a/sklearn/metrics/_classification.py
++++ b/sklearn/metrics/_classification.py
+@@ -1942,50 +2260,72 @@ class after being classified as negative. This is the case when the
+         labels=labels,
+     )
+ 
+-    # Case when `y_test` contains a single class and `y_test == y_pred`.
+-    # This may happen when cross-validating imbalanced data and should
+-    # not be interpreted as a perfect score.
+-    if cm.shape == (1, 1):
+-        msg = "samples of only one class were seen during testing "
+-        if raise_warning:
+-            warnings.warn(msg, UserWarning, stacklevel=2)
++    tn, fp, fn, tp = cm.ravel()
++    support_pos = tp + fn
++    support_neg = tn + fp
++    pos_num = tp * support_neg
++    pos_denom = fp * support_pos
++    neg_num = fn * support_neg
++    neg_denom = tn * support_pos
++
++    # if `support_pos == 0`a division by zero will occur
++    if support_pos == 0:
++        msg = (
++            "No samples of the positive class are present in `y_true`. "
++            "`positive_likelihood_ratio` and `negative_likelihood_ratio` are both set "
++            "to `np.nan`. Use the `replace_undefined_by` param to control this "
++            "behavior. To suppress this warning or turn it into an error, see Python's "
++            "`warnings` module and `warnings.catch_warnings()`."
++        )
++        warnings.warn(msg, UndefinedMetricWarning, stacklevel=2)
+         positive_likelihood_ratio = np.nan
+         negative_likelihood_ratio = np.nan
+-    else:
+-        tn, fp, fn, tp = cm.ravel()
+-        support_pos = tp + fn
+-        support_neg = tn + fp
+-        pos_num = tp * support_neg
+-        pos_denom = fp * support_pos
+-        neg_num = fn * support_neg
+-        neg_denom = tn * support_pos
+-
+-        # If zero division warn and set scores to nan, else divide
+-        if support_pos == 0:
+-            msg = "no samples of the positive class were present in the testing set "
+-            if raise_warning:
+-                warnings.warn(msg, UserWarning, stacklevel=2)
+-            positive_likelihood_ratio = np.nan
+-            negative_likelihood_ratio = np.nan
+-        if fp == 0:
++
++    # if `fp == 0`a division by zero will occur
++    if fp == 0:
++        if raise_warning:
+             if tp == 0:
+-                msg = "no samples predicted for the positive class"
++                msg_beginning = (
++                    "No samples were predicted for the positive class and "
++                    "`positive_likelihood_ratio` is "
++                )
+             else:
+-                msg = "positive_likelihood_ratio ill-defined and being set to nan "
+-            if raise_warning:
+-                warnings.warn(msg, UserWarning, stacklevel=2)
+-            positive_likelihood_ratio = np.nan
++                msg_beginning = "`positive_likelihood_ratio` is ill-defined and "
++            msg_end = "set to `np.nan`. Use the `replace_undefined_by` param to "
++            "control this behavior. To suppress this warning or turn it into an error, "
++            "see Python's `warnings` module and `warnings.catch_warnings()`."
++            warnings.warn(msg_beginning + msg_end, UndefinedMetricWarning, stacklevel=2)
++        if isinstance(replace_undefined_by, float) and np.isnan(replace_undefined_by):
++            positive_likelihood_ratio = replace_undefined_by
+         else:
+-            positive_likelihood_ratio = pos_num / pos_denom
+-        if tn == 0:
+-            msg = "negative_likelihood_ratio ill-defined and being set to nan "
+-            if raise_warning:
+-                warnings.warn(msg, UserWarning, stacklevel=2)
+-            negative_likelihood_ratio = np.nan
++            # replace_undefined_by is a dict and
++            # isinstance(replace_undefined_by.get("LR+", None), Real); this includes
++            # `np.inf` and `np.nan`
++            positive_likelihood_ratio = desired_lr_pos
++    else:
++        positive_likelihood_ratio = pos_num / pos_denom
++
++    # if `tn == 0`a division by zero will occur
++    if tn == 0:
++        if raise_warning:
++            msg = (
++                "`negative_likelihood_ratio` is ill-defined and set to `np.nan`. "
++                "Use the `replace_undefined_by` param to control this behavior. To "
++                "suppress this warning or turn it into an error, see Python's "
++                "`warnings` module and `warnings.catch_warnings()`."
++            )
++            warnings.warn(msg, UndefinedMetricWarning, stacklevel=2)
++        if isinstance(replace_undefined_by, float) and np.isnan(replace_undefined_by):
++            negative_likelihood_ratio = replace_undefined_by
+         else:
+-            negative_likelihood_ratio = neg_num / neg_denom
++            # replace_undefined_by is a dict and
++            # isinstance(replace_undefined_by.get("LR-", None), Real); this includes
++            # `np.nan`
++            negative_likelihood_ratio = desired_lr_neg
++    else:
++        negative_likelihood_ratio = neg_num / neg_denom
+ 
+-    return positive_likelihood_ratio, negative_likelihood_ratio
++    return float(positive_likelihood_ratio), float(negative_likelihood_ratio)
+ 
+ 
+ @validate_params(

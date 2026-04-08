@@ -1,0 +1,15 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -64,9 +65,8 @@
+ from ..warnings import PydanticDeprecatedSince20
+ from . import _core_utils, _decorators, _discriminated_union, _known_annotated_metadata, _typing_extra
+ from ._config import ConfigWrapper, ConfigWrapperStack
+-from ._core_metadata import CoreMetadataHandler, build_metadata_dict
++from ._core_metadata import update_core_metadata
+ from ._core_utils import (
+-    CoreSchemaOrField,
+     collect_invalid_schemas,
+     define_expected_missing_refs,
+     get_ref,

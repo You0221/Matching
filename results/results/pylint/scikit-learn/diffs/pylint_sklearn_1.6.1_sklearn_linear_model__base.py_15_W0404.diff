@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index 3bb3b8b7626d8..c059e3fa84310 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -8,7 +8,7 @@
+ import numbers
+ import warnings
+ from abc import ABCMeta, abstractmethod
+-from numbers import Integral
++from numbers import Integral, Real
+ 
+ import numpy as np
+ import scipy.sparse as sp

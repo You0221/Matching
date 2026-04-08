@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -72,7 +80,7 @@ def _predict(self, X):
+         return np.asarray([est.predict(X) for est in self.estimators_]).T
+ 
+     @abstractmethod
+-    def fit(self, X, y, sample_weight=None):
++    def fit(self, X, y, **fit_params):
+         """Get common fit operations."""
+         names, clfs = self._validate_estimators()
+ 

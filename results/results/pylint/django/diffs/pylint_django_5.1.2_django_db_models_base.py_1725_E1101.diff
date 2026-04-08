@@ -1,0 +1,70 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1723,6 +1776,65 @@ def _check_default_pk(cls):
+             ]
+         return []
+ 
++    @classmethod
++    def _check_composite_pk(cls):
++        errors = []
++        meta = cls._meta
++        pk = meta.pk
++
++        if not isinstance(pk, CompositePrimaryKey):
++            return errors
++
++        seen_columns = defaultdict(list)
++
++        for field_name in pk.field_names:
++            hint = None
++
++            try:
++                field = meta.get_field(field_name)
++            except FieldDoesNotExist:
++                field = None
++
++            if not field:
++                hint = f"{field_name!r} is not a valid field."
++            elif not field.column:
++                hint = f"{field_name!r} field has no column."
++            elif field.null:
++                hint = f"{field_name!r} field may not set 'null=True'."
++            elif field.generated:
++                hint = f"{field_name!r} field is a generated field."
++            elif field not in meta.local_fields:
++                hint = f"{field_name!r} field is not a local field."
++            else:
++                seen_columns[field.column].append(field_name)
++
++            if hint:
++                errors.append(
++                    checks.Error(
++                        f"{field_name!r} cannot be included in the composite primary "
++                        "key.",
++                        hint=hint,
++                        obj=cls,
++                        id="models.E042",
++                    )
++                )
++
++        for column, field_names in seen_columns.items():
++            if len(field_names) > 1:
++                field_name, *rest = field_names
++                duplicates = ", ".join(repr(field) for field in rest)
++                errors.append(
++                    checks.Error(
++                        f"{duplicates} cannot be included in the composite primary "
++                        "key.",
++                        hint=f"{duplicates} and {field_name!r} are the same fields.",
++                        obj=cls,
++                        id="models.E042",
++                    )
++                )
++
++        return errors
++
+     @classmethod
+     def _check_db_table_comment(cls, databases):
+         if not cls._meta.db_table_comment:

@@ -1,0 +1,12 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index f311e0b7459f..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -210,7 +214,6 @@ def is_self_referential(f):
+             "app_label": model._meta.app_label,
+             "db_table": model._meta.db_table,
+             "unique_together": unique_together,
+-            "index_together": index_together,  # RemovedInDjango51Warning.
+             "indexes": indexes,
+             "constraints": constraints,
+             "apps": apps,

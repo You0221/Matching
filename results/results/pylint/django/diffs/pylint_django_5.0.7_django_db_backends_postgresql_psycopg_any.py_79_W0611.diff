@@ -1,0 +1,23 @@
+diff --git a/django/db/backends/postgresql/psycopg_any.py b/django/db/backends/postgresql/psycopg_any.py
+index 1fe6b15cafc9..700fc6ec8315 100644
+--- a/django/db/backends/postgresql/psycopg_any.py
++++ b/django/db/backends/postgresql/psycopg_any.py
+@@ -75,9 +75,15 @@ def get_adapters_template(use_tz, timezone):
+     from enum import IntEnum
+ 
+     from psycopg2 import errors, extensions, sql  # NOQA
+-    from psycopg2.extras import DateRange, DateTimeRange, DateTimeTZRange, Inet  # NOQA
+-    from psycopg2.extras import Json as Jsonb  # NOQA
+-    from psycopg2.extras import NumericRange, Range  # NOQA
++    from psycopg2.extras import (  # NOQA
++        DateRange,
++        DateTimeRange,
++        DateTimeTZRange,
++        Inet,
++        Json,
++        NumericRange,
++        Range,
++    )
+ 
+     RANGE_TYPES = (DateRange, DateTimeRange, DateTimeTZRange, NumericRange)
+ 

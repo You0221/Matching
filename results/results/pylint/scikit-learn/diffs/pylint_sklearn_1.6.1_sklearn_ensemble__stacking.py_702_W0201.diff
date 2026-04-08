@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index bf5ff39c13165..2894d8f174c13 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -696,7 +686,8 @@ def fit(self, X, y, *, sample_weight=None, **fit_params):
+         self : object
+             Returns a fitted instance of estimator.
+         """
+-        _raise_for_params(fit_params, self, "fit")
++        _raise_for_params(fit_params, self, "fit", allow=["sample_weight"])
++
+         check_classification_targets(y)
+         if type_of_target(y) == "multilabel-indicator":
+             self._label_encoder = [LabelEncoder().fit(yk) for yk in y.T]

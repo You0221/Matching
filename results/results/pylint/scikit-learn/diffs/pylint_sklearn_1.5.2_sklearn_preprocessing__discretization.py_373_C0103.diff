@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index ee8a336a75453..6a6a739c469fa 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -370,7 +369,7 @@ def transform(self, X):
+ 
+         # check input and attribute dtypes
+         dtype = (np.float64, np.float32) if self.dtype is None else self.dtype
+-        Xt = self._validate_data(X, copy=True, dtype=dtype, reset=False)
++        Xt = validate_data(self, X, copy=True, dtype=dtype, reset=False)
+ 
+         bin_edges = self.bin_edges_
+         for jj in range(Xt.shape[1]):

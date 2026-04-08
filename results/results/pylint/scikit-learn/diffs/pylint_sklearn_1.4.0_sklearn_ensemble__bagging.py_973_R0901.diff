@@ -1,0 +1,22 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..7f278cb06f2ba 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -961,16 +1067,8 @@ def decision_function(self, X):
+ 
+         return decisions
+ 
+-    def _more_tags(self):
+-        if self.estimator is None:
+-            estimator = DecisionTreeClassifier()
+-        else:
+-            estimator = self.estimator
+-
+-        return {"allow_nan": _safe_tags(estimator, "allow_nan")}
+-
+ 
+-class BaggingRegressor(_RoutingNotSupportedMixin, RegressorMixin, BaseBagging):
++class BaggingRegressor(RegressorMixin, BaseBagging):
+     """A Bagging regressor.
+ 
+     A Bagging regressor is an ensemble meta-estimator that fits base

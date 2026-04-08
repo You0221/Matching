@@ -1,0 +1,20 @@
+diff --git a/lib/ansible/cli/scripts/ansible_connection_cli_stub.py b/lib/ansible/cli/scripts/ansible_connection_cli_stub.py
+old mode 100755
+new mode 100644
+index 9455b9851a97a2..701dcdaa198295
+--- a/lib/ansible/cli/scripts/ansible_connection_cli_stub.py
++++ b/lib/ansible/cli/scripts/ansible_connection_cli_stub.py
+@@ -40,13 +38,6 @@ def read_stream(byte_stream):
+     if len(data) < size:
+         raise Exception("EOF found before data was complete")
+ 
+-    data_hash = to_text(byte_stream.readline().strip())
+-    if data_hash != hashlib.sha1(data).hexdigest():
+-        raise Exception("Read {0} bytes, but data did not match checksum".format(size))
+-
+-    # restore escaped loose \r characters
+-    data = data.replace(br'\r', b'\r')
+-
+     return data
+ 
+ 

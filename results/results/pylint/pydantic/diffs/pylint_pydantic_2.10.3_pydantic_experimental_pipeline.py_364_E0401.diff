@@ -1,0 +1,13 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index 29da979e8ab..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -361,8 +361,6 @@ def __supports_type__(self, _: _OutT) -> bool:
+ def _check_func(
+     func: Callable[[Any], bool], predicate_err: str | Callable[[], str], s: cs.CoreSchema | None
+ ) -> cs.CoreSchema:
+-    from pydantic_core import core_schema as cs
+-
+     def handler(v: Any) -> Any:
+         if func(v):
+             return v

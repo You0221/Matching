@@ -1,0 +1,11 @@
+diff --git a/django/core/cache/backends/filebased.py b/django/core/cache/backends/filebased.py
+index 29d49c0ede9f..cbf47e4e1687 100644
+--- a/django/core/cache/backends/filebased.py
++++ b/django/core/cache/backends/filebased.py
+@@ -166,5 +166,5 @@ def _list_cache_files(self):
+         """
+         return [
+             os.path.join(self._dir, fname)
+-            for fname in glob.glob1(self._dir, "*%s" % self.cache_suffix)
++            for fname in glob.glob(f"*{self.cache_suffix}", root_dir=self._dir)
+         ]

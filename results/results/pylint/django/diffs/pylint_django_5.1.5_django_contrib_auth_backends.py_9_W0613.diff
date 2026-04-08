@@ -1,0 +1,50 @@
+diff --git a/django/contrib/auth/backends.py b/django/contrib/auth/backends.py
+index dd3c2e527b97..83525306655b 100644
+--- a/django/contrib/auth/backends.py
++++ b/django/contrib/auth/backends.py
+@@ -9,24 +11,45 @@ class BaseBackend:
+     def authenticate(self, request, **kwargs):
+         return None
+ 
++    async def aauthenticate(self, request, **kwargs):
++        return await sync_to_async(self.authenticate)(request, **kwargs)
++
+     def get_user(self, user_id):
+         return None
+ 
++    async def aget_user(self, user_id):
++        return await sync_to_async(self.get_user)(user_id)
++
+     def get_user_permissions(self, user_obj, obj=None):
+         return set()
+ 
++    async def aget_user_permissions(self, user_obj, obj=None):
++        return await sync_to_async(self.get_user_permissions)(user_obj, obj)
++
+     def get_group_permissions(self, user_obj, obj=None):
+         return set()
+ 
++    async def aget_group_permissions(self, user_obj, obj=None):
++        return await sync_to_async(self.get_group_permissions)(user_obj, obj)
++
+     def get_all_permissions(self, user_obj, obj=None):
+         return {
+             *self.get_user_permissions(user_obj, obj=obj),
+             *self.get_group_permissions(user_obj, obj=obj),
+         }
+ 
++    async def aget_all_permissions(self, user_obj, obj=None):
++        return {
++            *await self.aget_user_permissions(user_obj, obj=obj),
++            *await self.aget_group_permissions(user_obj, obj=obj),
++        }
++
+     def has_perm(self, user_obj, perm, obj=None):
+         return perm in self.get_all_permissions(user_obj, obj=obj)
+ 
++    async def ahas_perm(self, user_obj, perm, obj=None):
++        return perm in await self.aget_all_permissions(user_obj, obj)
++
+ 
+ class ModelBackend(BaseBackend):
+     """

@@ -1,0 +1,47 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -550,6 +557,9 @@ def get_aggregation(self, using, aggregate_exprs):
+                         if annotation.get_group_by_cols():
+                             annotation_mask.add(annotation_alias)
+                     inner_query.set_annotation_mask(annotation_mask)
++                    # Annotations that possibly return multiple rows cannot
++                    # be masked as they might have an incidence on the query.
++                    annotation_mask |= set_returning_annotations
+ 
+             # Add aggregates to the outer AggregateQuery. This requires making
+             # sure all columns referenced by the aggregates are selected in the
+@@ -565,8 +575,7 @@ def get_aggregation(self, using, aggregate_exprs):
+                         col_alias = f"__col{index}"
+                         col_ref = Ref(col_alias, col)
+                         col_refs[col] = col_ref
+-                        inner_query.annotations[col_alias] = col
+-                        inner_query.append_annotation_mask([col_alias])
++                        inner_query.add_annotation(col, col_alias)
+                     replacements[col] = col_ref
+                 outer_query.annotations[alias] = aggregate.replace_expressions(
+                     replacements
+@@ -585,6 +594,7 @@ def get_aggregation(self, using, aggregate_exprs):
+         else:
+             outer_query = self
+             self.select = ()
++            self.selected = None
+             self.default_cols = False
+             self.extra = {}
+             if self.annotations:
+@@ -617,8 +627,12 @@ def get_aggregation(self, using, aggregate_exprs):
+         if result is None:
+             result = empty_set_result
+         else:
+-            converters = compiler.get_converters(outer_query.annotation_select.values())
+-            result = next(compiler.apply_converters((result,), converters))
++            cols = outer_query.annotation_select.values()
++            converters = compiler.get_converters(cols)
++            rows = compiler.apply_converters((result,), converters)
++            if compiler.has_composite_fields(cols):
++                rows = compiler.composite_fields_to_tuples(rows, cols)
++            result = next(rows)
+ 
+         return dict(zip(outer_query.annotation_select, result))
+ 

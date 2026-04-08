@@ -1,0 +1,32 @@
+diff --git a/django/contrib/auth/forms.py b/django/contrib/auth/forms.py
+index ab46caa12ecd..cd028870270a 100644
+--- a/django/contrib/auth/forms.py
++++ b/django/contrib/auth/forms.py
+@@ -393,7 +430,12 @@ def send_mail(
+             html_email = loader.render_to_string(html_email_template_name, context)
+             email_message.attach_alternative(html_email, "text/html")
+ 
+-        email_message.send()
++        try:
++            email_message.send()
++        except Exception:
++            logger.exception(
++                "Failed to send password reset email to %s", context["user"].pk
++            )
+ 
+     def get_users(self, email):
+         """Given an email, return matching user(s) who should receive a reset.
+@@ -442,11 +484,12 @@ def save(
+         email_field_name = UserModel.get_email_field_name()
+         for user in self.get_users(email):
+             user_email = getattr(user, email_field_name)
++            user_pk_bytes = force_bytes(UserModel._meta.pk.value_to_string(user))
+             context = {
+                 "email": user_email,
+                 "domain": domain,
+                 "site_name": site_name,
+-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
++                "uid": urlsafe_base64_encode(user_pk_bytes),
+                 "user": user,
+                 "token": token_generator.make_token(user),
+                 "protocol": "https" if use_https else "http",

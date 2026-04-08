@@ -1,0 +1,20 @@
+diff --git a/django/core/management/commands/compilemessages.py b/django/core/management/commands/compilemessages.py
+index eddf31b794dd..0aaff5822af6 100644
+--- a/django/core/management/commands/compilemessages.py
++++ b/django/core/management/commands/compilemessages.py
+@@ -16,12 +17,10 @@ def has_bom(fn):
+     )
+ 
+ 
+-def is_writable(path):
+-    # Known side effect: updating file access/modified time to current time if
+-    # it is writable.
++def is_dir_writable(path):
+     try:
+-        with open(path, "a"):
+-            os.utime(path, None)
++        with tempfile.NamedTemporaryFile(dir=path):
++            pass
+     except OSError:
+         return False
+     return True

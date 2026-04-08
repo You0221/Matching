@@ -1,0 +1,17 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 9d05e152ad1..b5c4fd6060b 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2934,10 +2992,8 @@ class Discriminator:
+     Consider this example, which is much more performant with the use of `Discriminator` and thus a `TaggedUnion`
+     than it would be as a normal `Union`.
+ 
+-    ```py
+-    from typing import Any, Union
+-
+-    from typing_extensions import Annotated, Literal
++    ```python
++    from typing import Annotated, Any, Literal, Union
+ 
+     from pydantic import BaseModel, Discriminator, Tag
+ 

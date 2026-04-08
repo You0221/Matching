@@ -1,0 +1,13 @@
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 0f7d2cbf14..21a79ba460 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -212,7 +213,7 @@ class App(Scaffold):
+     #:
+     #: This attribute can also be configured from the config with the
+     #: :data:`SECRET_KEY` configuration key. Defaults to ``None``.
+-    secret_key = ConfigAttribute("SECRET_KEY")
++    secret_key = ConfigAttribute[t.Union[str, bytes, None]]("SECRET_KEY")
+ 
+     #: A :class:`~datetime.timedelta` which is used to set the expiration
+     #: date of a permanent session.  The default is 31 days which makes a

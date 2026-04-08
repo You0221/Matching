@@ -1,0 +1,78 @@
+diff --git a/lib/ansible/plugins/loader.py b/lib/ansible/plugins/loader.py
+index 77ee7d63fbf4f3..b1f380558ebdc5 100644
+--- a/lib/ansible/plugins/loader.py
++++ b/lib/ansible/plugins/loader.py
+@@ -135,29 +135,44 @@ def __init__(self, path, internal):
+ 
+ 
+ class PluginLoadContext(object):
+-    def __init__(self):
+-        self.original_name = None
+-        self.redirect_list = []
+-        self.error_list = []
+-        self.import_error_list = []
+-        self.load_attempts = []
+-        self.pending_redirect = None
+-        self.exit_reason = None
+-        self.plugin_resolved_path = None
+-        self.plugin_resolved_name = None
+-        self.plugin_resolved_collection = None  # empty string for resolved plugins from user-supplied paths
+-        self.deprecated = False
+-        self.removal_date = None
+-        self.removal_version = None
+-        self.deprecation_warnings = []
+-        self.resolved = False
+-        self._resolved_fqcn = None
+-        self.action_plugin = None
++    def __init__(self, plugin_type: str, legacy_package_name: str) -> None:
++        self.original_name: str | None = None
++        self.redirect_list: list[str] = []
++        self.raw_error_list: list[Exception] = []
++        """All exception instances encountered during the plugin load."""
++        self.error_list: list[str] = []
++        """Stringified exceptions, excluding import errors."""
++        self.import_error_list: list[Exception] = []
++        """All ImportError exception instances encountered during the plugin load."""
++        self.load_attempts: list[str] = []
++        self.pending_redirect: str | None = None
++        self.exit_reason: str | None = None
++        self.plugin_resolved_path: str | None = None
++        self.plugin_resolved_name: str | None = None
++        """For collection plugins, the resolved Python module FQ __name__; for non-collections, the short name."""
++        self.plugin_resolved_collection: str | None = None  # empty string for resolved plugins from user-supplied paths
++        """For collection plugins, the resolved collection {ns}.{col}; empty string for non-collection plugins."""
++        self.deprecated: bool = False
++        self.removal_date: str | None = None
++        self.removal_version: str | None = None
++        self.deprecation_warnings: list[str] = []
++        self.resolved: bool = False
++        self._resolved_fqcn: str | None = None
++        self.action_plugin: str | None = None
++        self._plugin_type: str = plugin_type
++        """The type of the plugin."""
++        self._legacy_package_name = legacy_package_name
++        """The legacy sys.modules package name from the plugin loader instance; stored to prevent potentially incorrect manual computation."""
++        self._python_module_name: str | None = None
++        """
++        The fully qualified Python module name for the plugin (accessible via `sys.modules`).
++        For non-collection non-core plugins, this may include a non-existent synthetic package element with a hash of the file path to avoid collisions.
++        """
+ 
+     @property
+-    def resolved_fqcn(self):
++    def resolved_fqcn(self) -> str | None:
+         if not self.resolved:
+-            return
++            return None
+ 
+         if not self._resolved_fqcn:
+             final_plugin = self.redirect_list[-1]
+@@ -169,7 +184,7 @@ def resolved_fqcn(self):
+ 
+         return self._resolved_fqcn
+ 
+-    def record_deprecation(self, name, deprecation, collection_name):
++    def record_deprecation(self, name: str, deprecation: dict[str, t.Any] | None, collection_name: str) -> t.Self:
+         if not deprecation:
+             return self
+ 

@@ -1,0 +1,37 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1846,21 +1896,27 @@ def execute_sql(self, returning_fields=None):
+                     )
+                 ]
+                 cols = [field.get_col(opts.db_table) for field in self.returning_fields]
+-            else:
+-                cols = [opts.pk.get_col(opts.db_table)]
++            elif returning_fields and isinstance(
++                returning_field := returning_fields[0], AutoField
++            ):
++                cols = [returning_field.get_col(opts.db_table)]
+                 rows = [
+                     (
+                         self.connection.ops.last_insert_id(
+                             cursor,
+                             opts.db_table,
+-                            opts.pk.column,
++                            returning_field.column,
+                         ),
+                     )
+                 ]
++            else:
++                # Backend doesn't support returning fields and no auto-field
++                # that can be retrieved from `last_insert_id` was specified.
++                return []
+         converters = self.get_converters(cols)
+         if converters:
+-            rows = list(self.apply_converters(rows, converters))
+-        return rows
++            rows = self.apply_converters(rows, converters)
++        return list(rows)
+ 
+ 
+ class SQLDeleteCompiler(SQLCompiler):

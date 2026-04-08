@@ -1,0 +1,89 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 4b3d8eff730..03cb511eb30 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -535,37 +605,54 @@ def model_rebuild(
+         """
+         if not force and cls.__pydantic_complete__:
+             return None
++
++        for attr in ('__pydantic_core_schema__', '__pydantic_validator__', '__pydantic_serializer__'):
++            if attr in cls.__dict__:
++                # Deleting the validator/serializer is necessary as otherwise they can get reused in
++                # pydantic-core. Same applies for the core schema that can be reused in schema generation.
++                delattr(cls, attr)
++
++        cls.__pydantic_complete__ = False
++
++        if _types_namespace is not None:
++            rebuild_ns = _types_namespace
++        elif _parent_namespace_depth > 0:
++            rebuild_ns = _typing_extra.parent_frame_namespace(parent_depth=_parent_namespace_depth, force=True) or {}
+         else:
+-            if '__pydantic_core_schema__' in cls.__dict__:
+-                delattr(cls, '__pydantic_core_schema__')  # delete cached value to ensure full rebuild happens
+-            if _types_namespace is not None:
+-                types_namespace: dict[str, Any] | None = _types_namespace.copy()
+-            else:
+-                if _parent_namespace_depth > 0:
+-                    frame_parent_ns = (
+-                        _typing_extra.parent_frame_namespace(parent_depth=_parent_namespace_depth, force=True) or {}
+-                    )
+-                    cls_parent_ns = (
+-                        _model_construction.unpack_lenient_weakvaluedict(cls.__pydantic_parent_namespace__) or {}
+-                    )
+-                    types_namespace = {**cls_parent_ns, **frame_parent_ns}
+-                    cls.__pydantic_parent_namespace__ = _model_construction.build_lenient_weakvaluedict(types_namespace)
+-                else:
+-                    types_namespace = _model_construction.unpack_lenient_weakvaluedict(
+-                        cls.__pydantic_parent_namespace__
+-                    )
+-
+-                types_namespace = _typing_extra.merge_cls_and_parent_ns(cls, types_namespace)
+-
+-            # manually override defer_build so complete_model_class doesn't skip building the model again
+-            config = {**cls.model_config, 'defer_build': False}
+-            return _model_construction.complete_model_class(
+-                cls,
+-                cls.__name__,
+-                _config.ConfigWrapper(config, check=False),
+-                raise_errors=raise_errors,
+-                types_namespace=types_namespace,
+-            )
++            rebuild_ns = {}
++
++        parent_ns = _model_construction.unpack_lenient_weakvaluedict(cls.__pydantic_parent_namespace__) or {}
++
++        ns_resolver = _namespace_utils.NsResolver(
++            parent_namespace={**rebuild_ns, **parent_ns},
++        )
++
++        if not cls.__pydantic_fields_complete__:
++            typevars_map = _generics.get_model_typevars_map(cls)
++            try:
++                cls.__pydantic_fields__ = _fields.rebuild_model_fields(
++                    cls,
++                    ns_resolver=ns_resolver,
++                    typevars_map=typevars_map,
++                )
++            except NameError as e:
++                exc = PydanticUndefinedAnnotation.from_name_error(e)
++                _mock_val_ser.set_model_mocks(cls, f'`{exc.name}`')
++                if raise_errors:
++                    raise exc from e
++
++            if not raise_errors and not cls.__pydantic_fields_complete__:
++                # No need to continue with schema gen, it is guaranteed to fail
++                return False
++
++            assert cls.__pydantic_fields_complete__
++
++        return _model_construction.complete_model_class(
++            cls,
++            _config.ConfigWrapper(cls.model_config, check=False),
++            raise_errors=raise_errors,
++            ns_resolver=ns_resolver,
++        )
+ 
+     @classmethod
+     def model_validate(

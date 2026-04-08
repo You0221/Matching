@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index eac754f3f88b4..bb71cbe9ed550 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -282,7 +273,7 @@ def fit(self, X, y):
+     def _decision_function(self, X):
+         check_is_fitted(self)
+ 
+-        X = self._validate_data(X, accept_sparse=["csr", "csc", "coo"], reset=False)
++        X = validate_data(self, X, accept_sparse=["csr", "csc", "coo"], reset=False)
+         coef_ = self.coef_
+         if coef_.ndim == 1:
+             return X @ coef_ + self.intercept_

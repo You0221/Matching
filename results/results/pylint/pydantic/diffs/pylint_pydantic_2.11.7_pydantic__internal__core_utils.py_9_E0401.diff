@@ -1,0 +1,17 @@
+diff --git a/pydantic/_internal/_core_utils.py b/pydantic/_internal/_core_utils.py
+index cf8cf7c5f07..caa51e8c463 100644
+--- a/pydantic/_internal/_core_utils.py
++++ b/pydantic/_internal/_core_utils.py
+@@ -1,12 +1,10 @@
+ from __future__ import annotations
+ 
+ import inspect
+-import os
+ from collections.abc import Mapping, Sequence
+ from typing import TYPE_CHECKING, Any, Union
+ 
+ from pydantic_core import CoreSchema, core_schema
+-from pydantic_core import validate_core_schema as _validate_core_schema
+ from typing_extensions import TypeGuard, get_args, get_origin
+ from typing_inspection import typing_objects
+ 

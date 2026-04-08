@@ -1,0 +1,20 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index 5b82011f2077..302a4f6473e0 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -186,8 +316,13 @@ def fetch(resources=None, languages=None):
+                     % {"lang": lang, "name": name}
+                 )
+                 continue
+-            run(["msgcat", "--no-location", "-o", po_path, po_path])
+-            msgfmt = run(["msgfmt", "-c", "-o", "%s.mo" % po_path[:-3], po_path])
++            run(
++                ["msgcat", "--no-location", "-o", po_path, po_path], verbosity=verbosity
++            )
++            msgfmt = run(
++                ["msgfmt", "-c", "-o", "%s.mo" % po_path[:-3], po_path],
++                verbosity=verbosity,
++            )
+             if msgfmt.returncode != 0:
+                 errors.append((name, lang))
+     if errors:

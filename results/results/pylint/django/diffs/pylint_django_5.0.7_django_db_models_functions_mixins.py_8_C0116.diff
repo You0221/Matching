@@ -1,0 +1,19 @@
+diff --git a/django/db/models/functions/mixins.py b/django/db/models/functions/mixins.py
+index caf20e131d87..0f6f0a2aa8f5 100644
+--- a/django/db/models/functions/mixins.py
++++ b/django/db/models/functions/mixins.py
+@@ -14,9 +14,11 @@ def as_postgresql(self, compiler, connection, **extra_context):
+         clone = self.copy()
+         clone.set_source_expressions(
+             [
+-                Cast(expression, output_field)
+-                if isinstance(expression.output_field, FloatField)
+-                else expression
++                (
++                    Cast(expression, output_field)
++                    if isinstance(expression.output_field, FloatField)
++                    else expression
++                )
+                 for expression in self.get_source_expressions()
+             ]
+         )

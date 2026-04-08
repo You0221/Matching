@@ -1,0 +1,64 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1263,17 +1221,16 @@ def _common_field_schema(  # C901
+     ) -> _CommonField:
+         # Update FieldInfo annotation if appropriate:
+         FieldInfo = import_cached_field_info()
+-
+-        if has_instance_in_type(field_info.annotation, (ForwardRef, str)):
+-            types_namespace = self._types_namespace
+-            if self._typevars_map:
+-                types_namespace = (types_namespace or {}).copy()
+-                # Ensure that typevars get mapped to their concrete types:
+-                types_namespace.update({k.__name__: v for k, v in self._typevars_map.items()})
+-
+-            evaluated = _typing_extra.eval_type_lenient(field_info.annotation, types_namespace)
+-            if evaluated is not field_info.annotation and not has_instance_in_type(evaluated, PydanticRecursiveRef):
+-                new_field_info = FieldInfo.from_annotation(evaluated)
++        if not field_info.evaluated:
++            # TODO Can we use field_info.apply_typevars_map here?
++            try:
++                evaluated_type = _typing_extra.eval_type(field_info.annotation, *self._types_namespace)
++            except NameError as e:
++                raise PydanticUndefinedAnnotation.from_name_error(e) from e
++            evaluated_type = replace_types(evaluated_type, self._typevars_map)
++            field_info.evaluated = True
++            if not has_instance_in_type(evaluated_type, PydanticRecursiveRef):
++                new_field_info = FieldInfo.from_annotation(evaluated_type)
+                 field_info.annotation = new_field_info.annotation
+ 
+                 # Handle any field info attributes that may have been obtained from now-resolved annotations
+@@ -1334,18 +1291,10 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+         )
+         self._apply_field_title_generator_to_field_info(self._config_wrapper, field_info, name)
+ 
+-        json_schema_updates = {
+-            'title': field_info.title,
+-            'description': field_info.description,
+-            'deprecated': bool(field_info.deprecated) or field_info.deprecated == '' or None,
+-            'examples': to_jsonable_python(field_info.examples),
+-        }
+-        json_schema_updates = {k: v for k, v in json_schema_updates.items() if v is not None}
+-
+-        json_schema_extra = field_info.json_schema_extra
+-
+-        metadata = build_metadata_dict(
+-            js_annotation_functions=[get_json_schema_update_func(json_schema_updates, json_schema_extra)]
++        pydantic_js_updates, pydantic_js_extra = _extract_json_schema_info_from_field_info(field_info)
++        core_metadata: dict[str, Any] = {}
++        update_core_metadata(
++            core_metadata, pydantic_js_updates=pydantic_js_updates, pydantic_js_extra=pydantic_js_extra
+         )
+ 
+         alias_generator = self._config_wrapper.alias_generator
+@@ -1363,7 +1312,7 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+             validation_alias=validation_alias,
+             serialization_alias=field_info.serialization_alias,
+             frozen=field_info.frozen,
+-            metadata=metadata,
++            metadata=core_metadata,
+         )
+ 
+     def _union_schema(self, union_type: Any) -> core_schema.CoreSchema:

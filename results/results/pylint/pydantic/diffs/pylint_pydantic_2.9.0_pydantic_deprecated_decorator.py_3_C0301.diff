@@ -1,0 +1,13 @@
+diff --git a/pydantic/deprecated/decorator.py b/pydantic/deprecated/decorator.py
+index 0c0ea7445c6..e73ad209ae8 100644
+--- a/pydantic/deprecated/decorator.py
++++ b/pydantic/deprecated/decorator.py
+@@ -1,6 +1,7 @@
+ import warnings
++from collections.abc import Mapping
+ from functools import wraps
+-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Mapping, Optional, Tuple, Type, TypeVar, Union, overload
++from typing import TYPE_CHECKING, Any, Callable, Optional, TypeVar, Union, overload
+ 
+ from typing_extensions import deprecated
+ 

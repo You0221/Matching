@@ -1,0 +1,45 @@
+diff --git a/pandas/core/arrays/period.py b/pandas/core/arrays/period.py
+index 024cd6d4aad14..28f25d38b2363 100644
+--- a/pandas/core/arrays/period.py
++++ b/pandas/core/arrays/period.py
+@@ -319,31 +323,32 @@ def _from_datetime64(cls, data, freq, tz=None) -> Self:
+         -------
+         PeriodArray[freq]
+         """
++        if isinstance(freq, BaseOffset):
++            freq = freq_to_period_freqstr(freq.n, freq.name)
+         data, freq = dt64arr_to_periodarr(data, freq, tz)
+         dtype = PeriodDtype(freq)
+         return cls(data, dtype=dtype)
+ 
+     @classmethod
+-    def _generate_range(cls, start, end, periods, freq, fields):
++    def _generate_range(cls, start, end, periods, freq):
+         periods = dtl.validate_periods(periods)
+ 
+         if freq is not None:
+             freq = Period._maybe_convert_freq(freq)
+ 
+-        field_count = len(fields)
+         if start is not None or end is not None:
+-            if field_count > 0:
+-                raise ValueError(
+-                    "Can either instantiate from fields or endpoints, but not both"
+-                )
+             subarr, freq = _get_ordinal_range(start, end, periods, freq)
+-        elif field_count > 0:
+-            subarr, freq = _range_from_fields(freq=freq, **fields)
+         else:
+             raise ValueError("Not enough parameters to construct Period range")
+ 
+         return subarr, freq
+ 
++    @classmethod
++    def _from_fields(cls, *, fields: dict, freq) -> Self:
++        subarr, freq = _range_from_fields(freq=freq, **fields)
++        dtype = PeriodDtype(freq)
++        return cls._simple_new(subarr, dtype=dtype)
++
+     # -----------------------------------------------------------------
+     # DatetimeLike Interface
+ 

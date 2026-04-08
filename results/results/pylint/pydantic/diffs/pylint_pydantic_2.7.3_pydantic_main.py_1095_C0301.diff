@@ -1,0 +1,29 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1081,18 +1182,20 @@ def dict(  # noqa: D102
+     def json(  # noqa: D102
+         self,
+         *,
+-        include: IncEx = None,
+-        exclude: IncEx = None,
++        include: IncEx | None = None,
++        exclude: IncEx | None = None,
+         by_alias: bool = False,
+         exclude_unset: bool = False,
+         exclude_defaults: bool = False,
+         exclude_none: bool = False,
+-        encoder: typing.Callable[[Any], Any] | None = PydanticUndefined,  # type: ignore[assignment]
++        encoder: Callable[[Any], Any] | None = PydanticUndefined,  # type: ignore[assignment]
+         models_as_dict: bool = PydanticUndefined,  # type: ignore[assignment]
+         **dumps_kwargs: Any,
+     ) -> str:
+         warnings.warn(
+-            'The `json` method is deprecated; use `model_dump_json` instead.', category=PydanticDeprecatedSince20
++            'The `json` method is deprecated; use `model_dump_json` instead.',
++            category=PydanticDeprecatedSince20,
++            stacklevel=2,
+         )
+         if encoder is not PydanticUndefined:
+             raise TypeError('The `encoder` argument is no longer supported; use field serializers instead.')

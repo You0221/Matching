@@ -1,0 +1,41 @@
+diff --git a/lib/ansible/modules/package_facts.py b/lib/ansible/modules/package_facts.py
+index 11a8f61fdb0bf2..bec6c34260bf2a 100644
+--- a/lib/ansible/modules/package_facts.py
++++ b/lib/ansible/modules/package_facts.py
+@@ -261,34 +284,11 @@ def get_package_details(self, package):
+                     epoch=package[self._lib.RPMTAG_EPOCH],
+                     arch=package[self._lib.RPMTAG_ARCH],)
+ 
+-    def is_available(self):
+-        ''' we expect the python bindings installed, but this gives warning if they are missing and we have rpm cli'''
+-        we_have_lib = super(RPM, self).is_available()
+-
+-        try:
+-            get_bin_path('rpm')
+-
+-            if not we_have_lib and not has_respawned():
+-                # try to locate an interpreter with the necessary lib
+-                interpreters = ['/usr/libexec/platform-python',
+-                                '/usr/bin/python3',
+-                                '/usr/bin/python2']
+-                interpreter_path = probe_interpreters_for_module(interpreters, self.LIB)
+-                if interpreter_path:
+-                    respawn_module(interpreter_path)
+-                    # end of the line for this process; this module will exit when the respawned copy completes
+ 
+-            if not we_have_lib:
+-                module.warn('Found "rpm" but %s' % (missing_required_lib(self.LIB)))
+-        except ValueError:
+-            pass
+-
+-        return we_have_lib
+-
+-
+-class APT(LibMgr):
++class APT(RespawningLibMgr):
+ 
+     LIB = 'apt'
++    CLI_BINARIES = ['apt', 'apt-get', 'aptitude']
+ 
+     def __init__(self):
+         self._cache = None

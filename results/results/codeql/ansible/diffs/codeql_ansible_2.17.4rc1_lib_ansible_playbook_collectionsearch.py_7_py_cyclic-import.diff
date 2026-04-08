@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/playbook/collectionsearch.py b/lib/ansible/playbook/collectionsearch.py
+index c6ab50907bfbc1..d5bc9450ef2b62 100644
+--- a/lib/ansible/playbook/collectionsearch.py
++++ b/lib/ansible/playbook/collectionsearch.py
+@@ -6,11 +6,8 @@
+ from ansible.module_utils.six import string_types
+ from ansible.playbook.attribute import FieldAttribute
+ from ansible.utils.collection_loader import AnsibleCollectionConfig
+-from ansible.template import is_template
+ from ansible.utils.display import Display
+ 
+-from jinja2.nativetypes import NativeEnvironment
+-
+ display = Display()
+ 
+ 

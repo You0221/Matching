@@ -1,0 +1,31 @@
+diff --git a/tornado/locks.py b/tornado/locks.py
+index 1bcec1b3af..9ee1f2f0f3 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -155,7 +155,7 @@ def notify_all(self) -> None:
+         self.notify(len(self._waiters))
+ 
+ 
+-class Event(object):
++class Event:
+     """An event blocks coroutines until its internal flag is set to True.
+ 
+     Similar to `threading.Event`.
+@@ -200,7 +200,7 @@ def __init__(self) -> None:
+         self._waiters = set()  # type: Set[Future[None]]
+ 
+     def __repr__(self) -> str:
+-        return "<%s %s>" % (
++        return "<{} {}>".format(
+             self.__class__.__name__,
+             "set" if self.is_set() else "clear",
+         )
+@@ -255,7 +255,7 @@ def wait(
+             return timeout_fut
+ 
+ 
+-class _ReleasingContextManager(object):
++class _ReleasingContextManager:
+     """Releases a Lock or Semaphore at the end of a "with" statement.
+ 
+     with (yield semaphore.acquire()):

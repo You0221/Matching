@@ -1,0 +1,17 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2509,9 +2569,9 @@ def annotation_select(self):
+             return {}
+         elif self.annotation_select_mask is not None:
+             self._annotation_select_cache = {
+-                k: self.annotations[k]
+-                for k in self.annotation_select_mask
+-                if k in self.annotations
++                k: v
++                for k, v in self.annotations.items()
++                if k in self.annotation_select_mask
+             }
+             return self._annotation_select_cache
+         else:

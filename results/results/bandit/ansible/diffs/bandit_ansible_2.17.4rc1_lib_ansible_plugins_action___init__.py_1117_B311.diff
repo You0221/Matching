@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/action/__init__.py b/lib/ansible/plugins/action/__init__.py
+index 7ebfd13e4c7034..27bf6e0b125cf1 100644
+--- a/lib/ansible/plugins/action/__init__.py
++++ b/lib/ansible/plugins/action/__init__.py
+@@ -1114,7 +1114,7 @@ def _execute_module(self, module_name=None, module_args=None, tmp=None, task_var
+             remote_files.append(remote_async_module_path)
+ 
+             async_limit = self._task.async_val
+-            async_jid = f'j{random.randint(0, 999999999999)}'
++            async_jid = f'j{secrets.randbelow(999999999999)}'
+ 
+             # call the interpreter for async_wrapper directly
+             # this permits use of a script for an interpreter on non-Linux platforms

@@ -1,0 +1,26 @@
+diff --git a/tornado/httpclient.py b/tornado/httpclient.py
+index 3011c371b8..3a45ffd041 100644
+--- a/tornado/httpclient.py
++++ b/tornado/httpclient.py
+@@ -333,10 +333,10 @@ def configure(
+ 
+            AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+         """
+-        super(AsyncHTTPClient, cls).configure(impl, **kwargs)
++        super().configure(impl, **kwargs)
+ 
+ 
+-class HTTPRequest(object):
++class HTTPRequest:
+     """HTTP client request object."""
+ 
+     _headers = None  # type: Union[Dict[str, str], httputil.HTTPHeaders]
+@@ -571,7 +571,7 @@ def body(self, value: Union[bytes, str]) -> None:
+         self._body = utf8(value)
+ 
+ 
+-class HTTPResponse(object):
++class HTTPResponse:
+     """HTTP Response object.
+ 
+     Attributes:

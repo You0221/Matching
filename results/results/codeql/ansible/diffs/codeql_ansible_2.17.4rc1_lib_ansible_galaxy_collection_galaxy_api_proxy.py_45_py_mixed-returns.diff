@@ -1,0 +1,41 @@
+diff --git a/lib/ansible/galaxy/collection/galaxy_api_proxy.py b/lib/ansible/galaxy/collection/galaxy_api_proxy.py
+index 0c1b7df0bec3de..046354a395d502 100644
+--- a/lib/ansible/galaxy/collection/galaxy_api_proxy.py
++++ b/lib/ansible/galaxy/collection/galaxy_api_proxy.py
+@@ -38,22 +37,21 @@ def __init__(self, apis, concrete_artifacts_manager, offline=False):
+     def is_offline_mode_requested(self):
+         return self._offline
+ 
+-    def _assert_that_offline_mode_is_not_requested(self):  # type: () -> None
++    def _assert_that_offline_mode_is_not_requested(self) -> None:
+         if self.is_offline_mode_requested:
+             raise NotImplementedError("The calling code is not supposed to be invoked in 'offline' mode.")
+ 
+-    def _get_collection_versions(self, requirement):
+-        # type: (Requirement) -> t.Iterator[tuple[GalaxyAPI, str]]
++    def _get_collection_versions(self, requirement: Requirement) -> t.Iterator[tuple[GalaxyAPI, str]]:
+         """Helper for get_collection_versions.
+ 
+         Yield api, version pairs for all APIs,
+         and reraise the last error if no valid API was found.
+         """
+         if self._offline:
+-            return []
++            return
+ 
+         found_api = False
+-        last_error = None  # type: Exception | None
++        last_error: Exception | None = None
+ 
+         api_lookup_order = (
+             (requirement.src, )
+@@ -86,8 +84,7 @@ def _get_collection_versions(self, requirement):
+         if not found_api and last_error is not None:
+             raise last_error
+ 
+-    def get_collection_versions(self, requirement):
+-        # type: (Requirement) -> t.Iterable[tuple[str, GalaxyAPI]]
++    def get_collection_versions(self, requirement: Requirement) -> t.Iterable[tuple[str, GalaxyAPI]]:
+         """Get a set of unique versions for FQCN on Galaxy servers."""
+         if requirement.is_concrete_artifact:
+             return {

@@ -1,0 +1,121 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2447,31 +2558,103 @@ def get_schema_or_ref(self, tp: Any) -> Iterator[tuple[str, None] | tuple[str, C
+ 
+         At present the following types can be named/recursive:
+ 
+-        - BaseModel
+-        - Dataclasses
+-        - TypedDict
+-        - TypeAliasType
++        - Pydantic model
++        - Pydantic and stdlib dataclasses
++        - Typed dictionaries
++        - Named tuples
++        - `TypeAliasType` instances
++        - Enums
+         """
+         ref = get_type_ref(tp)
+-        # return the reference if we're either (1) in a cycle or (2) it was already defined
+-        if ref in self.seen or ref in self.definitions:
++        # return the reference if we're either (1) in a cycle or (2) it the reference was already encountered:
++        if ref in self._recursively_seen or ref in self._definitions:
+             yield (ref, core_schema.definition_reference_schema(ref))
+         else:
+-            self.seen.add(ref)
++            self._recursively_seen.add(ref)
+             try:
+                 yield (ref, None)
+             finally:
+-                self.seen.discard(ref)
++                self._recursively_seen.discard(ref)
+ 
++    def get_schema_from_ref(self, ref: str) -> CoreSchema | None:
++        """Resolve the schema from the given reference."""
++        return self._definitions.get(ref)
+ 
+-def resolve_original_schema(schema: CoreSchema, definitions: dict[str, CoreSchema]) -> CoreSchema | None:
+-    if schema['type'] == 'definition-ref':
+-        return definitions.get(schema['schema_ref'], None)
+-    elif schema['type'] == 'definitions':
++    def create_definition_reference_schema(self, schema: CoreSchema) -> core_schema.DefinitionReferenceSchema:
++        """Store the schema as a definition and return a `'definition-reference'` schema pointing to it.
++
++        The schema must have a reference attached to it.
++        """
++        ref = schema['ref']  # pyright: ignore
++        self._definitions[ref] = schema
++        return core_schema.definition_reference_schema(ref)
++
++    def unpack_definitions(self, schema: core_schema.DefinitionsSchema) -> CoreSchema:
++        """Store the definitions of the `'definitions'` core schema and return the inner core schema."""
++        for def_schema in schema['definitions']:
++            self._definitions[def_schema['ref']] = def_schema  # pyright: ignore
+         return schema['schema']
+-    else:
++
++    def finalize_schema(self, schema: CoreSchema) -> CoreSchema:
++        """Finalize the core schema.
++
++        This traverses the core schema and referenced definitions, replaces `'definition-ref'` schemas
++        by the referenced definition if possible, and applies deferred discriminators.
++        """
++        definitions = self._definitions
++        try:
++            gather_result = gather_schemas_for_cleaning(
++                schema,
++                definitions=definitions,
++            )
++        except MissingDefinitionError as e:
++            raise InvalidSchemaError from e
++
++        remaining_defs: dict[str, CoreSchema] = {}
++
++        for ref, inlinable_def_ref in gather_result['collected_references'].items():
++            if inlinable_def_ref is not None and _can_be_inlined(inlinable_def_ref):
++                # `ref` was encountered, and only once:
++                #  - `inlinable_def_ref` is a `'definition-ref'` schema and is guaranteed to be
++                #    the only one. Transform it into the definition it points to.
++                #  - Do not store the definition in the `remaining_defs`.
++                inlinable_def_ref.clear()  # pyright: ignore[reportAttributeAccessIssue]
++                inlinable_def_ref.update(self._resolve_definition(ref, definitions))  # pyright: ignore
++            else:
++                # `ref` was encountered, at least two times:
++                # - Do not inline the `'definition-ref'` schemas (they are not provided in the gather result anyway).
++                # - Store the the definition in the `remaining_defs`
++                remaining_defs[ref] = self._resolve_definition(ref, definitions)
++
++        for cs in gather_result['deferred_discriminator_schemas']:
++            discriminator = cs['metadata']['pydantic_internal_union_discriminator']  # pyright: ignore[reportTypedDictNotRequiredAccess]
++            applied = _discriminated_union.apply_discriminator(cs.copy(), discriminator, remaining_defs)
++            # Mutate the schema directly to have the discriminator applied
++            cs.clear()  # pyright: ignore[reportAttributeAccessIssue]
++            cs.update(applied)  # pyright: ignore
++
++        if remaining_defs:
++            schema = core_schema.definitions_schema(schema=schema, definitions=[*remaining_defs.values()])
+         return schema
+ 
++    def _resolve_definition(self, ref: str, definitions: dict[str, CoreSchema]) -> CoreSchema:
++        definition = definitions[ref]
++        if definition['type'] != 'definition-ref':
++            return definition
++
++        # Some `'definition-ref'` schemas might act as "intermediate" references (e.g. when using
++        # a PEP 695 type alias (which is referenceable) that references another PEP 695 type alias):
++        visited: set[str] = set()
++        while definition['type'] == 'definition-ref':
++            schema_ref = definition['schema_ref']
++            if schema_ref in visited:
++                raise PydanticUserError(
++                    f'{ref} contains a circular reference to itself.', code='circular-reference-schema'
++                )
++            visited.add(schema_ref)
++            definition = definitions[schema_ref]
++        return {**definition, 'ref': ref}  # pyright: ignore[reportReturnType]
++
+ 
+ class _FieldNameStack:
+     __slots__ = ('_stack',)

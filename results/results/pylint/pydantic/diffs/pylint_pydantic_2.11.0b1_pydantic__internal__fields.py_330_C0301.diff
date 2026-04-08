@@ -1,0 +1,21 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 4540b8d83f1..658be3baaa5 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -327,11 +331,12 @@ def rebuild_model_fields(
+                 ann = _generics.replace_types(ann, typevars_map)
+ 
+                 if (assign := field_info._original_assignment) is PydanticUndefined:
+-                    rebuilt_fields[f_name] = FieldInfo_.from_annotation(ann, _source=AnnotationSource.CLASS)
++                    new_field = FieldInfo_.from_annotation(ann, _source=AnnotationSource.CLASS)
+                 else:
+-                    rebuilt_fields[f_name] = FieldInfo_.from_annotated_attribute(
+-                        ann, assign, _source=AnnotationSource.CLASS
+-                    )
++                    new_field = FieldInfo_.from_annotated_attribute(ann, assign, _source=AnnotationSource.CLASS)
++                # The description might come from the docstring if `use_attribute_docstrings` was `True`:
++                new_field.description = new_field.description if new_field.description is not None else existing_desc
++                rebuilt_fields[f_name] = new_field
+ 
+     return rebuilt_fields
+ 

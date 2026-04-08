@@ -1,0 +1,20 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -889,13 +930,10 @@ def contribute_to_class(self, cls, name, private_only=False, **kwargs):
+     def contribute_to_related_class(self, cls, related):
+         # Internal FK's - i.e., those with a related name ending with '+' -
+         # and swapped models don't get a related descriptor.
+-        if (
+-            not self.remote_field.is_hidden()
+-            and not related.related_model._meta.swapped
+-        ):
++        if not self.remote_field.hidden and not related.related_model._meta.swapped:
+             setattr(
+                 cls._meta.concrete_model,
+-                related.get_accessor_name(),
++                related.accessor_name,
+                 self.related_accessor_class(related),
+             )
+             # While 'limit_choices_to' might be a callable, simply pass

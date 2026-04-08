@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/mysql/base.py b/django/db/backends/mysql/base.py
+index b8d2d09c9478..eb0e361d8dcb 100644
+--- a/django/db/backends/mysql/base.py
++++ b/django/db/backends/mysql/base.py
+@@ -215,7 +215,7 @@ def get_database_version(self):
+     def get_connection_params(self):
+         kwargs = {
+             "conv": django_conversions,
+-            "charset": "utf8",
++            "charset": "utf8mb4",
+         }
+         settings_dict = self.settings_dict
+         if settings_dict["USER"]:

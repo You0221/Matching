@@ -1,0 +1,35 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -985,20 +1092,24 @@ def _save_table(
+         for a single table.
+         """
+         meta = cls._meta
+-        non_pks = [f for f in meta.local_concrete_fields if not f.primary_key]
++        pk_fields = meta.pk_fields
++        non_pks_non_generated = [
++            f
++            for f in meta.local_concrete_fields
++            if f not in pk_fields and not f.generated
++        ]
+ 
+         if update_fields:
+-            non_pks = [
++            non_pks_non_generated = [
+                 f
+-                for f in non_pks
++                for f in non_pks_non_generated
+                 if f.name in update_fields or f.attname in update_fields
+             ]
+ 
+-        pk_val = self._get_pk_val(meta)
+-        if pk_val is None:
++        if not self._is_pk_set(meta):
+             pk_val = meta.pk.get_pk_value_on_save(self)
+             setattr(self, meta.pk.attname, pk_val)
+-        pk_set = pk_val is not None
++        pk_set = self._is_pk_set(meta)
+         if not pk_set and (force_update or update_fields):
+             raise ValueError("Cannot force an update in save() with no primary key.")
+         updated = False

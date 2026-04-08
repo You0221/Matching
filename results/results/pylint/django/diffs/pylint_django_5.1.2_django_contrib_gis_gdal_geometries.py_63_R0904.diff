@@ -1,0 +1,49 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index 44e1026e3ff8..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -64,6 +64,7 @@ class OGRGeometry(GDALBase):
+     """Encapsulate an OGR geometry."""
+ 
+     destructor = capi.destroy_geom
++    geos_support = True
+ 
+     def __init__(self, geom_input, srs=None):
+         """Initialize Geometry on either WKT or an OGR pointer as input."""
+@@ -304,6 +305,19 @@ def set_measured(self, value):
+                 f"Input to 'set_measured' must be a boolean, got '{value!r}'."
+             )
+ 
++    @property
++    def has_curve(self):
++        """Return True if the geometry is or has curve geometry."""
++        return capi.has_curve_geom(self.ptr, 0)
++
++    def get_linear_geometry(self):
++        """Return a linear version of this geometry."""
++        return OGRGeometry(capi.get_linear_geom(self.ptr, 0, None))
++
++    def get_curve_geometry(self):
++        """Return a curve version of this geometry."""
++        return OGRGeometry(capi.get_curve_geom(self.ptr, None))
++
+     # #### SpatialReference-related Properties ####
+ 
+     # The SRS property
+@@ -360,9 +374,14 @@ def _geos_ptr(self):
+     @property
+     def geos(self):
+         "Return a GEOSGeometry object from this OGRGeometry."
+-        from django.contrib.gis.geos import GEOSGeometry
++        if self.geos_support:
++            from django.contrib.gis.geos import GEOSGeometry
+ 
+-        return GEOSGeometry(self._geos_ptr(), self.srid)
++            return GEOSGeometry(self._geos_ptr(), self.srid)
++        else:
++            from django.contrib.gis.geos import GEOSException
++
++            raise GEOSException(f"GEOS does not support {self.__class__.__qualname__}.")
+ 
+     @property
+     def gml(self):

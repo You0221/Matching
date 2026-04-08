@@ -1,0 +1,32 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1467,11 +1684,11 @@ def _iterable_schema(self, type_: Any) -> core_schema.GeneratorSchema:
+     def _pattern_schema(self, pattern_type: Any) -> core_schema.CoreSchema:
+         from . import _validators
+ 
+-        metadata = build_metadata_dict(js_functions=[lambda _1, _2: {'type': 'string', 'format': 'regex'}])
++        metadata = {'pydantic_js_functions': [lambda _1, _2: {'type': 'string', 'format': 'regex'}]}
+         ser = core_schema.plain_serializer_function_ser_schema(
+             attrgetter('pattern'), when_used='json', return_schema=core_schema.str_schema()
+         )
+-        if pattern_type == typing.Pattern or pattern_type == re.Pattern:
++        if pattern_type is typing.Pattern or pattern_type is re.Pattern:
+             # bare type
+             return core_schema.no_info_plain_validator_function(
+                 _validators.pattern_either_validator, serialization=ser, metadata=metadata
+@@ -1481,11 +1698,11 @@ def _pattern_schema(self, pattern_type: Any) -> core_schema.CoreSchema:
+             pattern_type,
+             required=True,
+         )[0]
+-        if param == str:
++        if param is str:
+             return core_schema.no_info_plain_validator_function(
+                 _validators.pattern_str_validator, serialization=ser, metadata=metadata
+             )
+-        elif param == bytes:
++        elif param is bytes:
+             return core_schema.no_info_plain_validator_function(
+                 _validators.pattern_bytes_validator, serialization=ser, metadata=metadata
+             )

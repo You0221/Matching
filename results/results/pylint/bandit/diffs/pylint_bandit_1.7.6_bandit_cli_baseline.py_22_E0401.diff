@@ -1,0 +1,21 @@
+diff --git a/bandit/cli/baseline.py b/bandit/cli/baseline.py
+index b9bce8916..252ceb105 100644
+--- a/bandit/cli/baseline.py
++++ b/bandit/cli/baseline.py
+@@ -15,11 +15,14 @@
+ import logging
+ import os
+ import shutil
+-import subprocess
++import subprocess  # nosec: B404
+ import sys
+ import tempfile
+ 
+-import git
++try:
++    import git
++except ImportError:
++    git = None
+ 
+ bandit_args = sys.argv[1:]
+ baseline_tmp_file = "_bandit_baseline_run.json_"

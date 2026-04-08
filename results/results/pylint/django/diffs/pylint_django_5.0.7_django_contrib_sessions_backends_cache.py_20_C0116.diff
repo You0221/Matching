@@ -1,0 +1,14 @@
+diff --git a/django/contrib/sessions/backends/cache.py b/django/contrib/sessions/backends/cache.py
+index 0c9d244f5618..b87afd6f666b 100644
+--- a/django/contrib/sessions/backends/cache.py
++++ b/django/contrib/sessions/backends/cache.py
+@@ -20,6 +20,9 @@ def __init__(self, session_key=None):
+     def cache_key(self):
+         return self.cache_key_prefix + self._get_or_create_session_key()
+ 
++    async def acache_key(self):
++        return self.cache_key_prefix + await self._aget_or_create_session_key()
++
+     def load(self):
+         try:
+             session_data = self._cache.get(self.cache_key)

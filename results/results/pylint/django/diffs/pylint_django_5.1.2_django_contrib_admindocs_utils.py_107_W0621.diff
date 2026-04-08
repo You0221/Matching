@@ -1,0 +1,22 @@
+diff --git a/django/contrib/admindocs/utils.py b/django/contrib/admindocs/utils.py
+index 3708a32813fa..5b28a8d2c667 100644
+--- a/django/contrib/admindocs/utils.py
++++ b/django/contrib/admindocs/utils.py
+@@ -107,14 +122,15 @@ def create_reference_role(rolename, urlbase):
+     def _role(name, rawtext, text, lineno, inliner, options=None, content=None):
+         if options is None:
+             options = {}
++        _, title, target = split_explicit_title(text)
+         node = docutils.nodes.reference(
+             rawtext,
+-            text,
++            title,
+             refuri=(
+                 urlbase
+                 % (
+                     inliner.document.settings.link_base,
+-                    text if is_case_sensitive else text.lower(),
++                    target if is_case_sensitive else target.lower(),
+                 )
+             ),
+             **options,

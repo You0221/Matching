@@ -1,0 +1,19 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index f311e0b7459f..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -180,14 +192,6 @@ def is_self_referential(f):
+             for unique in model._meta.unique_together
+         ]
+ 
+-        # RemovedInDjango51Warning.
+-        # Work out the new value for index_together, taking renames into
+-        # account
+-        index_together = [
+-            [rename_mapping.get(n, n) for n in index]
+-            for index in model._meta.index_together
+-        ]
+-
+         indexes = model._meta.indexes
+         if delete_field:
+             indexes = [

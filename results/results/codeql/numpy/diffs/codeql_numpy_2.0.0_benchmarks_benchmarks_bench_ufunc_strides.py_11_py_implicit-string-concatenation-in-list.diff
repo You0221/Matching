@@ -1,0 +1,13 @@
+diff --git a/benchmarks/benchmarks/bench_ufunc_strides.py b/benchmarks/benchmarks/bench_ufunc_strides.py
+index 183c7c4fb75e..1c7eb0a68e2c 100644
+--- a/benchmarks/benchmarks/bench_ufunc_strides.py
++++ b/benchmarks/benchmarks/bench_ufunc_strides.py
+@@ -8,7 +8,7 @@
+ 
+ class _AbstractBinary(Benchmark):
+     params = []
+-    param_names = ['ufunc', 'stride_in0', 'stride_in1' 'stride_out', 'dtype']
++    param_names = ['ufunc', 'stride_in0', 'stride_in1', 'stride_out', 'dtype']
+     timeout = 10
+     arrlen = 10000
+     data_finite = True

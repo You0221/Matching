@@ -1,0 +1,21 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index aeec7b5588add..e0fad5d8be8b8 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -1542,6 +1573,16 @@ def _fit(
+         intercept_init=None,
+         sample_weight=None,
+     ):
++        # TODO(1.7) remove 0 from average parameter constraint
++        if not isinstance(self.average, (bool, np.bool_)) and self.average == 0:
++            warnings.warn(
++                (
++                    "Passing average=0 to disable averaging is deprecated and will be "
++                    "removed in 1.7. Please use average=False instead."
++                ),
++                FutureWarning,
++            )
++
+         if self.warm_start and getattr(self, "coef_", None) is not None:
+             if coef_init is None:
+                 coef_init = self.coef_

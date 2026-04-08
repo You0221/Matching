@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2457,28 +2414,6 @@ def _extract_get_pydantic_json_schema(tp: Any, schema: CoreSchema) -> GetJsonSch
+     return js_modify_function
+ 
+ 
+-def get_json_schema_update_func(
+-    json_schema_update: JsonSchemaValue, json_schema_extra: JsonDict | typing.Callable[[JsonDict], None] | None
+-) -> GetJsonSchemaFunction:
+-    def json_schema_update_func(
+-        core_schema_or_field: CoreSchemaOrField, handler: GetJsonSchemaHandler
+-    ) -> JsonSchemaValue:
+-        json_schema = {**handler(core_schema_or_field), **json_schema_update}
+-        add_json_schema_extra(json_schema, json_schema_extra)
+-        return json_schema
+-
+-    return json_schema_update_func
+-
+-
+-def add_json_schema_extra(
+-    json_schema: JsonSchemaValue, json_schema_extra: JsonDict | typing.Callable[[JsonDict], None] | None
+-):
+-    if isinstance(json_schema_extra, dict):
+-        json_schema.update(to_jsonable_python(json_schema_extra))
+-    elif callable(json_schema_extra):
+-        json_schema_extra(json_schema)
+-
+-
+ class _CommonField(TypedDict):
+     schema: core_schema.CoreSchema
+     validation_alias: str | list[str | int] | list[list[str | int]] | None

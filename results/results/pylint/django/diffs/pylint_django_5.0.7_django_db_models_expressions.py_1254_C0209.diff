@@ -1,0 +1,22 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..c24c58565833 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -1252,17 +1411,6 @@ def __init__(self, *expressions, **extra):
+         )
+         super().__init__(*expressions, **extra)
+ 
+-    def as_sql(self, *args, **kwargs):
+-        if not self.source_expressions:
+-            return "", ()
+-        return super().as_sql(*args, **kwargs)
+-
+-    def get_group_by_cols(self):
+-        group_by_cols = []
+-        for order_by in self.get_source_expressions():
+-            group_by_cols.extend(order_by.get_group_by_cols())
+-        return group_by_cols
+-
+ 
+ @deconstructible(path="django.db.models.ExpressionWrapper")
+ class ExpressionWrapper(SQLiteNumericMixin, Expression):

@@ -1,0 +1,39 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -324,22 +346,28 @@ def fit(self, X, y, sample_weight=None):
+         # log marginal likelihood and posterior covariance
+         self.alpha_ = alpha_
+         self.lambda_ = lambda_
+-        self.coef_, rmse_ = self._update_coef_(
++        self.coef_, sse_ = self._update_coef_(
+             X, y, n_samples, n_features, XT_y, U, Vh, eigen_vals_, alpha_, lambda_
+         )
+         if self.compute_score:
+             # compute the log marginal likelihood
+             s = self._log_marginal_likelihood(
+-                n_samples, n_features, eigen_vals_, alpha_, lambda_, coef_, rmse_
++                n_samples,
++                n_features,
++                sw_sum,
++                eigen_vals_,
++                alpha_,
++                lambda_,
++                coef_,
++                sse_,
+             )
+             self.scores_.append(s)
+             self.scores_ = np.array(self.scores_)
+ 
+-        # posterior covariance is given by 1/alpha_ * scaled_sigma_
+-        scaled_sigma_ = np.dot(
+-            Vh.T, Vh / (eigen_vals_ + lambda_ / alpha_)[:, np.newaxis]
++        # posterior covariance
++        self.sigma_ = np.dot(
++            Vh_full.T, Vh_full / (alpha_ * eigen_vals_full + lambda_)[:, np.newaxis]
+         )
+-        self.sigma_ = (1.0 / alpha_) * scaled_sigma_
+ 
+         self._set_intercept(X_offset_, y_offset_, X_scale_)
+ 

@@ -1,0 +1,13 @@
+diff --git a/django/contrib/gis/db/backends/postgis/operations.py b/django/contrib/gis/db/backends/postgis/operations.py
+index 17d7b3213d9b..7a347c52878a 100644
+--- a/django/contrib/gis/db/backends/postgis/operations.py
++++ b/django/contrib/gis/db/backends/postgis/operations.py
+@@ -203,7 +203,7 @@ def spatial_version(self):
+                 raise ImproperlyConfigured(
+                     'Cannot determine PostGIS version for database "%s" '
+                     'using command "SELECT postgis_lib_version()". '
+-                    "GeoDjango requires at least PostGIS version 3.0. "
++                    "GeoDjango requires at least PostGIS version 3.1. "
+                     "Was the database created from a spatial database "
+                     "template?" % self.connection.settings_dict["NAME"]
+                 )

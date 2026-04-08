@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/gdal/envelope.py b/django/contrib/gis/gdal/envelope.py
+index 4c2c1e4a1ad0..24383de19694 100644
+--- a/django/contrib/gis/gdal/envelope.py
++++ b/django/contrib/gis/gdal/envelope.py
+@@ -20,6 +21,7 @@
+ #   https://gdal.org/doxygen/ogr__core_8h_source.html
+ class OGREnvelope(Structure):
+     "Represent the OGREnvelope C Structure."
++
+     _fields_ = [
+         ("MinX", c_double),
+         ("MaxX", c_double),

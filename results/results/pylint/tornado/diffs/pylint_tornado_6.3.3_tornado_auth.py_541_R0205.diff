@@ -1,0 +1,46 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index 59501f56b7..64428c59ea 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -538,7 +552,7 @@ def get_auth_http_client(self) -> httpclient.AsyncHTTPClient:
+         return httpclient.AsyncHTTPClient()
+ 
+ 
+-class OAuth2Mixin(object):
++class OAuth2Mixin:
+     """Abstract implementation of OAuth 2.0.
+ 
+     See `FacebookGraphMixin` or `GoogleOAuth2Mixin` below for example
+@@ -571,7 +585,13 @@ def authorize_redirect(
+ 
+            The ``callback`` argument and returned awaitable were removed;
+            this is now an ordinary synchronous function.
++
++        .. deprecated:: 6.4
++           The ``client_secret`` argument (which has never had any effect)
++           is deprecated and will be removed in Tornado 7.0.
+         """
++        if client_secret is not None:
++            warnings.warn("client_secret argument is deprecated", DeprecationWarning)
+         handler = cast(RequestHandler, self)
+         args = {"response_type": response_type}
+         if redirect_uri is not None:
+@@ -612,7 +632,7 @@ async def oauth2_request(
+         url: str,
+         access_token: Optional[str] = None,
+         post_args: Optional[Dict[str, Any]] = None,
+-        **args: Any
++        **args: Any,
+     ) -> Any:
+         """Fetches the given URL auth an OAuth2 access token.
+ 
+@@ -638,9 +658,6 @@ async def get(self):
+                         return
+                     self.finish("Posted a message!")
+ 
+-        .. testoutput::
+-           :hide:
+-
+         .. versionadded:: 4.3
+ 
+         .. versionchanged::: 6.0

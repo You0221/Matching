@@ -1,0 +1,140 @@
+diff --git a/pydantic/_internal/_std_types_schema.py b/pydantic/_internal/_std_types_schema.py
+index 0b65a89ca04..57bd7275e1d 100644
+--- a/pydantic/_internal/_std_types_schema.py
++++ b/pydantic/_internal/_std_types_schema.py
+@@ -313,105 +169,56 @@ def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaH
+         else:
+             items_schema = handler.generate_schema(self.item_source_type)
+ 
+-        metadata = {'min_length': self.min_length, 'max_length': self.max_length, 'strict': self.strict}
+-
+-        if self.mapped_origin in (list, set, frozenset):
+-            if self.mapped_origin is list:
+-                constrained_schema = core_schema.list_schema(items_schema, **metadata)
+-            elif self.mapped_origin is set:
+-                constrained_schema = core_schema.set_schema(items_schema, **metadata)
+-            else:
+-                assert self.mapped_origin is frozenset  # safety check in case we forget to add a case
+-                constrained_schema = core_schema.frozenset_schema(items_schema, **metadata)
+-
+-            schema = constrained_schema
+-        else:
+-            # safety check in case we forget to add a case
+-            assert self.mapped_origin in (collections.deque, collections.Counter)
+-
+-            if self.mapped_origin is collections.deque:
+-                # if we have a MaxLen annotation might as well set that as the default maxlen on the deque
+-                # this lets us re-use existing metadata annotations to let users set the maxlen on a dequeue
+-                # that e.g. comes from JSON
+-                coerce_instance_wrap = partial(
+-                    core_schema.no_info_wrap_validator_function,
+-                    partial(dequeue_validator, maxlen=metadata.get('max_length', None)),
+-                )
+-            else:
+-                coerce_instance_wrap = partial(core_schema.no_info_after_validator_function, self.mapped_origin)
++        # if we have a MaxLen annotation might as well set that as the default maxlen on the deque
++        # this lets us re-use existing metadata annotations to let users set the maxlen on a dequeue
++        # that e.g. comes from JSON
++        coerce_instance_wrap = partial(
++            core_schema.no_info_wrap_validator_function,
++            partial(deque_validator, maxlen=self.metadata.get('max_length', None)),
++        )
+ 
+-            # we have to use a lax list schema here, because we need to validate the deque's
+-            # items via a list schema, but it's ok if the deque itself is not a list (same for Counter)
+-            metadata_with_strict_override = {**metadata, 'strict': False}
+-            constrained_schema = core_schema.list_schema(items_schema, **metadata_with_strict_override)
++        # we have to use a lax list schema here, because we need to validate the deque's
++        # items via a list schema, but it's ok if the deque itself is not a list
++        metadata_with_strict_override = {**self.metadata, 'strict': False}
++        constrained_schema = core_schema.list_schema(items_schema, **metadata_with_strict_override)
+ 
+-            check_instance = core_schema.json_or_python_schema(
+-                json_schema=core_schema.list_schema(),
+-                python_schema=core_schema.is_instance_schema(self.mapped_origin),
+-            )
++        check_instance = core_schema.json_or_python_schema(
++            json_schema=core_schema.list_schema(),
++            python_schema=core_schema.is_instance_schema(collections.deque),
++        )
+ 
+-            serialization = core_schema.wrap_serializer_function_ser_schema(
+-                serialize_sequence_via_list, schema=items_schema or core_schema.any_schema(), info_arg=True
+-            )
++        serialization = core_schema.wrap_serializer_function_ser_schema(
++            serialize_sequence_via_list, schema=items_schema or core_schema.any_schema(), info_arg=True
++        )
+ 
+-            strict = core_schema.chain_schema([check_instance, coerce_instance_wrap(constrained_schema)])
++        strict = core_schema.chain_schema([check_instance, coerce_instance_wrap(constrained_schema)])
+ 
+-            if metadata.get('strict', False):
+-                schema = strict
+-            else:
+-                lax = coerce_instance_wrap(constrained_schema)
+-                schema = core_schema.lax_or_strict_schema(lax_schema=lax, strict_schema=strict)
+-            schema['serialization'] = serialization
++        if self.metadata.get('strict', False):
++            schema = strict
++        else:
++            lax = coerce_instance_wrap(constrained_schema)
++            schema = core_schema.lax_or_strict_schema(lax_schema=lax, strict_schema=strict)
++        schema['serialization'] = serialization
+ 
+         return schema
+ 
+ 
+-SEQUENCE_ORIGIN_MAP: dict[Any, Any] = {
+-    typing.Deque: collections.deque,
+-    collections.deque: collections.deque,
+-    list: list,
+-    typing.List: list,
+-    set: set,
+-    typing.AbstractSet: set,
+-    typing.Set: set,
+-    frozenset: frozenset,
+-    typing.FrozenSet: frozenset,
+-    typing.Sequence: list,
+-    typing.MutableSequence: list,
+-    typing.MutableSet: set,
+-    # this doesn't handle subclasses of these
+-    # parametrized typing.Set creates one of these
+-    collections.abc.MutableSet: set,
+-    collections.abc.Set: frozenset,
+-}
+-
+-
+-def identity(s: CoreSchema) -> CoreSchema:
+-    return s
+-
+-
+-def sequence_like_prepare_pydantic_annotations(
+-    source_type: Any, annotations: Iterable[Any], _config: ConfigDict
++def deque_schema_prepare_pydantic_annotations(
++    source_type: Any, annotations: Iterable[Any]
+ ) -> tuple[Any, list[Any]] | None:
+-    origin: Any = get_origin(source_type)
+-
+-    mapped_origin = SEQUENCE_ORIGIN_MAP.get(origin, None) if origin else SEQUENCE_ORIGIN_MAP.get(source_type, None)
+-    if mapped_origin is None:
+-        return None
+-
+     args = get_args(source_type)
+ 
+     if not args:
+-        args = (Any,)
++        args = typing.cast(Tuple[Any], (Any,))
+     elif len(args) != 1:
+-        raise ValueError('Expected sequence to have exactly 1 generic parameter')
++        raise ValueError('Expected deque to have exactly 1 generic parameter')
+ 
+     item_source_type = args[0]
+ 
+     metadata, remaining_annotations = _known_annotated_metadata.collect_known_metadata(annotations)
+     _known_annotated_metadata.check_metadata(metadata, _known_annotated_metadata.SEQUENCE_CONSTRAINTS, source_type)
+ 
+-    return (source_type, [SequenceValidator(mapped_origin, item_source_type, **metadata), *remaining_annotations])
++    return (source_type, [DequeValidator(item_source_type, metadata), *remaining_annotations])
+ 
+ 
+ MAPPING_ORIGIN_MAP: dict[Any, Any] = {

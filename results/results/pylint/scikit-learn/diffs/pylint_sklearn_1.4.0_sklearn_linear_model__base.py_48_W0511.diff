@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index f07e974542a5b..eac754f3f88b4 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -43,7 +50,7 @@
+ from ..utils.extmath import safe_sparse_dot
+ from ..utils.parallel import Parallel, delayed
+ from ..utils.sparsefuncs import mean_variance_axis
+-from ..utils.validation import FLOAT_DTYPES, _check_sample_weight, check_is_fitted
++from ..utils.validation import _check_sample_weight, check_is_fitted
+ 
+ # TODO: bayesian_ridge_regression and bayesian_regression_ard
+ # should be squashed into its respective objects.

@@ -1,0 +1,13 @@
+diff --git a/django/contrib/auth/middleware.py b/django/contrib/auth/middleware.py
+index 761929d67dcd..880563bc5b77 100644
+--- a/django/contrib/auth/middleware.py
++++ b/django/contrib/auth/middleware.py
+@@ -1,5 +1,7 @@
+ from functools import partial
+-from urllib.parse import urlparse
++from urllib.parse import urlsplit
++
++from asgiref.sync import iscoroutinefunction, markcoroutinefunction
+ 
+ from django.conf import settings
+ from django.contrib import auth

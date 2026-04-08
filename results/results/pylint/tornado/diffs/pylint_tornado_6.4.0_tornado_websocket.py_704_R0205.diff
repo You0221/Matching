@@ -1,0 +1,22 @@
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index fbfd700887..b719547bdf 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -701,7 +729,7 @@ def set_nodelay(self, x: bool) -> None:
+         raise NotImplementedError()
+ 
+ 
+-class _PerMessageDeflateCompressor(object):
++class _PerMessageDeflateCompressor:
+     def __init__(
+         self,
+         persistent: bool,
+@@ -749,7 +777,7 @@ def compress(self, data: bytes) -> bytes:
+         return data[:-4]
+ 
+ 
+-class _PerMessageDeflateDecompressor(object):
++class _PerMessageDeflateDecompressor:
+     def __init__(
+         self,
+         persistent: bool,

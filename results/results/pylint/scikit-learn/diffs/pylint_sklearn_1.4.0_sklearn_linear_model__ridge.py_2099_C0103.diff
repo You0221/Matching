@@ -1,0 +1,72 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2101,15 +2194,63 @@ def fit(self, X, y, sample_weight=None):
+             X_offset += X_mean * X_scale
+         self._set_intercept(X_offset, y_offset, X_scale)
+ 
+-        if self.store_cv_values:
++        if self.store_cv_results:
+             if len(y.shape) == 1:
+-                cv_values_shape = n_samples, n_alphas
++                cv_results_shape = n_samples, n_alphas
+             else:
+-                cv_values_shape = n_samples, n_y, n_alphas
+-            self.cv_values_ = self.cv_values_.reshape(cv_values_shape)
++                cv_results_shape = n_samples, n_y, n_alphas
++            self.cv_results_ = self.cv_results_.reshape(cv_results_shape)
+ 
+         return self
+ 
++    def _get_scorer(self):
++        return check_scoring(self, scoring=self.scoring, allow_none=True)
++
++    def _score_without_scorer(self, squared_errors):
++        """Performs scoring using squared errors when the scorer is None."""
++        if self.alpha_per_target:
++            _score = -squared_errors.mean(axis=0)
++        else:
++            _score = -squared_errors.mean()
++
++        return _score
++
++    def _score(self, *, predictions, y, n_y, scorer, score_params):
++        """Performs scoring with the specified scorer using the
++        predictions and the true y values.
++        """
++        if self.is_clf:
++            identity_estimator = _IdentityClassifier(classes=np.arange(n_y))
++            _score = scorer(
++                identity_estimator,
++                predictions,
++                y.argmax(axis=1),
++                **score_params,
++            )
++        else:
++            identity_estimator = _IdentityRegressor()
++            if self.alpha_per_target:
++                _score = np.array(
++                    [
++                        scorer(
++                            identity_estimator,
++                            predictions[:, j],
++                            y[:, j],
++                            **score_params,
++                        )
++                        for j in range(n_y)
++                    ]
++                )
++            else:
++                _score = scorer(
++                    identity_estimator,
++                    predictions.ravel(),
++                    y.ravel(),
++                    **score_params,
++                )
++
++        return _score
++
+ 
+ class _BaseRidgeCV(LinearModel):
+     _parameter_constraints: dict = {

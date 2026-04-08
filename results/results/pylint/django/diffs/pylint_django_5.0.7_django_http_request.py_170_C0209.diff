@@ -1,0 +1,19 @@
+diff --git a/django/http/request.py b/django/http/request.py
+index fe15a173be58..986d4eee8904 100644
+--- a/django/http/request.py
++++ b/django/http/request.py
+@@ -170,9 +205,11 @@ def _get_full_path(self, path, force_append_slash):
+         return "%s%s%s" % (
+             escape_uri_path(path),
+             "/" if force_append_slash and not path.endswith("/") else "",
+-            ("?" + iri_to_uri(self.META.get("QUERY_STRING", "")))
+-            if self.META.get("QUERY_STRING", "")
+-            else "",
++            (
++                ("?" + iri_to_uri(self.META.get("QUERY_STRING", "")))
++                if self.META.get("QUERY_STRING", "")
++                else ""
++            ),
+         )
+ 
+     def get_signed_cookie(self, key, default=RAISE_ERROR, salt="", max_age=None):

@@ -1,0 +1,27 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index f311e0b7459f..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -226,7 +229,6 @@ def is_self_referential(f):
+             "app_label": model._meta.app_label,
+             "db_table": "new__%s" % strip_quotes(model._meta.db_table),
+             "unique_together": unique_together,
+-            "index_together": index_together,  # RemovedInDjango51Warning.
+             "indexes": indexes,
+             "constraints": constraints,
+             "apps": apps,
+@@ -236,6 +238,14 @@ def is_self_referential(f):
+         body_copy["__module__"] = model.__module__
+         new_model = type("New%s" % model._meta.object_name, model.__bases__, body_copy)
+ 
++        # Remove the automatically recreated default primary key, if it has
++        # been deleted.
++        if delete_field and delete_field.attname == new_model._meta.pk.attname:
++            auto_pk = new_model._meta.pk
++            delattr(new_model, auto_pk.attname)
++            new_model._meta.local_fields.remove(auto_pk)
++            new_model.pk = None
++
+         # Create a new table with the updated schema.
+         self.create_model(new_model)
+ 

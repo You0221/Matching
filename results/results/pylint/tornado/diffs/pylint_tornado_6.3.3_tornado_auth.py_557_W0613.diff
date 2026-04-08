@@ -1,0 +1,18 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index 59501f56b7..d1edcc6550 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -571,7 +588,13 @@ def authorize_redirect(
+ 
+            The ``callback`` argument and returned awaitable were removed;
+            this is now an ordinary synchronous function.
++
++        .. deprecated:: 6.4
++           The ``client_secret`` argument (which has never had any effect)
++           is deprecated and will be removed in Tornado 7.0.
+         """
++        if client_secret is not None:
++            warnings.warn("client_secret argument is deprecated", DeprecationWarning)
+         handler = cast(RequestHandler, self)
+         args = {"response_type": response_type}
+         if redirect_uri is not None:

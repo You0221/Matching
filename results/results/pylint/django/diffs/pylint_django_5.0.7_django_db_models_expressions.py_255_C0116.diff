@@ -1,0 +1,18 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -256,6 +269,13 @@ def contains_column_references(self):
+             for expr in self.get_source_expressions()
+         )
+ 
++    @cached_property
++    def contains_subquery(self):
++        return any(
++            expr and (getattr(expr, "subquery", False) or expr.contains_subquery)
++            for expr in self.get_source_expressions()
++        )
++
+     def resolve_expression(
+         self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+     ):

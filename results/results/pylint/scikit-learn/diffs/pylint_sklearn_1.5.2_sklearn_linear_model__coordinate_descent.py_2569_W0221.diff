@@ -1,0 +1,19 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 45cdb8bdf2ebb..b98cf08925910 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -2569,8 +2654,12 @@ def fit(self, X, y):
+         # return self for chaining fit and predict calls
+         return self
+ 
+-    def _more_tags(self):
+-        return {"multioutput_only": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = False
++        tags.target_tags.multi_output = True
++        tags.target_tags.single_output = False
++        return tags
+ 
+ 
+ class MultiTaskLasso(MultiTaskElasticNet):

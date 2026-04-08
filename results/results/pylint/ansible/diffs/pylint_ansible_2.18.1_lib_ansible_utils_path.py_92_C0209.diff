@@ -1,0 +1,29 @@
+diff --git a/lib/ansible/utils/path.py b/lib/ansible/utils/path.py
+index 2b25342ed4cd4f..490cfcd8bdc25c 100644
+--- a/lib/ansible/utils/path.py
++++ b/lib/ansible/utils/path.py
+@@ -77,19 +76,18 @@ def makedirs_safe(path, mode=None):
+     :kwarg mode: If given, the mode to set the directory to
+     :raises AnsibleError: If the directory cannot be created and does not already exist.
+     :raises UnicodeDecodeError: if the path is not decodable in the utf-8 encoding.
+-    '''
++    """
+ 
+     rpath = unfrackpath(path)
+     b_rpath = to_bytes(rpath)
+     if not os.path.exists(b_rpath):
+         try:
+             if mode:
+-                os.makedirs(b_rpath, mode)
++                os.makedirs(b_rpath, mode, exist_ok=True)
+             else:
+-                os.makedirs(b_rpath)
+-        except OSError as e:
+-            if e.errno != EEXIST:
+-                raise AnsibleError("Unable to create local directories(%s): %s" % (to_native(rpath), to_native(e)))
++                os.makedirs(b_rpath, exist_ok=True)
++        except OSError as ex:
++            raise AnsibleError(f"Unable to create local directories {rpath!r}.") from ex
+ 
+ 
+ def basedir(source):

@@ -1,0 +1,27 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index 312bd92921b..9582685cb0f 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -1028,19 +1293,18 @@ def computed_field(
+     alias: str | None = None,
+     alias_priority: int | None = None,
+     title: str | None = None,
++    field_title_generator: typing.Callable[[str, ComputedFieldInfo], str] | None = None,
+     description: str | None = None,
+     deprecated: Deprecated | str | bool | None = None,
+     examples: list[Any] | None = None,
+     json_schema_extra: JsonDict | typing.Callable[[JsonDict], None] | None = None,
+     repr: bool = True,
+     return_type: Any = PydanticUndefined,
+-) -> typing.Callable[[PropertyT], PropertyT]:
+-    ...
++) -> typing.Callable[[PropertyT], PropertyT]: ...
+ 
+ 
+ @typing.overload
+-def computed_field(__func: PropertyT) -> PropertyT:
+-    ...
++def computed_field(__func: PropertyT) -> PropertyT: ...
+ 
+ 
+ def computed_field(

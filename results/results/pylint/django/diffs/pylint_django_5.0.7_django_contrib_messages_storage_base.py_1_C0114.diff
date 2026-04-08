@@ -1,0 +1,14 @@
+diff --git a/django/contrib/messages/storage/base.py b/django/contrib/messages/storage/base.py
+index 124049a5e247..5d89acfe6911 100644
+--- a/django/contrib/messages/storage/base.py
++++ b/django/contrib/messages/storage/base.py
+@@ -1,7 +1,8 @@
+ from django.conf import settings
+ from django.contrib.messages import constants, utils
++from django.utils.functional import SimpleLazyObject
+ 
+-LEVEL_TAGS = utils.get_level_tags()
++LEVEL_TAGS = SimpleLazyObject(utils.get_level_tags)
+ 
+ 
+ class Message:

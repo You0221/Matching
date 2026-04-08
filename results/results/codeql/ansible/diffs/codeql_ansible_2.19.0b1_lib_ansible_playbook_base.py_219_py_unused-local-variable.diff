@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/playbook/base.py b/lib/ansible/playbook/base.py
+index 890401654d50c7..955962ea324a3a 100644
+--- a/lib/ansible/playbook/base.py
++++ b/lib/ansible/playbook/base.py
+@@ -216,8 +221,6 @@ def _validate_attributes(self, ds):
+ 
+     def validate(self, all_vars=None):
+         """ validation that is done at parse time, not load time """
+-        all_vars = {} if all_vars is None else all_vars
+-
+         if not self._validated:
+             # walk all fields in the object
+             for (name, attribute) in self.fattributes.items():

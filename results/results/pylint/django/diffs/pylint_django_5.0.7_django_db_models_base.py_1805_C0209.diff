@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1801,7 +1998,7 @@ def _check_field_name_clashes(cls):
+         # Check that fields defined in the model don't clash with fields from
+         # parents, including auto-generated fields like multi-table inheritance
+         # child accessors.
+-        for parent in cls._meta.get_parent_list():
++        for parent in cls._meta.all_parents:
+             for f in parent._meta.get_fields():
+                 if f not in used_fields:
+                     used_fields[f.name] = f

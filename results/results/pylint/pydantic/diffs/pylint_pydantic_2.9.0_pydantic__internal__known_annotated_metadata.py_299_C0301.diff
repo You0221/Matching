@@ -1,0 +1,17 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index efdb8924c7a..78de89ecd77 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -295,8 +287,11 @@ def _apply_constraint_with_incompatibility_info(
+     for annotation in other_metadata:
+         if (annotation_type := type(annotation)) in (at_to_constraint_map := _get_at_to_constraint_map()):
+             constraint = at_to_constraint_map[annotation_type]
++            validator = NUMERIC_VALIDATOR_LOOKUP.get(constraint)
++            if validator is None:
++                raise ValueError(f'Unknown constraint {constraint}')
+             schema = cs.no_info_after_validator_function(
+-                partial(get_constraint_validator(constraint), {constraint: getattr(annotation, constraint)}), schema
++                partial(validator, {constraint: getattr(annotation, constraint)}), schema
+             )
+             continue
+         elif isinstance(annotation, (at.Predicate, at.Not)):

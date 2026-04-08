@@ -1,0 +1,32 @@
+diff --git a/django/contrib/auth/checks.py b/django/contrib/auth/checks.py
+index ee8082524d52..f2f9a74a6c83 100644
+--- a/django/contrib/auth/checks.py
++++ b/django/contrib/auth/checks.py
+@@ -4,10 +4,27 @@
+ from django.apps import apps
+ from django.conf import settings
+ from django.core import checks
++from django.utils.module_loading import import_string
+ 
+ from .management import _get_builtin_permissions
+ 
+ 
++def _subclass_index(class_path, candidate_paths):
++    """
++    Return the index of dotted class path (or a subclass of that class) in a
++    list of candidate paths. If it does not exist, return -1.
++    """
++    cls = import_string(class_path)
++    for index, path in enumerate(candidate_paths):
++        try:
++            candidate_cls = import_string(path)
++            if issubclass(candidate_cls, cls):
++                return index
++        except (ImportError, TypeError):
++            continue
++    return -1
++
++
+ def check_user_model(app_configs=None, **kwargs):
+     if app_configs is None:
+         cls = apps.get_model(settings.AUTH_USER_MODEL)

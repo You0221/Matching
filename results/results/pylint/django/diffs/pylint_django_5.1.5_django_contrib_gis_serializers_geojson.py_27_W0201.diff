@@ -1,0 +1,17 @@
+diff --git a/django/contrib/gis/serializers/geojson.py b/django/contrib/gis/serializers/geojson.py
+index 072ee9dc489d..187af26eedfc 100644
+--- a/django/contrib/gis/serializers/geojson.py
++++ b/django/contrib/gis/serializers/geojson.py
+@@ -25,11 +25,7 @@ def _init_options(self):
+     def start_serialization(self):
+         self._init_options()
+         self._cts = {}  # cache of CoordTransform's
+-        self.stream.write(
+-            '{"type": "FeatureCollection", '
+-            '"crs": {"type": "name", "properties": {"name": "EPSG:%d"}},'
+-            ' "features": [' % self.srid
+-        )
++        self.stream.write('{"type": "FeatureCollection", "features": [')
+ 
+     def end_serialization(self):
+         self.stream.write("]}")

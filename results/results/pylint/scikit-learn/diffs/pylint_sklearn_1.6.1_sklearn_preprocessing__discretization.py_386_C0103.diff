@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index 8b5dea5c4f6c3..ef5081080bda1 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -389,7 +480,7 @@ def transform(self, X):
+             self._encoder.dtype = dtype_init
+         return Xt_enc
+ 
+-    def inverse_transform(self, X=None, *, Xt=None):
++    def inverse_transform(self, X):
+         """
+         Transform discretized data back to original feature space.
+ 

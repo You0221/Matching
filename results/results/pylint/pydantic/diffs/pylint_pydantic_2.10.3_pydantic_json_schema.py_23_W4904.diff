@@ -1,0 +1,31 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 984183f859c..62be321eb6b 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -17,21 +17,18 @@
+ import os
+ import re
+ import warnings
+-from collections import defaultdict
++from collections import Counter, defaultdict
++from collections.abc import Hashable, Iterable, Sequence
+ from copy import deepcopy
+ from enum import Enum
++from re import Pattern
+ from typing import (
+     TYPE_CHECKING,
++    Annotated,
+     Any,
+     Callable,
+-    Counter,
+-    Dict,
+-    Hashable,
+-    Iterable,
++    Literal,
+     NewType,
+-    Pattern,
+-    Sequence,
+-    Tuple,
+     TypeVar,
+     Union,
+     cast,

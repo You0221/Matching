@@ -1,0 +1,32 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -4055,19 +4059,14 @@ def _get_fill_indexer(
+         self, target: Index, method: str_t, limit: int | None = None, tolerance=None
+     ) -> npt.NDArray[np.intp]:
+         if self._is_multi:
+-            # TODO: get_indexer_with_fill docstring says values must be _sorted_
+-            #  but that doesn't appear to be enforced
+-            # error: "IndexEngine" has no attribute "get_indexer_with_fill"
+-            engine = self._engine
+-            with warnings.catch_warnings():
+-                # TODO: We need to fix this. Casting to int64 in cython
+-                warnings.filterwarnings("ignore", category=RuntimeWarning)
+-                return engine.get_indexer_with_fill(  # type: ignore[union-attr]
+-                    target=target._values,
+-                    values=self._values,
+-                    method=method,
+-                    limit=limit,
+-                )
++            if not (self.is_monotonic_increasing or self.is_monotonic_decreasing):
++                raise ValueError("index must be monotonic increasing or decreasing")
++            encoded = self.append(target)._engine.values  # type: ignore[union-attr]
++            self_encoded = Index(encoded[: len(self)])
++            target_encoded = Index(encoded[len(self) :])
++            return self_encoded._get_fill_indexer(
++                target_encoded, method, limit, tolerance
++            )
+ 
+         if self.is_monotonic_increasing and target.is_monotonic_increasing:
+             target_values = target._get_engine_target()

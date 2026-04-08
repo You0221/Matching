@@ -1,0 +1,12 @@
+diff --git a/django/forms/utils.py b/django/forms/utils.py
+index f4fbf3e2418a..27eabe57dc58 100644
+--- a/django/forms/utils.py
++++ b/django/forms/utils.py
+@@ -155,6 +155,7 @@ def __init__(self, initlist=None, error_class=None, renderer=None):
+         else:
+             self.error_class = "errorlist {}".format(error_class)
+         self.renderer = renderer or get_default_renderer()
++        self.field_id = field_id
+ 
+     def as_data(self):
+         return ValidationError(self.data).error_list

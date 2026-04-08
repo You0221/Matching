@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index d289aa29cbefc..a572c82e6e158 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -290,8 +235,6 @@ def fit(self, X, y, sample_weight=None):
+         self : object
+             Returns the instance itself.
+         """
+-        max_iter = _deprecate_n_iter(self.n_iter, self.max_iter)
+-
+         X, y = self._validate_data(X, y, dtype=[np.float64, np.float32], y_numeric=True)
+         dtype = X.dtype
+ 

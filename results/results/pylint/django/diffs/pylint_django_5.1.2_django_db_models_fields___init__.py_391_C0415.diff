@@ -1,0 +1,18 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 796c4d23c458..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -391,8 +391,11 @@ def _check_db_default(self, databases=None, **kwargs):
+         from django.db.models.expressions import Value
+ 
+         if (
+-            self.db_default is NOT_PROVIDED
+-            or isinstance(self.db_default, Value)
++            not self.has_db_default()
++            or (
++                isinstance(self.db_default, Value)
++                or not hasattr(self.db_default, "resolve_expression")
++            )
+             or databases is None
+         ):
+             return []

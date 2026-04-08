@@ -1,0 +1,61 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 83ff03631e6e86..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -922,44 +1121,35 @@ def _bare_run(self, cmd: list[bytes], in_data: bytes | None, sudoable: bool = Tr
+ 
+         p = None
+ 
+-        if isinstance(cmd, (text_type, binary_type)):
++        if isinstance(cmd, (str, bytes)):
+             cmd = to_bytes(cmd)
+         else:
+             cmd = list(map(to_bytes, cmd))
+ 
+-        conn_password = self.get_option('password') or self._play_context.password
++        popen_kwargs = self._init_shm()
++
++        if self.sshpass_pipe:
++            popen_kwargs['pass_fds'] = self.sshpass_pipe
+ 
+         if not in_data:
+             try:
+                 # Make sure stdin is a proper pty to avoid tcgetattr errors
+                 master, slave = pty.openpty()
+-                if PY3 and conn_password:
+-                    # pylint: disable=unexpected-keyword-arg
+-                    p = subprocess.Popen(cmd, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, pass_fds=self.sshpass_pipe)
+-                else:
+-                    p = subprocess.Popen(cmd, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++                p = subprocess.Popen(cmd, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **popen_kwargs)
+                 stdin = os.fdopen(master, 'wb', 0)
+                 os.close(slave)
+-            except (OSError, IOError):
++            except OSError:
+                 p = None
+ 
+         if not p:
+             try:
+-                if PY3 and conn_password:
+-                    # pylint: disable=unexpected-keyword-arg
+-                    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+-                                         stderr=subprocess.PIPE, pass_fds=self.sshpass_pipe)
+-                else:
+-                    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+-                                         stderr=subprocess.PIPE)
++                p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
++                                     stderr=subprocess.PIPE, **popen_kwargs)
+                 stdin = p.stdin  # type: ignore[assignment] # stdin will be set and not None due to the calls above
+-            except (OSError, IOError) as e:
+-                raise AnsibleError('Unable to execute ssh command line on a controller due to: %s' % to_native(e))
+-
+-        # If we are using SSH password authentication, write the password into
+-        # the pipe we opened in _build_command.
++            except OSError as ex:
++                raise AnsibleError('Unable to execute ssh command line on a controller.') from ex
+ 
+-        if conn_password:
++        if password_mechanism == 'sshpass' and conn_password:
+             os.close(self.sshpass_pipe[0])
+             try:
+                 os.write(self.sshpass_pipe[1], to_bytes(conn_password) + b'\n')

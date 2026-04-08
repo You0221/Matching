@@ -1,0 +1,22 @@
+diff --git a/pydantic/deprecated/decorator.py b/pydantic/deprecated/decorator.py
+index 36bd069001f..0c0ea7445c6 100644
+--- a/pydantic/deprecated/decorator.py
++++ b/pydantic/deprecated/decorator.py
+@@ -26,13 +26,13 @@
+ 
+ 
+ @overload
+-def validate_arguments(func: None = None, *, config: 'ConfigType' = None) -> Callable[['AnyCallableT'], 'AnyCallableT']:
+-    ...
++def validate_arguments(
++    func: None = None, *, config: 'ConfigType' = None
++) -> Callable[['AnyCallableT'], 'AnyCallableT']: ...
+ 
+ 
+ @overload
+-def validate_arguments(func: 'AnyCallableT') -> 'AnyCallableT':
+-    ...
++def validate_arguments(func: 'AnyCallableT') -> 'AnyCallableT': ...
+ 
+ 
+ @deprecated(

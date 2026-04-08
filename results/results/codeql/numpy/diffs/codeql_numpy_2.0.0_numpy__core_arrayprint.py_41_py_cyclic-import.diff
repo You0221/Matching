@@ -1,0 +1,70 @@
+diff --git a/numpy/_core/arrayprint.py b/numpy/_core/arrayprint.py
+index ec11beae3f58..2a684280610b 100644
+--- a/numpy/_core/arrayprint.py
++++ b/numpy/_core/arrayprint.py
+@@ -25,45 +25,39 @@
+ import functools
+ import numbers
+ import sys
++
+ try:
+     from _thread import get_ident
+ except ImportError:
+     from _dummy_thread import get_ident
+ 
++import contextlib
++import operator
++import warnings
++
+ import numpy as np
++
+ from . import numerictypes as _nt
+-from .umath import absolute, isinf, isfinite, isnat
+-from . import multiarray
+-from .multiarray import (array, dragon4_positional, dragon4_scientific,
+-                         datetime_as_string, datetime_data, ndarray,
+-                         set_legacy_print_mode)
+ from .fromnumeric import any
+-from .numeric import concatenate, asarray, errstate
+-from .numerictypes import (longlong, intc, int_, float64, complex128,
+-                           flexible)
++from .multiarray import (
++    array,
++    datetime_as_string,
++    datetime_data,
++    dragon4_positional,
++    dragon4_scientific,
++    ndarray,
++)
++from .numeric import asarray, concatenate, errstate
++from .numerictypes import complex128, flexible, float64, int_
+ from .overrides import array_function_dispatch, set_module
+-import operator
+-import warnings
+-import contextlib
++from .printoptions import format_options
++from .umath import absolute, isfinite, isinf, isnat
+ 
+-_format_options = {
+-    'edgeitems': 3,  # repr N leading and trailing items of each dimension
+-    'threshold': 1000,  # total items > triggers array summarization
+-    'floatmode': 'maxprec',
+-    'precision': 8,  # precision of floating point representations
+-    'suppress': False,  # suppress printing small floating values in exp format
+-    'linewidth': 75,
+-    'nanstr': 'nan',
+-    'infstr': 'inf',
+-    'sign': '-',
+-    'formatter': None,
+-    # Internally stored as an int to simplify comparisons; converted from/to
+-    # str/False on the way in/out.
+-    'legacy': sys.maxsize}
+ 
+ def _make_options_dict(precision=None, threshold=None, edgeitems=None,
+                        linewidth=None, suppress=None, nanstr=None, infstr=None,
+-                       sign=None, formatter=None, floatmode=None, legacy=None):
++                       sign=None, formatter=None, floatmode=None, legacy=None,
++                       override_repr=None):
+     """
+     Make a dictionary out of the non-None arguments, plus conversion of
+     *legacy* and sanity checks.

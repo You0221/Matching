@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2394,7 +2451,7 @@ def fit(self, K, y=None):
+         """
+         xp, _ = get_namespace(K)
+ 
+-        K = self._validate_data(K, dtype=_array_api.supported_float_dtypes(xp))
++        K = validate_data(self, K, dtype=_array_api.supported_float_dtypes(xp))
+ 
+         if K.shape[0] != K.shape[1]:
+             raise ValueError(

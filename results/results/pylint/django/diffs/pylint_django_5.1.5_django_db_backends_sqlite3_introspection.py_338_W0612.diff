@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/sqlite3/introspection.py b/django/db/backends/sqlite3/introspection.py
+index 79aa1934c0de..a21bc2241318 100644
+--- a/django/db/backends/sqlite3/introspection.py
++++ b/django/db/backends/sqlite3/introspection.py
+@@ -337,8 +337,8 @@ def get_constraints(self, cursor, table_name):
+             # columns. Discard last 2 columns if there.
+             number, index, unique = row[:3]
+             cursor.execute(
+-                "SELECT sql FROM sqlite_master "
+-                "WHERE type='index' AND name=%s" % self.connection.ops.quote_name(index)
++                "SELECT sql FROM sqlite_master WHERE type='index' AND name=%s",
++                [index],
+             )
+             # There's at most one row.
+             (sql,) = cursor.fetchone() or (None,)

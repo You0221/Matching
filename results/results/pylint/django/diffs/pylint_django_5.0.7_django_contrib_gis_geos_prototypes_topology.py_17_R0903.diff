@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/topology.py b/django/contrib/gis/geos/prototypes/topology.py
+index e61eae964a93..541c954c02cd 100644
+--- a/django/contrib/gis/geos/prototypes/topology.py
++++ b/django/contrib/gis/geos/prototypes/topology.py
+@@ -15,6 +16,7 @@
+ 
+ class Topology(GEOSFuncFactory):
+     "For GEOS unary topology functions."
++
+     argtypes = [GEOM_PTR]
+     restype = GEOM_PTR
+     errcheck = staticmethod(check_geom)

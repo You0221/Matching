@@ -1,0 +1,12 @@
+diff --git a/django/db/backends/base/base.py b/django/db/backends/base/base.py
+index 7a1dfd30d13b..aa9cdb574879 100644
+--- a/django/db/backends/base/base.py
++++ b/django/db/backends/base/base.py
+@@ -220,7 +221,6 @@ def get_new_connection(self, conn_params):
+ 
+     def init_connection_state(self):
+         """Initialize the database connection settings."""
+-        global RAN_DB_VERSION_CHECK
+         if self.alias not in RAN_DB_VERSION_CHECK:
+             self.check_database_version_supported()
+             RAN_DB_VERSION_CHECK.add(self.alias)

@@ -1,0 +1,19 @@
+diff --git a/django/contrib/postgres/operations.py b/django/contrib/postgres/operations.py
+index 5ac396bedf38..84360febf90f 100644
+--- a/django/contrib/postgres/operations.py
++++ b/django/contrib/postgres/operations.py
+@@ -5,12 +5,13 @@
+ )
+ from django.db import NotSupportedError, router
+ from django.db.migrations import AddConstraint, AddIndex, RemoveIndex
+-from django.db.migrations.operations.base import Operation
++from django.db.migrations.operations.base import Operation, OperationCategory
+ from django.db.models.constraints import CheckConstraint
+ 
+ 
+ class CreateExtension(Operation):
+     reversible = True
++    category = OperationCategory.ADDITION
+ 
+     def __init__(self, name):
+         self.name = name

@@ -1,0 +1,36 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -412,12 +435,15 @@ def db_default_sql(self, field):
+         """Return the sql and params for the field's database default."""
+         from django.db.models.expressions import Value
+ 
+-        sql = "%s" if isinstance(field.db_default, Value) else "(%s)"
++        db_default = field._db_default_expression
++        sql = (
++            self._column_default_sql(field) if isinstance(db_default, Value) else "(%s)"
++        )
+         query = Query(model=field.model)
+         compiler = query.get_compiler(connection=self.connection)
+-        default_sql, params = compiler.compile(field.db_default)
++        default_sql, params = compiler.compile(db_default)
+         if self.connection.features.requires_literal_defaults:
+-            # Some databases doesn't support parameterized defaults (Oracle,
++            # Some databases don't support parameterized defaults (Oracle,
+             # SQLite). If this is the case, the individual schema backend
+             # should implement prepare_default().
+             default_sql %= tuple(self.prepare_default(p) for p in params)
+@@ -428,9 +454,10 @@ def _column_generated_sql(self, field):
+         """Return the SQL to use in a GENERATED ALWAYS clause."""
+         expression_sql, params = field.generated_sql(self.connection)
+         persistency_sql = "STORED" if field.db_persist else "VIRTUAL"
+-        if params:
++        if self.connection.features.requires_literal_defaults:
+             expression_sql = expression_sql % tuple(self.quote_value(p) for p in params)
+-        return f"GENERATED ALWAYS AS ({expression_sql}) {persistency_sql}"
++            params = ()
++        return f"GENERATED ALWAYS AS ({expression_sql}) {persistency_sql}", params
+ 
+     @staticmethod
+     def _effective_default(field):

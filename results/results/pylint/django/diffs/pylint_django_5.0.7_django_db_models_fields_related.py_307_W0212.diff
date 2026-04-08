@@ -1,0 +1,21 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -302,12 +304,10 @@ def _check_clashes(self):
+         # Model.m2m accessor.
+         potential_clashes = (r for r in rel_opts.related_objects if r.field is not self)
+         for clash_field in potential_clashes:
+-            # i.e. "app_label.Model.m2m".
+-            clash_name = "%s.%s" % (
+-                clash_field.related_model._meta.label,
+-                clash_field.field.name,
+-            )
+-            if not rel_is_hidden and clash_field.get_accessor_name() == rel_name:
++            if not rel_is_hidden and clash_field.accessor_name == rel_name:
++                clash_name = (
++                    f"{clash_field.related_model._meta.label}.{clash_field.field.name}"
++                )
+                 errors.append(
+                     checks.Error(
+                         f"Reverse accessor '{rel_opts.object_name}.{rel_name}' "

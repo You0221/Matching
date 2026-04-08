@@ -1,0 +1,70 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -470,27 +499,55 @@ def select_format(self, compiler, sql, params):
+             return self.output_field.select_format(compiler, sql, params)
+         return sql, params
+ 
++    def get_expression_for_validation(self):
++        # Ignore expressions that cannot be used during a constraint validation.
++        if not getattr(self, "constraint_validation_compatible", True):
++            try:
++                (expression,) = self.get_source_expressions()
++            except ValueError as e:
++                raise ValueError(
++                    "Expressions with constraint_validation_compatible set to False "
++                    "must have only one source expression."
++                ) from e
++            else:
++                return expression
++        return self
++
+ 
+ @deconstructible
+ class Expression(BaseExpression, Combinable):
+     """An expression that can be combined with other expressions."""
+ 
++    @classproperty
++    @functools.lru_cache(maxsize=128)
++    def _constructor_signature(cls):
++        return inspect.signature(cls.__init__)
++
++    @classmethod
++    def _identity(cls, value):
++        if isinstance(value, tuple):
++            return tuple(map(cls._identity, value))
++        if isinstance(value, dict):
++            return tuple((key, cls._identity(val)) for key, val in value.items())
++        if isinstance(value, fields.Field):
++            if value.name and value.model:
++                return value.model._meta.label, value.name
++            return type(value)
++        return make_hashable(value)
++
+     @cached_property
+     def identity(self):
+-        constructor_signature = inspect.signature(self.__init__)
+         args, kwargs = self._constructor_args
+-        signature = constructor_signature.bind_partial(*args, **kwargs)
++        signature = self._constructor_signature.bind_partial(self, *args, **kwargs)
+         signature.apply_defaults()
+-        arguments = signature.arguments.items()
++        arguments = iter(signature.arguments.items())
++        next(arguments)
+         identity = [self.__class__]
+         for arg, value in arguments:
+-            if isinstance(value, fields.Field):
+-                if value.name and value.model:
+-                    value = (value.model._meta.label, value.name)
+-                else:
+-                    value = type(value)
+-            else:
+-                value = make_hashable(value)
++            # If __init__() makes use of *args or **kwargs captures `value`
++            # will respectively be a tuple or a dict that must have its
++            # constituents unpacked (mainly if contain Field instances).
++            value = self._identity(value)
+             identity.append((arg, value))
+         return tuple(identity)
+ 

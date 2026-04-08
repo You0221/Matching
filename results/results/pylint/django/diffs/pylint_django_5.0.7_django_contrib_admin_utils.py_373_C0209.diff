@@ -1,0 +1,29 @@
+diff --git a/django/contrib/admin/utils.py b/django/contrib/admin/utils.py
+index d6c54dd440d1..c8e722bcc8e6 100644
+--- a/django/contrib/admin/utils.py
++++ b/django/contrib/admin/utils.py
+@@ -370,15 +379,15 @@ def label_for_field(name, model, model_admin=None, return_attr=False, form=None)
+             elif form and name in form.fields:
+                 attr = form.fields[name]
+             else:
+-                message = "Unable to lookup '%s' on %s" % (
+-                    name,
+-                    model._meta.object_name,
+-                )
+-                if model_admin:
+-                    message += " or %s" % model_admin.__class__.__name__
+-                if form:
+-                    message += " or %s" % form.__class__.__name__
+-                raise AttributeError(message)
++                try:
++                    attr = get_fields_from_path(model, name)[-1]
++                except (FieldDoesNotExist, NotRelationField):
++                    message = f"Unable to lookup '{name}' on {model._meta.object_name}"
++                    if model_admin:
++                        message += f" or {model_admin.__class__.__name__}"
++                    if form:
++                        message += f" or {form.__class__.__name__}"
++                    raise AttributeError(message)
+ 
+             if hasattr(attr, "short_description"):
+                 label = attr.short_description

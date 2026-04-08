@@ -1,0 +1,42 @@
+diff --git a/pydantic/config.py b/pydantic/config.py
+index 1841a335a3e..e5e5e7c554b 100644
+--- a/pydantic/config.py
++++ b/pydantic/config.py
+@@ -709,27 +740,26 @@ class Model(BaseModel):
+ 
+     defer_build: bool
+     """
+-    Whether to defer model validator and serializer construction until the first model validation.
++    Whether to defer model validator and serializer construction until the first model validation. Defaults to False.
+ 
+     This can be useful to avoid the overhead of building models which are only
+     used nested within other models, or when you want to manually define type namespace via
+-    [`Model.model_rebuild(_types_namespace=...)`][pydantic.BaseModel.model_rebuild]. Defaults to False.
++    [`Model.model_rebuild(_types_namespace=...)`][pydantic.BaseModel.model_rebuild].
++
++    Since v2.10, this setting also applies to pydantic dataclasses and TypeAdapter instances.
+     """
+ 
+     plugin_settings: dict[str, object] | None
+-    """A `dict` of settings for plugins. Defaults to `None`.
+-
+-    See [Pydantic Plugins](../concepts/plugins.md) for details.
+-    """
++    """A `dict` of settings for plugins. Defaults to `None`."""
+ 
+     schema_generator: type[_GenerateSchema] | None
+     """
+-    A custom core schema generator class to use when generating JSON schemas.
+-    Useful if you want to change the way types are validated across an entire model/schema. Defaults to `None`.
++    !!! warning
++        `schema_generator` is deprecated in v2.10.
+ 
+-    The `GenerateSchema` interface is subject to change, currently only the `string_schema` method is public.
+-
+-    See [#6737](https://github.com/pydantic/pydantic/pull/6737) for details.
++        Prior to v2.10, this setting was advertised as highly subject to change.
++        It's possible that this interface may once again become public once the internal core schema generation
++        API is more stable, but that will likely come after significant performance improvements have been made.
+     """
+ 
+     json_schema_serialization_defaults_required: bool

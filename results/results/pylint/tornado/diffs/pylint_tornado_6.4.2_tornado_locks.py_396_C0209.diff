@@ -1,0 +1,20 @@
+diff --git a/tornado/locks.py b/tornado/locks.py
+index 1bcec1b3af..9ee1f2f0f3 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -389,12 +389,10 @@ def __init__(self, value: int = 1) -> None:
+ 
+     def __repr__(self) -> str:
+         res = super().__repr__()
+-        extra = (
+-            "locked" if self._value == 0 else "unlocked,value:{0}".format(self._value)
+-        )
++        extra = "locked" if self._value == 0 else f"unlocked,value:{self._value}"
+         if self._waiters:
+-            extra = "{0},waiters:{1}".format(extra, len(self._waiters))
+-        return "<{0} [{1}]>".format(res[1:-1], extra)
++            extra = f"{extra},waiters:{len(self._waiters)}"
++        return f"<{res[1:-1]} [{extra}]>"
+ 
+     def release(self) -> None:
+         """Increment the counter and wake one waiter."""

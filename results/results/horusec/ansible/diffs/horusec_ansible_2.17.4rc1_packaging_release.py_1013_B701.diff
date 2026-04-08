@@ -1,0 +1,63 @@
+diff --git a/packaging/release.py b/packaging/release.py
+index 97c58a74248b5f..e4c89bd84e1aff 100755
+--- a/packaging/release.py
++++ b/packaging/release.py
+@@ -981,58 +1008,10 @@ def create_github_release_notes(upstream: Remote, repository: str, version: Vers
+     return release_notes
+ 
+ 
+-def create_release_announcement(upstream: Remote, repository: str, version: Version, validate: bool) -> ReleaseAnnouncement:
+-    """Create and return a release announcement message."""
+-    env = create_template_environment()
+-    subject_template = env.from_string(RELEASE_ANNOUNCEMENT_SUBJECT_TEMPLATE)
+-    body_template = env.from_string(RELEASE_ANNOUNCEMENT_BODY_TEMPLATE)
+-
+-    today = datetime.datetime.now(tz=datetime.timezone.utc).date()
+-
+-    variables = dict(
+-        version=version,
+-        info=dict(
+-            name="ansible-core",
+-            short=f"{version.major}.{version.minor}",
+-            releases=get_release_artifact_details(repository, version, validate),
+-        ),
+-        next_rc=get_next_release_date(datetime.date(2021, 8, 9), 28, today),
+-        next_ga=get_next_release_date(datetime.date(2021, 8, 16), 28, today),
+-        rc=version.pre and version.pre[0] == "rc",
+-        beta=version.pre and version.pre[0] == "b",
+-        alpha=version.pre and version.pre[0] == "a",
+-        major=version.micro == 0,
+-        upstream=upstream,
+-    )
+-
+-    if version.pre and version.pre[0] in ("a", "b"):
+-        display.warning("The release announcement template does not populate the date for the next release.")
+-
+-    subject = subject_template.render(**variables).strip()
+-    body = body_template.render(**variables).strip()
+-
+-    message = ReleaseAnnouncement(
+-        subject=subject,
+-        body=body,
+-    )
+-
+-    return message
+-
+-
+ # endregion
+ # region Templates
+ 
+ 
+-FINAL_RELEASE_ANNOUNCEMENT_RECIPIENTS = [
+-    "ansible-announce@googlegroups.com",
+-    "ansible-project@googlegroups.com",
+-    "ansible-devel@googlegroups.com",
+-]
+-
+-PRE_RELEASE_ANNOUNCEMENT_RECIPIENTS = [
+-    "ansible-devel@googlegroups.com",
+-]
+-
+ GITHUB_RELEASE_NOTES_TEMPLATE = """
+ # Changelog
+ 

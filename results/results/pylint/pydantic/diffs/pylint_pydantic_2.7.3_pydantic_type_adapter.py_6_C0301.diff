@@ -1,0 +1,43 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index e055a380ad3..3619fdff3c7 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -1,17 +1,35 @@
+ """Type adapter specification."""
++
+ from __future__ import annotations as _annotations
+ 
+ import sys
++from contextlib import contextmanager
+ from dataclasses import is_dataclass
+-from typing import TYPE_CHECKING, Any, Dict, Generic, Iterable, Set, TypeVar, Union, cast, final, overload
++from functools import cached_property, wraps
++from typing import (
++    TYPE_CHECKING,
++    Any,
++    Callable,
++    Dict,
++    Generic,
++    Iterable,
++    Iterator,
++    Literal,
++    Set,
++    TypeVar,
++    Union,
++    cast,
++    final,
++    overload,
++)
+ 
+ from pydantic_core import CoreSchema, SchemaSerializer, SchemaValidator, Some
+-from typing_extensions import Literal, get_args, is_typeddict
++from typing_extensions import Concatenate, ParamSpec, is_typeddict
+ 
+ from pydantic.errors import PydanticUserError
+ from pydantic.main import BaseModel
+ 
+-from ._internal import _config, _generate_schema, _typing_extra
++from ._internal import _config, _generate_schema, _mock_val_ser, _typing_extra, _utils
+ from .config import ConfigDict
+ from .json_schema import (
+     DEFAULT_REF_TEMPLATE,

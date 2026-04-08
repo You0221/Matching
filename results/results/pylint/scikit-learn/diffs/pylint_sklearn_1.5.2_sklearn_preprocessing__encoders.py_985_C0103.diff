@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -976,7 +991,7 @@ def fit(self, X, y=None):
+         self._fit(
+             X,
+             handle_unknown=self.handle_unknown,
+-            force_all_finite="allow-nan",
++            ensure_all_finite="allow-nan",
+         )
+         self._set_drop_idx()
+         self._n_features_outs = self._compute_n_features_outs()

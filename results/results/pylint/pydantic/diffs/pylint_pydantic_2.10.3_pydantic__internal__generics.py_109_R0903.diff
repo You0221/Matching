@@ -1,0 +1,17 @@
+diff --git a/pydantic/_internal/_generics.py b/pydantic/_internal/_generics.py
+index d576099fbc7..f9f88a67f93 100644
+--- a/pydantic/_internal/_generics.py
++++ b/pydantic/_internal/_generics.py
+@@ -103,10 +93,10 @@ def __delitem__(self, key: KT) -> None:
+ # and discover later on that we need to re-add all this infrastructure...
+ # _GENERIC_TYPES_CACHE = DeepChainMap(GenericTypesCache(), LimitedDict())
+ 
+-_GENERIC_TYPES_CACHE = GenericTypesCache()
++_GENERIC_TYPES_CACHE: ContextVar[GenericTypesCache | None] = ContextVar('_GENERIC_TYPES_CACHE', default=None)
+ 
+ 
+-class PydanticGenericMetadata(typing_extensions.TypedDict):
++class PydanticGenericMetadata(TypedDict):
+     origin: type[BaseModel] | None  # analogous to typing._GenericAlias.__origin__
+     args: tuple[Any, ...]  # analogous to typing._GenericAlias.__args__
+     parameters: tuple[TypeVar, ...]  # analogous to typing.Generic.__parameters__

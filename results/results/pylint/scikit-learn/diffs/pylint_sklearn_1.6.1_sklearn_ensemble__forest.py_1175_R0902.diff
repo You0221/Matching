@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index 92713eecec9dd..5def6ac60816b 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -1167,7 +1167,7 @@ def _compute_partial_dependence_recursion(self, grid, target_features):
+ 
+     def __sklearn_tags__(self):
+         tags = super().__sklearn_tags__()
+-        tags.regressor_tags.multi_label = True
++        tags.input_tags.sparse = True
+         return tags
+ 
+ 

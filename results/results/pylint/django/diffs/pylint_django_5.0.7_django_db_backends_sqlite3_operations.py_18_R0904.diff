@@ -1,0 +1,71 @@
+diff --git a/django/db/backends/sqlite3/operations.py b/django/db/backends/sqlite3/operations.py
+index 85ad8043487b..08de246d7008 100644
+--- a/django/db/backends/sqlite3/operations.py
++++ b/django/db/backends/sqlite3/operations.py
+@@ -14,6 +14,8 @@
+ from django.utils.dateparse import parse_date, parse_datetime, parse_time
+ from django.utils.functional import cached_property
+ 
++from .base import Database
++
+ 
+ class DatabaseOperations(BaseDatabaseOperations):
+     cast_char_field_without_max_length = "text"
+@@ -34,6 +36,16 @@ def bulk_batch_size(self, fields, objs):
+         If there's only a single field to insert, the limit is 500
+         (SQLITE_MAX_COMPOUND_SELECT).
+         """
++        fields = list(
++            chain.from_iterable(
++                (
++                    field.fields
++                    if isinstance(field, models.CompositePrimaryKey)
++                    else [field]
++                )
++                for field in fields
++            )
++        )
+         if len(fields) == 1:
+             return 500
+         elif len(fields) > 1:
+@@ -261,10 +273,6 @@ def adapt_datetimefield_value(self, value):
+         if value is None:
+             return None
+ 
+-        # Expression values are adapted by the database.
+-        if hasattr(value, "resolve_expression"):
+-            return value
+-
+         # SQLite doesn't support tz-aware datetimes
+         if timezone.is_aware(value):
+             if settings.USE_TZ:
+@@ -281,10 +289,6 @@ def adapt_timefield_value(self, value):
+         if value is None:
+             return None
+ 
+-        # Expression values are adapted by the database.
+-        if hasattr(value, "resolve_expression"):
+-            return value
+-
+         # SQLite doesn't support tz-aware datetimes
+         if timezone.is_aware(value):
+             raise ValueError("SQLite backend does not support timezone-aware times.")
+@@ -359,11 +363,6 @@ def convert_uuidfield_value(self, value, expression, connection):
+     def convert_booleanfield_value(self, value, expression, connection):
+         return bool(value) if value in (1, 0) else value
+ 
+-    def bulk_insert_sql(self, fields, placeholder_rows):
+-        placeholder_rows_sql = (", ".join(row) for row in placeholder_rows)
+-        values_sql = ", ".join(f"({sql})" for sql in placeholder_rows_sql)
+-        return f"VALUES {values_sql}"
+-
+     def combine_expression(self, connector, sub_expressions):
+         # SQLite doesn't have a ^ operator, so use the user-defined POWER
+         # function that's registered in connect().
+@@ -439,3 +438,6 @@ def on_conflict_suffix_sql(self, fields, on_conflict, update_fields, unique_fiel
+             update_fields,
+             unique_fields,
+         )
++
++    def force_group_by(self):
++        return ["GROUP BY TRUE"] if Database.sqlite_version_info < (3, 39) else []

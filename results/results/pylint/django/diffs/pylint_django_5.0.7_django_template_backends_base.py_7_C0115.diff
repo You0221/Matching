@@ -1,0 +1,14 @@
+diff --git a/django/template/backends/base.py b/django/template/backends/base.py
+index 991ce64cb75e..f08eb2464be0 100644
+--- a/django/template/backends/base.py
++++ b/django/template/backends/base.py
+@@ -23,6 +23,9 @@ def __init__(self, params):
+                 "Unknown parameters: {}".format(", ".join(params))
+             )
+ 
++    def check(self, **kwargs):
++        return []
++
+     @property
+     def app_dirname(self):
+         raise ImproperlyConfigured(

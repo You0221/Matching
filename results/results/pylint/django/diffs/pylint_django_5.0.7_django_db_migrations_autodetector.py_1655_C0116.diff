@@ -1,0 +1,18 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -1650,11 +1834,11 @@ def generate_altered_order_with_respect_to(self):
+                 dependencies = []
+                 if new_model_state.options.get("order_with_respect_to"):
+                     dependencies.append(
+-                        (
++                        OperationDependency(
+                             app_label,
+                             model_name,
+                             new_model_state.options["order_with_respect_to"],
+-                            True,
++                            OperationDependency.Type.CREATE,
+                         )
+                     )
+                 # Actually generate the operation

@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -19,6 +16,8 @@
+ from scipy import linalg, optimize, sparse
+ from scipy.sparse import linalg as sp_linalg
+ 
++from sklearn.base import BaseEstimator
++
+ from ..base import MultiOutputMixin, RegressorMixin, _fit_context, is_classifier
+ from ..exceptions import ConvergenceWarning
+ from ..metrics import check_scoring, get_scorer_names

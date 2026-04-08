@@ -1,0 +1,24 @@
+diff --git a/django/db/backends/oracle/schema.py b/django/db/backends/oracle/schema.py
+index c8dd64650fcb..ba3c4778d30d 100644
+--- a/django/db/backends/oracle/schema.py
++++ b/django/db/backends/oracle/schema.py
+@@ -198,9 +198,7 @@ def _generate_temp_name(self, for_name):
+         return self.normalize_name(for_name + "_" + suffix)
+ 
+     def prepare_default(self, value):
+-        # Replace % with %% as %-formatting is applied in
+-        # FormatStylePlaceholderCursor._fix_for_params().
+-        return self.quote_value(value).replace("%", "%%")
++        return self.quote_value(value)
+ 
+     def _field_should_be_indexed(self, model, field):
+         create_index = super()._field_should_be_indexed(model, field)
+@@ -213,6 +211,8 @@ def _field_should_be_indexed(self, model, field):
+         return create_index
+ 
+     def _is_identity_column(self, table_name, column_name):
++        if not column_name:
++            return False
+         with self.connection.cursor() as cursor:
+             cursor.execute(
+                 """

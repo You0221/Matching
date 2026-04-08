@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..7f278cb06f2ba 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -77,11 +93,11 @@ def _parallel_build_estimators(
+     ensemble,
+     X,
+     y,
+-    sample_weight,
+     seeds,
+     total_n_estimators,
+     verbose,
+     check_input,
++    fit_params,
+ ):
+     """Private function used to build a batch of estimators within a job."""
+     # Retrieve settings

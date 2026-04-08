@@ -1,0 +1,17 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index 312bd92921b..b091710a861 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -825,7 +1347,11 @@ def Field(  # noqa: C901
+ 
+     include = extra.pop('include', None)  # type: ignore
+     if include is not None:
+-        warn('`include` is deprecated and does nothing. It will be removed, use `exclude` instead', DeprecationWarning)
++        warn(
++            '`include` is deprecated and does nothing. It will be removed, use `exclude` instead',
++            PydanticDeprecatedSince20,
++            stacklevel=2,
++        )
+ 
+     return FieldInfo.from_field(
+         default,

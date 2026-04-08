@@ -1,0 +1,61 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -102,12 +117,51 @@
+ ModifyCoreSchemaWrapHandler = GetCoreSchemaHandler
+ GetCoreSchemaFunction = Callable[[Any, ModifyCoreSchemaWrapHandler], core_schema.CoreSchema]
+ 
++TUPLE_TYPES: list[type] = [typing.Tuple, tuple]  # noqa: UP006
++LIST_TYPES: list[type] = [typing.List, list, collections.abc.MutableSequence]  # noqa: UP006
++SET_TYPES: list[type] = [typing.Set, set, collections.abc.MutableSet]  # noqa: UP006
++FROZEN_SET_TYPES: list[type] = [typing.FrozenSet, frozenset, collections.abc.Set]  # noqa: UP006
++DICT_TYPES: list[type] = [typing.Dict, dict]  # noqa: UP006
++IP_TYPES: list[type] = [IPv4Address, IPv4Interface, IPv4Network, IPv6Address, IPv6Interface, IPv6Network]
++SEQUENCE_TYPES: list[type] = [typing.Sequence, collections.abc.Sequence]
++ITERABLE_TYPES: list[type] = [typing.Iterable, collections.abc.Iterable, typing.Generator, collections.abc.Generator]
++TYPE_TYPES: list[type] = [typing.Type, type]  # noqa: UP006
++PATTERN_TYPES: list[type] = [typing.Pattern, re.Pattern]
++PATH_TYPES: list[type] = [
++    os.PathLike,
++    pathlib.Path,
++    pathlib.PurePath,
++    pathlib.PosixPath,
++    pathlib.PurePosixPath,
++    pathlib.PureWindowsPath,
++]
++MAPPING_TYPES = [
++    typing.Mapping,
++    typing.MutableMapping,
++    collections.abc.Mapping,
++    collections.abc.MutableMapping,
++    collections.OrderedDict,
++    typing_extensions.OrderedDict,
++    typing.DefaultDict,  # noqa: UP006
++    collections.defaultdict,
++]
++COUNTER_TYPES = [collections.Counter, typing.Counter]
++DEQUE_TYPES: list[type] = [collections.deque, typing.Deque]  # noqa: UP006
++
++# Note: This does not play very well with type checkers. For example,
++# `a: LambdaType = lambda x: x` will raise a type error by Pyright.
++ValidateCallSupportedTypes = Union[
++    LambdaType,
++    FunctionType,
++    MethodType,
++    partial,
++]
++
++VALIDATE_CALL_SUPPORTED_TYPES = get_args(ValidateCallSupportedTypes)
+ 
+-TUPLE_TYPES: list[type] = [tuple, typing.Tuple]
+-LIST_TYPES: list[type] = [list, typing.List, collections.abc.MutableSequence]
+-SET_TYPES: list[type] = [set, typing.Set, collections.abc.MutableSet]
+-FROZEN_SET_TYPES: list[type] = [frozenset, typing.FrozenSet, collections.abc.Set]
+-DICT_TYPES: list[type] = [dict, typing.Dict, collections.abc.MutableMapping, collections.abc.Mapping]
++_mode_to_validator: dict[
++    FieldValidatorModes, type[BeforeValidator | AfterValidator | PlainValidator | WrapValidator]
++] = {'before': BeforeValidator, 'after': AfterValidator, 'plain': PlainValidator, 'wrap': WrapValidator}
+ 
+ 
+ def check_validator_fields_against_field_name(

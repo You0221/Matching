@@ -1,0 +1,17 @@
+diff --git a/django/core/files/storage/memory.py b/django/core/files/storage/memory.py
+index 39a8aef3aea8..22b8c62bd1a2 100644
+--- a/django/core/files/storage/memory.py
++++ b/django/core/files/storage/memory.py
+@@ -45,10 +45,9 @@ class InMemoryFileNode(ContentFile, TimingMixin):
+     modification, and access times.
+     """
+ 
+-    def __init__(self, content="", name=""):
+-        self.file = None
++    def __init__(self, content="", name=None):
++        super().__init__(content, name)
+         self._content_type = type(content)
+-        self._initialize_stream()
+         self._initialize_times()
+ 
+     def open(self, mode):

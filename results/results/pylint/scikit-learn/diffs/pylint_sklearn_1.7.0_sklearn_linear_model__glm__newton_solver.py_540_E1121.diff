@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index c5c940bed6c39..cfef023692d68 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -543,7 +557,7 @@ def inner_solve(self, X, y, sample_weight):
+         elif self.is_multinomial_with_intercept:
+             # Here, only intercepts are unpenalized. We again choose the last class and
+             # set its intercept to zero.
+-            self.coef[-1] = 0
++            # Note that coef was already dealt with in setup.
+             self.gradient[-1] = 0
+             self.hessian[-1, :] = 0
+             self.hessian[:, -1] = 0

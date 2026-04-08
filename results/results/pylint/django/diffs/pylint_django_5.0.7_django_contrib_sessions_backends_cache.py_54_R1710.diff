@@ -1,0 +1,59 @@
+diff --git a/django/contrib/sessions/backends/cache.py b/django/contrib/sessions/backends/cache.py
+index 0c9d244f5618..b87afd6f666b 100644
+--- a/django/contrib/sessions/backends/cache.py
++++ b/django/contrib/sessions/backends/cache.py
+@@ -51,6 +64,20 @@ def create(self):
+             "It is likely that the cache is unavailable."
+         )
+ 
++    async def acreate(self):
++        for i in range(10000):
++            self._session_key = await self._aget_new_session_key()
++            try:
++                await self.asave(must_create=True)
++            except CreateError:
++                continue
++            self.modified = True
++            return
++        raise RuntimeError(
++            "Unable to create a new session key. "
++            "It is likely that the cache is unavailable."
++        )
++
+     def save(self, must_create=False):
+         if self.session_key is None:
+             return self.create()
+@@ -68,11 +95,33 @@ def save(self, must_create=False):
+         if must_create and not result:
+             raise CreateError
+ 
++    async def asave(self, must_create=False):
++        if self.session_key is None:
++            return await self.acreate()
++        if must_create:
++            func = self._cache.aadd
++        elif await self._cache.aget(await self.acache_key()) is not None:
++            func = self._cache.aset
++        else:
++            raise UpdateError
++        result = await func(
++            await self.acache_key(),
++            await self._aget_session(no_load=must_create),
++            await self.aget_expiry_age(),
++        )
++        if must_create and not result:
++            raise CreateError
++
+     def exists(self, session_key):
+         return (
+             bool(session_key) and (self.cache_key_prefix + session_key) in self._cache
+         )
+ 
++    async def aexists(self, session_key):
++        return bool(session_key) and await self._cache.ahas_key(
++            self.cache_key_prefix + session_key
++        )
++
+     def delete(self, session_key=None):
+         if session_key is None:
+             if self.session_key is None:

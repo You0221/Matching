@@ -1,0 +1,47 @@
+diff --git a/django/db/backends/postgresql/base.py b/django/db/backends/postgresql/base.py
+index d92ad587102c..c864cab57a2e 100644
+--- a/django/db/backends/postgresql/base.py
++++ b/django/db/backends/postgresql/base.py
+@@ -190,9 +237,7 @@ def get_database_version(self):
+     def get_connection_params(self):
+         settings_dict = self.settings_dict
+         # None may be used to connect to the default 'postgres' db
+-        if settings_dict["NAME"] == "" and not settings_dict.get("OPTIONS", {}).get(
+-            "service"
+-        ):
++        if settings_dict["NAME"] == "" and not settings_dict["OPTIONS"].get("service"):
+             raise ImproperlyConfigured(
+                 "settings.DATABASES is improperly configured. "
+                 "Please supply the NAME or OPTIONS['service'] value."
+@@ -215,7 +260,7 @@ def get_connection_params(self):
+             }
+         elif settings_dict["NAME"] is None:
+             # Connect to the default 'postgres' db.
+-            settings_dict.get("OPTIONS", {}).pop("service", None)
++            settings_dict["OPTIONS"].pop("service", None)
+             conn_params = {"dbname": "postgres", **settings_dict["OPTIONS"]}
+         else:
+             conn_params = {**settings_dict["OPTIONS"]}
+@@ -223,12 +268,19 @@ def get_connection_params(self):
+ 
+         conn_params.pop("assume_role", None)
+         conn_params.pop("isolation_level", None)
++
++        pool_options = conn_params.pop("pool", None)
++        if pool_options and not is_psycopg3:
++            raise ImproperlyConfigured("Database pooling requires psycopg >= 3")
++
+         server_side_binding = conn_params.pop("server_side_binding", None)
+         conn_params.setdefault(
+             "cursor_factory",
+-            ServerBindingCursor
+-            if is_psycopg3 and server_side_binding is True
+-            else Cursor,
++            (
++                ServerBindingCursor
++                if is_psycopg3 and server_side_binding is True
++                else Cursor
++            ),
+         )
+         if settings_dict["USER"]:
+             conn_params["user"] = settings_dict["USER"]

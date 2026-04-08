@@ -1,0 +1,17 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -213,12 +219,6 @@ def __init__(
+         self.remote_field = rel
+         self.is_relation = self.remote_field is not None
+         self.default = default
+-        if db_default is not NOT_PROVIDED and not hasattr(
+-            db_default, "resolve_expression"
+-        ):
+-            from django.db.models.expressions import Value
+-
+-            db_default = Value(db_default)
+         self.db_default = db_default
+         self.editable = editable
+         self.serialize = serialize

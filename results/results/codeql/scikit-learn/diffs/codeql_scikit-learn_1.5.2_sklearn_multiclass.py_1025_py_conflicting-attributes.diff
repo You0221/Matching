@@ -1,0 +1,13 @@
+diff --git a/sklearn/multiclass.py b/sklearn/multiclass.py
+index d8c7904b81cdf..1ddb36ca4fa8f 100644
+--- a/sklearn/multiclass.py
++++ b/sklearn/multiclass.py
+@@ -1178,7 +1189,7 @@ def fit(self, X, y, **fit_params):
+             **fit_params,
+         )
+ 
+-        y = self._validate_data(X="no_validation", y=y)
++        y = validate_data(self, X="no_validation", y=y)
+ 
+         random_state = check_random_state(self.random_state)
+         check_classification_targets(y)

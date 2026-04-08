@@ -1,0 +1,36 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 86c9bf05fe4..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -290,9 +349,29 @@ def _collect_bases_data(bases: tuple[type[Any], ...]) -> tuple[set[str], set[str
+     @deprecated('The `__fields__` attribute is deprecated, use `model_fields` instead.', category=None)
+     def __fields__(self) -> dict[str, FieldInfo]:
+         warnings.warn(
+-            'The `__fields__` attribute is deprecated, use `model_fields` instead.', PydanticDeprecatedSince20
++            'The `__fields__` attribute is deprecated, use `model_fields` instead.',
++            PydanticDeprecatedSince20,
++            stacklevel=2,
+         )
+-        return self.model_fields  # type: ignore
++        return self.model_fields
++
++    @property
++    def model_fields(self) -> dict[str, FieldInfo]:
++        """Get metadata about the fields defined on the model.
++
++        Returns:
++            A mapping of field names to [`FieldInfo`][pydantic.fields.FieldInfo] objects.
++        """
++        return getattr(self, '__pydantic_fields__', {})
++
++    @property
++    def model_computed_fields(self) -> dict[str, ComputedFieldInfo]:
++        """Get metadata about the computed fields defined on the model.
++
++        Returns:
++            A mapping of computed field names to [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
++        """
++        return getattr(self, '__pydantic_computed_fields__', {})
+ 
+     def __dir__(self) -> list[str]:
+         attributes = list(super().__dir__())

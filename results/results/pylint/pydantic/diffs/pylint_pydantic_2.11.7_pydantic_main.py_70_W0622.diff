@@ -1,0 +1,16 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index b21165c6abf..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -64,10 +64,7 @@
+     from ._internal._utils import AbstractSetIntStr, MappingIntStrAny
+     from .deprecated.parse import Protocol as DeprecatedParseProtocol
+     from .fields import ComputedFieldInfo, FieldInfo, ModelPrivateAttr
+-else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
++
+ 
+ __all__ = 'BaseModel', 'create_model'
+ 

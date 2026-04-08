@@ -1,0 +1,18 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2943,8 +3012,11 @@ def inverse_transform(self, X):
+ 
+         return self._transform(X, inverse=True)
+ 
+-    def _more_tags(self):
+-        return {"allow_nan": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        tags.input_tags.allow_nan = True
++        return tags
+ 
+ 
+ @validate_params(

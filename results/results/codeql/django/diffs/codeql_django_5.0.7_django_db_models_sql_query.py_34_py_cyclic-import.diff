@@ -1,0 +1,22 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -22,15 +23,16 @@
+ from django.db.models.expressions import (
+     BaseExpression,
+     Col,
++    ColPairs,
+     Exists,
+     F,
+     OuterRef,
++    RawSQL,
+     Ref,
+     ResolvedOuterRef,
+     Value,
+ )
+ from django.db.models.fields import Field
+-from django.db.models.fields.related_lookups import MultiColSource
+ from django.db.models.lookups import Lookup
+ from django.db.models.query_utils import (
+     Q,

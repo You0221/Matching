@@ -1,0 +1,14 @@
+diff --git a/pydantic/_internal/_decorators.py b/pydantic/_internal/_decorators.py
+index 8507e4a2434..bb0f7207eae 100644
+--- a/pydantic/_internal/_decorators.py
++++ b/pydantic/_internal/_decorators.py
+@@ -14,7 +15,9 @@
+ from ..errors import PydanticUserError
+ from ._core_utils import get_type_ref
+ from ._internal_dataclass import slots_true
++from ._namespace_utils import GlobalsNamespace, MappingNamespace
+ from ._typing_extra import get_function_type_hints
++from ._utils import can_be_positional
+ 
+ if TYPE_CHECKING:
+     from ..fields import ComputedFieldInfo

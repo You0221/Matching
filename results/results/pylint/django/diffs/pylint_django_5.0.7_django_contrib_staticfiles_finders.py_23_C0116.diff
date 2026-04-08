@@ -1,0 +1,28 @@
+diff --git a/django/contrib/staticfiles/finders.py b/django/contrib/staticfiles/finders.py
+index 112a81d279d3..c2087569dbf3 100644
+--- a/django/contrib/staticfiles/finders.py
++++ b/django/contrib/staticfiles/finders.py
+@@ -26,12 +54,20 @@ def check(self, **kwargs):
+             "configured correctly."
+         )
+ 
+-    def find(self, path, all=False):
++    # RemovedInDjango61Warning: When the deprecation ends, remove completely.
++    def _check_deprecated_find_param(self, **kwargs):
++        return _check_deprecated_find_param(
++            class_name=self.__class__.__qualname__, stacklevel=4, **kwargs
++        )
++
++    # RemovedInDjango61Warning: When the deprecation ends, replace with:
++    # def find(self, path, find_all=False):
++    def find(self, path, find_all=False, **kwargs):
+         """
+         Given a relative file path, find an absolute file path.
+ 
+-        If the ``all`` parameter is False (default) return only the first found
+-        file path; if True, return a list of all found files paths.
++        If the ``find_all`` parameter is False (default) return only the first
++        found file path; if True, return a list of all found files paths.
+         """
+         raise NotImplementedError(
+             "subclasses of BaseFinder must provide a find() method"

@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -2618,7 +2606,7 @@ def decision_function(self, X):
+ 
+         check_is_fitted(self, "coef_")
+ 
+-        X = self._validate_data(X, accept_sparse="csr", reset=False)
++        X = validate_data(self, X, accept_sparse="csr", reset=False)
+         decisions = safe_sparse_dot(X, self.coef_.T, dense_output=True) - self.offset_
+ 
+         return decisions.ravel()

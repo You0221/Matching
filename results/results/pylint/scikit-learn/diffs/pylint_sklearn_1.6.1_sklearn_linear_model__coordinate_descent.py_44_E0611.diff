@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 2dbb83c82fbaa..62096133ada2f 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -41,7 +41,7 @@
+ )
+ 
+ # mypy error: Module 'sklearn.linear_model' has no attribute '_cd_fast'
+-from . import _cd_fast as cd_fast  # type: ignore
++from . import _cd_fast as cd_fast  # type: ignore[attr-defined]
+ from ._base import LinearModel, _pre_fit, _preprocess_data
+ 
+ 

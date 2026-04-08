@@ -1,0 +1,12 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -2037,6 +2109,7 @@ def pre_sql_setup(self):
+         query.add_fields(fields)
+         super().pre_sql_setup()
+ 
++        is_composite_pk = meta.is_composite_pk
+         must_pre_select = (
+             count > 1 and not self.connection.features.update_can_self_select
+         )

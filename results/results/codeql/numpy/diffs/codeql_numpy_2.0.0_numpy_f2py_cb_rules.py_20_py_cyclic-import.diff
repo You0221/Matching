@@ -1,0 +1,52 @@
+diff --git a/numpy/f2py/cb_rules.py b/numpy/f2py/cb_rules.py
+index 721e075b6c73..238d473113e0 100644
+--- a/numpy/f2py/cb_rules.py
++++ b/numpy/f2py/cb_rules.py
+@@ -8,16 +8,39 @@
+ 
+ NO WARRANTY IS EXPRESSED OR IMPLIED.  USE AT YOUR OWN RISK.
+ """
+-from . import __version__
++from . import __version__, cfuncs
+ from .auxfuncs import (
+-    applyrules, debugcapi, dictappend, errmess, getargs, hasnote, isarray,
+-    iscomplex, iscomplexarray, iscomplexfunction, isfunction, isintent_c,
+-    isintent_hide, isintent_in, isintent_inout, isintent_nothide,
+-    isintent_out, isoptional, isrequired, isscalar, isstring,
+-    isstringfunction, issubroutine, l_and, l_not, l_or, outmess, replace,
+-    stripcomma, throw_error
++    applyrules,
++    debugcapi,
++    dictappend,
++    errmess,
++    getargs,
++    hasnote,
++    isarray,
++    iscomplex,
++    iscomplexarray,
++    iscomplexfunction,
++    isfunction,
++    isintent_c,
++    isintent_hide,
++    isintent_in,
++    isintent_inout,
++    isintent_nothide,
++    isintent_out,
++    isoptional,
++    isrequired,
++    isscalar,
++    isstring,
++    isstringfunction,
++    issubroutine,
++    l_and,
++    l_not,
++    l_or,
++    outmess,
++    replace,
++    stripcomma,
++    throw_error,
+ )
+-from . import cfuncs
+ 
+ f2py_version = __version__.version
+ 

@@ -1,0 +1,41 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2030,36 +2073,6 @@ def _annotated_schema(self, annotated_type: Any) -> core_schema.CoreSchema:
+                 schema = wrap_default(annotation, schema)
+         return schema
+ 
+-    def _get_prepare_pydantic_annotations_for_known_type(
+-        self, obj: Any, annotations: tuple[Any, ...]
+-    ) -> tuple[Any, list[Any]] | None:
+-        from ._std_types_schema import (
+-            deque_schema_prepare_pydantic_annotations,
+-            mapping_like_prepare_pydantic_annotations,
+-            path_schema_prepare_pydantic_annotations,
+-        )
+-
+-        # Check for hashability
+-        try:
+-            hash(obj)
+-        except TypeError:
+-            # obj is definitely not a known type if this fails
+-            return None
+-
+-        # TODO: I'd rather we didn't handle the generic nature in the annotations prep, but the same way we do other
+-        # generic types like list[str] via _match_generic_type, but I'm not sure if we can do that because this is
+-        # not always called from match_type, but sometimes from _apply_annotations
+-        obj_origin = get_origin(obj) or obj
+-
+-        if obj_origin in PATH_TYPES:
+-            return path_schema_prepare_pydantic_annotations(obj, annotations)
+-        elif obj_origin in DEQUE_TYPES:
+-            return deque_schema_prepare_pydantic_annotations(obj, annotations)
+-        elif obj_origin in MAPPING_TYPES:
+-            return mapping_like_prepare_pydantic_annotations(obj, annotations)
+-        else:
+-            return None
+-
+     def _apply_annotations(
+         self,
+         source_type: Any,

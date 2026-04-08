@@ -1,0 +1,19 @@
+diff --git a/django/forms/forms.py b/django/forms/forms.py
+index b99ec8248aaa..d05bf4bb9e44 100644
+--- a/django/forms/forms.py
++++ b/django/forms/forms.py
+@@ -331,13 +341,8 @@ def full_clean(self):
+     def _clean_fields(self):
+         for name, bf in self._bound_items():
+             field = bf.field
+-            value = bf.initial if field.disabled else bf.data
+             try:
+-                if isinstance(field, FileField):
+-                    value = field.clean(value, bf.initial)
+-                else:
+-                    value = field.clean(value)
+-                self.cleaned_data[name] = value
++                self.cleaned_data[name] = field._clean_bound_field(bf)
+                 if hasattr(self, "clean_%s" % name):
+                     value = getattr(self, "clean_%s" % name)()
+                     self.cleaned_data[name] = value

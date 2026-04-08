@@ -1,0 +1,12 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index 8b5dea5c4f6c3..ef5081080bda1 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -193,6 +220,7 @@ def __init__(
+         self.n_bins = n_bins
+         self.encode = encode
+         self.strategy = strategy
++        self.quantile_method = quantile_method
+         self.dtype = dtype
+         self.subsample = subsample
+         self.random_state = random_state

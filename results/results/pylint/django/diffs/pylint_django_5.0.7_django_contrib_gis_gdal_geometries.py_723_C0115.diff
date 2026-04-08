@@ -1,0 +1,19 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -723,6 +819,14 @@ class MultiPolygon(GeometryCollection):
+     pass
+ 
+ 
++class MultiSurface(GeometryCollection):
++    geos_support = False
++
++
++class MultiCurve(GeometryCollection):
++    geos_support = False
++
++
+ # Class mapping dictionary (using the OGRwkbGeometryType as the key)
+ GEO_CLASSES = {
+     1: Point,

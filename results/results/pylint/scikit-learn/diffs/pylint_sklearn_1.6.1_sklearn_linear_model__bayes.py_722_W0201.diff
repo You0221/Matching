@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -716,7 +734,7 @@ def update_coeff(X, y, coef_, alpha_, keep_lambda, sigma_):
+                     + n_samples * log(alpha_)
+                     + np.sum(np.log(lambda_))
+                 )
+-                s -= 0.5 * (alpha_ * rmse_ + (lambda_ * coef_**2).sum())
++                s -= 0.5 * (alpha_ * sse_ + (lambda_ * coef_**2).sum())
+                 self.scores_.append(s)
+ 
+             # Check for convergence

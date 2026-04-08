@@ -1,0 +1,19 @@
+diff --git a/django/contrib/postgres/constraints.py b/django/contrib/postgres/constraints.py
+index c61072b5a54c..2eae101d5a91 100644
+--- a/django/contrib/postgres/constraints.py
++++ b/django/contrib/postgres/constraints.py
+@@ -77,6 +76,14 @@ def _get_expressions(self, schema_editor, query):
+             expressions.append(expression)
+         return ExpressionList(*expressions).resolve_expression(query)
+ 
++    def _check(self, model, connection):
++        references = set()
++        for expr, _ in self.expressions:
++            if isinstance(expr, str):
++                expr = F(expr)
++            references.update(model._get_expr_references(expr))
++        return self._check_references(model, references)
++
+     def _get_condition_sql(self, compiler, schema_editor, query):
+         if self.condition is None:
+             return None

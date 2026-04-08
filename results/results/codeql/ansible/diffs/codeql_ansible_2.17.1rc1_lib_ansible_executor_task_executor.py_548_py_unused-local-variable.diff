@@ -1,0 +1,38 @@
+diff --git a/lib/ansible/executor/task_executor.py b/lib/ansible/executor/task_executor.py
+index a8e24f5f36ab82..ef292dac9f7645 100644
+--- a/lib/ansible/executor/task_executor.py
++++ b/lib/ansible/executor/task_executor.py
+@@ -520,32 +563,9 @@ def _execute(self, variables=None):
+             include_args = self._task.args.copy()
+             return dict(include_args=include_args)
+ 
+-        # Now we do final validation on the task, which sets all fields to their final values.
+-        try:
+-            self._task.post_validate(templar=templar)
+-        except AnsibleError:
+-            raise
+-        except Exception:
+-            return dict(changed=False, failed=True, _ansible_no_log=no_log, exception=to_text(traceback.format_exc()))
+-        if '_variable_params' in self._task.args:
+-            variable_params = self._task.args.pop('_variable_params')
+-            if isinstance(variable_params, dict):
+-                if C.INJECT_FACTS_AS_VARS:
+-                    display.warning("Using a variable for a task's 'args' is unsafe in some situations "
+-                                    "(see https://docs.ansible.com/ansible/devel/reference_appendices/faq.html#argsplat-unsafe)")
+-                variable_params.update(self._task.args)
+-                self._task.args = variable_params
+-            else:
+-                # if we didn't get a dict, it means there's garbage remaining after k=v parsing, just give up
+-                # see https://github.com/ansible/ansible/issues/79862
+-                raise AnsibleError(f"invalid or malformed argument: '{variable_params}'")
+-
+-        # update no_log to task value, now that we have it templated
+-        no_log = self._task.no_log
+-
+         # free tempvars up, not used anymore, cvars and vars_copy should be mainly used after this point
+         # updating the original 'variables' at the end
+-        tempvars = {}
++        del tempvars
+ 
+         # setup cvars copy, used for all connection related templating
+         if self._task.delegate_to:

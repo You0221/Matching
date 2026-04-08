@@ -1,0 +1,13 @@
+diff --git a/tornado/ioloop.py b/tornado/ioloop.py
+index 3fb1359aae..647b8a7dfc 100644
+--- a/tornado/ioloop.py
++++ b/tornado/ioloop.py
+@@ -851,7 +859,7 @@ def __le__(self, other: "_Timeout") -> bool:
+         return self.tdeadline <= other.tdeadline
+ 
+ 
+-class PeriodicCallback(object):
++class PeriodicCallback:
+     """Schedules the given callback to be called periodically.
+ 
+     The callback is called every ``callback_time`` milliseconds when

@@ -1,0 +1,86 @@
+diff --git a/pydantic/functional_serializers.py b/pydantic/functional_serializers.py
+index 1a9e5563637..d1579bbd8ae 100644
+--- a/pydantic/functional_serializers.py
++++ b/pydantic/functional_serializers.py
+@@ -283,37 +280,69 @@ def dec(
+             when_used=when_used,
+             check_fields=check_fields,
+         )
+-        return _decorators.PydanticDescriptorProxy(f, dec_info)
++        return _decorators.PydanticDescriptorProxy(f, dec_info)  # pyright: ignore[reportArgumentType]
++
++    return dec  # pyright: ignore[reportReturnType]
+ 
+-    return dec
+ 
++if TYPE_CHECKING:
++    # The first argument in the following callables represent the `self` type:
++
++    ModelPlainSerializerWithInfo: TypeAlias = Callable[[Any, SerializationInfo], Any]
++    """A model serializer method with the `info` argument, in `plain` mode."""
+ 
+-FuncType = TypeVar('FuncType', bound=Callable[..., Any])
++    ModelPlainSerializerWithoutInfo: TypeAlias = Callable[[Any], Any]
++    """A model serializer method without the `info` argument, in `plain` mode."""
++
++    ModelPlainSerializer: TypeAlias = 'ModelPlainSerializerWithInfo | ModelPlainSerializerWithoutInfo'
++    """A model serializer method in `plain` mode."""
++
++    ModelWrapSerializerWithInfo: TypeAlias = Callable[[Any, SerializerFunctionWrapHandler, SerializationInfo], Any]
++    """A model serializer method with the `info` argument, in `wrap` mode."""
++
++    ModelWrapSerializerWithoutInfo: TypeAlias = Callable[[Any, SerializerFunctionWrapHandler], Any]
++    """A model serializer method without the `info` argument, in `wrap` mode."""
++
++    ModelWrapSerializer: TypeAlias = 'ModelWrapSerializerWithInfo | ModelWrapSerializerWithoutInfo'
++    """A model serializer method in `wrap` mode."""
++
++    ModelSerializer: TypeAlias = 'ModelPlainSerializer | ModelWrapSerializer'
++
++    _ModelPlainSerializerT = TypeVar('_ModelPlainSerializerT', bound=ModelPlainSerializer)
++    _ModelWrapSerializerT = TypeVar('_ModelWrapSerializerT', bound=ModelWrapSerializer)
+ 
+ 
+ @overload
+-def model_serializer(__f: FuncType) -> FuncType:
+-    ...
++def model_serializer(f: _ModelPlainSerializerT, /) -> _ModelPlainSerializerT: ...
++
++
++@overload
++def model_serializer(
++    *, mode: Literal['wrap'], when_used: WhenUsed = 'always', return_type: Any = ...
++) -> Callable[[_ModelWrapSerializerT], _ModelWrapSerializerT]: ...
+ 
+ 
+ @overload
+ def model_serializer(
+     *,
+-    mode: Literal['plain', 'wrap'] = ...,
+-    when_used: Literal['always', 'unless-none', 'json', 'json-unless-none'] = 'always',
++    mode: Literal['plain'] = ...,
++    when_used: WhenUsed = 'always',
+     return_type: Any = ...,
+-) -> Callable[[FuncType], FuncType]:
+-    ...
++) -> Callable[[_ModelPlainSerializerT], _ModelPlainSerializerT]: ...
+ 
+ 
+ def model_serializer(
+-    f: Callable[..., Any] | None = None,
++    f: _ModelPlainSerializerT | _ModelWrapSerializerT | None = None,
+     /,
+     *,
+     mode: Literal['plain', 'wrap'] = 'plain',
+-    when_used: Literal['always', 'unless-none', 'json', 'json-unless-none'] = 'always',
++    when_used: WhenUsed = 'always',
+     return_type: Any = PydanticUndefined,
+-) -> Callable[[Any], Any]:
++) -> (
++    _ModelPlainSerializerT
++    | Callable[[_ModelWrapSerializerT], _ModelWrapSerializerT]
++    | Callable[[_ModelPlainSerializerT], _ModelPlainSerializerT]
++):
+     """Decorator that enables custom model serialization.
+ 
+     This is useful when a model need to be serialized in a customized manner, allowing for flexibility beyond just specific fields.

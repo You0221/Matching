@@ -1,0 +1,59 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2439,13 +2505,16 @@ def set_values(self, fields):
+                 # Shortcut - if there are no extra or annotations, then
+                 # the values() clause must be just field names.
+                 field_names = list(fields)
++                selected = dict(zip(fields, range(len(fields))))
+             else:
+                 self.default_cols = False
+                 for f in fields:
+-                    if f in self.extra_select:
++                    if extra := self.extra_select.get(f):
+                         extra_names.append(f)
++                        selected[f] = RawSQL(*extra)
+                     elif f in self.annotation_select:
+                         annotation_names.append(f)
++                        selected[f] = f
+                     elif f in self.annotations:
+                         raise FieldError(
+                             f"Cannot select the '{f}' alias. Use annotate() to "
+@@ -2457,13 +2526,13 @@ def set_values(self, fields):
+                         # `f` is not resolvable.
+                         if self.annotation_select:
+                             self.names_to_path(f.split(LOOKUP_SEP), self.model._meta)
++                        selected[f] = len(field_names)
+                         field_names.append(f)
+             self.set_extra_mask(extra_names)
+             self.set_annotation_mask(annotation_names)
+-            selected = frozenset(field_names + extra_names + annotation_names)
+         else:
+             field_names = [f.attname for f in self.model._meta.concrete_fields]
+-            selected = frozenset(field_names)
++            selected = dict.fromkeys(field_names, None)
+         # Selected annotations must be known before setting the GROUP BY
+         # clause.
+         if self.group_by is True:
+@@ -2486,6 +2555,7 @@ def set_values(self, fields):
+ 
+         self.values_select = tuple(field_names)
+         self.add_fields(field_names, True)
++        self.selected = selected if fields else None
+ 
+     @property
+     def annotation_select(self):
+@@ -2499,9 +2569,9 @@ def annotation_select(self):
+             return {}
+         elif self.annotation_select_mask is not None:
+             self._annotation_select_cache = {
+-                k: self.annotations[k]
+-                for k in self.annotation_select_mask
+-                if k in self.annotations
++                k: v
++                for k, v in self.annotations.items()
++                if k in self.annotation_select_mask
+             }
+             return self._annotation_select_cache
+         else:

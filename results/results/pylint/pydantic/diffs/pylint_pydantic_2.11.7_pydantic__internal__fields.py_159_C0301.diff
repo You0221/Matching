@@ -1,0 +1,68 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 4540b8d83f1..aad2ac94bdd 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -130,42 +269,32 @@ def collect_model_fields(  # noqa: C901
+             # protected namespaces (where `model_config` might be allowed as a field name)
+             continue
+ 
+-        for protected_namespace in config_wrapper.protected_namespaces:
+-            ns_violation: bool = False
+-            if isinstance(protected_namespace, Pattern):
+-                ns_violation = protected_namespace.match(ann_name) is not None
+-            elif isinstance(protected_namespace, str):
+-                ns_violation = ann_name.startswith(protected_namespace)
+-
+-            if ns_violation:
+-                for b in bases:
+-                    if hasattr(b, ann_name):
+-                        if not (issubclass(b, BaseModel) and ann_name in getattr(b, '__pydantic_fields__', {})):
+-                            raise NameError(
+-                                f'Field "{ann_name}" conflicts with member {getattr(b, ann_name)}'
+-                                f' of protected namespace "{protected_namespace}".'
+-                            )
+-                else:
+-                    valid_namespaces = ()
+-                    for pn in config_wrapper.protected_namespaces:
+-                        if isinstance(pn, Pattern):
+-                            if not pn.match(ann_name):
+-                                valid_namespaces += (f're.compile({pn.pattern})',)
+-                        else:
+-                            if not ann_name.startswith(pn):
+-                                valid_namespaces += (pn,)
+-
+-                    warnings.warn(
+-                        f'Field "{ann_name}" in {cls.__name__} has conflict with protected namespace "{protected_namespace}".'
+-                        '\n\nYou may be able to resolve this warning by setting'
+-                        f" `model_config['protected_namespaces'] = {valid_namespaces}`.",
+-                        UserWarning,
+-                    )
++        _check_protected_namespaces(
++            protected_namespaces=config_wrapper.protected_namespaces,
++            ann_name=ann_name,
++            bases=bases,
++            cls_name=cls.__name__,
++        )
++
+         if _typing_extra.is_classvar_annotation(ann_type):
+             class_vars.add(ann_name)
+             continue
+ 
+         assigned_value = getattr(cls, ann_name, PydanticUndefined)
++        if assigned_value is not PydanticUndefined and (
++            # One of the deprecated instance methods was used as a field name (e.g. `dict()`):
++            any(getattr(BaseModel_, depr_name, None) is assigned_value for depr_name in _deprecated_method_names)
++            # One of the deprecated class methods was used as a field name (e.g. `schema()`):
++            or (
++                hasattr(assigned_value, '__func__')
++                and any(
++                    getattr(getattr(BaseModel_, depr_name, None), '__func__', None) is assigned_value.__func__  # pyright: ignore[reportAttributeAccessIssue]
++                    for depr_name in _deprecated_classmethod_names
++                )
++            )
++        ):
++            # Then `assigned_value` would be the method, even though no default was specified:
++            assigned_value = PydanticUndefined
+ 
+         if not is_valid_field_name(ann_name):
+             continue

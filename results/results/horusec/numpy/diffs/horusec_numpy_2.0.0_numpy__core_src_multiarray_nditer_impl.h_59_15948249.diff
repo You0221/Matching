@@ -1,0 +1,24 @@
+diff --git a/numpy/_core/src/multiarray/nditer_impl.h b/numpy/_core/src/multiarray/nditer_impl.h
+index 0332d78ec913..ab3724d67d11 100644
+--- a/numpy/_core/src/multiarray/nditer_impl.h
++++ b/numpy/_core/src/multiarray/nditer_impl.h
+@@ -55,13 +55,14 @@
+ /********** PRINTF DEBUG TRACING **************/
+ #define NPY_IT_DBG_TRACING 0
+ 
++/* TODO: Can remove the n-args macros, old C89 didn't have variadic macros. */
+ #if NPY_IT_DBG_TRACING
+-#define NPY_IT_DBG_PRINT(s) printf("%s", s)
+-#define NPY_IT_DBG_PRINT1(s, p1) printf(s, p1)
+-#define NPY_IT_DBG_PRINT2(s, p1, p2) printf(s, p1, p2)
+-#define NPY_IT_DBG_PRINT3(s, p1, p2, p3) printf(s, p1, p2, p3)
++#define NPY_IT_DBG_PRINT(...) printf(__VA_ARGS__)
++#define NPY_IT_DBG_PRINT1(s, p1) NPY_IT_DBG_PRINT(s, p1)
++#define NPY_IT_DBG_PRINT2(s, p1, p2) NPY_IT_DBG_PRINT(s, p1, p2)
++#define NPY_IT_DBG_PRINT3(s, p1, p2, p3) NPY_IT_DBG_PRINT(s, p1, p2, p3)
+ #else
+-#define NPY_IT_DBG_PRINT(s)
++#define NPY_IT_DBG_PRINT(...)
+ #define NPY_IT_DBG_PRINT1(s, p1)
+ #define NPY_IT_DBG_PRINT2(s, p1, p2)
+ #define NPY_IT_DBG_PRINT3(s, p1, p2, p3)

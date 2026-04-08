@@ -1,0 +1,51 @@
+diff --git a/pandas/core/arrays/categorical.py b/pandas/core/arrays/categorical.py
+index f191f7277743f..0fe69f6d1ebc2 100644
+--- a/pandas/core/arrays/categorical.py
++++ b/pandas/core/arrays/categorical.py
+@@ -1642,6 +1643,17 @@ def __array__(
+         """
+         The numpy array interface.
+ 
++        Users should not call this directly. Rather, it is invoked by
++        :func:`numpy.array` and :func:`numpy.asarray`.
++
++        Parameters
++        ----------
++        dtype : np.dtype or None
++            Specifies the the dtype for the array.
++
++        copy : bool or None, optional
++            See :func:`numpy.asarray`.
++
+         Returns
+         -------
+         numpy.array
+@@ -1659,13 +1671,25 @@ def __array__(
+         >>> np.asarray(cat)
+         array(['a', 'b'], dtype=object)
+         """
++        if copy is False:
++            warnings.warn(
++                "Starting with NumPy 2.0, the behavior of the 'copy' keyword has "
++                "changed and passing 'copy=False' raises an error when returning "
++                "a zero-copy NumPy array is not possible. pandas will follow "
++                "this behavior starting with pandas 3.0.\nThis conversion to "
++                "NumPy requires a copy, but 'copy=False' was passed. Consider "
++                "using 'np.asarray(..)' instead.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++
+         ret = take_nd(self.categories._values, self._codes)
+-        if dtype and np.dtype(dtype) != self.categories.dtype:
+-            return np.asarray(ret, dtype)
+         # When we're a Categorical[ExtensionArray], like Interval,
+         # we need to ensure __array__ gets all the way to an
+         # ndarray.
+-        return np.asarray(ret)
++
++        # `take_nd` should already make a copy, so don't force again.
++        return np.asarray(ret, dtype=dtype)
+ 
+     def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs, **kwargs):
+         # for binary ops, use our custom dunder methods

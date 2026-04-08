@@ -1,0 +1,13 @@
+diff --git a/django/contrib/gis/geoip2.py b/django/contrib/gis/geoip2.py
+index f5058c1c05dc..5b510dee7f96 100644
+--- a/django/contrib/gis/geoip2.py
++++ b/django/contrib/gis/geoip2.py
+@@ -106,7 +118,7 @@ def __init__(self, path=None, cache=0, country=None, city=None):
+             )
+ 
+         database_type = self._metadata.database_type
+-        if not database_type.endswith(("City", "Country")):
++        if database_type not in SUPPORTED_DATABASE_TYPES:
+             raise GeoIP2Exception(f"Unable to handle database edition: {database_type}")
+ 
+     def __del__(self):

@@ -1,0 +1,30 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -2205,7 +2217,7 @@ def get_internal_type(self):
+ class GenericIPAddressField(Field):
+     empty_strings_allowed = False
+     description = _("IP address")
+-    default_error_messages = {}
++    default_error_messages = {"invalid": _("Enter a valid %(protocol)s address.")}
+ 
+     def __init__(
+         self,
+@@ -2218,12 +2230,10 @@ def __init__(
+     ):
+         self.unpack_ipv4 = unpack_ipv4
+         self.protocol = protocol
+-        (
+-            self.default_validators,
+-            invalid_error_message,
+-        ) = validators.ip_address_validators(protocol, unpack_ipv4)
+-        self.default_error_messages["invalid"] = invalid_error_message
+-        kwargs["max_length"] = 39
++        self.default_validators = validators.ip_address_validators(
++            protocol, unpack_ipv4
++        )
++        kwargs["max_length"] = MAX_IPV6_ADDRESS_LENGTH
+         super().__init__(verbose_name, name, *args, **kwargs)
+ 
+     def check(self, **kwargs):

@@ -1,0 +1,26 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 4b3d8eff730..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1103,14 +1157,18 @@ def __fields_set__(self) -> set[str]:
+     def dict(  # noqa: D102
+         self,
+         *,
+-        include: IncEx = None,
+-        exclude: IncEx = None,
++        include: IncEx | None = None,
++        exclude: IncEx | None = None,
+         by_alias: bool = False,
+         exclude_unset: bool = False,
+         exclude_defaults: bool = False,
+         exclude_none: bool = False,
+     ) -> Dict[str, Any]:  # noqa UP006
+-        warnings.warn('The `dict` method is deprecated; use `model_dump` instead.', category=PydanticDeprecatedSince20)
++        warnings.warn(
++            'The `dict` method is deprecated; use `model_dump` instead.',
++            category=PydanticDeprecatedSince20,
++            stacklevel=2,
++        )
+         return self.model_dump(
+             include=include,
+             exclude=exclude,

@@ -1,0 +1,24 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index f1025a5102a..59160ab72b5 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -1119,15 +1165,10 @@ def __get_pydantic_json_schema__(
+         return field_schema
+ 
+     def __get_pydantic_core_schema__(self, source: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+-        if isinstance(self, source):
+-            # used directly as a type
+-            return core_schema.uuid_schema(version=self.uuid_version)
+-        else:
+-            # update existing schema with self.uuid_version
+-            schema = handler(source)
+-            _check_annotated_type(schema['type'], 'uuid', self.__class__.__name__)
+-            schema['version'] = self.uuid_version  # type: ignore
+-            return schema
++        schema = handler(source)
++        _check_annotated_type(schema['type'], 'uuid', self.__class__.__name__)
++        schema['version'] = self.uuid_version  # type: ignore
++        return schema
+ 
+     def __hash__(self) -> int:
+         return hash(type(self.uuid_version))

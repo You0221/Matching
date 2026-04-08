@@ -1,0 +1,17 @@
+diff --git a/django/db/backends/mysql/features.py b/django/db/backends/mysql/features.py
+index 4d68b2bf3e93..414f552d94c0 100644
+--- a/django/db/backends/mysql/features.py
++++ b/django/db/backends/mysql/features.py
+@@ -209,11 +192,7 @@ def introspected_field_types(self):
+ 
+     @cached_property
+     def can_return_columns_from_insert(self):
+-        return self.connection.mysql_is_mariadb and self.connection.mysql_version >= (
+-            10,
+-            5,
+-            0,
+-        )
++        return self.connection.mysql_is_mariadb
+ 
+     can_return_rows_from_bulk_insert = property(
+         operator.attrgetter("can_return_columns_from_insert")

@@ -1,0 +1,27 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1558,18 +1677,18 @@ def dataclass_schema(self, schema: core_schema.DataclassSchema) -> JsonSchemaVal
+         Returns:
+             The generated JSON schema.
+         """
++        from ._internal._dataclasses import is_builtin_dataclass
++
+         cls = schema['cls']
+         config: ConfigDict = getattr(cls, '__pydantic_config__', cast('ConfigDict', {}))
+-        title = config.get('title') or cls.__name__
+ 
+         with self._config_wrapper_stack.push(config):
+             json_schema = self.generate_inner(schema['schema']).copy()
+ 
+-        json_schema_extra = config.get('json_schema_extra')
+-        json_schema = self._update_class_schema(json_schema, title, config.get('extra', None), cls, json_schema_extra)
++        self._update_class_schema(json_schema, cls, config)
+ 
+         # Dataclass-specific handling of description
+-        if is_dataclass(cls) and not hasattr(cls, '__pydantic_validator__'):
++        if is_builtin_dataclass(cls):
+             # vanilla dataclass; don't use cls.__doc__ as it will contain the class signature by default
+             description = None
+         else:

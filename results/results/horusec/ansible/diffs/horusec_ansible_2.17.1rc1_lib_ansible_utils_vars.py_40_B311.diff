@@ -1,0 +1,18 @@
+diff --git a/lib/ansible/utils/vars.py b/lib/ansible/utils/vars.py
+index 373fc706a03233..50ddf42e7f824b 100644
+--- a/lib/ansible/utils/vars.py
++++ b/lib/ansible/utils/vars.py
+@@ -32,12 +32,10 @@
+ from ansible.parsing.splitter import parse_kv
+ 
+ 
+-ADDITIONAL_PY2_KEYWORDS = frozenset(("True", "False", "None"))
+-
+ _MAXSIZE = 2 ** 32
+ cur_id = 0
+ node_mac = ("%012x" % uuid.getnode())[:12]
+-random_int = ("%08x" % random.randint(0, _MAXSIZE))[:8]
++random_int = ("%08x" % secrets.randbelow(_MAXSIZE))[:8]
+ 
+ 
+ def get_unique_id():

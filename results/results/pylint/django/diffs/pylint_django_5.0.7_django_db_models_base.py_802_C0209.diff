@@ -1,0 +1,156 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -764,8 +786,54 @@ def serializable_value(self, field_name):
+             return getattr(self, field_name)
+         return getattr(self, field.attname)
+ 
++    # RemovedInDjango60Warning: When the deprecation ends, remove completely.
++    def _parse_save_params(self, *args, method_name, **kwargs):
++        defaults = {
++            "force_insert": False,
++            "force_update": False,
++            "using": None,
++            "update_fields": None,
++        }
++
++        warnings.warn(
++            f"Passing positional arguments to {method_name}() is deprecated",
++            RemovedInDjango60Warning,
++            stacklevel=3,
++        )
++        total_len_args = len(args) + 1  # include self
++        max_len_args = len(defaults) + 1
++        if total_len_args > max_len_args:
++            # Recreate the proper TypeError message from Python.
++            raise TypeError(
++                f"Model.{method_name}() takes from 1 to {max_len_args} positional "
++                f"arguments but {total_len_args} were given"
++            )
++
++        def get_param(param_name, param_value, arg_index):
++            if arg_index < len(args):
++                if param_value is not defaults[param_name]:
++                    # Recreate the proper TypeError message from Python.
++                    raise TypeError(
++                        f"Model.{method_name}() got multiple values for argument "
++                        f"'{param_name}'"
++                    )
++                return args[arg_index]
++
++            return param_value
++
++        return [get_param(k, v, i) for i, (k, v) in enumerate(kwargs.items())]
++
++    # RemovedInDjango60Warning: When the deprecation ends, replace with:
++    # def save(
++    #   self, *, force_insert=False, force_update=False, using=None, update_fields=None,
++    # ):
+     def save(
+-        self, force_insert=False, force_update=False, using=None, update_fields=None
++        self,
++        *args,
++        force_insert=False,
++        force_update=False,
++        using=None,
++        update_fields=None,
+     ):
+         """
+         Save the current instance. Override this in a subclass if you want to
+@@ -775,13 +843,28 @@ def save(
+         that the "save" must be an SQL insert or update (or equivalent for
+         non-SQL backends), respectively. Normally, they should not be set.
+         """
++        # RemovedInDjango60Warning.
++        if args:
++            force_insert, force_update, using, update_fields = self._parse_save_params(
++                *args,
++                method_name="save",
++                force_insert=force_insert,
++                force_update=force_update,
++                using=using,
++                update_fields=update_fields,
++            )
++
+         self._prepare_related_fields_for_save(operation_name="save")
+ 
+         using = using or router.db_for_write(self.__class__, instance=self)
+         if force_insert and (force_update or update_fields):
+             raise ValueError("Cannot force both insert and updating in model saving.")
+ 
+-        deferred_fields = self.get_deferred_fields()
++        deferred_non_generated_fields = {
++            f.attname
++            for f in self._meta.concrete_fields
++            if f.attname not in self.__dict__ and f.generated is False
++        }
+         if update_fields is not None:
+             # If update_fields is empty, skip the save. We do also check for
+             # no-op saves later on for inheritance cases. This bailout is
+@@ -791,23 +874,28 @@ def save(
+ 
+             update_fields = frozenset(update_fields)
+             field_names = self._meta._non_pk_concrete_field_names
+-            non_model_fields = update_fields.difference(field_names)
++            not_updatable_fields = update_fields.difference(field_names)
+ 
+-            if non_model_fields:
++            if not_updatable_fields:
+                 raise ValueError(
+                     "The following fields do not exist in this model, are m2m "
+-                    "fields, or are non-concrete fields: %s"
+-                    % ", ".join(non_model_fields)
++                    "fields, primary keys, or are non-concrete fields: %s"
++                    % ", ".join(not_updatable_fields)
+                 )
+ 
+         # If saving to the same database, and this model is deferred, then
+         # automatically do an "update_fields" save on the loaded fields.
+-        elif not force_insert and deferred_fields and using == self._state.db:
++        elif (
++            not force_insert
++            and deferred_non_generated_fields
++            and using == self._state.db
++        ):
+             field_names = set()
++            pk_fields = self._meta.pk_fields
+             for field in self._meta.concrete_fields:
+-                if not field.primary_key and not hasattr(field, "through"):
++                if field not in pk_fields and not hasattr(field, "through"):
+                     field_names.add(field.attname)
+-            loaded_fields = field_names.difference(deferred_fields)
++            loaded_fields = field_names.difference(deferred_non_generated_fields)
+             if loaded_fields:
+                 update_fields = frozenset(loaded_fields)
+ 
+@@ -820,9 +908,28 @@ def save(
+ 
+     save.alters_data = True
+ 
++    # RemovedInDjango60Warning: When the deprecation ends, replace with:
++    # async def asave(
++    #   self, *, force_insert=False, force_update=False, using=None, update_fields=None,
++    # ):
+     async def asave(
+-        self, force_insert=False, force_update=False, using=None, update_fields=None
++        self,
++        *args,
++        force_insert=False,
++        force_update=False,
++        using=None,
++        update_fields=None,
+     ):
++        # RemovedInDjango60Warning.
++        if args:
++            force_insert, force_update, using, update_fields = self._parse_save_params(
++                *args,
++                method_name="asave",
++                force_insert=force_insert,
++                force_update=force_update,
++                using=using,
++                update_fields=update_fields,
++            )
+         return await sync_to_async(self.save)(
+             force_insert=force_insert,
+             force_update=force_update,

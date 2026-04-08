@@ -1,0 +1,114 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 86c9bf05fe4..fd5d68b37f7 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -520,11 +561,10 @@ def set_model_fields(
+ 
+ def complete_model_class(
+     cls: type[BaseModel],
+-    cls_name: str,
+     config_wrapper: ConfigWrapper,
+     *,
+     raise_errors: bool = True,
+-    types_namespace: dict[str, Any] | None,
++    ns_resolver: NsResolver | None = None,
+     create_model_module: str | None = None,
+ ) -> bool:
+     """Finish building a model class.
+@@ -534,10 +574,9 @@ def complete_model_class(
+ 
+     Args:
+         cls: BaseModel or dataclass.
+-        cls_name: The model or dataclass name.
+         config_wrapper: The config wrapper instance.
+         raise_errors: Whether to raise errors.
+-        types_namespace: Optional extra namespace to look for types in.
++        ns_resolver: The namespace resolver instance to use during schema building.
+         create_model_module: The module of the class to be created, if created by `create_model`.
+ 
+     Returns:
+@@ -550,37 +589,32 @@ def complete_model_class(
+     typevars_map = get_model_typevars_map(cls)
+     gen_schema = GenerateSchema(
+         config_wrapper,
+-        types_namespace,
++        ns_resolver,
+         typevars_map,
+     )
+ 
+-    handler = CallbackGetCoreSchemaHandler(
+-        partial(gen_schema.generate_schema, from_dunder_get_core_schema=False),
+-        gen_schema,
+-        ref_mode='unpack',
+-    )
+-
+-    if config_wrapper.defer_build and 'model' in config_wrapper.experimental_defer_build_mode:
+-        set_model_mocks(cls, cls_name)
+-        return False
+-
+     try:
+-        schema = cls.__get_pydantic_core_schema__(cls, handler)
++        schema = gen_schema.generate_schema(cls)
+     except PydanticUndefinedAnnotation as e:
+         if raise_errors:
+             raise
+-        set_model_mocks(cls, cls_name, f'`{e.name}`')
++        set_model_mocks(cls, f'`{e.name}`')
+         return False
+ 
+-    core_config = config_wrapper.core_config(cls)
++    core_config = config_wrapper.core_config(title=cls.__name__)
+ 
+     try:
+         schema = gen_schema.clean_schema(schema)
+-    except gen_schema.CollectedInvalid:
+-        set_model_mocks(cls, cls_name)
++    except InvalidSchemaError:
++        set_model_mocks(cls)
+         return False
+ 
+-    # debug(schema)
++    # This needs to happen *after* model schema generation, as the return type
++    # of the properties are evaluated and the `ComputedFieldInfo` are recreated:
++    cls.__pydantic_computed_fields__ = {k: v.info for k, v in cls.__pydantic_decorators__.computed_fields.items()}
++
++    set_deprecated_descriptors(cls)
++
+     cls.__pydantic_core_schema__ = schema
+ 
+     cls.__pydantic_validator__ = create_schema_validator(
+@@ -596,22 +630,30 @@ def complete_model_class(
+     cls.__pydantic_complete__ = True
+ 
+     # set __signature__ attr only for model class, but not for its instances
+-    cls.__signature__ = ClassAttribute(
++    # (because instances can define `__call__`, and `inspect.signature` shouldn't
++    # use the `__signature__` attribute and instead generate from `__call__`).
++    cls.__signature__ = LazyClassAttribute(
+         '__signature__',
+-        generate_pydantic_signature(init=cls.__init__, fields=cls.model_fields, config_wrapper=config_wrapper),
++        partial(
++            generate_pydantic_signature,
++            init=cls.__init__,
++            fields=cls.__pydantic_fields__,
++            validate_by_name=config_wrapper.validate_by_name,
++            extra=config_wrapper.extra,
++        ),
+     )
+     return True
+ 
+ 
+ def set_deprecated_descriptors(cls: type[BaseModel]) -> None:
+     """Set data descriptors on the class for deprecated fields."""
+-    for field, field_info in cls.model_fields.items():
++    for field, field_info in cls.__pydantic_fields__.items():
+         if (msg := field_info.deprecation_message) is not None:
+             desc = _DeprecatedFieldDescriptor(msg)
+             desc.__set_name__(cls, field)
+             setattr(cls, field, desc)
+ 
+-    for field, computed_field_info in cls.model_computed_fields.items():
++    for field, computed_field_info in cls.__pydantic_computed_fields__.items():
+         if (
+             (msg := computed_field_info.deprecation_message) is not None
+             # Avoid having two warnings emitted:

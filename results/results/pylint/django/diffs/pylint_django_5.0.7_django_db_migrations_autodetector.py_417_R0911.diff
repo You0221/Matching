@@ -1,0 +1,104 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -420,58 +454,79 @@ def check_dependency(self, operation, dependency):
+         False otherwise.
+         """
+         # Created model
+-        if dependency[2] is None and dependency[3] is True:
++        if (
++            dependency.field_name is None
++            and dependency.type == OperationDependency.Type.CREATE
++        ):
+             return (
+                 isinstance(operation, operations.CreateModel)
+-                and operation.name_lower == dependency[1].lower()
++                and operation.name_lower == dependency.model_name_lower
+             )
+         # Created field
+-        elif dependency[2] is not None and dependency[3] is True:
++        elif (
++            dependency.field_name is not None
++            and dependency.type == OperationDependency.Type.CREATE
++        ):
+             return (
+                 isinstance(operation, operations.CreateModel)
+-                and operation.name_lower == dependency[1].lower()
+-                and any(dependency[2] == x for x, y in operation.fields)
++                and operation.name_lower == dependency.model_name_lower
++                and any(dependency.field_name == x for x, y in operation.fields)
+             ) or (
+                 isinstance(operation, operations.AddField)
+-                and operation.model_name_lower == dependency[1].lower()
+-                and operation.name_lower == dependency[2].lower()
++                and operation.model_name_lower == dependency.model_name_lower
++                and operation.name_lower == dependency.field_name_lower
+             )
+         # Removed field
+-        elif dependency[2] is not None and dependency[3] is False:
++        elif (
++            dependency.field_name is not None
++            and dependency.type == OperationDependency.Type.REMOVE
++        ):
+             return (
+                 isinstance(operation, operations.RemoveField)
+-                and operation.model_name_lower == dependency[1].lower()
+-                and operation.name_lower == dependency[2].lower()
++                and operation.model_name_lower == dependency.model_name_lower
++                and operation.name_lower == dependency.field_name_lower
+             )
+         # Removed model
+-        elif dependency[2] is None and dependency[3] is False:
++        elif (
++            dependency.field_name is None
++            and dependency.type == OperationDependency.Type.REMOVE
++        ):
+             return (
+                 isinstance(operation, operations.DeleteModel)
+-                and operation.name_lower == dependency[1].lower()
++                and operation.name_lower == dependency.model_name_lower
+             )
+         # Field being altered
+-        elif dependency[2] is not None and dependency[3] == "alter":
++        elif (
++            dependency.field_name is not None
++            and dependency.type == OperationDependency.Type.ALTER
++        ):
+             return (
+                 isinstance(operation, operations.AlterField)
+-                and operation.model_name_lower == dependency[1].lower()
+-                and operation.name_lower == dependency[2].lower()
++                and operation.model_name_lower == dependency.model_name_lower
++                and operation.name_lower == dependency.field_name_lower
+             )
+         # order_with_respect_to being unset for a field
+-        elif dependency[2] is not None and dependency[3] == "order_wrt_unset":
++        elif (
++            dependency.field_name is not None
++            and dependency.type == OperationDependency.Type.REMOVE_ORDER_WRT
++        ):
+             return (
+                 isinstance(operation, operations.AlterOrderWithRespectTo)
+-                and operation.name_lower == dependency[1].lower()
++                and operation.name_lower == dependency.model_name_lower
+                 and (operation.order_with_respect_to or "").lower()
+-                != dependency[2].lower()
++                != dependency.field_name_lower
+             )
+         # Field is removed and part of an index/unique_together
+-        elif dependency[2] is not None and dependency[3] == "foo_together_change":
++        elif (
++            dependency.field_name is not None
++            and dependency.type == OperationDependency.Type.ALTER_FOO_TOGETHER
++        ):
+             return (
+                 isinstance(
+                     operation,
+                     (operations.AlterUniqueTogether, operations.AlterIndexTogether),
+                 )
+-                and operation.name_lower == dependency[1].lower()
++                and operation.name_lower == dependency.model_name_lower
+             )
+         # Unknown dependency. Raise an error.
+         else:

@@ -1,0 +1,60 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 9d05e152ad1..b5c4fd6060b 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -5,44 +5,43 @@
+ import base64
+ import dataclasses as _dataclasses
+ import re
++from collections.abc import Hashable, Iterator
+ from datetime import date, datetime
+ from decimal import Decimal
+ from enum import Enum
+ from pathlib import Path
++from re import Pattern
+ from types import ModuleType
+ from typing import (
+     TYPE_CHECKING,
++    Annotated,
+     Any,
+     Callable,
+     ClassVar,
+-    Dict,
+-    FrozenSet,
+     Generic,
+-    Hashable,
+-    Iterator,
+-    List,
+-    Pattern,
+-    Set,
++    Literal,
+     TypeVar,
+     Union,
+     cast,
+-    get_args,
+-    get_origin,
+ )
+ from uuid import UUID
+ 
+ import annotated_types
+ from annotated_types import BaseMetadata, MaxLen, MinLen
+-from pydantic_core import CoreSchema, PydanticCustomError, core_schema
+-from typing_extensions import Annotated, Literal, Protocol, TypeAlias, TypeAliasType, deprecated
++from pydantic_core import CoreSchema, PydanticCustomError, SchemaSerializer, core_schema
++from typing_extensions import Protocol, TypeAlias, TypeAliasType, deprecated, get_args, get_origin
++from typing_inspection.introspection import is_union_origin
+ 
+-from ._internal import _core_utils, _fields, _internal_dataclass, _typing_extra, _utils, _validators
++from ._internal import _fields, _internal_dataclass, _utils, _validators
+ from ._migration import getattr_migration
+ from .annotated_handlers import GetCoreSchemaHandler, GetJsonSchemaHandler
+ from .errors import PydanticUserError
+ from .json_schema import JsonSchemaValue
+ from .warnings import PydanticDeprecatedSince20
+ 
++if TYPE_CHECKING:
++    from ._internal._core_metadata import CoreMetadata
++
+ __all__ = (
+     'Strict',
+     'StrictStr',

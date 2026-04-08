@@ -1,0 +1,34 @@
+diff --git a/django/contrib/admin/utils.py b/django/contrib/admin/utils.py
+index d6c54dd440d1..cc8ca5604dc8 100644
+--- a/django/contrib/admin/utils.py
++++ b/django/contrib/admin/utils.py
+@@ -288,8 +289,8 @@ def lookup_field(name, obj, model_admin=None):
+     try:
+         f = _get_non_gfk_field(opts, name)
+     except (FieldDoesNotExist, FieldIsAForeignKeyColumnName):
+-        # For non-field values, the value is either a method, property or
+-        # returned via a callable.
++        # For non-regular field values, the value is either a method,
++        # property, related field, or returned via a callable.
+         if callable(name):
+             attr = name
+             value = attr(obj)
+@@ -297,10 +298,17 @@ def lookup_field(name, obj, model_admin=None):
+             attr = getattr(model_admin, name)
+             value = attr(obj)
+         else:
+-            attr = getattr(obj, name)
++            sentinel = object()
++            attr = getattr(obj, name, sentinel)
+             if callable(attr):
+                 value = attr()
+             else:
++                if attr is sentinel:
++                    attr = obj
++                    for part in name.split(LOOKUP_SEP):
++                        attr = getattr(attr, part, sentinel)
++                        if attr is sentinel:
++                            return None, None, None
+                 value = attr
+             if hasattr(model_admin, "model") and hasattr(model_admin.model, name):
+                 attr = getattr(model_admin.model, name)

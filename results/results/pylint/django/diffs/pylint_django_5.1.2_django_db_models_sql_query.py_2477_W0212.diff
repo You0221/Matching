@@ -1,0 +1,20 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2467,13 +2526,13 @@ def set_values(self, fields):
+                         # `f` is not resolvable.
+                         if self.annotation_select:
+                             self.names_to_path(f.split(LOOKUP_SEP), self.model._meta)
++                        selected[f] = len(field_names)
+                         field_names.append(f)
+             self.set_extra_mask(extra_names)
+             self.set_annotation_mask(annotation_names)
+-            selected = frozenset(field_names + extra_names + annotation_names)
+         else:
+             field_names = [f.attname for f in self.model._meta.concrete_fields]
+-            selected = frozenset(field_names)
++            selected = dict.fromkeys(field_names, None)
+         # Selected annotations must be known before setting the GROUP BY
+         # clause.
+         if self.group_by is True:

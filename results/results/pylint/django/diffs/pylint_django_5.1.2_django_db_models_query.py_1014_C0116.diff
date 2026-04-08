@@ -1,0 +1,110 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index cb5c63c0d17c..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -1011,6 +1014,8 @@ def update_or_create(self, defaults=None, create_defaults=None, **kwargs):
+                 obj.save(using=self.db)
+         return obj, False
+ 
++    update_or_create.alters_data = True
++
+     async def aupdate_or_create(self, defaults=None, create_defaults=None, **kwargs):
+         return await sync_to_async(self.update_or_create)(
+             defaults=defaults,
+@@ -1018,6 +1023,8 @@ async def aupdate_or_create(self, defaults=None, create_defaults=None, **kwargs)
+             **kwargs,
+         )
+ 
++    aupdate_or_create.alters_data = True
++
+     def _extract_model_params(self, defaults, **kwargs):
+         """
+         Prepare `params` for creating a model instance based on the given
+@@ -1120,6 +1127,8 @@ def in_bulk(self, id_list=None, *, field_name="pk"):
+         """
+         if self.query.is_sliced:
+             raise TypeError("Cannot use 'limit' or 'offset' with in_bulk().")
++        if not issubclass(self._iterable_class, ModelIterable):
++            raise TypeError("in_bulk() cannot be used with values() or values_list().")
+         opts = self.model._meta
+         unique_fields = [
+             constraint.fields[0]
+@@ -1207,11 +1216,7 @@ def _raw_delete(self, using):
+         """
+         query = self.query.clone()
+         query.__class__ = sql.DeleteQuery
+-        cursor = query.get_compiler(using).execute_sql(CURSOR)
+-        if cursor:
+-            with cursor:
+-                return cursor.rowcount
+-        return 0
++        return query.get_compiler(using).execute_sql(ROW_COUNT)
+ 
+     _raw_delete.alters_data = True
+ 
+@@ -1250,7 +1255,7 @@ def update(self, **kwargs):
+         # Clear any annotations so that they won't be present in subqueries.
+         query.annotations = {}
+         with transaction.mark_for_rollback_on_error(using=self.db):
+-            rows = query.get_compiler(self.db).execute_sql(CURSOR)
++            rows = query.get_compiler(self.db).execute_sql(ROW_COUNT)
+         self._result_cache = None
+         return rows
+ 
+@@ -1275,7 +1280,7 @@ def _update(self, values):
+         # Clear any annotations so that they won't be present in subqueries.
+         query.annotations = {}
+         self._result_cache = None
+-        return query.get_compiler(self.db).execute_sql(CURSOR)
++        return query.get_compiler(self.db).execute_sql(ROW_COUNT)
+ 
+     _update.alters_data = True
+     _update.queryset_only = False
+@@ -1306,7 +1311,7 @@ def contains(self, obj):
+                 return False
+         except AttributeError:
+             raise TypeError("'obj' must be a model instance.")
+-        if obj.pk is None:
++        if not obj._is_pk_set():
+             raise ValueError("QuerySet.contains() cannot be used on unsaved objects.")
+         if self._result_cache is not None:
+             return obj in self._result_cache
+@@ -1642,14 +1647,16 @@ def _annotate(self, args, kwargs, select=True):
+         )
+         annotations = {}
+         for arg in args:
+-            # The default_alias property may raise a TypeError.
++            # The default_alias property raises TypeError if default_alias
++            # can't be set automatically or AttributeError if it isn't an
++            # attribute.
+             try:
+                 if arg.default_alias in kwargs:
+                     raise ValueError(
+                         "The named annotation '%s' conflicts with the "
+                         "default name for another annotation." % arg.default_alias
+                     )
+-            except TypeError:
++            except (TypeError, AttributeError):
+                 raise TypeError("Complex annotations require an alias")
+             annotations[arg.default_alias] = arg
+         annotations.update(kwargs)
+@@ -1744,7 +1751,7 @@ def defer(self, *fields):
+         Defer the loading of data for certain fields until they are accessed.
+         Add the set of deferred fields to any existing set of deferred fields.
+         The only exception to this is if None is passed in as the only
+-        parameter, in which case removal all deferrals.
++        parameter, in which case remove all deferrals.
+         """
+         self._not_support_combined_queries("defer")
+         if self._fields is not None:
+@@ -1963,10 +1970,6 @@ def _merge_known_related_objects(self, other):
+             self._known_related_objects.setdefault(field, {}).update(objects)
+ 
+     def resolve_expression(self, *args, **kwargs):
+-        if self._fields and len(self._fields) > 1:
+-            # values() queryset can only be used as nested queries
+-            # if they are set up to select only a single field.
+-            raise TypeError("Cannot use multi-field values as a filter value.")
+         query = self.query.resolve_expression(*args, **kwargs)
+         query._db = self._db
+         return query

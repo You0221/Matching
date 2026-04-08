@@ -1,0 +1,22 @@
+diff --git a/release/push.py b/release/push.py
+index 1cd383c5e7f..bfd6edafad5 100644
+--- a/release/push.py
++++ b/release/push.py
+@@ -1,16 +1,15 @@
+ """Automate the release draft + PR creation process."""
+ 
+ import re
+-import time
+ from pathlib import Path
+ from subprocess import CalledProcessError
+ 
+ import requests
+ 
+ from release.shared import (
+-    REPO,
+     GITHUB_TOKEN,
+     HISTORY_FILE,
++    REPO,
+     run_command,
+ )
+ 

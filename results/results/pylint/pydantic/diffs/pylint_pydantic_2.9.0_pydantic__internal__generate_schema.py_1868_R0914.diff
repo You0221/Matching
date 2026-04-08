@@ -1,0 +1,93 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1861,19 +1810,13 @@ def _dataclass_schema(
+                 self.defs.definitions[dataclass_ref] = schema
+                 return core_schema.definition_reference_schema(dataclass_ref)
+ 
+-            # Type checkers seem to assume ExitStack may suppress exceptions and therefore
+-            # control flow can exit the `with` block without returning.
+-            assert False, 'Unreachable'
+-
+-    def _callable_schema(self, function: Callable[..., Any]) -> core_schema.CallSchema:
++    def _call_schema(self, function: ValidateCallSupportedTypes) -> core_schema.CallSchema:
+         """Generate schema for a Callable.
+ 
+         TODO support functional validators once we support them in Config
+         """
+         sig = signature(function)
+ 
+-        type_hints = _typing_extra.get_function_type_hints(function, types_namespace=self._types_namespace)
+-
+         mode_lookup: dict[_ParameterKind, Literal['positional_only', 'positional_or_keyword', 'keyword_only']] = {
+             Parameter.POSITIONAL_ONLY: 'positional_only',
+             Parameter.POSITIONAL_OR_KEYWORD: 'positional_or_keyword',
+@@ -1883,12 +1826,19 @@ def _callable_schema(self, function: Callable[..., Any]) -> core_schema.CallSche
+         arguments_list: list[core_schema.ArgumentsParameter] = []
+         var_args_schema: core_schema.CoreSchema | None = None
+         var_kwargs_schema: core_schema.CoreSchema | None = None
++        var_kwargs_mode: core_schema.VarKwargsMode | None = None
+ 
+         for name, p in sig.parameters.items():
+             if p.annotation is sig.empty:
+                 annotation = typing.cast(Any, Any)
+             else:
+-                annotation = type_hints[name]
++                # Note: This was originally get by `_typing_extra.get_function_type_hints`,
++                #       but we switch to simply `p.annotation` to support bultins (e.g. `sorted`).
++                #       May need to revisit if anything breaks.
++                annotation = (
++                    _typing_extra._make_forward_ref(p.annotation) if isinstance(p.annotation, str) else p.annotation
++                )
++                annotation = self._resolve_forward_ref(annotation)
+ 
+             parameter_mode = mode_lookup.get(p.kind)
+             if parameter_mode is not None:
+@@ -1898,19 +1848,43 @@ def _callable_schema(self, function: Callable[..., Any]) -> core_schema.CallSche
+                 var_args_schema = self.generate_schema(annotation)
+             else:
+                 assert p.kind == Parameter.VAR_KEYWORD, p.kind
+-                var_kwargs_schema = self.generate_schema(annotation)
++
++                unpack_type = _typing_extra.unpack_type(annotation)
++                if unpack_type is not None:
++                    if not is_typeddict(unpack_type):
++                        raise PydanticUserError(
++                            f'Expected a `TypedDict` class, got {unpack_type.__name__!r}', code='unpack-typed-dict'
++                        )
++                    non_pos_only_param_names = {
++                        name for name, p in sig.parameters.items() if p.kind != Parameter.POSITIONAL_ONLY
++                    }
++                    overlapping_params = non_pos_only_param_names.intersection(unpack_type.__annotations__)
++                    if overlapping_params:
++                        raise PydanticUserError(
++                            f'Typed dictionary {unpack_type.__name__!r} overlaps with parameter'
++                            f"{'s' if len(overlapping_params) >= 2 else ''} "
++                            f"{', '.join(repr(p) for p in sorted(overlapping_params))}",
++                            code='overlapping-unpack-typed-dict',
++                        )
++
++                    var_kwargs_mode = 'unpacked-typed-dict'
++                    var_kwargs_schema = self._typed_dict_schema(unpack_type, None)
++                else:
++                    var_kwargs_mode = 'uniform'
++                    var_kwargs_schema = self.generate_schema(annotation)
+ 
+         return_schema: core_schema.CoreSchema | None = None
+         config_wrapper = self._config_wrapper
+         if config_wrapper.validate_return:
+-            return_hint = type_hints.get('return')
+-            if return_hint is not None:
++            return_hint = sig.return_annotation
++            if return_hint is not sig.empty:
+                 return_schema = self.generate_schema(return_hint)
+ 
+         return core_schema.call_schema(
+             core_schema.arguments_schema(
+                 arguments_list,
+                 var_args_schema=var_args_schema,
++                var_kwargs_mode=var_kwargs_mode,
+                 var_kwargs_schema=var_kwargs_schema,
+                 populate_by_name=config_wrapper.populate_by_name,
+             ),

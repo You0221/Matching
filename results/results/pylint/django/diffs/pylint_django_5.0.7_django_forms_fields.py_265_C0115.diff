@@ -1,0 +1,15 @@
+diff --git a/django/forms/fields.py b/django/forms/fields.py
+index 3a0510ffc9ca..4bd9c352f270 100644
+--- a/django/forms/fields.py
++++ b/django/forms/fields.py
+@@ -260,6 +268,10 @@ def __deepcopy__(self, memo):
+         result.validators = self.validators[:]
+         return result
+ 
++    def _clean_bound_field(self, bf):
++        value = bf.initial if self.disabled else bf.data
++        return self.clean(value)
++
+ 
+ class CharField(Field):
+     def __init__(

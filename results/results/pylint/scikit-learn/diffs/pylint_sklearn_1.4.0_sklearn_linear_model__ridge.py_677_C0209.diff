@@ -1,0 +1,27 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -671,15 +699,17 @@ def _ridge_regression(
+         )
+ 
+     # There should be either 1 or n_targets penalties
+-    alpha = np.asarray(alpha, dtype=X.dtype).ravel()
+-    if alpha.size not in [1, n_targets]:
++    alpha = _ravel(xp.asarray(alpha, device=device_, dtype=X.dtype), xp=xp)
++    if alpha.shape[0] not in [1, n_targets]:
+         raise ValueError(
+             "Number of targets and number of penalties do not correspond: %d != %d"
+-            % (alpha.size, n_targets)
++            % (alpha.shape[0], n_targets)
+         )
+ 
+-    if alpha.size == 1 and n_targets > 1:
+-        alpha = np.repeat(alpha, n_targets)
++    if alpha.shape[0] == 1 and n_targets > 1:
++        alpha = xp.full(
++            shape=(n_targets,), fill_value=alpha[0], dtype=alpha.dtype, device=device_
++        )
+ 
+     n_iter = None
+     if solver == "sparse_cg":

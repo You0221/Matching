@@ -1,0 +1,26 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1138,17 +1178,17 @@ def get_search_results(self, request, queryset, search_term):
+         # Apply keyword searches.
+         def construct_search(field_name):
+             if field_name.startswith("^"):
+-                return "%s__istartswith" % field_name.removeprefix("^")
++                return "%s__istartswith" % field_name.removeprefix("^"), None
+             elif field_name.startswith("="):
+-                return "%s__iexact" % field_name.removeprefix("=")
++                return "%s__iexact" % field_name.removeprefix("="), None
+             elif field_name.startswith("@"):
+-                return "%s__search" % field_name.removeprefix("@")
++                return "%s__search" % field_name.removeprefix("@"), None
+             # Use field_name if it includes a lookup.
+             opts = queryset.model._meta
+             lookup_fields = field_name.split(LOOKUP_SEP)
+             # Go through the fields, following all relations.
+             prev_field = None
+-            for path_part in lookup_fields:
++            for i, path_part in enumerate(lookup_fields):
+                 if path_part == "pk":
+                     path_part = opts.pk.name
+                 try:

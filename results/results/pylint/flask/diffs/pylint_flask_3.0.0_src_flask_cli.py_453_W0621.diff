@@ -1,0 +1,41 @@
+diff --git a/src/flask/cli.py b/src/flask/cli.py
+index dda266b30c..dd03f3c556 100644
+--- a/src/flask/cli.py
++++ b/src/flask/cli.py
+@@ -447,23 +493,22 @@ def _set_debug(ctx: click.Context, param: click.Option, value: bool) -> bool | N
+ def _env_file_callback(
+     ctx: click.Context, param: click.Option, value: str | None
+ ) -> str | None:
+-    if value is None:
+-        return None
+-
+-    import importlib
+-
+     try:
+-        importlib.import_module("dotenv")
++        import dotenv  # noqa: F401
+     except ImportError:
+-        raise click.BadParameter(
+-            "python-dotenv must be installed to load an env file.",
+-            ctx=ctx,
+-            param=param,
+-        ) from None
++        # Only show an error if a value was passed, otherwise we still want to
++        # call load_dotenv and show a message without exiting.
++        if value is not None:
++            raise click.BadParameter(
++                "python-dotenv must be installed to load an env file.",
++                ctx=ctx,
++                param=param,
++            ) from None
++
++    # Load if a value was passed, or we want to load default files, or both.
++    if value is not None or ctx.obj.load_dotenv_defaults:
++        load_dotenv(value, load_defaults=ctx.obj.load_dotenv_defaults)
+ 
+-    # Don't check FLASK_SKIP_DOTENV, that only disables automatically
+-    # loading .env and .flaskenv files.
+-    load_dotenv(value)
+     return value
+ 
+ 

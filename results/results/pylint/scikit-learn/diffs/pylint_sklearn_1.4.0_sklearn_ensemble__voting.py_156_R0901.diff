@@ -1,0 +1,38 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -152,8 +171,32 @@ def _sk_visual_block_(self):
+         names, estimators = zip(*self.estimators)
+         return _VisualBlock("parallel", estimators, names=names)
+ 
++    def get_metadata_routing(self):
++        """Get metadata routing of this object.
++
++        Please check :ref:`User Guide <metadata_routing>` on how the routing
++        mechanism works.
++
++        .. versionadded:: 1.5
++
++        Returns
++        -------
++        routing : MetadataRouter
++            A :class:`~sklearn.utils.metadata_routing.MetadataRouter` encapsulating
++            routing information.
++        """
++        router = MetadataRouter(owner=self.__class__.__name__)
++
++        # `self.estimators` is a list of (name, est) tuples
++        for name, estimator in self.estimators:
++            router.add(
++                **{name: estimator},
++                method_mapping=MethodMapping().add(callee="fit", caller="fit"),
++            )
++        return router
++
+ 
+-class VotingClassifier(_RoutingNotSupportedMixin, ClassifierMixin, _BaseVoting):
++class VotingClassifier(ClassifierMixin, _BaseVoting):
+     """Soft Voting/Majority Rule classifier for unfitted estimators.
+ 
+     Read more in the :ref:`User Guide <voting_classifier>`.

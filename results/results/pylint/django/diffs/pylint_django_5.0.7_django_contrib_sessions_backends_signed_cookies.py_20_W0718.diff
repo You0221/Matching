@@ -1,0 +1,14 @@
+diff --git a/django/contrib/sessions/backends/signed_cookies.py b/django/contrib/sessions/backends/signed_cookies.py
+index dc41c6f12b0d..604cb99808f4 100644
+--- a/django/contrib/sessions/backends/signed_cookies.py
++++ b/django/contrib/sessions/backends/signed_cookies.py
+@@ -23,6 +23,9 @@ def load(self):
+             self.create()
+         return {}
+ 
++    async def aload(self):
++        return self.load()
++
+     def create(self):
+         """
+         To create a new key, set the modified flag so that the cookie is set

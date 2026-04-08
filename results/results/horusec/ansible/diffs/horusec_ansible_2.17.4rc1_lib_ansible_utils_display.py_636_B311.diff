@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e425a867dc9e03..e514155e16ddeb 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -632,7 +646,7 @@ def banner_cowsay(self, msg: str, color: str | None = None) -> None:
+         if self.noncow:
+             thecow = self.noncow
+             if thecow == 'random':
+-                thecow = random.choice(list(self.cows_available))
++                thecow = secrets.choice(list(self.cows_available))
+             runcmd.append(b'-f')
+             runcmd.append(to_bytes(thecow))
+         runcmd.append(to_bytes(msg))

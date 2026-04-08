@@ -1,0 +1,46 @@
+diff --git a/lib/ansible/parsing/plugin_docs.py b/lib/ansible/parsing/plugin_docs.py
+index 8b12086b8cac78..f986ec67f46b83 100644
+--- a/lib/ansible/parsing/plugin_docs.py
++++ b/lib/ansible/parsing/plugin_docs.py
+@@ -23,33 +25,27 @@
+ }
+ 
+ 
+-def _var2string(value):
+-    ''' reverse lookup of the dict above '''
+-    for k, v in string_to_vars.items():
+-        if v == value:
+-            return k
+-
+-
+ def _init_doc_dict():
+-    ''' initialize a return dict for docs with the expected structure '''
++    """ initialize a return dict for docs with the expected structure """
+     return {k: None for k in string_to_vars.values()}
+ 
+ 
+ def read_docstring_from_yaml_file(filename, verbose=True, ignore_errors=True):
+-    ''' Read docs from 'sidecar' yaml file doc for a plugin '''
++    """ Read docs from 'sidecar' yaml file doc for a plugin """
+ 
+     data = _init_doc_dict()
+     file_data = {}
+ 
+     try:
+         with open(filename, 'rb') as yamlfile:
+-            file_data = AnsibleLoader(yamlfile.read(), file_name=filename).get_single_data()
+-    except Exception as e:
+-        msg = "Unable to parse yaml file '%s': %s" % (filename, to_native(e))
++            file_data = yaml.load(yamlfile, Loader=AnsibleLoader)
++    except Exception as ex:
++        msg = f"Unable to parse yaml file {filename}"
++        # DTFIX-RELEASE: find a better pattern for this (can we use the new optional error behavior?)
+         if not ignore_errors:
+-            raise AnsibleParserError(msg, orig_exc=e)
++            raise AnsibleParserError(f'{msg}.') from ex
+         elif verbose:
+-            display.error(msg)
++            display.error(f'{msg}: {ex}')
+ 
+     if file_data:
+         for key in string_to_vars:

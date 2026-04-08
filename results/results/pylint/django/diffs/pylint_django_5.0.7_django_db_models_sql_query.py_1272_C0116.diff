@@ -1,0 +1,26 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1256,18 +1292,19 @@ def as_sql(self, compiler, connection):
+             sql = "(%s)" % sql
+         return sql, params
+ 
+-    def resolve_lookup_value(self, value, can_reuse, allow_joins):
++    def resolve_lookup_value(self, value, can_reuse, allow_joins, summarize=False):
+         if hasattr(value, "resolve_expression"):
+             value = value.resolve_expression(
+                 self,
+                 reuse=can_reuse,
+                 allow_joins=allow_joins,
++                summarize=summarize,
+             )
+         elif isinstance(value, (list, tuple)):
+             # The items of the iterable may be expressions and therefore need
+             # to be resolved independently.
+             values = (
+-                self.resolve_lookup_value(sub_value, can_reuse, allow_joins)
++                self.resolve_lookup_value(sub_value, can_reuse, allow_joins, summarize)
+                 for sub_value in value
+             )
+             type_ = type(value)

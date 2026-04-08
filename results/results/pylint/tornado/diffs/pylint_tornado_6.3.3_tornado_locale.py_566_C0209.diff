@@ -1,0 +1,15 @@
+diff --git a/tornado/locale.py b/tornado/locale.py
+index 55072af28d..abd8668c6e 100644
+--- a/tornado/locale.py
++++ b/tornado/locale.py
+@@ -563,8 +569,8 @@ def pgettext(
+         if plural_message is not None:
+             assert count is not None
+             msgs_with_ctxt = (
+-                "%s%s%s" % (context, CONTEXT_SEPARATOR, message),
+-                "%s%s%s" % (context, CONTEXT_SEPARATOR, plural_message),
++                f"{context}{CONTEXT_SEPARATOR}{message}",
++                f"{context}{CONTEXT_SEPARATOR}{plural_message}",
+                 count,
+             )
+             result = self.ngettext(*msgs_with_ctxt)

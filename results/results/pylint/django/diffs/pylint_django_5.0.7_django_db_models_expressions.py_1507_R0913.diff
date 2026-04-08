@@ -1,0 +1,13 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -1511,6 +1683,8 @@ def as_sql(
+                 break
+             case_parts.append(case_sql)
+             sql_params.extend(case_params)
++        else:
++            default_sql, default_params = compiler.compile(self.default)
+         if not case_parts:
+             return default_sql, default_params
+         case_joiner = case_joiner or self.case_joiner

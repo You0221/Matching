@@ -1,0 +1,31 @@
+diff --git a/tornado/iostream.py b/tornado/iostream.py
+index a408be59cd..dd2111e3b8 100644
+--- a/tornado/iostream.py
++++ b/tornado/iostream.py
+@@ -204,7 +204,7 @@ def advance(self, size: int) -> None:
+         self._first_pos = pos
+ 
+ 
+-class BaseIOStream(object):
++class BaseIOStream:
+     """A utility class to write to and read from a non-blocking file or socket.
+ 
+     We support a non-blocking ``write()`` and a family of ``read_*()``
+@@ -859,7 +859,7 @@ def _read_to_buffer(self) -> Optional[int]:
+                     else:
+                         buf = bytearray(self.read_chunk_size)
+                     bytes_read = self.read_from_fd(buf)
+-                except (socket.error, IOError, OSError) as e:
++                except OSError as e:
+                     # ssl.SSLError is a subclass of socket.error
+                     if self._is_connreset(e):
+                         # Treat ECONNRESET as a connection close rather than
+@@ -966,7 +966,7 @@ def _handle_write(self) -> None:
+                 self._total_write_done_index += num_bytes
+             except BlockingIOError:
+                 break
+-            except (socket.error, IOError, OSError) as e:
++            except OSError as e:
+                 if not self._is_connreset(e):
+                     # Broken pipe errors are usually caused by connection
+                     # reset, and its better to not log EPIPE errors to

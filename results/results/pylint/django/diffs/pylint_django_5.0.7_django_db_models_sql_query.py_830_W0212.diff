@@ -1,0 +1,19 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -825,13 +852,7 @@ def _get_only_select_mask(self, opts, mask, select_mask=None):
+         # Only include fields mentioned in the mask.
+         for field_name, field_mask in mask.items():
+             field = opts.get_field(field_name)
+-            # Retrieve the actual field associated with reverse relationships
+-            # as that's what is expected in the select mask.
+-            if field in opts.related_objects:
+-                field_key = field.field
+-            else:
+-                field_key = field
+-            field_select_mask = select_mask.setdefault(field_key, {})
++            field_select_mask = select_mask.setdefault(field, {})
+             if field_mask:
+                 if not field.is_relation:
+                     raise FieldError(next(iter(field_mask)))

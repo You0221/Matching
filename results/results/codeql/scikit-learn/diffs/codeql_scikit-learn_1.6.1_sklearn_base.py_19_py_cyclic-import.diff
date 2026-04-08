@@ -1,0 +1,18 @@
+diff --git a/sklearn/base.py b/sklearn/base.py
+index bd5e07c2167dd..309b482357e12 100644
+--- a/sklearn/base.py
++++ b/sklearn/base.py
+@@ -16,9 +16,12 @@
+ from . import __version__
+ from ._config import config_context, get_config
+ from .exceptions import InconsistentVersionWarning
+-from .utils._estimator_html_repr import _HTMLDocumentationLinkMixin, estimator_html_repr
+ from .utils._metadata_requests import _MetadataRequester, _routing_enabled
++from .utils._missing import is_scalar_nan
+ from .utils._param_validation import validate_parameter_constraints
++from .utils._repr_html.base import ReprHTMLMixin, _HTMLDocumentationLinkMixin
++from .utils._repr_html.estimator import estimator_html_repr
++from .utils._repr_html.params import ParamsDict
+ from .utils._set_output import _SetOutputMixin
+ from .utils._tags import (
+     ClassifierTags,

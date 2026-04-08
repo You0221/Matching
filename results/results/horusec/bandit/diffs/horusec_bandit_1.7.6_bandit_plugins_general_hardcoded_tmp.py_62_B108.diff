@@ -1,0 +1,13 @@
+diff --git a/bandit/plugins/general_hardcoded_tmp.py b/bandit/plugins/general_hardcoded_tmp.py
+index 53f8cd137..2855c9c6d 100644
+--- a/bandit/plugins/general_hardcoded_tmp.py
++++ b/bandit/plugins/general_hardcoded_tmp.py
+@@ -59,7 +59,7 @@
+ 
+ def gen_config(name):
+     if name == "hardcoded_tmp_directory":
+-        return {"tmp_dirs": ["/tmp", "/var/tmp", "/dev/shm"]}
++        return {"tmp_dirs": ["/tmp", "/var/tmp", "/dev/shm"]}  # nosec: B108
+ 
+ 
+ @test.takes_config

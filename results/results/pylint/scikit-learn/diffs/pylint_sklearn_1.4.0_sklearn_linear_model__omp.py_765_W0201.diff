@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_omp.py b/sklearn/linear_model/_omp.py
+index a2ee0f7790535..f52ef553eab4c 100644
+--- a/sklearn/linear_model/_omp.py
++++ b/sklearn/linear_model/_omp.py
+@@ -761,6 +783,8 @@ def fit(self, X, y):
+             # default for n_nonzero_coefs is 0.1 * n_features
+             # but at least one.
+             self.n_nonzero_coefs_ = max(int(0.1 * n_features), 1)
++        elif self.tol is not None:
++            self.n_nonzero_coefs_ = None
+         else:
+             self.n_nonzero_coefs_ = self.n_nonzero_coefs
+ 

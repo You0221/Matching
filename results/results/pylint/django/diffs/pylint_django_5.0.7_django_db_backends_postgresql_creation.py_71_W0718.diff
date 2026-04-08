@@ -1,0 +1,12 @@
+diff --git a/django/db/backends/postgresql/creation.py b/django/db/backends/postgresql/creation.py
+index 9b562cec18ea..938be0f56f91 100644
+--- a/django/db/backends/postgresql/creation.py
++++ b/django/db/backends/postgresql/creation.py
+@@ -84,3 +85,7 @@ def _clone_test_db(self, suffix, verbosity, keepdb=False):
+                 except Exception as e:
+                     self.log("Got an error cloning the test database: %s" % e)
+                     sys.exit(2)
++
++    def _destroy_test_db(self, test_database_name, verbosity):
++        self.connection.close_pool()
++        return super()._destroy_test_db(test_database_name, verbosity)

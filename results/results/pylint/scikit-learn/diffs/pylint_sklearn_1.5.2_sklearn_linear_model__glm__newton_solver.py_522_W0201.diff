@@ -1,0 +1,22 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index 20df35e6b48c2..2967b91225fdb 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -522,3 +600,17 @@ def inner_solve(self, X, y, sample_weight):
+                 )
+             self.use_fallback_lbfgs_solve = True
+             return
++
++    def finalize(self, X, y, sample_weight):
++        if self.is_multinomial_no_penalty:
++            # Our convention is usually the symmetric parametrization where
++            # sum(coef[classes, features], axis=0) = 0.
++            # We convert now to this convention. Note that it does not change
++            # the predicted probabilities.
++            n_classes = self.linear_loss.base_loss.n_classes
++            self.coef = self.coef.reshape(n_classes, -1, order="F")
++            self.coef -= np.mean(self.coef, axis=0)
++        elif self.is_multinomial_with_intercept:
++            # Only the intercept needs an update to the symmetric parametrization.
++            n_classes = self.linear_loss.base_loss.n_classes
++            self.coef[-n_classes:] -= np.mean(self.coef[-n_classes:])

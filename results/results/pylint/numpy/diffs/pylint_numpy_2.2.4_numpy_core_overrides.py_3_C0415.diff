@@ -1,0 +1,11 @@
+diff --git a/numpy/core/overrides.py b/numpy/core/overrides.py
+index 3297999c5b01..17830ed41021 100644
+--- a/numpy/core/overrides.py
++++ b/numpy/core/overrides.py
+@@ -1,5 +1,6 @@
+ def __getattr__(attr_name):
+     from numpy._core import overrides
++
+     from ._utils import _raise_warning
+     ret = getattr(overrides, attr_name, None)
+     if ret is None:

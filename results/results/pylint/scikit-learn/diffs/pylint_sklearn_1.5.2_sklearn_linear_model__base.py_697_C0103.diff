@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index eac754f3f88b4..bb71cbe9ed550 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -687,6 +687,11 @@ def rmatvec(b):
+         self._set_intercept(X_offset, y_offset, X_scale)
+         return self
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = not self.positive
++        return tags
++
+ 
+ def _check_precomputed_gram_matrix(
+     X, precompute, X_offset, X_scale, rtol=None, atol=1e-5

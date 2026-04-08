@@ -1,0 +1,53 @@
+diff --git a/pandas/util/_test_decorators.py b/pandas/util/_test_decorators.py
+index 03011a1ffe622..2c1912bce856d 100644
+--- a/pandas/util/_test_decorators.py
++++ b/pandas/util/_test_decorators.py
+@@ -153,40 +103,23 @@ def skip_if_no(package: str, min_version: str | None = None) -> pytest.MarkDecor
+     if min_version:
+         msg += f" satisfying a min_version of {min_version}"
+     return pytest.mark.skipif(
+-        not safe_import(package, min_version=min_version), reason=msg
++        not bool(
++            import_optional_dependency(
++                package, errors="ignore", min_version=min_version
++            )
++        ),
++        reason=msg,
+     )
+ 
+ 
+-skip_if_mpl = pytest.mark.skipif(
+-    bool(safe_import("matplotlib")), reason="matplotlib is present"
+-)
+ skip_if_32bit = pytest.mark.skipif(not IS64, reason="skipping for 32 bit")
+ skip_if_windows = pytest.mark.skipif(is_platform_windows(), reason="Running on Windows")
+ skip_if_not_us_locale = pytest.mark.skipif(
+-    _skip_if_not_us_locale(),
+-    reason=f"Specific locale is set {locale.getlocale()[0]}",
+-)
+-skip_if_no_scipy = pytest.mark.skipif(
+-    _skip_if_no_scipy(), reason="Missing SciPy requirement"
+-)
+-skip_if_no_ne = pytest.mark.skipif(
+-    not USE_NUMEXPR,
+-    reason=f"numexpr enabled->{USE_NUMEXPR}, installed->{NUMEXPR_INSTALLED}",
++    locale.getlocale()[0] != "en_US",
++    reason=f"Set local {locale.getlocale()[0]} is not en_US",
+ )
+ 
+ 
+-def skip_if_np_lt(
+-    ver_str: str, *args, reason: str | None = None
+-) -> pytest.MarkDecorator:
+-    if reason is None:
+-        reason = f"NumPy {ver_str} or greater required"
+-    return pytest.mark.skipif(
+-        Version(np.__version__) < Version(ver_str),
+-        *args,
+-        reason=reason,
+-    )
+-
+-
+ def parametrize_fixture_doc(*args) -> Callable[[F], F]:
+     """
+     Intended for use as a decorator for parametrized fixture,

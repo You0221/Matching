@@ -1,0 +1,75 @@
+diff --git a/examples/miscellaneous/plot_metadata_routing.py b/examples/miscellaneous/plot_metadata_routing.py
+index 9984bb6183348..634ca304d125d 100644
+--- a/examples/miscellaneous/plot_metadata_routing.py
++++ b/examples/miscellaneous/plot_metadata_routing.py
+@@ -143,8 +152,11 @@ def predict(self, X, groups=None):
+ est.predict(X[:3, :], groups=my_groups)
+ 
+ # %%
+-# Now let's have a meta-estimator, which doesn't do much other than routing the
+-# metadata.
++# Routing Meta-Estimator
++# ----------------------
++# Now, we show how to design a meta-estimator to be a router. As a simplified
++# example, here is a meta-estimator, which doesn't do much other than routing
++# the metadata.
+ 
+ 
+ class MetaClassifier(MetaEstimatorMixin, ClassifierMixin, BaseEstimator):
+@@ -154,35 +166,43 @@ def __init__(self, estimator):
+     def get_metadata_routing(self):
+         # This method defines the routing for this meta-estimator.
+         # In order to do so, a `MetadataRouter` instance is created, and the
+-        # right routing is added to it. More explanations follow.
++        # routing is added to it. More explanations follow below.
+         router = MetadataRouter(owner=self.__class__.__name__).add(
+-            estimator=self.estimator, method_mapping="one-to-one"
++            estimator=self.estimator,
++            method_mapping=MethodMapping()
++            .add(caller="fit", callee="fit")
++            .add(caller="predict", callee="predict")
++            .add(caller="score", callee="score"),
+         )
+         return router
+ 
+     def fit(self, X, y, **fit_params):
+-        # meta-estimators are responsible for validating the given metadata.
+-        # `get_routing_for_object` is a safe way to construct a
+-        # `MetadataRouter` or a `MetadataRequest` from the given object.
++        # `get_routing_for_object` returns a copy of the `MetadataRouter`
++        # constructed by the above `get_metadata_routing` method, that is
++        # internally called.
+         request_router = get_routing_for_object(self)
++        # Meta-estimators are responsible for validating the given metadata.
++        # `method` refers to the parent's method, i.e. `fit` in this example.
+         request_router.validate_metadata(params=fit_params, method="fit")
+-        # we can use provided utility methods to map the given metadata to what
+-        # is required by the underlying estimator. Here `method` refers to the
+-        # parent's method, i.e. `fit` in this example.
++        # `MetadataRouter.route_params` maps the given metadata to the metadata
++        # required by the underlying estimator based on the routing information
++        # defined by the MetadataRouter. The output of type `Bunch` has a key
++        # for each consuming object and those hold keys for their consuming
++        # methods, which then contain key for the metadata which should be
++        # routed to them.
+         routed_params = request_router.route_params(params=fit_params, caller="fit")
+ 
+-        # the output has a key for each object's method which is used here,
+-        # i.e. parent's `fit` method, containing the metadata which should be
+-        # routed to them, based on the information provided in
+-        # `get_metadata_routing`.
++        # A sub-estimator is fitted and its classes are attributed to the
++        # meta-estimator.
+         self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+         self.classes_ = self.estimator_.classes_
+         return self
+ 
+     def predict(self, X, **predict_params):
+         check_is_fitted(self)
+-        # same as in `fit`, we validate the given metadata
++        # As in `fit`, we get a copy of the object's MetadataRouter,
+         request_router = get_routing_for_object(self)
++        # then we validate the given metadata,
+         request_router.validate_metadata(params=predict_params, method="predict")
+         # and then prepare the input to the underlying `predict` method.
+         routed_params = request_router.route_params(

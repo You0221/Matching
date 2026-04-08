@@ -1,0 +1,13 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index 9a3dbc4c4ff..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -336,8 +338,6 @@ def then(self, other: _Pipeline[_OutT, _OtherOut]) -> _Pipeline[_InT, _OtherOut]
+     __and__ = then
+ 
+     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> cs.CoreSchema:
+-        from pydantic_core import core_schema as cs
+-
+         queue = deque(self._steps)
+ 
+         s = None

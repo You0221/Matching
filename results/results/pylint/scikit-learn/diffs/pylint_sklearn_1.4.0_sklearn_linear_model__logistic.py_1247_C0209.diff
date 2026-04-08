@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 188204ce815ad..055ccc1c6a202 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1246,8 +1301,7 @@ def fit(self, X, y, sample_weight=None):
+             raise ValueError(
+                 "This solver needs samples of at least 2 classes"
+                 " in the data, but the data contains only one"
+-                " class: %r"
+-                % classes_[0]
++                " class: %r" % classes_[0]
+             )
+ 
+         if len(self.classes_) == 2:

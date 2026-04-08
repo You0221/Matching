@@ -1,0 +1,26 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -584,9 +635,19 @@ def predict(self, X):
+             accept_sparse=True,
+             reset=False,
+         )
+-        return self.estimator_.predict(X)
+ 
+-    def score(self, X, y):
++        _raise_for_params(params, self, "predict")
++
++        if _routing_enabled():
++            predict_params = process_routing(self, "predict", **params).estimator[
++                "predict"
++            ]
++        else:
++            predict_params = {}
++
++        return self.estimator_.predict(X, **predict_params)
++
++    def score(self, X, y, **params):
+         """Return the score of the prediction.
+ 
+         This is a wrapper for `estimator_.score(X, y)`.

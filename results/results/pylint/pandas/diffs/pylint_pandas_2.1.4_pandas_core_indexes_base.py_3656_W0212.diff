@@ -1,0 +1,29 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -3640,21 +3663,10 @@ def difference(self, other, sort=None):
+ 
+     def _difference(self, other, sort):
+         # overridden by RangeIndex
+-
+-        this = self.unique()
+-
+-        indexer = this.get_indexer_for(other)
+-        indexer = indexer.take((indexer != -1).nonzero()[0])
+-
+-        label_diff = np.setdiff1d(np.arange(this.size), indexer, assume_unique=True)
+-
+-        the_diff: MultiIndex | ArrayLike
+-        if isinstance(this, ABCMultiIndex):
+-            the_diff = this.take(label_diff)
+-        else:
+-            the_diff = this._values.take(label_diff)
++        other = other.unique()
++        the_diff = self[other.get_indexer_for(self) == -1]
++        the_diff = the_diff if self.is_unique else the_diff.unique()
+         the_diff = _maybe_try_sort(the_diff, sort)
+-
+         return the_diff
+ 
+     def _wrap_difference_result(self, other, result):

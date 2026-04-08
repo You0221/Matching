@@ -1,0 +1,21 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index d5f2247e2af34..8f7c814000614 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -2073,16 +2048,6 @@ def __init__(
+             average=average,
+         )
+ 
+-    def __sklearn_tags__(self):
+-        tags = super().__sklearn_tags__()
+-        # TODO: replace by a statistical test, see meta-issue #16298
+-        tags._xfail_checks = {
+-            "check_sample_weight_equivalence": (
+-                "sample_weight is not equivalent to removing/repeating samples."
+-            ),
+-        }
+-        return tags
+-
+ 
+ class SGDOneClassSVM(OutlierMixin, BaseSGD):
+     """Solves linear One-Class SVM using Stochastic Gradient Descent.

@@ -1,0 +1,11 @@
+diff --git a/numpy/core/_multiarray_umath.py b/numpy/core/_multiarray_umath.py
+index 04cc88229aac..c1e6b4e8c932 100644
+--- a/numpy/core/_multiarray_umath.py
++++ b/numpy/core/_multiarray_umath.py
+@@ -1,5 +1,5 @@
+-from numpy._core import _multiarray_umath
+ from numpy import ufunc
++from numpy._core import _multiarray_umath
+ 
+ for item in _multiarray_umath.__dir__():
+     # ufuncs appear in pickles with a path in numpy.core._multiarray_umath

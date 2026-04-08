@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 039396470f..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -635,7 +685,7 @@ def set_cookie(
+         value = escape.native_str(value)
+         if re.search(r"[\x00-\x20]", name + value):
+             # Don't let us accidentally inject bad stuff
+-            raise ValueError("Invalid cookie %r: %r" % (name, value))
++            raise ValueError(f"Invalid cookie {name!r}: {value!r}")
+         if not hasattr(self, "_new_cookie"):
+             self._new_cookie = (
+                 http.cookies.SimpleCookie()

@@ -1,0 +1,17 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 74ea7431a5d72..fe138cda73803 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -492,6 +499,12 @@ def partial_fit(self, X, y=None):
+             ensure_all_finite="allow-nan",
+         )
+ 
++        device_ = device(X)
++        feature_range = (
++            xp.asarray(feature_range[0], dtype=X.dtype, device=device_),
++            xp.asarray(feature_range[1], dtype=X.dtype, device=device_),
++        )
++
+         data_min = _array_api._nanmin(X, axis=0, xp=xp)
+         data_max = _array_api._nanmax(X, axis=0, xp=xp)
+ 

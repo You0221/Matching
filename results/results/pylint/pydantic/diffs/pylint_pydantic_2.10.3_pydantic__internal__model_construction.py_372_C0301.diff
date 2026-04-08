@@ -1,0 +1,38 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index db87d66acb9..fd5d68b37f7 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -353,25 +311,20 @@ def __fields__(self) -> dict[str, FieldInfo]:
+             PydanticDeprecatedSince20,
+             stacklevel=2,
+         )
+-        return self.model_fields
++        return getattr(self, '__pydantic_fields__', {})
+ 
+     @property
+-    def model_fields(self) -> dict[str, FieldInfo]:
+-        """Get metadata about the fields defined on the model.
++    def __pydantic_fields_complete__(self) -> bool:
++        """Whether the fields where successfully collected (i.e. type hints were successfully resolves).
+ 
+-        Returns:
+-            A mapping of field names to [`FieldInfo`][pydantic.fields.FieldInfo] objects.
++        This is a private attribute, not meant to be used outside Pydantic.
+         """
+-        return getattr(self, '__pydantic_fields__', {})
++        if not hasattr(self, '__pydantic_fields__'):
++            return False
+ 
+-    @property
+-    def model_computed_fields(self) -> dict[str, ComputedFieldInfo]:
+-        """Get metadata about the computed fields defined on the model.
++        field_infos = cast('dict[str, FieldInfo]', self.__pydantic_fields__)  # pyright: ignore[reportAttributeAccessIssue]
+ 
+-        Returns:
+-            A mapping of computed field names to [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+-        """
+-        return getattr(self, '__pydantic_computed_fields__', {})
++        return all(field_info._complete for field_info in field_infos.values())
+ 
+     def __dir__(self) -> list[str]:
+         attributes = list(super().__dir__())

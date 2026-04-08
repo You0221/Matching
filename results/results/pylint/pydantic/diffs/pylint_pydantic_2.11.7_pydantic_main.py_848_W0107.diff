@@ -1,0 +1,13 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index b21165c6abf..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -846,7 +896,7 @@ def __class_getitem__(
+             raise TypeError('Type parameters should be placed on typing.Generic, not BaseModel')
+         if not hasattr(cls, '__parameters__'):
+             raise TypeError(f'{cls} cannot be parametrized because it does not inherit from typing.Generic')
+-        if not cls.__pydantic_generic_metadata__['parameters'] and typing.Generic not in cls.__bases__:
++        if not cls.__pydantic_generic_metadata__['parameters'] and Generic not in cls.__bases__:
+             raise TypeError(f'{cls} is not a generic class')
+ 
+         if not isinstance(typevar_values, tuple):

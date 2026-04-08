@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 19dbb1d15415ae..731f8ded7d1002 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -2031,9 +2072,8 @@ def preexec():
+ 
+     def append_to_file(self, filename, str):
+         filename = os.path.expandvars(os.path.expanduser(filename))
+-        fh = open(filename, 'a')
+-        fh.write(str)
+-        fh.close()
++        with open(filename, 'a') as fh:
++            fh.write(str)
+ 
+     def bytes_to_human(self, size):
+         return bytes_to_human(size)

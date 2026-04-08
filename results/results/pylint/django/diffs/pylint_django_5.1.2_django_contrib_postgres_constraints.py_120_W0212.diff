@@ -1,0 +1,12 @@
+diff --git a/django/contrib/postgres/constraints.py b/django/contrib/postgres/constraints.py
+index a31f65718334..2eae101d5a91 100644
+--- a/django/contrib/postgres/constraints.py
++++ b/django/contrib/postgres/constraints.py
+@@ -114,7 +114,6 @@ def constraint_sql(self, model, schema_editor):
+         )
+ 
+     def create_sql(self, model, schema_editor):
+-        self.check_supported(schema_editor)
+         return Statement(
+             "ALTER TABLE %(table)s ADD %(constraint)s",
+             table=Table(model._meta.db_table, schema_editor.quote_name),

@@ -1,0 +1,25 @@
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 1e734c0134bc..2019529cb53b 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -41,10 +42,6 @@ class PyTypeObject(ctypes.Structure):
+         ('tp_name', ctypes.c_char_p),
+     ]
+ 
+-    # prevent numpy attaching docstrings to the scalar types
+-    assert 'numpy._core._add_newdocs_scalars' not in sys.modules
+-    sys.modules['numpy._core._add_newdocs_scalars'] = object()
+-
+     import numpy
+ 
+     # change the __name__ of the scalar types
+@@ -58,9 +55,6 @@ class PyTypeObject(ctypes.Structure):
+         c_typ = PyTypeObject.from_address(id(typ))
+         c_typ.tp_name = _name_cache[typ] = b"numpy." + name.encode('utf8')
+ 
+-    # now generate the docstrings as usual
+-    del sys.modules['numpy._core._add_newdocs_scalars']
+-    import numpy._core._add_newdocs_scalars
+ 
+ replace_scalar_type_names()
+ 

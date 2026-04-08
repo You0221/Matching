@@ -1,0 +1,22 @@
+diff --git a/lib/ansible/utils/galaxy.py b/lib/ansible/utils/galaxy.py
+index 977ae2cbd0a599..6cccf102b910e5 100644
+--- a/lib/ansible/utils/galaxy.py
++++ b/lib/ansible/utils/galaxy.py
+@@ -57,14 +57,14 @@ def run_scm_cmd(cmd, tempdir):
+ 
+     try:
+         scm_path = get_bin_path(scm)
+-    except (ValueError, OSError, IOError):
+-        raise AnsibleError("could not find/use %s, it is required to continue with installing %s" % (scm, src))
++    except (ValueError, OSError) as ex:
++        raise AnsibleError(f"Could not find/use {scm!r}, it is required to continue with installing {src!r}.") from ex
+ 
+     tempdir = tempfile.mkdtemp(dir=C.DEFAULT_LOCAL_TMP)
+     clone_cmd = [scm_path, 'clone']
+ 
+     # Add specific options for ignoring certificates if requested
+-    ignore_certs = context.CLIARGS['ignore_certs']
++    ignore_certs = context.CLIARGS['ignore_certs'] or C.GALAXY_IGNORE_CERTS
+ 
+     if ignore_certs:
+         if scm == 'git':

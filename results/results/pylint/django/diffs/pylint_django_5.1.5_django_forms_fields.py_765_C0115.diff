@@ -1,0 +1,20 @@
+diff --git a/django/forms/fields.py b/django/forms/fields.py
+index 4ec7b7aee74f..4bd9c352f270 100644
+--- a/django/forms/fields.py
++++ b/django/forms/fields.py
+@@ -792,13 +799,13 @@ def __init__(self, *, assume_scheme=None, **kwargs):
+     def to_python(self, value):
+         def split_url(url):
+             """
+-            Return a list of url parts via urlparse.urlsplit(), or raise
++            Return a list of url parts via urlsplit(), or raise
+             ValidationError for some malformed URLs.
+             """
+             try:
+                 return list(urlsplit(url))
+             except ValueError:
+-                # urlparse.urlsplit can raise a ValueError with some
++                # urlsplit can raise a ValueError with some
+                 # misformatted URLs.
+                 raise ValidationError(self.error_messages["invalid"], code="invalid")
+ 

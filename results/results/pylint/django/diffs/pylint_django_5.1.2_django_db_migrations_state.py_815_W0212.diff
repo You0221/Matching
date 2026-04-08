@@ -1,0 +1,14 @@
+diff --git a/django/db/migrations/state.py b/django/db/migrations/state.py
+index 42a2c80a5e21..087fa9df12b2 100644
+--- a/django/db/migrations/state.py
++++ b/django/db/migrations/state.py
+@@ -811,9 +812,6 @@ def from_model(cls, model, exclude_rels=False):
+                 if name == "unique_together":
+                     ut = model._meta.original_attrs["unique_together"]
+                     options[name] = set(normalize_together(ut))
+-                elif name == "index_together":
+-                    it = model._meta.original_attrs["index_together"]
+-                    options[name] = set(normalize_together(it))
+                 elif name == "indexes":
+                     indexes = [idx.clone() for idx in model._meta.indexes]
+                     for index in indexes:

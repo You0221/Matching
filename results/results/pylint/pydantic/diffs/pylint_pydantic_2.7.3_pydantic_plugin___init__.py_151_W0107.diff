@@ -1,0 +1,31 @@
+diff --git a/pydantic/plugin/__init__.py b/pydantic/plugin/__init__.py
+index 6a9b1eb6b21..840d20a09ef 100644
+--- a/pydantic/plugin/__init__.py
++++ b/pydantic/plugin/__init__.py
+@@ -136,19 +145,24 @@ def on_enter(
+         input: str | bytes | bytearray,
+         *,
+         strict: bool | None = None,
+-        context: dict[str, Any] | None = None,
++        extra: ExtraValues | None = None,
++        context: Any | None = None,
+         self_instance: Any | None = None,
++        by_alias: bool | None = None,
++        by_name: bool | None = None,
+     ) -> None:
+         """Callback to be notified of validation start, and create an instance of the event handler.
+ 
+         Args:
+             input: The JSON data to be validated.
+             strict: Whether to validate the object in strict mode.
++            extra: Whether to ignore, allow, or forbid extra data during model validation.
+             context: The context to use for validation, this is passed to functional validators.
+             self_instance: An instance of a model to set attributes on from validation, this is used when running
+                 validation from the `__init__` method of a model.
++            by_alias: Whether to use the field's alias to match the input data to an attribute.
++            by_name: Whether to use the field's name to match the input data to an attribute.
+         """
+-        pass
+ 
+ 
+ StringInput: TypeAlias = 'dict[str, StringInput]'

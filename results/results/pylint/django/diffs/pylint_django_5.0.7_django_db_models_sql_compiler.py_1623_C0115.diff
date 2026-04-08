@@ -1,0 +1,125 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1595,36 +1660,25 @@ def execute_sql(
+             return list(result)
+         return result
+ 
+-    def as_subquery_condition(self, alias, columns, compiler):
+-        qn = compiler.quote_name_unless_alias
+-        qn2 = self.connection.ops.quote_name
+-
+-        for index, select_col in enumerate(self.query.select):
+-            lhs_sql, lhs_params = self.compile(select_col)
+-            rhs = "%s.%s" % (qn(alias), qn2(columns[index]))
+-            self.query.where.add(RawSQL("%s = %s" % (lhs_sql, rhs), lhs_params), AND)
+-
+-        sql, params = self.as_sql()
+-        return "EXISTS (%s)" % sql, params
+-
+     def explain_query(self):
+         result = list(self.execute_sql())
+         # Some backends return 1 item tuples with strings, and others return
+         # tuples with integers and strings. Flatten them out into strings.
+         format_ = self.query.explain_info.format
+         output_formatter = json.dumps if format_ and format_.lower() == "json" else str
+-        for row in result[0]:
+-            if not isinstance(row, str):
+-                yield " ".join(output_formatter(c) for c in row)
+-            else:
+-                yield row
++        for row in result:
++            for value in row:
++                if not isinstance(value, str):
++                    yield " ".join([output_formatter(c) for c in value])
++                else:
++                    yield value
+ 
+ 
+ class SQLInsertCompiler(SQLCompiler):
+     returning_fields = None
+     returning_params = ()
+ 
+-    def field_as_sql(self, field, val):
++    def field_as_sql(self, field, get_placeholder, val):
+         """
+         Take a field and a value intended to be saved on that field, and
+         return placeholder SQL and accompanying params. Check for raw values,
+@@ -1639,10 +1693,10 @@ def field_as_sql(self, field, val):
+         elif hasattr(val, "as_sql"):
+             # This is an expression, let's compile it.
+             sql, params = self.compile(val)
+-        elif hasattr(field, "get_placeholder"):
++        elif get_placeholder is not None:
+             # Some fields (e.g. geo fields) need special munging before
+             # they can be inserted.
+-            sql, params = field.get_placeholder(val, self, self.connection), [val]
++            sql, params = get_placeholder(val, self, self.connection), [val]
+         else:
+             # Return the common case for the placeholder
+             sql, params = "%s", [val]
+@@ -1711,8 +1765,12 @@ def assemble_as_sql(self, fields, value_rows):
+ 
+         # list of (sql, [params]) tuples for each object to be saved
+         # Shape: [n_objs][n_fields][2]
++        get_placeholders = [getattr(field, "get_placeholder", None) for field in fields]
+         rows_of_fields_as_sql = (
+-            (self.field_as_sql(field, v) for field, v in zip(fields, row))
++            (
++                self.field_as_sql(field, get_placeholder, value)
++                for field, get_placeholder, value in zip(fields, get_placeholders, row)
++            )
+             for row in value_rows
+         )
+ 
+@@ -1817,6 +1875,7 @@ def execute_sql(self, returning_fields=None):
+         )
+         opts = self.query.get_meta()
+         self.returning_fields = returning_fields
++        cols = []
+         with self.connection.cursor() as cursor:
+             for sql, params in self.as_sql():
+                 cursor.execute(sql, params)
+@@ -1827,6 +1886,7 @@ def execute_sql(self, returning_fields=None):
+                 and len(self.query.objs) > 1
+             ):
+                 rows = self.connection.ops.fetch_returned_insert_rows(cursor)
++                cols = [field.get_col(opts.db_table) for field in self.returning_fields]
+             elif self.connection.features.can_return_columns_from_insert:
+                 assert len(self.query.objs) == 1
+                 rows = [
+@@ -1835,21 +1895,28 @@ def execute_sql(self, returning_fields=None):
+                         self.returning_params,
+                     )
+                 ]
+-            else:
++                cols = [field.get_col(opts.db_table) for field in self.returning_fields]
++            elif returning_fields and isinstance(
++                returning_field := returning_fields[0], AutoField
++            ):
++                cols = [returning_field.get_col(opts.db_table)]
+                 rows = [
+                     (
+                         self.connection.ops.last_insert_id(
+                             cursor,
+                             opts.db_table,
+-                            opts.pk.column,
++                            returning_field.column,
+                         ),
+                     )
+                 ]
+-        cols = [field.get_col(opts.db_table) for field in self.returning_fields]
++            else:
++                # Backend doesn't support returning fields and no auto-field
++                # that can be retrieved from `last_insert_id` was specified.
++                return []
+         converters = self.get_converters(cols)
+         if converters:
+-            rows = list(self.apply_converters(rows, converters))
+-        return rows
++            rows = self.apply_converters(rows, converters)
++        return list(rows)
+ 
+ 
+ class SQLDeleteCompiler(SQLCompiler):

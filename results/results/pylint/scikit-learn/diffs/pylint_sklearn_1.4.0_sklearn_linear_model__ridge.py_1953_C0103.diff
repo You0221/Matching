@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -1956,7 +2054,7 @@ def _solve_svd_design_matrix(self, alpha, y, sqrt_sw, X_mean, singvals_sq, U, UT
+             G_inverse_diag = G_inverse_diag[:, np.newaxis]
+         return G_inverse_diag, c
+ 
+-    def fit(self, X, y, sample_weight=None):
++    def fit(self, X, y, sample_weight=None, score_params=None):
+         """Fit Ridge regression model with gcv.
+ 
+         Parameters

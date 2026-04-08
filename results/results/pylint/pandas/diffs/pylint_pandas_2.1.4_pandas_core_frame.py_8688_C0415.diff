@@ -1,0 +1,29 @@
+diff --git a/pandas/core/frame.py b/pandas/core/frame.py
+index 4908b535bcb1c..734756cb8f7c8 100644
+--- a/pandas/core/frame.py
++++ b/pandas/core/frame.py
+@@ -8685,8 +8966,13 @@ def update(
+                     ChainedAssignmentError,
+                     stacklevel=2,
+                 )
+-
+-        from pandas.core.computation import expressions
++        elif not PYPY and not using_copy_on_write() and self._is_view_after_cow_rules():
++            if sys.getrefcount(self) <= REF_COUNT:
++                warnings.warn(
++                    _chained_assignment_warning_method_msg,
++                    FutureWarning,
++                    stacklevel=2,
++                )
+ 
+         # TODO: Support other joins
+         if join != "left":  # pragma: no cover
+@@ -8721,7 +9007,7 @@ def update(
+             if mask.all():
+                 continue
+ 
+-            self.loc[:, col] = expressions.where(mask, this, that)
++            self.loc[:, col] = self[col].where(mask, that)
+ 
+     # ----------------------------------------------------------------------
+     # Data reshaping

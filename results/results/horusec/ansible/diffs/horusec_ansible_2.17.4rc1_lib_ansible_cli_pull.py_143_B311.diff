@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/cli/pull.py b/lib/ansible/cli/pull.py
+index fb3321efa9ad94..eb8436636e27c5 100755
+--- a/lib/ansible/cli/pull.py
++++ b/lib/ansible/cli/pull.py
+@@ -140,7 +140,7 @@ def post_process_args(self, options):
+ 
+         if options.sleep:
+             try:
+-                secs = random.randint(0, int(options.sleep))
++                secs = secrets.randbelow(int(options.sleep))
+                 options.sleep = secs
+             except ValueError:
+                 raise AnsibleOptionsError("%s is not a number." % options.sleep)

@@ -1,0 +1,15 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -123,7 +127,9 @@ def __init__(self, geom_input, srs=None):
+             self.srs = srs
+ 
+         # Setting the class depending upon the OGR Geometry Type
+-        self.__class__ = GEO_CLASSES[self.geom_type.num]
++        if (geo_class := GEO_CLASSES.get(self.geom_type.num)) is None:
++            raise TypeError(f"Unsupported geometry type: {self.geom_type}")
++        self.__class__ = geo_class
+ 
+     # Pickle routines
+     def __getstate__(self):

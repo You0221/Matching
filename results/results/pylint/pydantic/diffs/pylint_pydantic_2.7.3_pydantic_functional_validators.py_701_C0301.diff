@@ -1,0 +1,13 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index fc3ad717401..16f645d39ad 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -698,7 +835,7 @@ def __class_getitem__(cls, item: Any) -> Any:
+         @classmethod
+         def __get_pydantic_core_schema__(cls, source: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+             original_schema = handler(source)
+-            metadata = _core_metadata.build_metadata_dict(js_annotation_functions=[lambda _c, h: h(original_schema)])
++            metadata = {'pydantic_js_annotation_functions': [lambda _c, h: h(original_schema)]}
+             return core_schema.any_schema(
+                 metadata=metadata,
+                 serialization=core_schema.wrap_serializer_function_ser_schema(

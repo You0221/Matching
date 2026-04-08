@@ -1,0 +1,52 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1771,39 +1736,26 @@ def _dataclass_schema(
+             if origin is not None:
+                 dataclass = origin
+ 
+-            with ExitStack() as dataclass_bases_stack:
+-                # Pushing a namespace prioritises items already in the stack, so iterate though the MRO forwards
+-                for dataclass_base in dataclass.__mro__:
+-                    if dataclasses.is_dataclass(dataclass_base):
+-                        dataclass_bases_stack.enter_context(self._types_namespace_stack.push(dataclass_base))
+-
+-                # Pushing a config overwrites the previous config, so iterate though the MRO backwards
+-                config = None
+-                for dataclass_base in reversed(dataclass.__mro__):
+-                    if dataclasses.is_dataclass(dataclass_base):
+-                        config = getattr(dataclass_base, '__pydantic_config__', None)
+-                        dataclass_bases_stack.enter_context(self._config_wrapper_stack.push(config))
+-
+-                core_config = self._config_wrapper.core_config(dataclass)
++            # if (plain) dataclass doesn't have config, we use the parent's config, hence a default of `None`
++            # (Pydantic dataclasses have an empty dict config by default).
++            # see https://github.com/pydantic/pydantic/issues/10917
++            config = getattr(dataclass, '__pydantic_config__', None)
+ 
+-                self = self._current_generate_schema
+-
+-                from ..dataclasses import is_pydantic_dataclass
++            from ..dataclasses import is_pydantic_dataclass
+ 
++            with self._ns_resolver.push(dataclass), self._config_wrapper_stack.push(config):
+                 if is_pydantic_dataclass(dataclass):
+                     fields = deepcopy(dataclass.__pydantic_fields__)
+                     if typevars_map:
+                         for field in fields.values():
+-                            field.apply_typevars_map(typevars_map, self._types_namespace)
++                            field.apply_typevars_map(typevars_map, *self._types_namespace)
+                 else:
+                     fields = collect_dataclass_fields(
+                         dataclass,
+-                        self._types_namespace,
+                         typevars_map=typevars_map,
+                     )
+ 
+-                # disallow combination of init=False on a dataclass field and extra='allow' on a dataclass
+-                if self._config_wrapper_stack.tail.extra == 'allow':
++                if self._config_wrapper.extra == 'allow':
+                     # disallow combination of init=False on a dataclass field and extra='allow' on a dataclass
+                     for field_name, field in fields.items():
+                         if field.init is False:

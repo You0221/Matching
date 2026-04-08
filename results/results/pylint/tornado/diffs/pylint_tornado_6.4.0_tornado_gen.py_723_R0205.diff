@@ -1,0 +1,13 @@
+diff --git a/tornado/gen.py b/tornado/gen.py
+index dab4fd09db..3dab733c6a 100644
+--- a/tornado/gen.py
++++ b/tornado/gen.py
+@@ -720,7 +722,7 @@ def done(self) -> bool:
+ """
+ 
+ 
+-class Runner(object):
++class Runner:
+     """Internal implementation of `tornado.gen.coroutine`.
+ 
+     Maintains information about pending callbacks and their results.

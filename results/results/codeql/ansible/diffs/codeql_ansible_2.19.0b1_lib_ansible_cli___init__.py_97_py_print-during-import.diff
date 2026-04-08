@@ -1,0 +1,50 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index 462393868e01af..0adc00c9bc9a4d 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -89,33 +85,41 @@ def initialize_locale():
+ 
+ _internal.setup()
+ 
++from ansible.errors import AnsibleError, ExitCode
++
+ try:
+     from ansible import constants as C
+     from ansible.utils.display import Display
+     display = Display()
+ except Exception as ex:
+-    print(f'ERROR: {ex}\n\n{"".join(traceback.format_exception(ex))}', file=sys.stderr)
++    if isinstance(ex, AnsibleError):
++        ex_msg = ' '.join((ex.message, ex._help_text or '')).strip()
++    else:
++        ex_msg = str(ex)
++
++    print(f'ERROR: {ex_msg}\n\n{"".join(traceback.format_exception(ex))}', file=sys.stderr)
+     sys.exit(5)
+ 
+ 
+ from ansible import context
++from ansible.utils import display as _display
+ from ansible.cli.arguments import option_helpers as opt_help
+-from ansible.errors import AnsibleError, ExitCode
+ from ansible.inventory.manager import InventoryManager
+ from ansible.module_utils.six import string_types
+ from ansible.module_utils.common.text.converters import to_bytes, to_text
+ from ansible.module_utils.common.collections import is_sequence
+ from ansible.module_utils.common.file import is_executable
+-from ansible.module_utils.common.process import get_bin_path
+ from ansible.parsing.dataloader import DataLoader
+ from ansible.parsing.vault import PromptVaultSecret, get_file_vault_secret, VaultSecretsContext
+ from ansible.plugins.loader import add_all_plugin_dirs, init_plugin_loader
+ from ansible.release import __version__
+-from ansible.utils._ssh_agent import SshAgentClient
+ from ansible.utils.collection_loader import AnsibleCollectionConfig
+ from ansible.utils.collection_loader._collection_finder import _get_collection_name_from_path
+ from ansible.utils.path import unfrackpath
+ from ansible.vars.manager import VariableManager
++from ansible.module_utils._internal import _deprecator
++from ansible._internal._ssh import _agent_launch
++
+ 
+ try:
+     import argcomplete

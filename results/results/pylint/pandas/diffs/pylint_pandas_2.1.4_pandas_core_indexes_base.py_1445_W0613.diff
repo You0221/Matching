@@ -1,0 +1,43 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -1444,30 +1475,14 @@ def _format_native_types(
+         date_format=None,
+         quoting=None,
+     ) -> npt.NDArray[np.object_]:
+-        """
+-        Actually format specific types of the index.
+-        """
+-        from pandas.io.formats.format import FloatArrayFormatter
+-
+-        if is_float_dtype(self.dtype) and not isinstance(self.dtype, ExtensionDtype):
+-            formatter = FloatArrayFormatter(
+-                self._values,
+-                na_rep=na_rep,
+-                float_format=float_format,
+-                decimal=decimal,
+-                quoting=quoting,
+-                fixed_width=False,
+-            )
+-            return formatter.get_result_as_array()
+-
+-        mask = isna(self)
+-        if self.dtype != object and not quoting:
+-            values = np.asarray(self).astype(str)
+-        else:
+-            values = np.array(self, dtype=object, copy=True)
+-
+-        values[mask] = na_rep
+-        return values
++        return get_values_for_csv(
++            self._values,
++            na_rep=na_rep,
++            decimal=decimal,
++            float_format=float_format,
++            date_format=date_format,
++            quoting=quoting,
++        )
+ 
+     def _summary(self, name=None) -> str_t:
+         """

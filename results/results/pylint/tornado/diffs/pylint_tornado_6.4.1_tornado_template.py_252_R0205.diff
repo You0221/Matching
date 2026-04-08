@@ -1,0 +1,22 @@
+diff --git a/tornado/template.py b/tornado/template.py
+index d53e977c5e..0064c6fbd1 100644
+--- a/tornado/template.py
++++ b/tornado/template.py
+@@ -249,7 +249,7 @@ def filter_whitespace(mode: str, text: str) -> str:
+         raise Exception("invalid whitespace mode %s" % mode)
+ 
+ 
+-class Template(object):
++class Template:
+     """A compiled template.
+ 
+     We compile into Python from the given template_string. You can generate
+@@ -389,7 +389,7 @@ def _get_ancestors(self, loader: Optional["BaseLoader"]) -> List["_File"]:
+         return ancestors
+ 
+ 
+-class BaseLoader(object):
++class BaseLoader:
+     """Base class for template loaders.
+ 
+     You must use a template loader to use template constructs like

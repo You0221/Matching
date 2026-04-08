@@ -1,0 +1,66 @@
+diff --git a/sklearn/metrics/_classification.py b/sklearn/metrics/_classification.py
+index c320183380a07..2e31320ddb1f4 100644
+--- a/sklearn/metrics/_classification.py
++++ b/sklearn/metrics/_classification.py
+@@ -2036,22 +2122,52 @@ class after being classified as negative. This is the case when the
+         Sample weights.
+ 
+     raise_warning : bool, default=True
+-        Whether or not a case-specific warning message is raised when there is a
+-        zero division. Even if the error is not raised, the function will return
+-        nan in such cases.
++        Whether or not a case-specific warning message is raised when there is division
++        by zero.
++
++        .. deprecated:: 1.7
++            `raise_warning` was deprecated in version 1.7 and will be removed in 1.9,
++            when an :class:`~sklearn.exceptions.UndefinedMetricWarning` will always
++            raise in case of a division by zero.
++
++    replace_undefined_by : np.nan, 1.0, or dict, default=np.nan
++        Sets the return values for LR+ and LR- when there is a division by zero. Can
++        take the following values:
++
++        - `np.nan` to return `np.nan` for both `LR+` and `LR-`
++        - `1.0` to return the worst possible scores: `{"LR+": 1.0, "LR-": 1.0}`
++        - a dict in the format `{"LR+": value_1, "LR-": value_2}` where the values can
++          be non-negative floats, `np.inf` or `np.nan` in the range of the
++          likelihood ratios. For example, `{"LR+": 1.0, "LR-": 1.0}` can be used for
++          returning the worst scores, indicating a useless model, and `{"LR+": np.inf,
++          "LR-": 0.0}` can be used for returning the best scores, indicating a useful
++          model.
++
++        If a division by zero occurs, only the affected metric is replaced with the set
++        value; the other metric is calculated as usual.
++
++        .. versionadded:: 1.7
+ 
+     Returns
+     -------
+     (positive_likelihood_ratio, negative_likelihood_ratio) : tuple
+-        A tuple of two float, the first containing the Positive likelihood ratio
+-        and the second the Negative likelihood ratio.
++        A tuple of two floats, the first containing the positive likelihood ratio (LR+)
++        and the second the negative likelihood ratio (LR-).
+ 
+     Warns
+     -----
+-    When `false positive == 0`, the positive likelihood ratio is undefined.
+-    When `true negative == 0`, the negative likelihood ratio is undefined.
+-    When `true positive + false negative == 0` both ratios are undefined.
+-    In such cases, `UserWarning` will be raised if raise_warning=True.
++    Raises :class:`~sklearn.exceptions.UndefinedMetricWarning` when `y_true` and
++    `y_pred` lead to the following conditions:
++
++        - The number of false positives is 0 and `raise_warning` is set to `True`
++          (default): positive likelihood ratio is undefined.
++        - The number of true negatives is 0 and `raise_warning` is set to `True`
++          (default): negative likelihood ratio is undefined.
++        - The sum of true positives and false negatives is 0 (no samples of the positive
++          class are present in `y_true`): both likelihood ratios are undefined.
++
++        For the first two cases, an undefined metric can be defined by setting the
++        `replace_undefined_by` param.
+ 
+     References
+     ----------

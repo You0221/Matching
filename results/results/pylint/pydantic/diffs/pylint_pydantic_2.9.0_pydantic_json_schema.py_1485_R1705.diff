@@ -1,0 +1,42 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 64c659e8d22..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1471,9 +1563,7 @@ def _update_class_schema(
+         if hasattr(cls, '__deprecated__'):
+             json_schema['deprecated'] = True
+ 
+-        return json_schema
+-
+-    def resolve_schema_to_update(self, json_schema: JsonSchemaValue) -> JsonSchemaValue:
++    def resolve_ref_schema(self, json_schema: JsonSchemaValue) -> JsonSchemaValue:
+         """Resolve a JsonSchemaValue to the non-ref schema if it is a $ref schema.
+ 
+         Args:
+@@ -1481,15 +1571,18 @@ def resolve_schema_to_update(self, json_schema: JsonSchemaValue) -> JsonSchemaVa
+ 
+         Returns:
+             The resolved schema.
++
++        Raises:
++            RuntimeError: If the schema reference can't be found in definitions.
+         """
+-        if '$ref' in json_schema:
+-            schema_to_update = self.get_schema_from_definitions(JsonRef(json_schema['$ref']))
+-            if schema_to_update is None:
+-                raise RuntimeError(f'Cannot update undefined schema for $ref={json_schema["$ref"]}')
+-            return self.resolve_schema_to_update(schema_to_update)
+-        else:
+-            schema_to_update = json_schema
+-        return schema_to_update
++        if '$ref' not in json_schema:
++            return json_schema
++
++        ref = json_schema['$ref']
++        schema_to_update = self.get_schema_from_definitions(JsonRef(ref))
++        if schema_to_update is None:
++            raise RuntimeError(f'Cannot update undefined schema for $ref={ref}')
++        return self.resolve_ref_schema(schema_to_update)
+ 
+     def model_fields_schema(self, schema: core_schema.ModelFieldsSchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches a schema that defines a model's fields.

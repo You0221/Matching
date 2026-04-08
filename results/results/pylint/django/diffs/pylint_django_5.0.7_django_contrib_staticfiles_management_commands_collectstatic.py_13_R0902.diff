@@ -1,0 +1,21 @@
+diff --git a/django/contrib/staticfiles/management/commands/collectstatic.py b/django/contrib/staticfiles/management/commands/collectstatic.py
+index c346038df87f..d5cd3f56ca26 100644
+--- a/django/contrib/staticfiles/management/commands/collectstatic.py
++++ b/django/contrib/staticfiles/management/commands/collectstatic.py
+@@ -279,14 +279,14 @@ def delete_file(self, path, prefixed_path, source_storage):
+             try:
+                 # When was the target file modified last time?
+                 target_last_modified = self.storage.get_modified_time(prefixed_path)
+-            except (OSError, NotImplementedError, AttributeError):
++            except (OSError, NotImplementedError):
+                 # The storage doesn't support get_modified_time() or failed
+                 pass
+             else:
+                 try:
+                     # When was the source file modified last time?
+                     source_last_modified = source_storage.get_modified_time(path)
+-                except (OSError, NotImplementedError, AttributeError):
++                except (OSError, NotImplementedError):
+                     pass
+                 else:
+                     # The full path of the target file

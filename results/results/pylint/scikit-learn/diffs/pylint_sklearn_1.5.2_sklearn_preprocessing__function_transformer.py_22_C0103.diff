@@ -1,0 +1,19 @@
+diff --git a/sklearn/preprocessing/_function_transformer.py b/sklearn/preprocessing/_function_transformer.py
+index c49684d0ebfbc..3fc33c59e76bd 100644
+--- a/sklearn/preprocessing/_function_transformer.py
++++ b/sklearn/preprocessing/_function_transformer.py
+@@ -11,11 +16,14 @@
+ from ..utils.metaestimators import available_if
+ from ..utils.validation import (
+     _allclose_dense_sparse,
++    _check_feature_names,
+     _check_feature_names_in,
++    _check_n_features,
+     _get_feature_names,
+     _is_pandas_df,
+     _is_polars_df,
+     check_array,
++    validate_data,
+ )
+ 
+ 

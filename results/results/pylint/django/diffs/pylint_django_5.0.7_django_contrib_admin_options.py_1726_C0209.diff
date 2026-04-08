@@ -1,0 +1,17 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1720,9 +1785,9 @@ def get_inline_formsets(self, request, formsets, inline_instances, obj=None):
+                 has_delete_permission = inline.has_delete_permission(request, obj)
+             else:
+                 # Disable all edit-permissions, and override formset settings.
+-                has_add_permission = (
+-                    has_change_permission
+-                ) = has_delete_permission = False
++                has_add_permission = has_change_permission = has_delete_permission = (
++                    False
++                )
+                 formset.extra = formset.max_num = 0
+             has_view_permission = inline.has_view_permission(request, obj)
+             prepopulated = dict(inline.get_prepopulated_fields(request, obj))

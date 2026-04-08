@@ -1,0 +1,22 @@
+diff --git a/django/contrib/postgres/constraints.py b/django/contrib/postgres/constraints.py
+index c61072b5a54c..2eae101d5a91 100644
+--- a/django/contrib/postgres/constraints.py
++++ b/django/contrib/postgres/constraints.py
+@@ -121,17 +127,6 @@ def remove_sql(self, model, schema_editor):
+             schema_editor.quote_name(self.name),
+         )
+ 
+-    def check_supported(self, schema_editor):
+-        if (
+-            self.include
+-            and self.index_type.lower() == "spgist"
+-            and not schema_editor.connection.features.supports_covering_spgist_indexes
+-        ):
+-            raise NotSupportedError(
+-                "Covering exclusion constraints using an SP-GiST index "
+-                "require PostgreSQL 14+."
+-            )
+-
+     def deconstruct(self):
+         path, args, kwargs = super().deconstruct()
+         kwargs["expressions"] = self.expressions

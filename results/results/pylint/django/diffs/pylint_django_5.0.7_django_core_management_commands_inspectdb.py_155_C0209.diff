@@ -1,0 +1,17 @@
+diff --git a/django/core/management/commands/inspectdb.py b/django/core/management/commands/inspectdb.py
+index 5c2ed53db8f0..58594fb66f80 100644
+--- a/django/core/management/commands/inspectdb.py
++++ b/django/core/management/commands/inspectdb.py
+@@ -150,12 +159,6 @@ def handle_inspection(self, options):
+                     # Add primary_key and unique, if necessary.
+                     if column_name == primary_key_column:
+                         extra_params["primary_key"] = True
+-                        if len(primary_key_columns) > 1:
+-                            comment_notes.append(
+-                                "The composite primary key (%s) found, that is not "
+-                                "supported. The first column is selected."
+-                                % ", ".join(primary_key_columns)
+-                            )
+                     elif column_name in unique_columns:
+                         extra_params["unique"] = True
+ 

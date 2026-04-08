@@ -1,0 +1,19 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -487,11 +484,12 @@ def partial_fit(self, X, y=None):
+         xp, _ = get_namespace(X)
+ 
+         first_pass = not hasattr(self, "n_samples_seen_")
+-        X = self._validate_data(
++        X = validate_data(
++            self,
+             X,
+             reset=first_pass,
+             dtype=_array_api.supported_float_dtypes(xp),
+-            force_all_finite="allow-nan",
++            ensure_all_finite="allow-nan",
+         )
+ 
+         data_min = _array_api._nanmin(X, axis=0, xp=xp)

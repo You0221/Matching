@@ -1,0 +1,15 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index 7f278cb06f2ba..20013e1f6d000 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -1021,7 +1013,9 @@ def predict_log_proba(self, X):
+ 
+         return log_proba
+ 
+-    @available_if(_estimator_has("decision_function"))
++    @available_if(
++        _estimator_has("decision_function", delegates=("estimators_", "estimator"))
++    )
+     def decision_function(self, X):
+         """Average of the decision functions of the base classifiers.
+ 

@@ -1,0 +1,31 @@
+diff --git a/sklearn/cluster/_mean_shift.py b/sklearn/cluster/_mean_shift.py
+index fae11cca7df23..5190936e6e39a 100644
+--- a/sklearn/cluster/_mean_shift.py
++++ b/sklearn/cluster/_mean_shift.py
+@@ -310,6 +308,9 @@ class MeanShift(ClusterMixin, BaseEstimator):
+ 
+     Seeding is performed using a binning technique for scalability.
+ 
++    For an example of how to use MeanShift clustering, refer to:
++    :ref:`sphx_glr_auto_examples_cluster_plot_mean_shift.py`.
++
+     Read more in the :ref:`User Guide <mean_shift>`.
+ 
+     Parameters
+@@ -479,7 +480,7 @@ def fit(self, X, y=None):
+         self : object
+                Fitted instance.
+         """
+-        X = self._validate_data(X)
++        X = validate_data(self, X)
+         bandwidth = self.bandwidth
+         if bandwidth is None:
+             bandwidth = estimate_bandwidth(X, n_jobs=self.n_jobs)
+@@ -570,6 +571,6 @@ def predict(self, X):
+             Index of the cluster each sample belongs to.
+         """
+         check_is_fitted(self)
+-        X = self._validate_data(X, reset=False)
++        X = validate_data(self, X, reset=False)
+         with config_context(assume_finite=True):
+             return pairwise_distances_argmin(X, self.cluster_centers_)

@@ -1,0 +1,62 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..20013e1f6d000 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -961,16 +1062,8 @@ def decision_function(self, X):
+ 
+         return decisions
+ 
+-    def _more_tags(self):
+-        if self.estimator is None:
+-            estimator = DecisionTreeClassifier()
+-        else:
+-            estimator = self.estimator
+-
+-        return {"allow_nan": _safe_tags(estimator, "allow_nan")}
+ 
+-
+-class BaggingRegressor(_RoutingNotSupportedMixin, RegressorMixin, BaseBagging):
++class BaggingRegressor(RegressorMixin, BaseBagging):
+     """A Bagging regressor.
+ 
+     A Bagging regressor is an ensemble meta-estimator that fits base
+@@ -1177,11 +1270,12 @@ def predict(self, X):
+         """
+         check_is_fitted(self)
+         # Check data
+-        X = self._validate_data(
++        X = validate_data(
++            self,
+             X,
+             accept_sparse=["csr", "csc"],
+             dtype=None,
+-            force_all_finite=False,
++            ensure_all_finite=False,
+             reset=False,
+         )
+ 
+@@ -1202,10 +1296,6 @@ def predict(self, X):
+ 
+         return y_hat
+ 
+-    def _validate_estimator(self):
+-        """Check the estimator and set the estimator_ attribute."""
+-        super()._validate_estimator(default=DecisionTreeRegressor())
+-
+     def _set_oob_score(self, X, y):
+         n_samples = y.shape[0]
+ 
+@@ -1234,9 +1324,8 @@ def _set_oob_score(self, X, y):
+         self.oob_prediction_ = predictions
+         self.oob_score_ = r2_score(y, predictions)
+ 
+-    def _more_tags(self):
++    def _get_estimator(self):
++        """Resolve which estimator to return (default is DecisionTreeClassifier)"""
+         if self.estimator is None:
+-            estimator = DecisionTreeRegressor()
+-        else:
+-            estimator = self.estimator
+-        return {"allow_nan": _safe_tags(estimator, "allow_nan")}
++            return DecisionTreeRegressor()
++        return self.estimator

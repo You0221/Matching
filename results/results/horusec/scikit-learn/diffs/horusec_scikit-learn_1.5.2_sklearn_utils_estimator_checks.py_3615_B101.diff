@@ -1,0 +1,172 @@
+diff --git a/sklearn/utils/estimator_checks.py b/sklearn/utils/estimator_checks.py
+index 59d371bad57cd..0de7b21a468ff 100644
+--- a/sklearn/utils/estimator_checks.py
++++ b/sklearn/utils/estimator_checks.py
+@@ -3536,86 +3929,123 @@ def param_filter(p):
+ def _enforce_estimator_tags_y(estimator, y):
+     # Estimators with a `requires_positive_y` tag only accept strictly positive
+     # data
+-    if _safe_tags(estimator, key="requires_positive_y"):
++    tags = get_tags(estimator)
++    if tags.target_tags.positive_only:
+         # Create strictly positive y. The minimal increment above 0 is 1, as
+         # y could be of integer dtype.
+         y += 1 + abs(y.min())
+-    if _safe_tags(estimator, key="binary_only") and y.size > 0:
++    if (
++        tags.classifier_tags is not None
++        and not tags.classifier_tags.multi_class
++        and y.size > 0
++    ):
+         y = np.where(y == y.flat[0], y, y.flat[0] + 1)
+     # Estimators in mono_output_task_error raise ValueError if y is of 1-D
+     # Convert into a 2-D y for those estimators.
+-    if _safe_tags(estimator, key="multioutput_only"):
++    if tags.target_tags.multi_output and not tags.target_tags.single_output:
+         return np.reshape(y, (-1, 1))
+     return y
+ 
+ 
+-def _enforce_estimator_tags_X(estimator, X, kernel=linear_kernel):
++def _enforce_estimator_tags_X(estimator, X, X_test=None, kernel=linear_kernel):
+     # Estimators with `1darray` in `X_types` tag only accept
+     # X of shape (`n_samples`,)
+-    if "1darray" in _safe_tags(estimator, key="X_types"):
++    if get_tags(estimator).input_tags.one_d_array:
+         X = X[:, 0]
++        if X_test is not None:
++            X_test = X_test[:, 0]  # pragma: no cover
+     # Estimators with a `requires_positive_X` tag only accept
+     # strictly positive data
+-    if _safe_tags(estimator, key="requires_positive_X"):
++    if get_tags(estimator).input_tags.positive_only:
+         X = X - X.min()
+-    if "categorical" in _safe_tags(estimator, key="X_types"):
+-        dtype = np.float64 if _safe_tags(estimator, key="allow_nan") else np.int32
++        if X_test is not None:
++            X_test = X_test - X_test.min()  # pragma: no cover
++    if get_tags(estimator).input_tags.categorical:
++        dtype = np.float64 if get_tags(estimator).input_tags.allow_nan else np.int32
+         X = np.round((X - X.min())).astype(dtype)
++        if X_test is not None:
++            X_test = np.round((X_test - X_test.min())).astype(dtype)  # pragma: no cover
+ 
+     if estimator.__class__.__name__ == "SkewedChi2Sampler":
+         # SkewedChi2Sampler requires X > -skewdness in transform
+         X = X - X.min()
++        if X_test is not None:
++            X_test = X_test - X_test.min()  # pragma: no cover
++
++    X_res = X
+ 
+     # Pairwise estimators only accept
+     # X of shape (`n_samples`, `n_samples`)
+     if _is_pairwise_metric(estimator):
+-        X = pairwise_distances(X, metric="euclidean")
+-    elif _safe_tags(estimator, key="pairwise"):
+-        X = kernel(X, X)
+-    return X
++        X_res = pairwise_distances(X, metric="euclidean")
++        if X_test is not None:
++            X_test = pairwise_distances(
++                X_test, X, metric="euclidean"
++            )  # pragma: no cover
++    elif get_tags(estimator).input_tags.pairwise:
++        X_res = kernel(X, X)
++        if X_test is not None:
++            X_test = kernel(X_test, X)  # pragma: no cover
++    if X_test is not None:
++        return X_res, X_test
++    return X_res
+ 
+ 
+ @ignore_warnings(category=FutureWarning)
+-def check_non_transformer_estimators_n_iter(name, estimator_orig):
+-    # Test that estimators that are not transformers with a parameter
+-    # max_iter, return the attribute of n_iter_ at least 1.
++def check_positive_only_tag_during_fit(name, estimator_orig):
++    """Test that the estimator correctly sets the tags.input_tags.positive_only
+ 
+-    # These models are dependent on external solvers like
+-    # libsvm and accessing the iter parameter is non-trivial.
+-    # SelfTrainingClassifier does not perform an iteration if all samples are
+-    # labeled, hence n_iter_ = 0 is valid.
+-    not_run_check_n_iter = [
+-        "Ridge",
+-        "RidgeClassifier",
+-        "RandomizedLasso",
+-        "LogisticRegressionCV",
+-        "LinearSVC",
+-        "LogisticRegression",
+-        "SelfTrainingClassifier",
+-    ]
++    If the tag is False, the estimator should accept negative input regardless of the
++    tags.input_tags.pairwise flag.
++    """
++    estimator = clone(estimator_orig)
++    tags = get_tags(estimator)
+ 
+-    # Tested in test_transformer_n_iter
+-    not_run_check_n_iter += CROSS_DECOMPOSITION
+-    if name in not_run_check_n_iter:
+-        return
++    X, y = load_iris(return_X_y=True)
++    y = _enforce_estimator_tags_y(estimator, y)
++    set_random_state(estimator, 0)
++    X = _enforce_estimator_tags_X(estimator, X)
++    X -= X.mean()
+ 
+-    # LassoLars stops early for the default alpha=1.0 the iris dataset.
+-    if name == "LassoLars":
+-        estimator = clone(estimator_orig).set_params(alpha=0.0)
++    if tags.input_tags.positive_only:
++        with raises(ValueError, match="Negative values in data"):
++            estimator.fit(X, y)
+     else:
+-        estimator = clone(estimator_orig)
+-    if hasattr(estimator, "max_iter"):
+-        iris = load_iris()
+-        X, y_ = iris.data, iris.target
+-        y_ = _enforce_estimator_tags_y(estimator, y_)
++        # This should pass
++        try:
++            estimator.fit(X, y)
++        except Exception as e:
++            err_msg = (
++                f"Estimator {repr(name)} raised {e.__class__.__name__} unexpectedly."
++                " This happens when passing negative input values as X."
++                " If negative values are not supported for this estimator instance,"
++                " then the tags.input_tags.positive_only tag needs to be set to True."
++            )
++            raise AssertionError(err_msg) from e
+ 
+-        set_random_state(estimator, 0)
+ 
+-        X = _enforce_estimator_tags_X(estimator_orig, X)
++@ignore_warnings(category=FutureWarning)
++def check_non_transformer_estimators_n_iter(name, estimator_orig):
++    # Test that estimators that are not transformers with a parameter
++    # max_iter, return the attribute of n_iter_ at least 1.
+ 
+-        estimator.fit(X, y_)
++    if not hasattr(estimator_orig, "max_iter"):
++        return
+ 
+-        assert np.all(estimator.n_iter_ >= 1)
++    estimator = clone(estimator_orig)
++    iris = load_iris()
++    X, y_ = iris.data, iris.target
++    y_ = _enforce_estimator_tags_y(estimator, y_)
++    set_random_state(estimator, 0)
++    X = _enforce_estimator_tags_X(estimator_orig, X)
++
++    estimator.fit(X, y_)
++
++    assert np.all(np.asarray(estimator.n_iter_) >= 1), (
++        "Estimators with a `max_iter` parameter, should expose an `n_iter_` attribute,"
++        " indicating the number of iterations that were executed. The values in the "
++        "`n_iter_` attribute should be greater or equal to 1."
++    )
+ 
+ 
+ @ignore_warnings(category=FutureWarning)

@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 188204ce815ad..055ccc1c6a202 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1787,8 +1853,7 @@ def fit(self, X, y, sample_weight=None, **params):
+             ):
+                 raise ValueError(
+                     "l1_ratios must be a list of numbers between "
+-                    "0 and 1; got (l1_ratios=%r)"
+-                    % self.l1_ratios
++                    "0 and 1; got (l1_ratios=%r)" % self.l1_ratios
+                 )
+             l1_ratios_ = self.l1_ratios
+         else:

@@ -1,0 +1,33 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -358,22 +386,16 @@ def convert_value(self):
+         field = self.output_field
+         internal_type = field.get_internal_type()
+         if internal_type == "FloatField":
+-            return (
+-                lambda value, expression, connection: None
+-                if value is None
+-                else float(value)
++            return lambda value, expression, connection: (
++                None if value is None else float(value)
+             )
+         elif internal_type.endswith("IntegerField"):
+-            return (
+-                lambda value, expression, connection: None
+-                if value is None
+-                else int(value)
++            return lambda value, expression, connection: (
++                None if value is None else int(value)
+             )
+         elif internal_type == "DecimalField":
+-            return (
+-                lambda value, expression, connection: None
+-                if value is None
+-                else Decimal(value)
++            return lambda value, expression, connection: (
++                None if value is None else Decimal(value)
+             )
+         return self._convert_value_noop
+ 

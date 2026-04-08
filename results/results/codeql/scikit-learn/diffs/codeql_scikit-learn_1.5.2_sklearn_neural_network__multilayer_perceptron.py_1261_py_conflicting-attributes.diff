@@ -1,0 +1,55 @@
+diff --git a/sklearn/neural_network/_multilayer_perceptron.py b/sklearn/neural_network/_multilayer_perceptron.py
+index f56f68ac852c2..47805857b5154 100644
+--- a/sklearn/neural_network/_multilayer_perceptron.py
++++ b/sklearn/neural_network/_multilayer_perceptron.py
+@@ -1254,8 +1271,10 @@ def predict_proba(self, X):
+         else:
+             return y_pred
+ 
+-    def _more_tags(self):
+-        return {"multilabel": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.classifier_tags.multi_label = True
++        return tags
+ 
+ 
+ class MLPRegressor(RegressorMixin, BaseMultilayerPerceptron):
+@@ -1524,14 +1543,16 @@ class MLPRegressor(RegressorMixin, BaseMultilayerPerceptron):
+     >>> from sklearn.neural_network import MLPRegressor
+     >>> from sklearn.datasets import make_regression
+     >>> from sklearn.model_selection import train_test_split
+-    >>> X, y = make_regression(n_samples=200, random_state=1)
++    >>> X, y = make_regression(n_samples=200, n_features=20, random_state=1)
+     >>> X_train, X_test, y_train, y_test = train_test_split(X, y,
+     ...                                                     random_state=1)
+-    >>> regr = MLPRegressor(random_state=1, max_iter=500).fit(X_train, y_train)
++    >>> regr = MLPRegressor(random_state=1, max_iter=2000, tol=0.1)
++    >>> regr.fit(X_train, y_train)
++    MLPRegressor(max_iter=2000, random_state=1, tol=0.1)
+     >>> regr.predict(X_test[:2])
+-    array([-0.9..., -7.1...])
++    array([  28..., -290...])
+     >>> regr.score(X_test, y_test)
+-    0.4...
++    0.98...
+     """
+ 
+     def __init__(
+@@ -1612,13 +1633,11 @@ def _predict(self, X, check_input=True):
+         return y_pred
+ 
+     def _score(self, X, y):
+-        """Private score method without input validation"""
+-        # Input validation would remove feature names, so we disable it
+-        y_pred = self._predict(X, check_input=False)
+-        return r2_score(y, y_pred)
++        return super()._score_with_function(X, y, score_function=r2_score)
+ 
+     def _validate_input(self, X, y, incremental, reset):
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse=["csr", "csc"],

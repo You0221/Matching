@@ -1,0 +1,32 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1488,13 +1509,25 @@ def _get_field_choices():
+         return result
+ 
+     def get_converters(self, expressions):
++        i = 0
+         converters = {}
+-        for i, expression in enumerate(expressions):
+-            if expression:
++
++        for expression in expressions:
++            if isinstance(expression, ColPairs):
++                cols = expression.get_source_expressions()
++                cols_converters = self.get_converters(cols)
++                for j, (convs, col) in cols_converters.items():
++                    converters[i + j] = (convs, col)
++                i += len(expression)
++            elif expression:
+                 backend_converters = self.connection.ops.get_db_converters(expression)
+                 field_converters = expression.get_db_converters(self.connection)
+                 if backend_converters or field_converters:
+                     converters[i] = (backend_converters + field_converters, expression)
++                i += 1
++            else:
++                i += 1
++
+         return converters
+ 
+     def apply_converters(self, rows, converters):

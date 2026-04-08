@@ -1,0 +1,31 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -2274,13 +2453,11 @@ def _check_long_column_names(cls, databases):
+             return errors
+ 
+         for f in cls._meta.local_fields:
+-            _, column_name = f.get_attname_column()
+-
+             # Check if auto-generated name for the field is too long
+             # for the database.
+             if (
+                 f.db_column is None
+-                and column_name is not None
++                and (column_name := f.column) is not None
+                 and len(column_name) > allowed_len
+             ):
+                 errors.append(
+@@ -2302,10 +2479,9 @@ def _check_long_column_names(cls, databases):
+             # Check if auto-generated name for the M2M field is too long
+             # for the database.
+             for m2m in f.remote_field.through._meta.local_fields:
+-                _, rel_name = m2m.get_attname_column()
+                 if (
+                     m2m.db_column is None
+-                    and rel_name is not None
++                    and (rel_name := m2m.column) is not None
+                     and len(rel_name) > allowed_len
+                 ):
+                     errors.append(

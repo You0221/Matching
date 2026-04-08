@@ -1,0 +1,12 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2144,6 +2190,7 @@ def clear_select_clause(self):
+         self.select_related = False
+         self.set_extra_mask(())
+         self.set_annotation_mask(())
++        self.selected = None
+ 
+     def clear_select_fields(self):
+         """

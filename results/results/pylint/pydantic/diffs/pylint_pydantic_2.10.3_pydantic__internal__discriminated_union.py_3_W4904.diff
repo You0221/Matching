@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_discriminated_union.py b/pydantic/_internal/_discriminated_union.py
+index 29a50a5ad79..5dd6fdaf418 100644
+--- a/pydantic/_internal/_discriminated_union.py
++++ b/pydantic/_internal/_discriminated_union.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations as _annotations
+ 
+-from typing import TYPE_CHECKING, Any, Hashable, Sequence
++from collections.abc import Hashable, Sequence
++from typing import TYPE_CHECKING, Any, cast
+ 
+ from pydantic_core import CoreSchema, core_schema
+ 

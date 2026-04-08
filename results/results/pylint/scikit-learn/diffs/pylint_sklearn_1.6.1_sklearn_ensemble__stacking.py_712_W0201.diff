@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index bf5ff39c13165..2894d8f174c13 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -712,8 +703,6 @@ def fit(self, X, y, *, sample_weight=None, **fit_params):
+             self.classes_ = self._label_encoder.classes_
+             y_encoded = self._label_encoder.transform(y)
+ 
+-        if sample_weight is not None:
+-            fit_params["sample_weight"] = sample_weight
+         return super().fit(X, y_encoded, **fit_params)
+ 
+     @available_if(

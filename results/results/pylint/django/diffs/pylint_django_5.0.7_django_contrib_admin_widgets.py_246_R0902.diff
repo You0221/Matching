@@ -1,0 +1,21 @@
+diff --git a/django/contrib/admin/widgets.py b/django/contrib/admin/widgets.py
+index fc0cd941d12c..74004a7ba713 100644
+--- a/django/contrib/admin/widgets.py
++++ b/django/contrib/admin/widgets.py
+@@ -271,6 +272,8 @@ def __init__(
+         self.can_add_related = can_add_related
+         # XXX: The UX does not support multiple selected values.
+         multiple = getattr(widget, "allow_multiple_selected", False)
++        if not isinstance(widget, AutocompleteMixin):
++            self.attrs["data-context"] = "available-source"
+         self.can_change_related = not multiple and can_change_related
+         # XXX: The deletion UX can be confusing when dealing with cascading deletion.
+         cascade = getattr(rel, "on_delete", None) is CASCADE
+@@ -328,6 +331,7 @@ def get_context(self, name, value, attrs):
+             "name": name,
+             "url_params": url_params,
+             "model": rel_opts.verbose_name,
++            "model_name": rel_opts.model_name,
+             "can_add_related": self.can_add_related,
+             "can_change_related": self.can_change_related,
+             "can_delete_related": self.can_delete_related,

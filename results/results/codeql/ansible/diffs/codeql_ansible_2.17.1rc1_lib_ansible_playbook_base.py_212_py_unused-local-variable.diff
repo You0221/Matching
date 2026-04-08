@@ -1,0 +1,41 @@
+diff --git a/lib/ansible/playbook/base.py b/lib/ansible/playbook/base.py
+index 96c3b9815dcae0..955962ea324a3a 100644
+--- a/lib/ansible/playbook/base.py
++++ b/lib/ansible/playbook/base.py
+@@ -190,27 +198,29 @@ def get_variable_manager(self):
+         return self._variable_manager
+ 
+     def _post_validate_debugger(self, attr, value, templar):
+-        value = templar.template(value)
++        try:
++            value = templar.template(value)
++        except AnsibleValueOmittedError:
++            value = self.set_to_context(attr.name)
++
+         valid_values = frozenset(('always', 'on_failed', 'on_unreachable', 'on_skipped', 'never'))
+         if value and isinstance(value, string_types) and value not in valid_values:
+             raise AnsibleParserError("'%s' is not a valid value for debugger. Must be one of %s" % (value, ', '.join(valid_values)), obj=self.get_ds())
+         return value
+ 
+     def _validate_attributes(self, ds):
+-        '''
++        """
+         Ensures that there are no keys in the datastructure which do
+         not map to attributes for this object.
+-        '''
++        """
+ 
+         valid_attrs = frozenset(self.fattributes)
+         for key in ds:
+             if key not in valid_attrs:
+-                raise AnsibleParserError("'%s' is not a valid attribute for a %s" % (key, self.__class__.__name__), obj=ds)
++                raise AnsibleParserError("'%s' is not a valid attribute for a %s" % (key, self.__class__.__name__), obj=key)
+ 
+     def validate(self, all_vars=None):
+-        ''' validation that is done at parse time, not load time '''
+-        all_vars = {} if all_vars is None else all_vars
+-
++        """ validation that is done at parse time, not load time """
+         if not self._validated:
+             # walk all fields in the object
+             for (name, attribute) in self.fattributes.items():

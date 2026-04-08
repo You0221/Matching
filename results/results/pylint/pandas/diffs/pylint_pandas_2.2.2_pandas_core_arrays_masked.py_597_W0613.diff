@@ -1,0 +1,31 @@
+diff --git a/pandas/core/arrays/masked.py b/pandas/core/arrays/masked.py
+index d7e816b9d3781..da656a2768901 100644
+--- a/pandas/core/arrays/masked.py
++++ b/pandas/core/arrays/masked.py
+@@ -600,7 +601,25 @@ def __array__(
+         the array interface, return my values
+         We return an object array here to preserve our scalar values
+         """
+-        return self.to_numpy(dtype=dtype)
++        if copy is False:
++            if not self._hasna:
++                # special case, here we can simply return the underlying data
++                return np.array(self._data, dtype=dtype, copy=copy)
++
++            warnings.warn(
++                "Starting with NumPy 2.0, the behavior of the 'copy' keyword has "
++                "changed and passing 'copy=False' raises an error when returning "
++                "a zero-copy NumPy array is not possible. pandas will follow "
++                "this behavior starting with pandas 3.0.\nThis conversion to "
++                "NumPy requires a copy, but 'copy=False' was passed. Consider "
++                "using 'np.asarray(..)' instead.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++
++        if copy is None:
++            copy = False  # The NumPy copy=False meaning is different here.
++        return self.to_numpy(dtype=dtype, copy=copy)
+ 
+     _HANDLED_TYPES: tuple[type, ...]
+ 

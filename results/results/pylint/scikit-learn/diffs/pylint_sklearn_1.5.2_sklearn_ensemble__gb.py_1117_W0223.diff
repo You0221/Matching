@@ -1,0 +1,16 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index 960e469a090cd..fded8a535413d 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -1113,6 +1117,11 @@ def apply(self, X):
+ 
+         return leaves
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
+     """Gradient Boosting for classification.

@@ -1,0 +1,21 @@
+diff --git a/django/db/backends/sqlite3/operations.py b/django/db/backends/sqlite3/operations.py
+index 0078cc077a97..08de246d7008 100644
+--- a/django/db/backends/sqlite3/operations.py
++++ b/django/db/backends/sqlite3/operations.py
+@@ -36,6 +36,16 @@ def bulk_batch_size(self, fields, objs):
+         If there's only a single field to insert, the limit is 500
+         (SQLITE_MAX_COMPOUND_SELECT).
+         """
++        fields = list(
++            chain.from_iterable(
++                (
++                    field.fields
++                    if isinstance(field, models.CompositePrimaryKey)
++                    else [field]
++                )
++                for field in fields
++            )
++        )
+         if len(fields) == 1:
+             return 500
+         elif len(fields) > 1:

@@ -1,0 +1,17 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 6822c2c99427e..ab3eaac852f7a 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -916,7 +919,11 @@ def __array__(self, dtype=None, copy=None) -> np.ndarray:
+         """
+         The array interface, return my values.
+         """
+-        return np.asarray(self._data, dtype=dtype)
++        if copy is None:
++            # Note, that the if branch exists for NumPy 1.x support
++            return np.asarray(self._data, dtype=dtype)
++
++        return np.array(self._data, dtype=dtype, copy=copy)
+ 
+     def __array_ufunc__(self, ufunc: np.ufunc, method: str_t, *inputs, **kwargs):
+         if any(isinstance(other, (ABCSeries, ABCDataFrame)) for other in inputs):

@@ -1,0 +1,17 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index 81e8abb8bc5d6..25f956e5fadda 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -1689,8 +1689,10 @@ def __init__(
+             fit_path=True,
+         )
+ 
+-    def _more_tags(self):
+-        return {"multioutput": False}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.target_tags.multi_output = False
++        return tags
+ 
+     @_fit_context(prefer_skip_nested_validation=True)
+     def fit(self, X, y, **params):

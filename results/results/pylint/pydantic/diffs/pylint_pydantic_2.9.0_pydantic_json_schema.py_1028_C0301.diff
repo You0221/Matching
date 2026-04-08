@@ -1,0 +1,16 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 64c659e8d22..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1024,8 +1098,9 @@ def function_wrap_schema(self, schema: core_schema.WrapValidatorFunctionSchema)
+         Returns:
+             The generated JSON schema.
+         """
+-        metadata = _core_metadata.CoreMetadataHandler(schema).metadata
+-        if self._mode == 'validation' and (input_schema := metadata.get('pydantic_js_input_core_schema')):
++        if self._mode == 'validation' and (
++            input_schema := schema.get('metadata', {}).get('pydantic_js_input_core_schema')
++        ):
+             return self.generate_inner(input_schema)
+ 
+         return self.generate_inner(schema['schema'])

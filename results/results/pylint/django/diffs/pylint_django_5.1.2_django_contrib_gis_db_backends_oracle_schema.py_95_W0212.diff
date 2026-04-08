@@ -1,0 +1,14 @@
+diff --git a/django/contrib/gis/db/backends/oracle/schema.py b/django/contrib/gis/db/backends/oracle/schema.py
+index fd542531ebae..ce03ee8892e4 100644
+--- a/django/contrib/gis/db/backends/oracle/schema.py
++++ b/django/contrib/gis/db/backends/oracle/schema.py
+@@ -97,8 +90,7 @@ def remove_field(self, model, field):
+                 }
+             )
+             if field.spatial_index:
+-                index_name = self._create_spatial_index_name(model, field)
+-                self.execute(self._delete_index_sql(model, index_name))
++                self.execute(self._delete_spatial_index_sql(model, field))
+         super().remove_field(model, field)
+ 
+     def run_geometry_sql(self):

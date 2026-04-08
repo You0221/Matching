@@ -1,0 +1,14 @@
+diff --git a/django/contrib/postgres/aggregates/general.py b/django/contrib/postgres/aggregates/general.py
+index c8eea1034da7..5de53676f6bc 100644
+--- a/django/contrib/postgres/aggregates/general.py
++++ b/django/contrib/postgres/aggregates/general.py
+@@ -1,9 +1,5 @@
+-import json
+-import warnings
+-
+ from django.contrib.postgres.fields import ArrayField
+ from django.db.models import Aggregate, BooleanField, JSONField, TextField, Value
+-from django.utils.deprecation import RemovedInDjango51Warning
+ 
+ from .mixins import OrderableAggMixin
+ 

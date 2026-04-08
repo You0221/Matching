@@ -1,0 +1,30 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -594,24 +612,7 @@ def _dtype_to_subclass(cls, dtype: DtypeObj):
+         # Delay import for perf. https://github.com/pandas-dev/pandas/pull/31423
+ 
+         if isinstance(dtype, ExtensionDtype):
+-            if isinstance(dtype, DatetimeTZDtype):
+-                from pandas import DatetimeIndex
+-
+-                return DatetimeIndex
+-            elif isinstance(dtype, CategoricalDtype):
+-                from pandas import CategoricalIndex
+-
+-                return CategoricalIndex
+-            elif isinstance(dtype, IntervalDtype):
+-                from pandas import IntervalIndex
+-
+-                return IntervalIndex
+-            elif isinstance(dtype, PeriodDtype):
+-                from pandas import PeriodIndex
+-
+-                return PeriodIndex
+-
+-            return Index
++            return dtype.index_class
+ 
+         if dtype.kind == "M":
+             from pandas import DatetimeIndex

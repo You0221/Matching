@@ -1,0 +1,13 @@
+diff --git a/pandas/core/reshape/merge.py b/pandas/core/reshape/merge.py
+index 6987a0ac7bf6b..410301b7697f2 100644
+--- a/pandas/core/reshape/merge.py
++++ b/pandas/core/reshape/merge.py
+@@ -89,7 +88,7 @@
+     BaseMaskedArray,
+     ExtensionArray,
+ )
+-from pandas.core.arrays._mixins import NDArrayBackedExtensionArray
++from pandas.core.arrays.string_ import StringDtype
+ import pandas.core.common as com
+ from pandas.core.construction import (
+     ensure_wrapped_if_datetimelike,

@@ -1,0 +1,15 @@
+diff --git a/django/db/models/options.py b/django/db/models/options.py
+index 76017fc8b523..11b2742f7d10 100644
+--- a/django/db/models/options.py
++++ b/django/db/models/options.py
+@@ -440,6 +438,10 @@ def swapped(self):
+                     return swapped_for
+         return None
+ 
++    def setting_changed(self, *, setting, **kwargs):
++        if setting == self.swappable and "swapped" in self.__dict__:
++            del self.swapped
++
+     @cached_property
+     def managers(self):
+         managers = []

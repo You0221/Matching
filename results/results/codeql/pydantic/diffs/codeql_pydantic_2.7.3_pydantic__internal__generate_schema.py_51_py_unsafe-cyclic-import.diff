@@ -1,0 +1,45 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -32,23 +39,34 @@
+     cast,
+     overload,
+ )
++from uuid import UUID
+ from warnings import warn
+ 
+-from pydantic_core import CoreSchema, PydanticUndefined, core_schema, to_jsonable_python
+-from typing_extensions import Annotated, Literal, TypeAliasType, TypedDict, get_args, get_origin, is_typeddict
++import typing_extensions
++from pydantic_core import (
++    CoreSchema,
++    MultiHostUrl,
++    PydanticCustomError,
++    PydanticSerializationUnexpectedValue,
++    PydanticUndefined,
++    Url,
++    core_schema,
++    to_jsonable_python,
++)
++from typing_extensions import Literal, TypeAliasType, TypedDict, get_args, get_origin, is_typeddict
+ 
+-from ..aliases import AliasGenerator
++from ..aliases import AliasChoices, AliasGenerator, AliasPath
+ from ..annotated_handlers import GetCoreSchemaHandler, GetJsonSchemaHandler
+-from ..config import ConfigDict, JsonDict, JsonEncoder
++from ..config import ConfigDict, JsonDict, JsonEncoder, JsonSchemaExtraCallable
+ from ..errors import PydanticSchemaGenerationError, PydanticUndefinedAnnotation, PydanticUserError
++from ..functional_validators import AfterValidator, BeforeValidator, FieldValidatorModes, PlainValidator, WrapValidator
+ from ..json_schema import JsonSchemaValue
+ from ..version import version_short
+ from ..warnings import PydanticDeprecatedSince20
+ from . import _core_utils, _decorators, _discriminated_union, _known_annotated_metadata, _typing_extra
+ from ._config import ConfigWrapper, ConfigWrapperStack
+-from ._core_metadata import CoreMetadataHandler, build_metadata_dict
++from ._core_metadata import update_core_metadata
+ from ._core_utils import (
+-    CoreSchemaOrField,
+     collect_invalid_schemas,
+     define_expected_missing_refs,
+     get_ref,

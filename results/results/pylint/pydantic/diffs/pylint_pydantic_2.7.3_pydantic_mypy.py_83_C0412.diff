@@ -1,0 +1,17 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 1a71bfe208b..9ad3a3ff179 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -79,12 +77,6 @@
+ from pydantic._internal import _fields
+ from pydantic.version import parse_mypy_version
+ 
+-try:
+-    from mypy.types import TypeVarDef  # type: ignore[attr-defined]
+-except ImportError:  # pragma: no cover
+-    # Backward-compatible with TypeVarDef from Mypy 0.930.
+-    from mypy.types import TypeVarType as TypeVarDef
+-
+ CONFIGFILE_KEY = 'pydantic-mypy'
+ METADATA_KEY = 'pydantic-mypy-metadata'
+ BASEMODEL_FULLNAME = 'pydantic.main.BaseModel'

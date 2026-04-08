@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -986,7 +1078,11 @@ def transform(self, X):
+         """
+         return self._transform(X)
+ 
+-    def fit_transform(self, X, y, sample_weight=None):
++    # TODO(1.7): remove `sample_weight` from the signature after deprecation
++    # cycle; pop it from `fit_params` before the `_raise_for_params` check and
++    # reinsert afterwards, for backwards compatibility
++    @_deprecate_positional_args(version="1.7")
++    def fit_transform(self, X, y, *, sample_weight=None, **fit_params):
+         """Fit the estimators and return the predictions for X for each estimator.
+ 
+         Parameters

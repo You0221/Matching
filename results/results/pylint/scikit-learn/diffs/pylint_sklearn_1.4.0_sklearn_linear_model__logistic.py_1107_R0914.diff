@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 188204ce815ad..055ccc1c6a202 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1097,11 +1116,14 @@ class LogisticRegression(LinearClassifierMixin, SparseCoefMixin, BaseEstimator):
+             )
+         ],
+         "max_iter": [Interval(Integral, 0, None, closed="left")],
+-        "multi_class": [StrOptions({"auto", "ovr", "multinomial"})],
+         "verbose": ["verbose"],
+         "warm_start": ["boolean"],
+         "n_jobs": [None, Integral],
+         "l1_ratio": [Interval(Real, 0, 1, closed="both"), None],
++        "multi_class": [
++            StrOptions({"auto", "ovr", "multinomial"}),
++            Hidden(StrOptions({"deprecated"})),
++        ],
+     }
+ 
+     def __init__(

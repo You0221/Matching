@@ -1,0 +1,16 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index f311e0b7459f..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -305,10 +321,7 @@ def add_field(self, model, field):
+             or self.effective_default(field) is not None
+             # Fields with non-constant defaults cannot by handled by ALTER
+             # TABLE ADD COLUMN statement.
+-            or (
+-                field.db_default is not NOT_PROVIDED
+-                and not isinstance(field.db_default, Value)
+-            )
++            or (field.has_db_default() and not isinstance(field.db_default, Value))
+         ):
+             self._remake_table(model, create_field=field)
+         else:

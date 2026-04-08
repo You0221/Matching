@@ -1,0 +1,21 @@
+diff --git a/lib/ansible/utils/ssh_functions.py b/lib/ansible/utils/ssh_functions.py
+index 58c241fef193db..ed8e086ae396e6 100644
+--- a/lib/ansible/utils/ssh_functions.py
++++ b/lib/ansible/utils/ssh_functions.py
+@@ -50,16 +48,3 @@ def check_for_controlpersist(ssh_executable):
+ 
+     _HAS_CONTROLPERSIST[ssh_executable] = has_cp
+     return has_cp
+-
+-
+-def set_default_transport():
+-
+-    # deal with 'smart' connection .. one time ..
+-    if C.DEFAULT_TRANSPORT == 'smart':
+-        display.deprecated("The 'smart' option for connections is deprecated. Set the connection plugin directly instead.", version='2.20')
+-
+-        # see if SSH can support ControlPersist if not use paramiko
+-        if not check_for_controlpersist('ssh') and paramiko is not None:
+-            C.DEFAULT_TRANSPORT = "paramiko"
+-        else:
+-            C.DEFAULT_TRANSPORT = "ssh"

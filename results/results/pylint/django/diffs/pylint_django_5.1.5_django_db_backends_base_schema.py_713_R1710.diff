@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 38136e7213cc..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -755,7 +775,7 @@ def add_field(self, model, field):
+         self.execute(sql, params or None)
+         # Drop the default if we need to
+         if (
+-            field.db_default is NOT_PROVIDED
++            not field.has_db_default()
+             and not self.skip_default_on_alter(field)
+             and self.effective_default(field) is not None
+         ):

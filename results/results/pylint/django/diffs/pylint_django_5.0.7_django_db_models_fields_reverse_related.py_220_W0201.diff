@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/reverse_related.py b/django/db/models/fields/reverse_related.py
+index c74e92ba89f1..85378431a78f 100644
+--- a/django/db/models/fields/reverse_related.py
++++ b/django/db/models/fields/reverse_related.py
+@@ -218,6 +217,10 @@ def set_field_name(self):
+         # example custom multicolumn joins currently have no remote field).
+         self.field_name = None
+ 
++    @cached_property
++    def accessor_name(self):
++        return self.get_accessor_name()
++
+     def get_accessor_name(self, model=None):
+         # This method encapsulates the logic that decides what name to give an
+         # accessor descriptor that retrieves related many-to-one or

@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 45cdb8bdf2ebb..3996c994bfa3b 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -2940,7 +3027,7 @@ def _more_tags(self):
+         return {"multioutput_only": True}
+ 
+     # This is necessary as LinearModelCV now supports sample_weight while
+-    # MultiTaskElasticNet does not (yet).
++    # MultiTaskElasticNetCV does not (yet).
+     def fit(self, X, y, **params):
+         """Fit MultiTaskElasticNet model with coordinate descent.
+ 

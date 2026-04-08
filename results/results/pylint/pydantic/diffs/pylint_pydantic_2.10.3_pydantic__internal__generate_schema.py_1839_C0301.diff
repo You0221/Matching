@@ -1,0 +1,26 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1826,17 +1928,13 @@ def _call_schema(self, function: ValidateCallSupportedTypes) -> core_schema.Call
+             if p.annotation is sig.empty:
+                 annotation = typing.cast(Any, Any)
+             else:
+-                # Note: This was originally get by `_typing_extra.get_function_type_hints`,
+-                #       but we switch to simply `p.annotation` to support bultins (e.g. `sorted`).
+-                #       May need to revisit if anything breaks.
+-                annotation = (
+-                    _typing_extra._make_forward_ref(p.annotation) if isinstance(p.annotation, str) else p.annotation
+-                )
+-                annotation = self._resolve_forward_ref(annotation)
++                annotation = type_hints[name]
+ 
+             parameter_mode = mode_lookup.get(p.kind)
+             if parameter_mode is not None:
+-                arg_schema = self._generate_parameter_schema(name, annotation, p.default, parameter_mode)
++                arg_schema = self._generate_parameter_schema(
++                    name, annotation, AnnotationSource.FUNCTION, p.default, parameter_mode
++                )
+                 arguments_list.append(arg_schema)
+             elif p.kind == Parameter.VAR_POSITIONAL:
+                 var_args_schema = self.generate_schema(annotation)

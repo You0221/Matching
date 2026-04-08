@@ -1,0 +1,17 @@
+diff --git a/sklearn/linear_model/_huber.py b/sklearn/linear_model/_huber.py
+index 51f24035a3c83..87e735ec998db 100644
+--- a/sklearn/linear_model/_huber.py
++++ b/sklearn/linear_model/_huber.py
+@@ -329,7 +330,11 @@ def fit(self, X, y, sample_weight=None):
+             method="L-BFGS-B",
+             jac=True,
+             args=(X, y, self.epsilon, self.alpha, sample_weight),
+-            options={"maxiter": self.max_iter, "gtol": self.tol, "iprint": -1},
++            options={
++                "maxiter": self.max_iter,
++                "gtol": self.tol,
++                **_get_additional_lbfgs_options_dict("iprint", -1),
++            },
+             bounds=bounds,
+         )
+ 

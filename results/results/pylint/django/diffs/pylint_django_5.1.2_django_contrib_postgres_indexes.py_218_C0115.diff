@@ -1,0 +1,18 @@
+diff --git a/django/contrib/postgres/indexes.py b/django/contrib/postgres/indexes.py
+index 05fdbeed5e22..ce9e2cee14de 100644
+--- a/django/contrib/postgres/indexes.py
++++ b/django/contrib/postgres/indexes.py
+@@ -234,13 +233,6 @@ def get_with_params(self):
+             with_params.append("fillfactor = %d" % self.fillfactor)
+         return with_params
+ 
+-    def check_supported(self, schema_editor):
+-        if (
+-            self.include
+-            and not schema_editor.connection.features.supports_covering_spgist_indexes
+-        ):
+-            raise NotSupportedError("Covering SP-GiST indexes require PostgreSQL 14+.")
+-
+ 
+ class OpClass(Func):
+     template = "%(expressions)s %(name)s"

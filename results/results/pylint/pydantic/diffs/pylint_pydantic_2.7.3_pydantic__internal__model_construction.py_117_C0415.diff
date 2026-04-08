@@ -1,0 +1,37 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..86c9bf05fe4 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -114,7 +135,7 @@ def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
+ 
+             cls: type[BaseModel] = super().__new__(mcs, cls_name, bases, namespace, **kwargs)  # type: ignore
+ 
+-            from ..main import BaseModel
++            BaseModel = import_cached_base_model()
+ 
+             mro = cls.__mro__
+             if Generic in mro and mro.index(Generic) < mro.index(BaseModel):
+@@ -193,7 +214,7 @@ def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
+             if isinstance(parent_namespace, dict):
+                 parent_namespace = unpack_lenient_weakvaluedict(parent_namespace)
+ 
+-            types_namespace = get_cls_types_namespace(cls, parent_namespace)
++            types_namespace = merge_cls_and_parent_ns(cls, parent_namespace)
+             set_model_fields(cls, bases, config_wrapper, types_namespace)
+ 
+             if config_wrapper.frozen and '__hash__' not in namespace:
+@@ -220,7 +241,13 @@ def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
+             super(cls, cls).__pydantic_init_subclass__(**kwargs)  # type: ignore[misc]
+             return cls
+         else:
+-            # this is the BaseModel class itself being created, no logic required
++            # These are instance variables, but have been assigned to `NoInitField` to trick the type checker.
++            for instance_slot in '__pydantic_fields_set__', '__pydantic_extra__', '__pydantic_private__':
++                namespace.pop(
++                    instance_slot,
++                    None,  # In case the metaclass is used with a class other than `BaseModel`.
++                )
++            namespace.get('__annotations__', {}).clear()
+             return super().__new__(mcs, cls_name, bases, namespace, **kwargs)
+ 
+     if not typing.TYPE_CHECKING:  # pragma: no branch

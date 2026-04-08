@@ -1,0 +1,23 @@
+diff --git a/sklearn/utils/_testing.py b/sklearn/utils/_testing.py
+index 0165e526a0630..ba8901e4b9050 100644
+--- a/sklearn/utils/_testing.py
++++ b/sklearn/utils/_testing.py
+@@ -21,14 +14,17 @@
+ import shutil
+ import sys
+ import tempfile
++import textwrap
+ import unittest
+ import warnings
++from collections import defaultdict, namedtuple
+ from collections.abc import Iterable
+ from dataclasses import dataclass
++from difflib import context_diff
+ from functools import wraps
+ from inspect import signature
++from itertools import chain, groupby
+ from subprocess import STDOUT, CalledProcessError, TimeoutExpired, check_output
+-from unittest import TestCase
+ 
+ import joblib
+ import numpy as np

@@ -1,0 +1,124 @@
+diff --git a/tornado/autoreload.py b/tornado/autoreload.py
+index 0ac4496651..c6a6e82da0 100644
+--- a/tornado/autoreload.py
++++ b/tornado/autoreload.py
+@@ -283,6 +259,12 @@ def main() -> None:
+     # Remember that we were launched with autoreload as main.
+     # The main module can be tricky; set the variables both in our globals
+     # (which may be __main__) and the real importable version.
++    #
++    # We use optparse instead of the newer argparse because we want to
++    # mimic the python command-line interface which requires stopping
++    # parsing at the first positional argument. optparse supports
++    # this but as far as I can tell argparse does not.
++    import optparse
+     import tornado.autoreload
+ 
+     global _autoreload_is_main
+@@ -292,38 +274,43 @@ def main() -> None:
+     tornado.autoreload._original_argv = _original_argv = original_argv
+     original_spec = getattr(sys.modules["__main__"], "__spec__", None)
+     tornado.autoreload._original_spec = _original_spec = original_spec
+-    sys.argv = sys.argv[:]
+-    if len(sys.argv) >= 3 and sys.argv[1] == "-m":
+-        mode = "module"
+-        module = sys.argv[2]
+-        del sys.argv[1:3]
+-    elif len(sys.argv) >= 2:
+-        mode = "script"
+-        script = sys.argv[1]
+-        sys.argv = sys.argv[1:]
++
++    parser = optparse.OptionParser(
++        prog="python -m tornado.autoreload",
++        usage=_USAGE,
++        epilog="Either -m or a path must be specified, but not both",
++    )
++    parser.disable_interspersed_args()
++    parser.add_option("-m", dest="module", metavar="module", help="module to run")
++    parser.add_option(
++        "--until-success",
++        action="store_true",
++        help="stop reloading after the program exist successfully (status code 0)",
++    )
++    opts, rest = parser.parse_args()
++    if opts.module is None:
++        if not rest:
++            print("Either -m or a path must be specified", file=sys.stderr)
++            sys.exit(1)
++        path = rest[0]
++        sys.argv = rest[:]
+     else:
+-        print(_USAGE, file=sys.stderr)
+-        sys.exit(1)
++        path = None
++        sys.argv = [sys.argv[0]] + rest
+ 
++    # SystemExit.code is typed funny: https://github.com/python/typeshed/issues/8513
++    # All we care about is truthiness
++    exit_status: Union[int, str, None] = 1
+     try:
+-        if mode == "module":
+-            import runpy
+-
+-            runpy.run_module(module, run_name="__main__", alter_sys=True)
+-        elif mode == "script":
+-            with open(script) as f:
+-                # Execute the script in our namespace instead of creating
+-                # a new one so that something that tries to import __main__
+-                # (e.g. the unittest module) will see names defined in the
+-                # script instead of just those defined in this module.
+-                global __file__
+-                __file__ = script
+-                # If __package__ is defined, imports may be incorrectly
+-                # interpreted as relative to this module.
+-                global __package__
+-                del __package__
+-                exec_in(f.read(), globals(), globals())
++        import runpy
++
++        if opts.module is not None:
++            runpy.run_module(opts.module, run_name="__main__", alter_sys=True)
++        else:
++            assert path is not None
++            runpy.run_path(path, run_name="__main__")
+     except SystemExit as e:
++        exit_status = e.code
+         gen_log.info("Script exited with status %s", e.code)
+     except Exception as e:
+         gen_log.warning("Script exited with uncaught exception", exc_info=True)
+@@ -331,7 +318,7 @@ def main() -> None:
+         # never made it into sys.modules and so we won't know to watch it.
+         # Just to make sure we've covered everything, walk the stack trace
+         # from the exception and watch every file.
+-        for (filename, lineno, name, line) in traceback.extract_tb(sys.exc_info()[2]):
++        for filename, lineno, name, line in traceback.extract_tb(sys.exc_info()[2]):
+             watch(filename)
+         if isinstance(e, SyntaxError):
+             # SyntaxErrors are special:  their innermost stack frame is fake
+@@ -340,17 +327,20 @@ def main() -> None:
+             if e.filename is not None:
+                 watch(e.filename)
+     else:
++        exit_status = 0
+         gen_log.info("Script exited normally")
+     # restore sys.argv so subsequent executions will include autoreload
+     sys.argv = original_argv
+ 
+-    if mode == "module":
++    if opts.module is not None:
++        assert opts.module is not None
+         # runpy did a fake import of the module as __main__, but now it's
+         # no longer in sys.modules.  Figure out where it is and watch it.
+-        loader = pkgutil.get_loader(module)
+-        if loader is not None:
+-            watch(loader.get_filename())  # type: ignore
+-
++        loader = pkgutil.get_loader(opts.module)
++        if loader is not None and isinstance(loader, importlib.abc.FileLoader):
++            watch(loader.get_filename())
++    if opts.until_success and not exit_status:
++        return
+     wait()
+ 
+ 

@@ -1,0 +1,27 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index b8da2dbd50f596..0adc00c9bc9a4d 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -516,19 +519,16 @@ def pager(text):
+ 
+     @staticmethod
+     def pager_pipe(text):
+-        ''' pipe text through a pager '''
++        """ pipe text through a pager """
+         if 'less' in CLI.PAGER:
+             os.environ['LESS'] = CLI.LESS_OPTS
+         try:
+             cmd = subprocess.Popen(CLI.PAGER, shell=True, stdin=subprocess.PIPE, stdout=sys.stdout)
+             cmd.communicate(input=to_bytes(text))
+-        except IOError:
+-            pass
+-        except KeyboardInterrupt:
++        except (OSError, KeyboardInterrupt):
+             pass
+ 
+-    @staticmethod
+-    def _play_prereqs():
++    def _play_prereqs(self):
+         # TODO: evaluate moving all of the code that touches ``AnsibleCollectionConfig``
+         # into ``init_plugin_loader`` so that we can specifically remove
+         # ``AnsibleCollectionConfig.playbook_paths`` to make it immutable after instantiation

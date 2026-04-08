@@ -1,0 +1,13 @@
+diff --git a/django/contrib/contenttypes/prefetch.py b/django/contrib/contenttypes/prefetch.py
+index b02ed3bae573..97ac60295bb4 100644
+--- a/django/contrib/contenttypes/prefetch.py
++++ b/django/contrib/contenttypes/prefetch.py
+@@ -3,7 +3,7 @@
+ 
+ 
+ class GenericPrefetch(Prefetch):
+-    def __init__(self, lookup, querysets=None, to_attr=None):
++    def __init__(self, lookup, querysets, to_attr=None):
+         for queryset in querysets:
+             if queryset is not None and (
+                 isinstance(queryset, RawQuerySet)

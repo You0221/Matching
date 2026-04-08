@@ -1,0 +1,19 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index 8e27facda11df..a18803d507ffa 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -195,6 +201,14 @@ def fit(self, X, y, sample_weight=None):
+         names, all_estimators = self._validate_estimators()
+         self._validate_final_estimator()
+ 
++        # FIXME: when adding support for metadata routing in Stacking*.
++        # This is a hotfix to make StackingClassifier and StackingRegressor
++        # pass the tests despite not supporting metadata routing but sharing
++        # the same base class with VotingClassifier and VotingRegressor.
++        fit_params = dict()
++        if sample_weight is not None:
++            fit_params["sample_weight"] = sample_weight
++
+         stack_method = [self.stack_method] * len(all_estimators)
+ 
+         if self.cv == "prefit":

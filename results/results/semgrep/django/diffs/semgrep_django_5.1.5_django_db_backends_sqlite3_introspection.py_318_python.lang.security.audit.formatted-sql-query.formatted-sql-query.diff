@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/sqlite3/introspection.py b/django/db/backends/sqlite3/introspection.py
+index 79aa1934c0de..a21bc2241318 100644
+--- a/django/db/backends/sqlite3/introspection.py
++++ b/django/db/backends/sqlite3/introspection.py
+@@ -316,8 +316,8 @@ def get_constraints(self, cursor, table_name):
+         # Find inline check constraints.
+         try:
+             table_schema = cursor.execute(
+-                "SELECT sql FROM sqlite_master WHERE type='table' and name=%s"
+-                % (self.connection.ops.quote_name(table_name),)
++                "SELECT sql FROM sqlite_master WHERE type='table' and name=%s",
++                [table_name],
+             ).fetchone()[0]
+         except TypeError:
+             # table_name is a view.

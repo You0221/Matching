@@ -1,0 +1,22 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1178,9 +1276,14 @@ def _extract_discriminator(
+                     continue  # this means that the "alias" does not represent a field
+                 alias_is_present_on_all_choices = True
+                 for choice in one_of_choices:
+-                    while '$ref' in choice:
+-                        assert isinstance(choice['$ref'], str)
+-                        choice = self.get_schema_from_definitions(JsonRef(choice['$ref'])) or {}
++                    try:
++                        choice = self.resolve_ref_schema(choice)
++                    except RuntimeError as exc:
++                        # TODO: fixme - this is a workaround for the fact that we can't always resolve refs
++                        # for tagged union choices at this point in the schema gen process, we might need to do
++                        # another pass at the end like we do for core schemas
++                        self.emit_warning('skipped-discriminator', str(exc))
++                        choice = {}
+                     properties = choice.get('properties', {})
+                     if not isinstance(properties, dict) or alias not in properties:
+                         alias_is_present_on_all_choices = False

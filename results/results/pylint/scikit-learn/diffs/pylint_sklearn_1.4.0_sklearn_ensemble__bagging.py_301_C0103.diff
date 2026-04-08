@@ -1,0 +1,21 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..7f278cb06f2ba 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -294,11 +341,15 @@ def __init__(
+         self.random_state = random_state
+         self.verbose = verbose
+ 
++    # TODO(1.7): remove `sample_weight` from the signature after deprecation
++    # cycle; pop it from `fit_params` before the `_raise_for_params` check and
++    # reinsert later, for backwards compatibility
++    @_deprecate_positional_args(version="1.7")
+     @_fit_context(
+         # BaseBagging.estimator is not validated yet
+         prefer_skip_nested_validation=False
+     )
+-    def fit(self, X, y, sample_weight=None):
++    def fit(self, X, y, *, sample_weight=None, **fit_params):
+         """Build a Bagging ensemble of estimators from the training set (X, y).
+ 
+         Parameters

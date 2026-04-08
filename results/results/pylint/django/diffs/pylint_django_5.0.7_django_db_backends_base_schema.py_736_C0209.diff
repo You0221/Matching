@@ -1,0 +1,21 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -743,11 +770,13 @@ def add_field(self, model, field):
+             "column": self.quote_name(field.column),
+             "definition": definition,
+         }
+-        self.execute(sql, params)
++        # Prevent using [] as params, in the case a literal '%' is used in the
++        # definition on backends that don't support parametrized DDL.
++        self.execute(sql, params or None)
+         # Drop the default if we need to
+-        # (Django usually does not use in-database defaults)
+         if (
+-            not self.skip_default_on_alter(field)
++            not field.has_db_default()
++            and not self.skip_default_on_alter(field)
+             and self.effective_default(field) is not None
+         ):
+             changes_sql, params = self._alter_column_default_sql(

@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -764,7 +762,7 @@ def _log_reg_scoring_path(
+         random_state=random_state,
+         check_input=False,
+         max_squared_sum=max_squared_sum,
+-        sample_weight=sample_weight,
++        sample_weight=sw_train,
+     )
+ 
+     log_reg = LogisticRegression(solver=solver, multi_class=multi_class)

@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/module_utils/facts/other/ohai.py b/lib/ansible/module_utils/facts/other/ohai.py
+index 75968ef29f1129..8f0e4dcaecb466 100644
+--- a/lib/ansible/module_utils/facts/other/ohai.py
++++ b/lib/ansible/module_utils/facts/other/ohai.py
+@@ -67,7 +68,6 @@ def collect(self, module=None, collected_facts=None):
+         try:
+             ohai_facts = json.loads(ohai_output)
+         except Exception:
+-            # FIXME: useful error, logging, something...
+-            pass
++            module.warn("Failed to gather ohai facts")
+ 
+         return ohai_facts

@@ -1,0 +1,13 @@
+diff --git a/pandas/core/dtypes/cast.py b/pandas/core/dtypes/cast.py
+index 9f7c0b3e36032..259e83a5936d7 100644
+--- a/pandas/core/dtypes/cast.py
++++ b/pandas/core/dtypes/cast.py
+@@ -1707,8 +1743,6 @@ def can_hold_element(arr: ArrayLike, element: Any) -> bool:
+                 arr._validate_setitem_value(element)
+                 return True
+             except (ValueError, TypeError):
+-                # TODO: re-use _catch_deprecated_value_error to ensure we are
+-                #  strict about what exceptions we allow through here.
+                 return False
+ 
+         # This is technically incorrect, but maintains the behavior of

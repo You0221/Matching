@@ -1,0 +1,123 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index 3619fdff3c7..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -293,61 +311,74 @@ def _init_core_attrs(self, rebuild_mocks: bool) -> None:
+                 config=core_config,
+                 plugin_settings=config_wrapper.plugin_settings,
+             )
+-            self._serializer = SchemaSerializer(self._core_schema, core_config)
+-
+-        if rebuild_mocks and isinstance(self._core_schema, _mock_val_ser.MockCoreSchema):
+-            self._core_schema.rebuild()
+-            self._init_core_attrs(rebuild_mocks=False)
+-            assert not isinstance(self._core_schema, _mock_val_ser.MockCoreSchema)
+-            assert not isinstance(self._validator, _mock_val_ser.MockValSer)
+-            assert not isinstance(self._serializer, _mock_val_ser.MockValSer)
+-
+-    @cached_property
+-    @_frame_depth(2)  # +2 for @cached_property and core_schema(self)
+-    def core_schema(self) -> CoreSchema:
+-        """The pydantic-core schema used to build the SchemaValidator and SchemaSerializer."""
+-        if self._core_schema is None or isinstance(self._core_schema, _mock_val_ser.MockCoreSchema):
+-            self._init_core_attrs(rebuild_mocks=True)  # Do not expose MockCoreSchema from public function
+-        assert self._core_schema is not None and not isinstance(self._core_schema, _mock_val_ser.MockCoreSchema)
+-        return self._core_schema
+-
+-    @cached_property
+-    @_frame_depth(2)  # +2 for @cached_property + validator(self)
+-    def validator(self) -> SchemaValidator | PluggableSchemaValidator:
+-        """The pydantic-core SchemaValidator used to validate instances of the model."""
+-        if not isinstance(self._validator, (SchemaValidator, PluggableSchemaValidator)):
+-            self._init_core_attrs(rebuild_mocks=True)  # Do not expose MockValSer from public function
+-        assert isinstance(self._validator, (SchemaValidator, PluggableSchemaValidator))
+-        return self._validator
+-
+-    @cached_property
+-    @_frame_depth(2)  # +2 for @cached_property + serializer(self)
+-    def serializer(self) -> SchemaSerializer:
+-        """The pydantic-core SchemaSerializer used to dump instances of the model."""
+-        if not isinstance(self._serializer, SchemaSerializer):
+-            self._init_core_attrs(rebuild_mocks=True)  # Do not expose MockValSer from public function
+-        assert isinstance(self._serializer, SchemaSerializer)
+-        return self._serializer
++            self.serializer = SchemaSerializer(self.core_schema, core_config)
++
++        self.pydantic_complete = True
++        return True
+ 
++    @property
+     def _defer_build(self) -> bool:
+-        config = self._config if self._config is not None else self._model_config()
+-        return self._is_defer_build_config(config) if config is not None else False
++        config = self._config if self._config is not None else self._model_config
++        if config:
++            return config.get('defer_build') is True
++        return False
+ 
++    @property
+     def _model_config(self) -> ConfigDict | None:
+         type_: Any = _typing_extra.annotated_type(self._type) or self._type  # Eg FastAPI heavily uses Annotated
+         if _utils.lenient_issubclass(type_, BaseModel):
+             return type_.model_config
+         return getattr(type_, '__pydantic_config__', None)
+ 
+-    @staticmethod
+-    def _is_defer_build_config(config: ConfigDict) -> bool:
+-        # TODO reevaluate this logic when we have a better understanding of how defer_build should work with TypeAdapter
+-        # Should we drop the special experimental_defer_build_mode check?
+-        return config.get('defer_build', False) is True and 'type_adapter' in config.get(
+-            'experimental_defer_build_mode', ()
++    def __repr__(self) -> str:
++        return f'TypeAdapter({_repr.display_as_type(self._type)})'
++
++    def rebuild(
++        self,
++        *,
++        force: bool = False,
++        raise_errors: bool = True,
++        _parent_namespace_depth: int = 2,
++        _types_namespace: _namespace_utils.MappingNamespace | None = None,
++    ) -> bool | None:
++        """Try to rebuild the pydantic-core schema for the adapter's type.
++
++        This may be necessary when one of the annotations is a ForwardRef which could not be resolved during
++        the initial attempt to build the schema, and automatic rebuilding fails.
++
++        Args:
++            force: Whether to force the rebuilding of the type adapter's schema, defaults to `False`.
++            raise_errors: Whether to raise errors, defaults to `True`.
++            _parent_namespace_depth: Depth at which to search for the [parent frame][frame-objects]. This
++                frame is used when resolving forward annotations during schema rebuilding, by looking for
++                the locals of this frame. Defaults to 2, which will result in the frame where the method
++                was called.
++            _types_namespace: An explicit types namespace to use, instead of using the local namespace
++                from the parent frame. Defaults to `None`.
++
++        Returns:
++            Returns `None` if the schema is already "complete" and rebuilding was not required.
++            If rebuilding _was_ required, returns `True` if rebuilding was successful, otherwise `False`.
++        """
++        if not force and self.pydantic_complete:
++            return None
++
++        if _types_namespace is not None:
++            rebuild_ns = _types_namespace
++        elif _parent_namespace_depth > 0:
++            rebuild_ns = _typing_extra.parent_frame_namespace(parent_depth=_parent_namespace_depth, force=True) or {}
++        else:
++            rebuild_ns = {}
++
++        # we have to manually fetch globals here because there's no type on the stack of the NsResolver
++        # and so we skip the globalns = get_module_ns_of(typ) call that would normally happen
++        globalns = sys._getframe(max(_parent_namespace_depth - 1, 1)).f_globals
++        ns_resolver = _namespace_utils.NsResolver(
++            namespaces_tuple=_namespace_utils.NamespacesTuple(locals=rebuild_ns, globals=globalns),
++            parent_namespace=rebuild_ns,
+         )
++        return self._init_core_attrs(ns_resolver=ns_resolver, force=True, raise_errors=raise_errors)
+ 
+-    @_frame_depth(1)
+     def validate_python(
+         self,
+         object: Any,

@@ -1,0 +1,149 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -1149,96 +1200,87 @@ def deprecation_warnings_enabled(cls) -> bool:
+ 
+         return C.config.get_config_value('DEPRECATION_WARNINGS', variables=variables)
+ 
+-    def capture(self, warning: WarningSummary) -> None:
++    def capture(self, warning: _messages.WarningSummary) -> None:
+         """Add the warning/deprecation to the context if it has not already been seen by this context."""
+         if warning in self._seen:
+             return
+ 
+         self._seen.add(warning)
+ 
+-        if isinstance(warning, DeprecationSummary):
++        if isinstance(warning, _messages.DeprecationSummary):
+             self._deprecation_warnings.append(warning)
+         else:
+             self._warnings.append(warning)
+ 
+-    def get_warnings(self) -> list[WarningSummary]:
++    def get_warnings(self) -> list[_messages.WarningSummary]:
+         """Return a list of the captured non-deprecation warnings."""
+         # DTFIX-FUTURE: return a read-only list proxy instead
+         return self._warnings
+ 
+-    def get_deprecation_warnings(self) -> list[DeprecationSummary]:
++    def get_deprecation_warnings(self) -> list[_messages.DeprecationSummary]:
+         """Return a list of the captured deprecation warnings."""
+         # DTFIX-FUTURE: return a read-only list proxy instead
+         return self._deprecation_warnings
+ 
+ 
+-def _format_error_details(details: t.Sequence[Detail], formatted_tb: str | None = None) -> str:
+-    details = _utils._collapse_error_details(details)
++def _join_sentences(first: str | None, second: str | None) -> str:
++    """Join two sentences together."""
++    first = (first or '').strip()
++    second = (second or '').strip()
+ 
+-    message_lines: list[str] = []
++    if first and first[-1] not in ('!', '?', '.'):
++        first += '.'
+ 
+-    if len(details) > 1:
+-        message_lines.append(_utils._dedupe_and_concat_message_chain([md.msg for md in details]))
+-        message_lines.append('')
++    if second and second[-1] not in ('!', '?', '.'):
++        second += '.'
+ 
+-    for idx, edc in enumerate(details):
+-        if idx:
+-            message_lines.extend((
+-                '',
+-                '<<< caused by >>>',
+-                '',
+-            ))
++    if first and not second:
++        return first
+ 
+-        message_lines.extend(_get_message_lines(edc.msg, edc.help_text, edc.formatted_source_context))
++    if not first and second:
++        return second
+ 
+-    message_lines = [f'{line}\n' for line in message_lines]
++    return ' '.join((first, second))
+ 
+-    if formatted_tb:
+-        message_lines.append('\n')
+-        message_lines.append(formatted_tb)
+ 
+-    msg = "".join(message_lines).strip()
++def _format_message(summary: _messages.SummaryBase, include_traceback: bool) -> str:
++    if isinstance(summary, _messages.DeprecationSummary):
++        deprecation_message = _display._get_deprecation_message_with_plugin_info(
++            msg=summary.event.msg,
++            version=summary.version,
++            date=summary.date,
++            deprecator=summary.deprecator,
++        )
+ 
+-    if '\n' in msg:
+-        msg += '\n\n'
++        event = dataclasses.replace(summary.event, msg=deprecation_message)
+     else:
+-        msg += '\n'
+-
+-    return msg
+-
+-
+-def _get_message_lines(message: str, help_text: str | None, formatted_source_context: str | None) -> list[str]:
+-    """Return a list of error/warning message lines constructed from the given message, help text and source context."""
++        event = summary.event
+ 
+-    if help_text and not formatted_source_context and '\n' not in message and '\n' not in help_text:
+-        return [f'{message} {help_text}']  # prefer a single-line message with help text when there is no source context
++    return _event_formatting.format_event(event, include_traceback)
+ 
+-    message_lines = [message]
+ 
+-    if formatted_source_context:
+-        message_lines.append(formatted_source_context)
++def _report_config_warnings(deprecator: _messages.PluginInfo) -> None:
++    """Called by config to report warnings/deprecations collected during a config parse."""
++    while config._errors:
++        msg, exception = config._errors.pop()
++        _display.error_as_warning(msg=msg, exception=exception)
+ 
+-    if help_text:
+-        message_lines.append('')
+-        message_lines.append(help_text)
++    while config.WARNINGS:
++        warn = config.WARNINGS.pop()
++        _display.warning(warn)
+ 
+-    return message_lines
++    while config.DEPRECATED:
++        # tuple with name and options
++        dep = config.DEPRECATED.pop(0)
++        msg = config.get_deprecated_msg_from_config(dep[1]).replace("\t", "")
+ 
++        _display.deprecated(  # pylint: disable=ansible-deprecated-unnecessary-collection-name,ansible-invalid-deprecated-version
++            msg=f"{dep[0]} option. {msg}",
++            version=dep[1]['version'],
++            deprecator=deprecator,
++        )
+ 
+-def format_message(summary: SummaryBase) -> str:
+-    details: t.Sequence[Detail]
+-
+-    if isinstance(summary, DeprecationSummary):
+-        details = [detail if idx else dataclasses.replace(
+-            detail,
+-            msg=_display._get_deprecation_message_with_plugin_info(
+-                msg=detail.msg,
+-                version=summary.version,
+-                date=summary.date,
+-                plugin=summary.plugin,
+-            ),
+-        ) for idx, detail in enumerate(summary.details)]
+-    else:
+-        details = summary.details
+ 
+-    return _format_error_details(details, summary.formatted_traceback)
++# emit any warnings or deprecations
++# in the event config fails before display is up, we'll lose warnings -- but that's OK, since everything is broken anyway
++_report_config_warnings(_deprecator.ANSIBLE_CORE_DEPRECATOR)

@@ -1,0 +1,14 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -699,9 +811,6 @@ def _model_schema(self, cls: type[BaseModel]) -> core_schema.CoreSchema:
+                         model_name=cls.__name__,
+                     )
+                     inner_schema = apply_validators(fields_schema, decorators.root_validators.values(), None)
+-                    new_inner_schema = define_expected_missing_refs(inner_schema, recursively_defined_type_refs())
+-                    if new_inner_schema is not None:
+-                        inner_schema = new_inner_schema
+                     inner_schema = apply_model_validators(inner_schema, model_validators, 'inner')
+ 
+                     model_schema = core_schema.model_schema(

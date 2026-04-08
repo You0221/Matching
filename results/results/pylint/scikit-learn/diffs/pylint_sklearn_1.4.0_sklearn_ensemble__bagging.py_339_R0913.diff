@@ -1,0 +1,28 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..7f278cb06f2ba 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -331,7 +394,12 @@ def fit(self, X, y, sample_weight=None):
+             force_all_finite=False,
+             multi_output=True,
+         )
+-        return self._fit(X, y, self.max_samples, sample_weight=sample_weight)
++
++        if sample_weight is not None:
++            sample_weight = _check_sample_weight(sample_weight, X, dtype=None)
++            fit_params["sample_weight"] = sample_weight
++
++        return self._fit(X, y, max_samples=self.max_samples, **fit_params)
+ 
+     def _parallel_args(self):
+         return {}
+@@ -342,8 +410,8 @@ def _fit(
+         y,
+         max_samples=None,
+         max_depth=None,
+-        sample_weight=None,
+         check_input=True,
++        **fit_params,
+     ):
+         """Build a Bagging ensemble of estimators from the training
+            set (X, y).

@@ -1,0 +1,101 @@
+diff --git a/pandas/core/arrays/arrow/array.py b/pandas/core/arrays/arrow/array.py
+index a5ce46ed612f3..5b2d3b7c065a8 100644
+--- a/pandas/core/arrays/arrow/array.py
++++ b/pandas/core/arrays/arrow/array.py
+@@ -2245,86 +2409,23 @@ def _apply_elementwise(self, func: Callable) -> list[list[Any]]:
+             for chunk in self._pa_array.iterchunks()
+         ]
+ 
+-    def _str_count(self, pat: str, flags: int = 0):
+-        if flags:
+-            raise NotImplementedError(f"count not implemented with {flags=}")
+-        return type(self)(pc.count_substring_regex(self._pa_array, pat))
+-
+-    def _str_contains(
+-        self, pat, case: bool = True, flags: int = 0, na=None, regex: bool = True
+-    ):
+-        if flags:
+-            raise NotImplementedError(f"contains not implemented with {flags=}")
+-
+-        if regex:
+-            pa_contains = pc.match_substring_regex
+-        else:
+-            pa_contains = pc.match_substring
+-        result = pa_contains(self._pa_array, pat, ignore_case=not case)
+-        if not isna(na):
++    def _convert_bool_result(self, result, na=lib.no_default, method_name=None):
++        if na is not lib.no_default and not isna(
++            na
++        ):  # pyright: ignore [reportGeneralTypeIssues]
+             result = result.fill_null(na)
+         return type(self)(result)
+ 
+-    def _str_startswith(self, pat: str | tuple[str, ...], na=None):
+-        if isinstance(pat, str):
+-            result = pc.starts_with(self._pa_array, pattern=pat)
+-        else:
+-            if len(pat) == 0:
+-                # For empty tuple, pd.StringDtype() returns null for missing values
+-                # and false for valid values.
+-                result = pc.if_else(pc.is_null(self._pa_array), None, False)
+-            else:
+-                result = pc.starts_with(self._pa_array, pattern=pat[0])
+-
+-                for p in pat[1:]:
+-                    result = pc.or_(result, pc.starts_with(self._pa_array, pattern=p))
+-        if not isna(na):
+-            result = result.fill_null(na)
++    def _convert_int_result(self, result):
+         return type(self)(result)
+ 
+-    def _str_endswith(self, pat: str | tuple[str, ...], na=None):
+-        if isinstance(pat, str):
+-            result = pc.ends_with(self._pa_array, pattern=pat)
+-        else:
+-            if len(pat) == 0:
+-                # For empty tuple, pd.StringDtype() returns null for missing values
+-                # and false for valid values.
+-                result = pc.if_else(pc.is_null(self._pa_array), None, False)
+-            else:
+-                result = pc.ends_with(self._pa_array, pattern=pat[0])
+-
+-                for p in pat[1:]:
+-                    result = pc.or_(result, pc.ends_with(self._pa_array, pattern=p))
+-        if not isna(na):
+-            result = result.fill_null(na)
++    def _convert_rank_result(self, result):
+         return type(self)(result)
+ 
+-    def _str_replace(
+-        self,
+-        pat: str | re.Pattern,
+-        repl: str | Callable,
+-        n: int = -1,
+-        case: bool = True,
+-        flags: int = 0,
+-        regex: bool = True,
+-    ):
+-        if isinstance(pat, re.Pattern) or callable(repl) or not case or flags:
+-            raise NotImplementedError(
+-                "replace is not supported with a re.Pattern, callable repl, "
+-                "case=False, or flags!=0"
+-            )
+-
+-        func = pc.replace_substring_regex if regex else pc.replace_substring
+-        # https://github.com/apache/arrow/issues/39149
+-        # GH 56404, unexpected behavior with negative max_replacements with pyarrow.
+-        pa_max_replacements = None if n < 0 else n
+-        result = func(
+-            self._pa_array,
+-            pattern=pat,
+-            replacement=repl,
+-            max_replacements=pa_max_replacements,
+-        )
+-        return type(self)(result)
++    def _str_count(self, pat: str, flags: int = 0):
++        if flags:
++            raise NotImplementedError(f"count not implemented with {flags=}")
++        return type(self)(pc.count_substring_regex(self._pa_array, pat))
+ 
+     def _str_repeat(self, repeats: int | Sequence[int]):
+         if not isinstance(repeats, int):

@@ -1,0 +1,94 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2397,43 +2646,62 @@ def _extract_get_pydantic_json_schema(tp: Any, schema: CoreSchema) -> GetJsonSch
+     return js_modify_function
+ 
+ 
+-class _CommonField(TypedDict):
+-    schema: core_schema.CoreSchema
+-    validation_alias: str | list[str | int] | list[list[str | int]] | None
+-    serialization_alias: str | None
+-    serialization_exclude: bool | None
+-    frozen: bool | None
+-    metadata: dict[str, Any]
++def resolve_original_schema(schema: CoreSchema, definitions: _Definitions) -> CoreSchema | None:
++    if schema['type'] == 'definition-ref':
++        return definitions.get_schema_from_ref(schema['schema_ref'])
++    elif schema['type'] == 'definitions':
++        return schema['schema']
++    else:
++        return schema
+ 
+ 
+-def _common_field(
+-    schema: core_schema.CoreSchema,
+-    *,
+-    validation_alias: str | list[str | int] | list[list[str | int]] | None = None,
+-    serialization_alias: str | None = None,
+-    serialization_exclude: bool | None = None,
+-    frozen: bool | None = None,
+-    metadata: Any = None,
+-) -> _CommonField:
+-    return {
+-        'schema': schema,
+-        'validation_alias': validation_alias,
+-        'serialization_alias': serialization_alias,
+-        'serialization_exclude': serialization_exclude,
+-        'frozen': frozen,
+-        'metadata': metadata,
+-    }
++def _inlining_behavior(
++    def_ref: core_schema.DefinitionReferenceSchema,
++) -> Literal['inline', 'keep', 'preserve_metadata']:
++    """Determine the inlining behavior of the `'definition-ref'` schema.
++
++    - If no `'serialization'` schema and no metadata is attached, the schema can safely be inlined.
++    - If it has metadata but only related to the deferred discriminator application, it can be inlined
++      provided that such metadata is kept.
++    - Otherwise, the schema should not be inlined. Doing so would remove the `'serialization'` schema or metadata.
++    """
++    if 'serialization' in def_ref:
++        return 'keep'
++    metadata = def_ref.get('metadata')
++    if not metadata:
++        return 'inline'
++    if len(metadata) == 1 and 'pydantic_internal_union_discriminator' in metadata:
++        return 'preserve_metadata'
++    return 'keep'
+ 
+ 
+ class _Definitions:
+     """Keeps track of references and definitions."""
+ 
++    _recursively_seen: set[str]
++    """A set of recursively seen references.
++
++    When a referenceable type is encountered, the `get_schema_or_ref` context manager is
++    entered to compute the reference. If the type references itself by some way (e.g. for
++    a dataclass a Pydantic model, the class can be referenced as a field annotation),
++    entering the context manager again will yield a `'definition-ref'` schema that should
++    short-circuit the normal generation process, as the reference was already in this set.
++    """
++
++    _definitions: dict[str, core_schema.CoreSchema]
++    """A mapping of references to their corresponding schema.
++
++    When a schema for a referenceable type is generated, it is stored in this mapping. If the
++    same type is encountered again, the reference is yielded by the `get_schema_or_ref` context
++    manager.
++    """
++
+     def __init__(self) -> None:
+-        self.seen: set[str] = set()
+-        self.definitions: dict[str, core_schema.CoreSchema] = {}
++        self._recursively_seen = set()
++        self._definitions = {}
+ 
+     @contextmanager
+-    def get_schema_or_ref(self, tp: Any) -> Iterator[tuple[str, None] | tuple[str, CoreSchema]]:
++    def get_schema_or_ref(self, tp: Any, /) -> Generator[tuple[str, core_schema.DefinitionReferenceSchema | None]]:
+         """Get a definition for `tp` if one exists.
+ 
+         If a definition exists, a tuple of `(ref_string, CoreSchema)` is returned.

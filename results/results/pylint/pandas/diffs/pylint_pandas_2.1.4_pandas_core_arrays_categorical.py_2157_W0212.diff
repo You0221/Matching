@@ -1,0 +1,30 @@
+diff --git a/pandas/core/arrays/categorical.py b/pandas/core/arrays/categorical.py
+index 6107388bfe78b..b87c5375856dc 100644
+--- a/pandas/core/arrays/categorical.py
++++ b/pandas/core/arrays/categorical.py
+@@ -2144,24 +2175,9 @@ def __contains__(self, key) -> bool:
+     # Rendering Methods
+ 
+     def _formatter(self, boxed: bool = False):
+-        # Defer to CategoricalFormatter's formatter.
++        # Returning None here will cause format_array to do inference.
+         return None
+ 
+-    def _tidy_repr(self, max_vals: int = 10, footer: bool = True) -> str:
+-        """
+-        a short repr displaying only max_vals and an optional (but default
+-        footer)
+-        """
+-        num = max_vals // 2
+-        head = self[:num]._get_repr(length=False, footer=False)
+-        tail = self[-(max_vals - num) :]._get_repr(length=False, footer=False)
+-
+-        result = f"{head[:-1]}, ..., {tail[1:]}"
+-        if footer:
+-            result = f"{result}\n{self._repr_footer()}"
+-
+-        return str(result)
+-
+     def _repr_categories(self) -> list[str]:
+         """
+         return the base repr for the categories

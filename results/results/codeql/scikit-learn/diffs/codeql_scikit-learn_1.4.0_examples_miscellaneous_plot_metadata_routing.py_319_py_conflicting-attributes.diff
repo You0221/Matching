@@ -1,0 +1,147 @@
+diff --git a/examples/miscellaneous/plot_metadata_routing.py b/examples/miscellaneous/plot_metadata_routing.py
+index 9984bb6183348..634ca304d125d 100644
+--- a/examples/miscellaneous/plot_metadata_routing.py
++++ b/examples/miscellaneous/plot_metadata_routing.py
+@@ -279,41 +304,46 @@ def predict(self, X, **predict_params):
+ # corresponding method routings, i.e. which method of a sub-estimator is used
+ # in which method of a meta-estimator:
+ 
+-print_routing(est)
++print_routing(meta_est)
+ 
+ # %%
+ # As you can see, the only metadata requested for method ``fit`` is
+ # ``"sample_weight"`` with ``"aliased_sample_weight"`` as the alias. The
+ # ``~utils.metadata_routing.MetadataRouter`` class enables us to easily create
+ # the routing object which would create the output we need for our
+-# ``get_metadata_routing``. In the above implementation,
+-# ``mapping="one-to-one"`` means there is a one to one mapping between
+-# sub-estimator's methods and meta-estimator's ones, i.e. ``fit`` used in
+-# ``fit`` and so on. In order to understand how aliases work in
+-# meta-estimators, imagine our meta-estimator inside another one:
++# ``get_metadata_routing``.
++#
++# In order to understand how aliases work in meta-estimators, imagine our
++# meta-estimator inside another one:
+ 
+-meta_est = MetaClassifier(estimator=est).fit(X, y, aliased_sample_weight=my_weights)
++meta_meta_est = MetaClassifier(estimator=meta_est).fit(
++    X, y, aliased_sample_weight=my_weights
++)
+ 
+ # %%
+-# In the above example, this is how each ``fit`` method will call the
+-# sub-estimator's ``fit``::
++# In the above example, this is how the ``fit`` method of `meta_meta_est`
++# will call their sub-estimator's ``fit`` methods::
+ #
+-#     meta_est.fit(X, y, aliased_sample_weight=my_weights):
+-#         ...  # this estimator (est), expects aliased_sample_weight as seen above
++#     # user feeds `my_weights` as `aliased_sample_weight` into `meta_meta_est`:
++#     meta_meta_est.fit(X, y, aliased_sample_weight=my_weights):
++#         ...
++#
++#         # the first sub-estimator (`meta_est`) expects `aliased_sample_weight`
+ #         self.estimator_.fit(X, y, aliased_sample_weight=aliased_sample_weight):
+-#             ...  # now est passes aliased_sample_weight's value as sample_weight,
+-#                  # which is expected by the sub-estimator
+-#             self.estimator_.fit(X, y, sample_weight=aliased_sample_weight)
+-#    ...
++#             ...
++#
++#             # the second sub-estimator (`est`) expects `sample_weight`
++#             self.estimator_.fit(X, y, sample_weight=aliased_sample_weight):
++#                 ...
+ 
+ # %%
+-# Router and Consumer
+-# -------------------
+-# To show how a slightly more complex case would work, consider a case
+-# where a meta-estimator uses some metadata, but it also routes them to an
+-# underlying estimator. In this case, this meta-estimator is a consumer and a
+-# router at the same time. This is how we can implement one, and it is very
+-# similar to what we had before, with a few tweaks.
++# Consuming and routing Meta-Estimator
++# ------------------------------------
++# For a slightly more complex example, consider a meta-estimator that routes
++# metadata to an underlying estimator as before, but it also uses some metadata
++# in its own methods. This meta-estimator is a consumer and a router at the
++# same time. Implementing one is very similar to what we had before, but with a
++# few tweaks.
+ 
+ 
+ class RouterConsumerClassifier(MetaEstimatorMixin, ClassifierMixin, BaseEstimator):
+@@ -323,47 +353,59 @@ def __init__(self, estimator):
+     def get_metadata_routing(self):
+         router = (
+             MetadataRouter(owner=self.__class__.__name__)
++            # defining metadata routing request values for usage in the meta-estimator
+             .add_self_request(self)
+-            .add(estimator=self.estimator, method_mapping="one-to-one")
++            # defining metadata routing request values for usage in the sub-estimator
++            .add(
++                estimator=self.estimator,
++                method_mapping=MethodMapping()
++                .add(caller="fit", callee="fit")
++                .add(caller="predict", callee="predict")
++                .add(caller="score", callee="score"),
++            )
+         )
+         return router
+ 
++    # Since `sample_weight` is used and consumed here, it should be defined as
++    # an explicit argument in the method's signature. All other metadata which
++    # are only routed, will be passed as `**fit_params`:
+     def fit(self, X, y, sample_weight, **fit_params):
+         if self.estimator is None:
+             raise ValueError("estimator cannot be None!")
+ 
+         check_metadata(self, sample_weight=sample_weight)
+ 
++        # We add `sample_weight` to the `fit_params` dictionary.
+         if sample_weight is not None:
+             fit_params["sample_weight"] = sample_weight
+ 
+-        # meta-estimators are responsible for validating the given metadata
+         request_router = get_routing_for_object(self)
+         request_router.validate_metadata(params=fit_params, method="fit")
+-        # we can use provided utility methods to map the given metadata to what
+-        # is required by the underlying estimator
+-        params = request_router.route_params(params=fit_params, caller="fit")
+-        self.estimator_ = clone(self.estimator).fit(X, y, **params.estimator.fit)
++        routed_params = request_router.route_params(params=fit_params, caller="fit")
++        self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+         self.classes_ = self.estimator_.classes_
+         return self
+ 
+     def predict(self, X, **predict_params):
+         check_is_fitted(self)
+-        # same as in ``fit``, we validate the given metadata
++        # As in `fit`, we get a copy of the object's MetadataRouter,
+         request_router = get_routing_for_object(self)
++        # we validate the given metadata,
+         request_router.validate_metadata(params=predict_params, method="predict")
+         # and then prepare the input to the underlying ``predict`` method.
+-        params = request_router.route_params(params=predict_params, caller="predict")
+-        return self.estimator_.predict(X, **params.estimator.predict)
++        routed_params = request_router.route_params(
++            params=predict_params, caller="predict"
++        )
++        return self.estimator_.predict(X, **routed_params.estimator.predict)
+ 
+ 
+ # %%
+-# The key parts where the above estimator differs from our previous
++# The key parts where the above meta-estimator differs from our previous
+ # meta-estimator is accepting ``sample_weight`` explicitly in ``fit`` and
+-# including it in ``fit_params``. Making ``sample_weight`` an explicit argument
+-# makes sure ``set_fit_request(sample_weight=...)`` is present for this class.
+-# In a sense, this means the estimator is both a consumer, as well as a router
+-# of ``sample_weight``.
++# including it in ``fit_params``. Since ``sample_weight`` is an explicit
++# argument, we can be sure that ``set_fit_request(sample_weight=...)`` is
++# present for this method. The meta-estimator is both a consumer, as well as a
++# router of ``sample_weight``.
+ #
+ # In ``get_metadata_routing``, we add ``self`` to the routing using
+ # ``add_self_request`` to indicate this estimator is consuming

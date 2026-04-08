@@ -1,0 +1,47 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 50566e5a24a..4be1a09cb32 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -540,42 +712,3 @@ def get_type_hints(  # noqa: C901
+                 value = typing.Optional[value]
+             hints[name] = value
+         return hints if include_extras else {k: typing._strip_annotations(t) for k, t in hints.items()}  # type: ignore
+-
+-
+-def is_dataclass(_cls: type[Any]) -> TypeGuard[type[StandardDataclass]]:
+-    # The dataclasses.is_dataclass function doesn't seem to provide TypeGuard functionality,
+-    # so I created this convenience function
+-    return dataclasses.is_dataclass(_cls)
+-
+-
+-def origin_is_type_alias_type(origin: Any) -> TypeGuard[TypeAliasType]:
+-    return isinstance(origin, TypeAliasType)
+-
+-
+-if sys.version_info >= (3, 10):
+-
+-    def is_generic_alias(type_: type[Any]) -> bool:
+-        return isinstance(type_, (types.GenericAlias, typing._GenericAlias))  # type: ignore[attr-defined]
+-
+-else:
+-
+-    def is_generic_alias(type_: type[Any]) -> bool:
+-        return isinstance(type_, typing._GenericAlias)  # type: ignore
+-
+-
+-def is_self_type(tp: Any) -> bool:
+-    """Check if a given class is a Self type (from `typing` or `typing_extensions`)"""
+-    return isinstance(tp, typing_base) and getattr(tp, '_name', None) == 'Self'
+-
+-
+-if sys.version_info >= (3, 9):
+-    from zoneinfo import ZoneInfo
+-
+-    def is_zoneinfo_type(tp: Any) -> bool:
+-        """Check if a give class is a zone_info.ZoneInfo type"""
+-        return tp is ZoneInfo
+-
+-else:
+-
+-    def is_zoneinfo_type(tp: Any) -> bool:
+-        return False

@@ -1,0 +1,12 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -970,6 +1001,7 @@ def get_default_columns(
+         # alias for a given field. This also includes None -> start_alias to
+         # be used by local fields.
+         seen_models = {None: start_alias}
++        select_mask_fields = set(composite.unnest(select_mask))
+ 
+         for field in opts.concrete_fields:
+             model = field.model._meta.concrete_model

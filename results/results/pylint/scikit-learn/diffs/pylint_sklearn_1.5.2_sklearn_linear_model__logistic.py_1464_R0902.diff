@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1460,6 +1457,11 @@ def predict_log_proba(self, X):
+         """
+         return np.log(self.predict_proba(X))
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class LogisticRegressionCV(LogisticRegression, LinearClassifierMixin, BaseEstimator):
+     """Logistic Regression CV (aka logit, MaxEnt) classifier.

@@ -1,0 +1,20 @@
+diff --git a/django/db/models/fields/reverse_related.py b/django/db/models/fields/reverse_related.py
+index c74e92ba89f1..85378431a78f 100644
+--- a/django/db/models/fields/reverse_related.py
++++ b/django/db/models/fields/reverse_related.py
+@@ -246,12 +249,13 @@ def get_path_info(self, filtered_relation=None):
+     def path_infos(self):
+         return self.get_path_info()
+ 
+-    def get_cache_name(self):
++    @cached_property
++    def cache_name(self):
+         """
+         Return the name of the cache key to use for storing an instance of the
+         forward model on the reverse model.
+         """
+-        return self.get_accessor_name()
++        return self.accessor_name
+ 
+ 
+ class ManyToOneRel(ForeignObjectRel):

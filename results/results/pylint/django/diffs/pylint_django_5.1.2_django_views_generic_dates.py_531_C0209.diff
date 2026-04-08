@@ -1,0 +1,17 @@
+diff --git a/django/views/generic/dates.py b/django/views/generic/dates.py
+index d2b776c1223d..12ec4104cd67 100644
+--- a/django/views/generic/dates.py
++++ b/django/views/generic/dates.py
+@@ -505,7 +519,11 @@ class MonthArchiveView(MultipleObjectTemplateResponseMixin, BaseMonthArchiveView
+ 
+ 
+ class BaseWeekArchiveView(YearMixin, WeekMixin, BaseDateListView):
+-    """List of objects published in a given week."""
++    """
++    Base view for a list of objects published in a given week.
++
++    This requires subclassing to provide a response mixin.
++    """
+ 
+     def get_dated_items(self):
+         """Return (date_list, items, extra_context) for this request."""

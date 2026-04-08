@@ -1,0 +1,226 @@
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index e8f614ff855c0..a57ada5a5b3b3 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -558,158 +408,86 @@ def _str_get_dummies(self, sep: str = "|"):
+         dummies = np.vstack(dummies_pa.to_numpy())
+         return dummies.astype(np.int64, copy=False), labels
+ 
+-    def _convert_int_dtype(self, result):
++    def _convert_int_result(self, result):
++        if self.dtype.na_value is np.nan:
++            if isinstance(result, pa.Array):
++                result = result.to_numpy(zero_copy_only=False)
++            else:
++                result = result.to_numpy()
++            if result.dtype == np.int32:
++                result = result.astype(np.int64)
++            return result
++
+         return Int64Dtype().__from_arrow__(result)
+ 
++    def _convert_rank_result(self, result):
++        if self.dtype.na_value is np.nan:
++            if isinstance(result, pa.Array):
++                result = result.to_numpy(zero_copy_only=False)
++            else:
++                result = result.to_numpy()
++            return result.astype("float64", copy=False)
++
++        return Float64Dtype().__from_arrow__(result)
++
+     def _reduce(
+         self, name: str, *, skipna: bool = True, keepdims: bool = False, **kwargs
+     ):
+-        result = self._reduce_calc(name, skipna=skipna, keepdims=keepdims, **kwargs)
++        if self.dtype.na_value is np.nan and name in ["any", "all"]:
++            if not skipna:
++                nas = pc.is_null(self._pa_array)
++                arr = pc.or_kleene(nas, pc.not_equal(self._pa_array, ""))
++            else:
++                arr = pc.not_equal(self._pa_array, "")
++            result = ArrowExtensionArray(arr)._reduce(
++                name, skipna=skipna, keepdims=keepdims, **kwargs
++            )
++            if keepdims:
++                # ArrowExtensionArray will return a length-1 bool[pyarrow] array
++                return result.astype(np.bool_)
++            return result
++
++        if name in ("min", "max", "sum", "argmin", "argmax"):
++            result = self._reduce_calc(name, skipna=skipna, keepdims=keepdims, **kwargs)
++        else:
++            raise TypeError(f"Cannot perform reduction '{name}' with string dtype")
++
+         if name in ("argmin", "argmax") and isinstance(result, pa.Array):
+-            return self._convert_int_dtype(result)
++            return self._convert_int_result(result)
+         elif isinstance(result, pa.Array):
+             return type(self)(result)
+         else:
+             return result
+ 
+-    def _rank(
+-        self,
+-        *,
+-        axis: AxisInt = 0,
+-        method: str = "average",
+-        na_option: str = "keep",
+-        ascending: bool = True,
+-        pct: bool = False,
+-    ):
+-        """
+-        See Series.rank.__doc__.
+-        """
+-        return self._convert_int_dtype(
+-            self._rank_calc(
+-                axis=axis,
+-                method=method,
+-                na_option=na_option,
+-                ascending=ascending,
+-                pct=pct,
++    def value_counts(self, dropna: bool = True) -> Series:
++        result = super().value_counts(dropna=dropna)
++        if self.dtype.na_value is np.nan:
++            res_values = result._values.to_numpy()
++            return result._constructor(
++                res_values, index=result.index, name=result.name, copy=False
+             )
+-        )
+-
+-
+-class ArrowStringArrayNumpySemantics(ArrowStringArray):
+-    _storage = "pyarrow_numpy"
++        return result
+ 
+-    @classmethod
+-    def _result_converter(cls, values, na=None):
+-        if not isna(na):
+-            values = values.fill_null(bool(na))
+-        return ArrowExtensionArray(values).to_numpy(na_value=np.nan)
+-
+-    def __getattribute__(self, item):
+-        # ArrowStringArray and we both inherit from ArrowExtensionArray, which
+-        # creates inheritance problems (Diamond inheritance)
+-        if item in ArrowStringArrayMixin.__dict__ and item not in (
+-            "_pa_array",
+-            "__dict__",
++    def _cmp_method(self, other, op):
++        if (
++            isinstance(other, (BaseStringArray, ArrowExtensionArray))
++            and self.dtype.na_value is not libmissing.NA
++            and other.dtype.na_value is libmissing.NA
+         ):
+-            return partial(getattr(ArrowStringArrayMixin, item), self)
+-        return super().__getattribute__(item)
+-
+-    def _str_map(
+-        self, f, na_value=None, dtype: Dtype | None = None, convert: bool = True
+-    ):
+-        if dtype is None:
+-            dtype = self.dtype
+-        if na_value is None:
+-            na_value = self.dtype.na_value
++            # NA has priority of NaN semantics
++            return NotImplemented
+ 
+-        mask = isna(self)
+-        arr = np.asarray(self)
+-
+-        if is_integer_dtype(dtype) or is_bool_dtype(dtype):
+-            if is_integer_dtype(dtype):
+-                na_value = np.nan
++        result = super()._cmp_method(other, op)
++        if self.dtype.na_value is np.nan:
++            if op == operator.ne:
++                return result.to_numpy(np.bool_, na_value=True)
+             else:
+-                na_value = False
+-            try:
+-                result = lib.map_infer_mask(
+-                    arr,
+-                    f,
+-                    mask.view("uint8"),
+-                    convert=False,
+-                    na_value=na_value,
+-                    dtype=np.dtype(dtype),  # type: ignore[arg-type]
+-                )
+-                return result
+-
+-            except ValueError:
+-                result = lib.map_infer_mask(
+-                    arr,
+-                    f,
+-                    mask.view("uint8"),
+-                    convert=False,
+-                    na_value=na_value,
+-                )
+-                if convert and result.dtype == object:
+-                    result = lib.maybe_convert_objects(result)
+-                return result
+-
+-        elif is_string_dtype(dtype) and not is_object_dtype(dtype):
+-            # i.e. StringDtype
+-            result = lib.map_infer_mask(
+-                arr, f, mask.view("uint8"), convert=False, na_value=na_value
+-            )
+-            result = pa.array(result, mask=mask, type=pa.string(), from_pandas=True)
+-            return type(self)(result)
+-        else:
+-            # This is when the result type is object. We reach this when
+-            # -> We know the result type is truly object (e.g. .encode returns bytes
+-            #    or .findall returns a list).
+-            # -> We don't know the result type. E.g. `.get` can return anything.
+-            return lib.map_infer_mask(arr, f, mask.view("uint8"))
+-
+-    def _convert_int_dtype(self, result):
+-        if isinstance(result, pa.Array):
+-            result = result.to_numpy(zero_copy_only=False)
+-        else:
+-            result = result.to_numpy()
+-        if result.dtype == np.int32:
+-            result = result.astype(np.int64)
++                return result.to_numpy(np.bool_, na_value=False)
+         return result
+ 
+-    def _cmp_method(self, other, op):
+-        try:
+-            result = super()._cmp_method(other, op)
+-        except pa.ArrowNotImplementedError:
+-            return invalid_comparison(self, other, op)
+-        if op == operator.ne:
+-            return result.to_numpy(np.bool_, na_value=True)
+-        else:
+-            return result.to_numpy(np.bool_, na_value=False)
+-
+-    def value_counts(self, dropna: bool = True) -> Series:
+-        from pandas import Series
++    def __pos__(self) -> Self:
++        raise TypeError(f"bad operand type for unary +: '{self.dtype}'")
+ 
+-        result = super().value_counts(dropna)
+-        return Series(
+-            result._values.to_numpy(), index=result.index, name=result.name, copy=False
+-        )
+ 
+-    def _reduce(
+-        self, name: str, *, skipna: bool = True, keepdims: bool = False, **kwargs
+-    ):
+-        if name in ["any", "all"]:
+-            if not skipna and name == "all":
+-                nas = pc.invert(pc.is_null(self._pa_array))
+-                arr = pc.and_kleene(nas, pc.not_equal(self._pa_array, ""))
+-            else:
+-                arr = pc.not_equal(self._pa_array, "")
+-            return ArrowExtensionArray(arr)._reduce(
+-                name, skipna=skipna, keepdims=keepdims, **kwargs
+-            )
+-        else:
+-            return super()._reduce(name, skipna=skipna, keepdims=keepdims, **kwargs)
+-
+-    def insert(self, loc: int, item) -> ArrowStringArrayNumpySemantics:
+-        if item is np.nan:
+-            item = libmissing.NA
+-        return super().insert(loc, item)  # type: ignore[return-value]
++class ArrowStringArrayNumpySemantics(ArrowStringArray):
++    _na_value = np.nan

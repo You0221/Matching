@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index d1293bb62f262..45cdb8bdf2ebb 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -1582,7 +1606,10 @@ def fit(self, X, y, sample_weight=None, **params):
+             # csr. We also want to allow y to be 64 or 32 but check_X_y only
+             # allows to convert for 64.
+             check_X_params = dict(
+-                accept_sparse="csc", dtype=[np.float64, np.float32], copy=False
++                accept_sparse="csc",
++                dtype=[np.float64, np.float32],
++                copy=False,
++                accept_large_sparse=False,
+             )
+             X, y = self._validate_data(
+                 X, y, validate_separately=(check_X_params, check_y_params)

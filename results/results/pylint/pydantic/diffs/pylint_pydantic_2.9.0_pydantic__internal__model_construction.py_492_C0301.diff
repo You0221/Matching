@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 86c9bf05fe4..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -489,20 +576,23 @@ def hash_func(self: Any) -> int:
+ 
+ 
+ def set_model_fields(
+-    cls: type[BaseModel], bases: tuple[type[Any], ...], config_wrapper: ConfigWrapper, types_namespace: dict[str, Any]
++    cls: type[BaseModel],
++    bases: tuple[type[Any], ...],
++    config_wrapper: ConfigWrapper,
++    ns_resolver: NsResolver | None,
+ ) -> None:
+-    """Collect and set `cls.model_fields` and `cls.__class_vars__`.
++    """Collect and set `cls.__pydantic_fields__` and `cls.__class_vars__`.
+ 
+     Args:
+         cls: BaseModel or dataclass.
+         bases: Parents of the class, generally `cls.__bases__`.
+         config_wrapper: The config wrapper instance.
+-        types_namespace: Optional extra namespace to look for types in.
++        ns_resolver: Namespace resolver to use when getting model annotations.
+     """
+     typevars_map = get_model_typevars_map(cls)
+-    fields, class_vars = collect_model_fields(cls, bases, config_wrapper, types_namespace, typevars_map=typevars_map)
++    fields, class_vars = collect_model_fields(cls, bases, config_wrapper, ns_resolver, typevars_map=typevars_map)
+ 
+-    cls.model_fields = fields
++    cls.__pydantic_fields__ = fields
+     cls.__class_vars__.update(class_vars)
+ 
+     for k in class_vars:

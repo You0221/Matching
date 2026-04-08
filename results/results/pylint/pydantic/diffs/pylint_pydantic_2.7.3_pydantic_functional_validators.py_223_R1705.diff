@@ -1,0 +1,71 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index fc3ad717401..16f645d39ad 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -216,27 +303,59 @@ class Model(BaseModel):
+     """
+ 
+     func: core_schema.NoInfoWrapValidatorFunction | core_schema.WithInfoWrapValidatorFunction
++    json_schema_input_type: Any = PydanticUndefined
+ 
+-    def __get_pydantic_core_schema__(self, source_type: Any, handler: _GetCoreSchemaHandler) -> core_schema.CoreSchema:
++    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+         schema = handler(source_type)
++        input_schema = (
++            None
++            if self.json_schema_input_type is PydanticUndefined
++            else handler.generate_schema(self.json_schema_input_type)
++        )
++        # Try to resolve the original schema if required, because schema cleaning
++        # won't inline references in metadata:
++        if input_schema is not None:
++            try:
++                input_schema = handler.resolve_ref_schema(input_schema)
++            except LookupError:
++                pass
++        metadata = {'pydantic_js_input_core_schema': input_schema} if input_schema is not None else {}
++
+         info_arg = _inspect_validator(self.func, 'wrap')
+         if info_arg:
+             func = cast(core_schema.WithInfoWrapValidatorFunction, self.func)
+-            return core_schema.with_info_wrap_validator_function(func, schema=schema, field_name=handler.field_name)
++            return core_schema.with_info_wrap_validator_function(
++                func,
++                schema=schema,
++                field_name=handler.field_name,
++                metadata=metadata,
++            )
+         else:
+             func = cast(core_schema.NoInfoWrapValidatorFunction, self.func)
+-            return core_schema.no_info_wrap_validator_function(func, schema=schema)
++            return core_schema.no_info_wrap_validator_function(
++                func,
++                schema=schema,
++                metadata=metadata,
++            )
++
++    @classmethod
++    def _from_decorator(cls, decorator: _decorators.Decorator[_decorators.FieldValidatorDecoratorInfo]) -> Self:
++        return cls(
++            func=decorator.func,
++            json_schema_input_type=decorator.info.json_schema_input_type,
++        )
+ 
+ 
+ if TYPE_CHECKING:
+ 
+     class _OnlyValueValidatorClsMethod(Protocol):
+-        def __call__(self, cls: Any, value: Any, /) -> Any:
+-            ...
++        def __call__(self, cls: Any, value: Any, /) -> Any: ...
+ 
+     class _V2ValidatorClsMethod(Protocol):
+-        def __call__(self, cls: Any, value: Any, info: _core_schema.ValidationInfo, /) -> Any:
+-            ...
++        def __call__(self, cls: Any, value: Any, info: _core_schema.ValidationInfo, /) -> Any: ...
++
++    class _OnlyValueWrapValidatorClsMethod(Protocol):
++        def __call__(self, cls: Any, value: Any, handler: _core_schema.ValidatorFunctionWrapHandler, /) -> Any: ...
+ 
+     class _V2WrapValidatorClsMethod(Protocol):
+         def __call__(

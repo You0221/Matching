@@ -1,0 +1,14 @@
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index bc26d82e934c..da2e934c960a 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -76,9 +77,6 @@ def SET_DEFAULT(collector, field, sub_objs, using):
+     collector.add_field_update(field, field.get_default(), sub_objs)
+ 
+ 
+-SET_DEFAULT.lazy_sub_objs = True
+-
+-
+ def DO_NOTHING(collector, field, sub_objs, using):
+     pass
+ 

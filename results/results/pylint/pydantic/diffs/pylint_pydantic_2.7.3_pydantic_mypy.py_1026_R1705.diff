@@ -1,0 +1,89 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 1a71bfe208b..510c165a755 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -1001,6 +1021,22 @@ def get_has_default(stmt: AssignmentStmt) -> bool:
+         # Has no default if the "default value" is Ellipsis (i.e., `field_name: Annotation = ...`)
+         return not isinstance(expr, EllipsisExpr)
+ 
++    @staticmethod
++    def get_strict(stmt: AssignmentStmt) -> bool | None:
++        """Returns a the `strict` value of a field if defined, otherwise `None`."""
++        expr = stmt.rvalue
++        if isinstance(expr, CallExpr) and isinstance(expr.callee, RefExpr) and expr.callee.fullname == FIELD_FULLNAME:
++            for arg, name in zip(expr.args, expr.arg_names):
++                if name != 'strict':
++                    continue
++                if isinstance(arg, NameExpr):
++                    if arg.fullname == 'builtins.True':
++                        return True
++                    elif arg.fullname == 'builtins.False':
++                        return False
++                return None
++        return None
++
+     @staticmethod
+     def get_alias_info(stmt: AssignmentStmt) -> tuple[str | None, bool]:
+         """Returns a pair (alias, has_dynamic_alias), extracted from the declaration of the field defined in `stmt`.
+@@ -1019,23 +1055,53 @@ def get_alias_info(stmt: AssignmentStmt) -> tuple[str | None, bool]:
+             # Assigned value is not a call to pydantic.fields.Field
+             return None, False
+ 
++        if 'validation_alias' in expr.arg_names:
++            arg = expr.args[expr.arg_names.index('validation_alias')]
++        elif 'alias' in expr.arg_names:
++            arg = expr.args[expr.arg_names.index('alias')]
++        else:
++            return None, False
++
++        if isinstance(arg, StrExpr):
++            return arg.value, False
++        else:
++            return None, True
++
++    @staticmethod
++    def is_field_frozen(stmt: AssignmentStmt) -> bool:
++        """Returns whether the field is frozen, extracted from the declaration of the field defined in `stmt`.
++
++        Note that this is only whether the field was declared to be frozen in a `<field_name> = Field(frozen=True)`
++        sense; this does not determine whether the field is frozen because the entire model is frozen; that is
++        handled separately.
++        """
++        expr = stmt.rvalue
++        if isinstance(expr, TempNode):
++            # TempNode means annotation-only
++            return False
++
++        if not (
++            isinstance(expr, CallExpr) and isinstance(expr.callee, RefExpr) and expr.callee.fullname == FIELD_FULLNAME
++        ):
++            # Assigned value is not a call to pydantic.fields.Field
++            return False
++
+         for i, arg_name in enumerate(expr.arg_names):
+-            if arg_name != 'alias':
+-                continue
+-            arg = expr.args[i]
+-            if isinstance(arg, StrExpr):
+-                return arg.value, False
+-            else:
+-                return None, True
+-        return None, False
++            if arg_name == 'frozen':
++                arg = expr.args[i]
++                return isinstance(arg, NameExpr) and arg.fullname == 'builtins.True'
++        return False
+ 
+     def get_field_arguments(
+         self,
+         fields: list[PydanticModelField],
+         typed: bool,
++        model_strict: bool,
+         use_alias: bool,
+         requires_dynamic_aliases: bool,
+         is_settings: bool,
++        is_root_model: bool,
++        force_typevars_invariant: bool = False,
+     ) -> list[Argument]:
+         """Helper function used during the construction of the `__init__` and `model_construct` method signatures.
+ 

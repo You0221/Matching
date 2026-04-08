@@ -1,0 +1,17 @@
+diff --git a/django/db/backends/sqlite3/base.py b/django/db/backends/sqlite3/base.py
+index c7cf94780078..f7b65651b36a 100644
+--- a/django/db/backends/sqlite3/base.py
++++ b/django/db/backends/sqlite3/base.py
+@@ -40,6 +40,12 @@ def adapt_datetime(val):
+     return val.isoformat(" ")
+ 
+ 
++def _get_varchar_column(data):
++    if data["max_length"] is None:
++        return "varchar"
++    return "varchar(%(max_length)s)" % data
++
++
+ Database.register_converter("bool", b"1".__eq__)
+ Database.register_converter("date", decoder(parse_date))
+ Database.register_converter("time", decoder(parse_time))

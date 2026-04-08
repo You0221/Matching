@@ -1,0 +1,12 @@
+diff --git a/django/contrib/admin/templatetags/admin_list.py b/django/contrib/admin/templatetags/admin_list.py
+index fdf6e63f5fb9..6615e98bbff2 100644
+--- a/django/contrib/admin/templatetags/admin_list.py
++++ b/django/contrib/admin/templatetags/admin_list.py
+@@ -214,6 +214,7 @@ def link_in_col(is_first, field_name, cl):
+     for field_index, field_name in enumerate(cl.list_display):
+         empty_value_display = cl.model_admin.get_empty_value_display()
+         row_classes = ["field-%s" % _coerce_field_name(field_name, field_index)]
++        link_to_changelist = link_in_col(first, field_name, cl)
+         try:
+             f, attr, value = lookup_field(field_name, result, cl.model_admin)
+         except ObjectDoesNotExist:

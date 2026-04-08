@@ -1,0 +1,57 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -986,20 +996,50 @@ def log_deletion(self, request, obj, object_repr):
+             action_flag=DELETION,
+         )
+ 
++    def log_deletions(self, request, queryset):
++        """
++        Log that objects will be deleted. Note that this method must be called
++        before the deletion.
++
++        The default implementation creates admin LogEntry objects.
++        """
++        from django.contrib.admin.models import DELETION, LogEntry
++
++        # RemovedInDjango60Warning.
++        if type(self).log_deletion != ModelAdmin.log_deletion:
++            warnings.warn(
++                "The usage of log_deletion() is deprecated. Implement log_deletions() "
++                "instead.",
++                RemovedInDjango60Warning,
++                stacklevel=2,
++            )
++            return [self.log_deletion(request, obj, str(obj)) for obj in queryset]
++
++        return LogEntry.objects.log_actions(
++            user_id=request.user.pk,
++            queryset=queryset,
++            action_flag=DELETION,
++        )
++
+     def action_checkbox(self, obj):
+         """
+         A list_display column containing a checkbox widget.
+         """
+         attrs = {
+             "class": "action-select",
+-            "aria-label": format_html(_("Select this object for an action - {}"), obj),
++            "aria-label": format_html(
++                _("Select this object for an action - {}"), str(obj)
++            ),
+         }
+         checkbox = forms.CheckboxInput(attrs, lambda value: False)
+         return checkbox.render(helpers.ACTION_CHECKBOX_NAME, str(obj.pk))
+ 
+     @staticmethod
+     def _get_action_description(func, name):
+-        return getattr(func, "short_description", capfirst(name.replace("_", " ")))
++        try:
++            return func.short_description
++        except AttributeError:
++            return capfirst(name.replace("_", " "))
+ 
+     def _get_base_actions(self):
+         """Return the list of actions, prior to any request-based filtering."""

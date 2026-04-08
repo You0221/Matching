@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1898,7 +2095,7 @@ def _check_property_name_related_field_accessor_clashes(cls):
+         errors = []
+         property_names = cls._meta._property_names
+         related_field_accessors = (
+-            f.get_attname()
++            f.attname
+             for f in cls._meta._get_fields(reverse=False)
+             if f.is_relation and f.related_model is not None
+         )

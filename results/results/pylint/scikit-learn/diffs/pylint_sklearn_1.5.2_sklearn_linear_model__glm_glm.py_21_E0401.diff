@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_glm/glm.py b/sklearn/linear_model/_glm/glm.py
+index 4cac889a4da51..fc31f9825d2e5 100644
+--- a/sklearn/linear_model/_glm/glm.py
++++ b/sklearn/linear_model/_glm/glm.py
+@@ -23,7 +22,7 @@
+ from ...utils._openmp_helpers import _openmp_effective_n_threads
+ from ...utils._param_validation import Hidden, Interval, StrOptions
+ from ...utils.optimize import _check_optimize_result
+-from ...utils.validation import _check_sample_weight, check_is_fitted
++from ...utils.validation import _check_sample_weight, check_is_fitted, validate_data
+ from .._linear_loss import LinearModelLoss
+ from ._newton_solver import NewtonCholeskySolver, NewtonSolver
+ 

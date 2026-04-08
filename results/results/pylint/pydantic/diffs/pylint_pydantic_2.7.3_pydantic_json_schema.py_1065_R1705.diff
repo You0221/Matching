@@ -1,0 +1,65 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..64c659e8d22 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1027,7 +1024,11 @@ def function_wrap_schema(self, schema: core_schema.WrapValidatorFunctionSchema)
+         Returns:
+             The generated JSON schema.
+         """
+-        return self._function_schema(schema)
++        metadata = _core_metadata.CoreMetadataHandler(schema).metadata
++        if self._mode == 'validation' and (input_schema := metadata.get('pydantic_js_input_core_schema')):
++            return self.generate_inner(input_schema)
++
++        return self.generate_inner(schema['schema'])
+ 
+     def default_schema(self, schema: core_schema.WithDefaultSchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches a schema with a default value.
+@@ -1052,6 +1053,32 @@ def default_schema(self, schema: core_schema.WithDefaultSchema) -> JsonSchemaVal
+         # else:
+         #     return json_schema
+ 
++        # we reflect the application of custom plain, no-info serializers to defaults for
++        # JSON Schemas viewed in serialization mode:
++        # TODO: improvements along with https://github.com/pydantic/pydantic/issues/8208
++        if (
++            self.mode == 'serialization'
++            and (ser_schema := schema['schema'].get('serialization'))
++            and (ser_func := ser_schema.get('function'))
++            and ser_schema.get('type') == 'function-plain'
++            and not ser_schema.get('info_arg')
++            and not (default is None and ser_schema.get('when_used') in ('unless-none', 'json-unless-none'))
++        ):
++            try:
++                default = ser_func(default)  # type: ignore
++            except Exception:
++                # It might be that the provided default needs to be validated (read: parsed) first
++                # (assuming `validate_default` is enabled). However, we can't perform
++                # such validation during JSON Schema generation so we don't support
++                # this pattern for now.
++                # (One example is when using `foo: ByteSize = '1MB'`, which validates and
++                # serializes as an int. In this case, `ser_func` is `int` and `int('1MB')` fails).
++                self.emit_warning(
++                    'non-serializable-default',
++                    f'Unable to serialize value {default!r} with the plain serializer; excluding default from JSON schema',
++                )
++                return json_schema
++
+         try:
+             encoded_default = self.encode_default(default)
+         except pydantic_core.PydanticSerializationError:
+@@ -1062,12 +1089,8 @@ def default_schema(self, schema: core_schema.WithDefaultSchema) -> JsonSchemaVal
+             # Return the inner schema, as though there was no default
+             return json_schema
+ 
+-        if '$ref' in json_schema:
+-            # Since reference schemas do not support child keys, we wrap the reference schema in a single-case allOf:
+-            return {'allOf': [json_schema], 'default': encoded_default}
+-        else:
+-            json_schema['default'] = encoded_default
+-            return json_schema
++        json_schema['default'] = encoded_default
++        return json_schema
+ 
+     def nullable_schema(self, schema: core_schema.NullableSchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches a schema that allows null values.

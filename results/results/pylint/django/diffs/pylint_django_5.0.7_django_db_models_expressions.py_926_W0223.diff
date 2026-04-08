@@ -1,0 +1,22 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -940,17 +1071,6 @@ def get_source_expressions(self):
+     def set_source_expressions(self, exprs):
+         self.source_expressions = exprs
+ 
+-    def resolve_expression(
+-        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+-    ):
+-        c = self.copy()
+-        c.is_summary = summarize
+-        for pos, arg in enumerate(c.source_expressions):
+-            c.source_expressions[pos] = arg.resolve_expression(
+-                query, allow_joins, reuse, summarize, for_save
+-            )
+-        return c
+-
+     def as_sql(
+         self,
+         compiler,

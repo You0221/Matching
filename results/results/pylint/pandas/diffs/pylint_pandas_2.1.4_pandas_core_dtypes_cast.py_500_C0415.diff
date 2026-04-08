@@ -1,0 +1,23 @@
+diff --git a/pandas/core/dtypes/cast.py b/pandas/core/dtypes/cast.py
+index 9f7c0b3e36032..259e83a5936d7 100644
+--- a/pandas/core/dtypes/cast.py
++++ b/pandas/core/dtypes/cast.py
+@@ -497,11 +495,14 @@ def _maybe_cast_to_extension_array(
+     -------
+     ExtensionArray or obj
+     """
+-    from pandas.core.arrays.string_ import BaseStringArray
++    result: ArrayLike
+ 
+-    # Everything can be converted to StringArrays, but we may not want to convert
+-    if issubclass(cls, BaseStringArray) and lib.infer_dtype(obj) != "string":
+-        return obj
++    if dtype is not None:
++        try:
++            result = cls._from_scalars(obj, dtype=dtype)
++        except (TypeError, ValueError):
++            return obj
++        return result
+ 
+     try:
+         result = cls._from_sequence(obj, dtype=dtype)

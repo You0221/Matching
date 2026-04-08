@@ -1,0 +1,60 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index eac754f3f88b4..bb71cbe9ed550 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -553,7 +545,7 @@ class LinearRegression(MultiOutputMixin, RegressorMixin, LinearModel):
+     >>> reg.coef_
+     array([1., 2.])
+     >>> reg.intercept_
+-    3.0...
++    np.float64(3.0...)
+     >>> reg.predict(np.array([[3, 5]]))
+     array([16.])
+     """
+@@ -606,14 +598,20 @@ def fit(self, X, y, sample_weight=None):
+ 
+         accept_sparse = False if self.positive else ["csr", "csc", "coo"]
+ 
+-        X, y = self._validate_data(
+-            X, y, accept_sparse=accept_sparse, y_numeric=True, multi_output=True
++        X, y = validate_data(
++            self,
++            X,
++            y,
++            accept_sparse=accept_sparse,
++            y_numeric=True,
++            multi_output=True,
++            force_writeable=True,
+         )
+ 
+         has_sw = sample_weight is not None
+         if has_sw:
+             sample_weight = _check_sample_weight(
+-                sample_weight, X, dtype=X.dtype, only_non_negative=True
++                sample_weight, X, dtype=X.dtype, ensure_non_negative=True
+             )
+ 
+         # Note that neither _rescale_data nor the rest of the fit method of
+@@ -679,7 +677,9 @@ def rmatvec(b):
+                 )
+                 self.coef_ = np.vstack([out[0] for out in outs])
+         else:
+-            self.coef_, _, self.rank_, self.singular_ = linalg.lstsq(X, y)
++            # cut-off ratio for small singular values
++            cond = max(X.shape) * np.finfo(X.dtype).eps
++            self.coef_, _, self.rank_, self.singular_ = linalg.lstsq(X, y, cond=cond)
+             self.coef_ = self.coef_.T
+ 
+         if y.ndim == 1:
+@@ -687,6 +687,11 @@ def rmatvec(b):
+         self._set_intercept(X_offset, y_offset, X_scale)
+         return self
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = not self.positive
++        return tags
++
+ 
+ def _check_precomputed_gram_matrix(
+     X, precompute, X_offset, X_scale, rtol=None, atol=1e-5

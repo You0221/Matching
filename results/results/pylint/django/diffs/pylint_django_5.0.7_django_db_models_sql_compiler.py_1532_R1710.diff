@@ -1,0 +1,85 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1534,15 +1594,15 @@ def execute_sql(
+     ):
+         """
+         Run the query against the database and return the result(s). The
+-        return value is a single data item if result_type is SINGLE, or an
+-        iterator over the results if the result_type is MULTI.
+-
+-        result_type is either MULTI (use fetchmany() to retrieve all rows),
+-        SINGLE (only retrieve a single row), or None. In this last case, the
+-        cursor is returned if any query is executed, since it's used by
+-        subclasses such as InsertQuery). It's possible, however, that no query
+-        is needed, as the filters describe an empty set. In that case, None is
+-        returned, to avoid any unnecessary database interaction.
++        return value depends on the value of result_type.
++
++        When result_type is:
++        - MULTI: Retrieves all rows using fetchmany(). Wraps in an iterator for
++           chunked reads when supported.
++        - SINGLE: Retrieves a single row using fetchone().
++        - ROW_COUNT: Retrieves the number of rows in the result.
++        - CURSOR: Runs the query, and returns the cursor object. It is the
++           caller's responsibility to close the cursor.
+         """
+         result_type = result_type or NO_RESULTS
+         try:
+@@ -1565,6 +1625,11 @@ def execute_sql(
+             cursor.close()
+             raise
+ 
++        if result_type == ROW_COUNT:
++            try:
++                return cursor.rowcount
++            finally:
++                cursor.close()
+         if result_type == CURSOR:
+             # Give the caller the cursor to process and close.
+             return cursor
+@@ -1595,36 +1660,25 @@ def execute_sql(
+             return list(result)
+         return result
+ 
+-    def as_subquery_condition(self, alias, columns, compiler):
+-        qn = compiler.quote_name_unless_alias
+-        qn2 = self.connection.ops.quote_name
+-
+-        for index, select_col in enumerate(self.query.select):
+-            lhs_sql, lhs_params = self.compile(select_col)
+-            rhs = "%s.%s" % (qn(alias), qn2(columns[index]))
+-            self.query.where.add(RawSQL("%s = %s" % (lhs_sql, rhs), lhs_params), AND)
+-
+-        sql, params = self.as_sql()
+-        return "EXISTS (%s)" % sql, params
+-
+     def explain_query(self):
+         result = list(self.execute_sql())
+         # Some backends return 1 item tuples with strings, and others return
+         # tuples with integers and strings. Flatten them out into strings.
+         format_ = self.query.explain_info.format
+         output_formatter = json.dumps if format_ and format_.lower() == "json" else str
+-        for row in result[0]:
+-            if not isinstance(row, str):
+-                yield " ".join(output_formatter(c) for c in row)
+-            else:
+-                yield row
++        for row in result:
++            for value in row:
++                if not isinstance(value, str):
++                    yield " ".join([output_formatter(c) for c in value])
++                else:
++                    yield value
+ 
+ 
+ class SQLInsertCompiler(SQLCompiler):
+     returning_fields = None
+     returning_params = ()
+ 
+-    def field_as_sql(self, field, val):
++    def field_as_sql(self, field, get_placeholder, val):
+         """
+         Take a field and a value intended to be saved on that field, and
+         return placeholder SQL and accompanying params. Check for raw values,

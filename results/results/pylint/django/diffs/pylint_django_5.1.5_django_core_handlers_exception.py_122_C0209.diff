@@ -1,0 +1,21 @@
+diff --git a/django/core/handlers/exception.py b/django/core/handlers/exception.py
+index a63291f3b94c..1243734705e8 100644
+--- a/django/core/handlers/exception.py
++++ b/django/core/handlers/exception.py
+@@ -116,16 +116,6 @@ def response_for_exception(request, exc):
+             # exception would be raised.
+             request._mark_post_parse_error()
+ 
+-        # The request logger receives events for any problematic request
+-        # The security logger receives events for all SuspiciousOperations
+-        security_logger = logging.getLogger(
+-            "django.security.%s" % exc.__class__.__name__
+-        )
+-        security_logger.error(
+-            str(exc),
+-            exc_info=exc,
+-            extra={"status_code": 400, "request": request},
+-        )
+         if settings.DEBUG:
+             response = debug.technical_500_response(
+                 request, *sys.exc_info(), status_code=400

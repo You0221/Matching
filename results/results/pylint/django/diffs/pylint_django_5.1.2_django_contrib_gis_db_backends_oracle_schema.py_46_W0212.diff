@@ -1,0 +1,25 @@
+diff --git a/django/contrib/gis/db/backends/oracle/schema.py b/django/contrib/gis/db/backends/oracle/schema.py
+index fd542531ebae..ce03ee8892e4 100644
+--- a/django/contrib/gis/db/backends/oracle/schema.py
++++ b/django/contrib/gis/db/backends/oracle/schema.py
+@@ -40,14 +40,18 @@ def quote_value(self, value):
+             return super().quote_value(str(value))
+         return super().quote_value(value)
+ 
++    def _field_indexes_sql(self, model, field):
++        if isinstance(field, GeometryField) and field.spatial_index:
++            return [self._create_spatial_index_sql(model, field)]
++        return super()._field_indexes_sql(model, field)
++
+     def column_sql(self, model, field, include_default=False):
+         column_sql = super().column_sql(model, field, include_default)
+         if isinstance(field, GeometryField):
+-            db_table = model._meta.db_table
+             self.geometry_sql.append(
+                 self.sql_add_geometry_metadata
+                 % {
+-                    "table": self.geo_quote_name(db_table),
++                    "table": self.geo_quote_name(model._meta.db_table),
+                     "column": self.geo_quote_name(field.column),
+                     "dim0": field._extent[0],
+                     "dim1": field._extent[1],

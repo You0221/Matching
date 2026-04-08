@@ -1,0 +1,13 @@
+diff --git a/tornado/locks.py b/tornado/locks.py
+index 1bcec1b3af..9ee1f2f0f3 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -111,7 +111,7 @@ async def runner():
+     """
+ 
+     def __repr__(self) -> str:
+-        result = "<%s" % (self.__class__.__name__,)
++        result = f"<{self.__class__.__name__}"
+         if self._waiters:
+             result += " waiters[%s]" % len(self._waiters)
+         return result + ">"

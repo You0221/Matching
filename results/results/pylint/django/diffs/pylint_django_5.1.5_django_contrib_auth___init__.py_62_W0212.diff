@@ -1,0 +1,34 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 3db1445d9ea9..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -62,19 +95,21 @@ def _get_user_session_key(request):
+     return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+ 
+ 
++async def _aget_user_session_key(request):
++    # This value in the session is always serialized to a string, so we need
++    # to convert it back to Python whenever we access it.
++    session_key = await request.session.aget(SESSION_KEY)
++    if session_key is None:
++        raise KeyError()
++    return get_user_model()._meta.pk.to_python(session_key)
++
++
+ @sensitive_variables("credentials")
+ def authenticate(request=None, **credentials):
+     """
+     If the given credentials are valid, return a User object.
+     """
+-    for backend, backend_path in _get_backends(return_tuples=True):
+-        backend_signature = inspect.signature(backend.authenticate)
+-        try:
+-            backend_signature.bind(request, **credentials)
+-        except TypeError:
+-            # This backend doesn't accept these credentials as arguments. Try
+-            # the next one.
+-            continue
++    for backend, backend_path in _get_compatible_backends(request, **credentials):
+         try:
+             user = backend.authenticate(request, **credentials)
+         except PermissionDenied:

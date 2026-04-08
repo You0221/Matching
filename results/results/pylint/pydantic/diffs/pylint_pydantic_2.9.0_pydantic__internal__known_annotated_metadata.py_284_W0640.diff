@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index efdb8924c7a..78de89ecd77 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -274,14 +256,24 @@ def _apply_constraint_with_incompatibility_info(
+                 if inner_schema_type == 'list' or (
+                     inner_schema_type == 'json-or-python' and inner_schema['json_schema']['type'] == 'list'  # type: ignore
+                 ):
+-                    json_schema_constraint = 'minItems' if constraint == 'min_length' else 'maxItems'
++                    js_constraint_key = 'minItems' if constraint == 'min_length' else 'maxItems'
+                 else:
+-                    json_schema_constraint = 'minLength' if constraint == 'min_length' else 'maxLength'
++                    js_constraint_key = 'minLength' if constraint == 'min_length' else 'maxLength'
++            else:
++                js_constraint_key = constraint
+ 
+             schema = cs.no_info_after_validator_function(
+-                partial(get_constraint_validator(constraint), **{'constraint_value': value}), schema
++                partial(NUMERIC_VALIDATOR_LOOKUP[constraint], **{constraint: value}), schema
+             )
+-            add_js_update_schema(schema, lambda: {json_schema_constraint: as_jsonable_value(value)})  # noqa: B023
++            metadata = schema.get('metadata', {})
++            if (existing_json_schema_updates := metadata.get('pydantic_js_updates')) is not None:
++                metadata['pydantic_js_updates'] = {
++                    **existing_json_schema_updates,
++                    **{js_constraint_key: as_jsonable_value(value)},
++                }
++            else:
++                metadata['pydantic_js_updates'] = {js_constraint_key: as_jsonable_value(value)}
++            schema['metadata'] = metadata
+         elif constraint == 'allow_inf_nan' and value is False:
+             schema = cs.no_info_after_validator_function(
+                 forbid_inf_nan_check,

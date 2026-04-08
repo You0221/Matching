@@ -1,0 +1,30 @@
+diff --git a/pandas/io/sql.py b/pandas/io/sql.py
+index 3a58daf681cfb..7027702a696fe 100644
+--- a/pandas/io/sql.py
++++ b/pandas/io/sql.py
+@@ -2211,23 +2220,10 @@ def read_table(
+         else:
+             stmt = f"SELECT {select_list} FROM {table_name}"
+ 
+-        mapping: type[ArrowDtype] | None | Callable
+-        if dtype_backend == "pyarrow":
+-            mapping = ArrowDtype
+-        elif dtype_backend == "numpy_nullable":
+-            from pandas.io._util import _arrow_dtype_mapping
+-
+-            mapping = _arrow_dtype_mapping().get
+-        elif using_pyarrow_string_dtype():
+-            from pandas.io._util import arrow_string_types_mapper
+-
+-            arrow_string_types_mapper()
+-        else:
+-            mapping = None
+-
+         with self.con.cursor() as cur:
+             cur.execute(stmt)
+-            df = cur.fetch_arrow_table().to_pandas(types_mapper=mapping)
++            pa_table = cur.fetch_arrow_table()
++            df = arrow_table_to_pandas(pa_table, dtype_backend=dtype_backend)
+ 
+         return _wrap_result_adbc(
+             df,

@@ -1,0 +1,17 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -739,9 +749,9 @@ def refresh_from_db(self, using=None, fields=None, from_queryset=None):
+                     field.delete_cached_value(self)
+ 
+         # Clear cached relations.
+-        for field in self._meta.related_objects:
+-            if (fields is None or field.name in fields) and field.is_cached(self):
+-                field.delete_cached_value(self)
++        for rel in self._meta.related_objects:
++            if (fields is None or rel.name in fields) and rel.is_cached(self):
++                rel.delete_cached_value(self)
+ 
+         # Clear cached private relations.
+         for field in self._meta.private_fields:

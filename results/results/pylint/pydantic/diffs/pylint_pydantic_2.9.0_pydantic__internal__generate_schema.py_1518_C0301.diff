@@ -1,0 +1,15 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1513,10 +1465,6 @@ def _typed_dict_schema(self, typed_dict_cls: Any, origin: Any) -> core_schema.Co
+                         field_name, field_info, decorators, required=required
+                     )
+ 
+-                title = self._get_model_title_from_config(typed_dict_cls, ConfigWrapper(config))
+-                metadata = build_metadata_dict(
+-                    js_functions=[partial(modify_model_json_schema, cls=typed_dict_cls, title=title)],
+-                )
+                 td_schema = core_schema.typed_dict_schema(
+                     fields,
+                     cls=typed_dict_cls,

@@ -1,0 +1,100 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e425a867dc9e03..717703b840a0d0 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -640,17 +823,85 @@ def banner_cowsay(self, msg: str, color: str | None = None) -> None:
+         (out, err) = cmd.communicate()
+         self.display(u"%s\n" % to_text(out), color=color)
+ 
+-    @_proxy
+-    def error(self, msg: str, wrap_text: bool = True) -> None:
+-        if wrap_text:
+-            new_msg = u"\n[ERROR]: %s" % msg
+-            wrapped = textwrap.wrap(new_msg, self.columns)
+-            new_msg = u"\n".join(wrapped) + u"\n"
++    def error_as_warning(
++        self,
++        msg: str | None,
++        exception: BaseException,
++        *,
++        help_text: str | None = None,
++        obj: t.Any = None,
++    ) -> None:
++        """Display an exception as a warning."""
++        _skip_stackwalk = True
++
++        event = _error_factory.ControllerEventFactory.from_exception(exception, _traceback.is_traceback_enabled(_traceback.TracebackEvent.WARNING))
++
++        if msg:
++            if source_context := _error_utils.SourceContext.from_value(obj):
++                formatted_source_context = str(source_context)
++            else:
++                formatted_source_context = None
++
++            event = _messages.Event(
++                msg=msg,
++                help_text=help_text,
++                formatted_source_context=formatted_source_context,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.WARNING),
++                chain=_messages.EventChain(
++                    msg_reason=_errors.MSG_REASON_DIRECT_CAUSE,
++                    traceback_reason=_errors.TRACEBACK_REASON_EXCEPTION_DIRECT_WARNING,
++                    event=event,
++                ),
++            )
++
++        warning = _messages.WarningSummary(
++            event=event,
++        )
++
++        if warning_ctx := _display_utils.DeferredWarningContext.current(optional=True):
++            warning_ctx.capture(warning)
++            return
++
++        self._warning(warning)
++
++    def error(self, msg: str | BaseException, wrap_text: bool = True, stderr: bool = True) -> None:
++        """Display an error message."""
++        _skip_stackwalk = True
++
++        # deprecated: description='The wrap_text argument has no effect.' core_version='2.23'
++        # deprecated: description='The stderr argument has no effect.' core_version='2.23'
++
++        # This is the pre-proxy half of the `error` implementation.
++        # Any logic that must occur on workers needs to be implemented here.
++
++        if isinstance(msg, BaseException):
++            event = _error_factory.ControllerEventFactory.from_exception(msg, _traceback.is_traceback_enabled(_traceback.TracebackEvent.ERROR))
+         else:
+-            new_msg = u"ERROR! %s" % msg
+-        if new_msg not in self._errors:
+-            self.display(new_msg, color=C.COLOR_ERROR, stderr=True)
+-            self._errors[new_msg] = 1
++            event = _messages.Event(
++                msg=msg,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.ERROR),
++            )
++
++        error = _messages.ErrorSummary(
++            event=event,
++        )
++
++        self._error(error, stderr=True)
++
++    @_proxy
++    def _error(self, error: _messages.ErrorSummary, stderr: bool) -> None:
++        """Internal implementation detail, use `error` instead."""
++
++        # This is the post-proxy half of the `error` implementation.
++        # Any logic that must occur in the primary controller process needs to be implemented here.
++
++        msg = _display_utils.format_message(error, _traceback.is_traceback_enabled(_traceback.TracebackEvent.ERROR))
++        msg = f'[ERROR]: {msg}'
++
++        if self._deduplicate(msg, self._errors):
++            return
++
++        self.display(msg, color=C.config.get_config_value('COLOR_ERROR'), stderr=stderr, caplevel=-1)
+ 
+     @staticmethod
+     def prompt(msg: str, private: bool = False) -> str:

@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1471,7 +1606,7 @@ def unique_error_message(self, model_class, unique_check):
+ 
+     def get_constraints(self):
+         constraints = [(self.__class__, self._meta.constraints)]
+-        for parent_class in self._meta.get_parent_list():
++        for parent_class in self._meta.all_parents:
+             if parent_class._meta.constraints:
+                 constraints.append((parent_class, parent_class._meta.constraints))
+         return constraints

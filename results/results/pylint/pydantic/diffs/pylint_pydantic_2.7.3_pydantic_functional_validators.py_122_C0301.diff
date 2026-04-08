@@ -1,0 +1,57 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index fc3ad717401..8779f72b74b 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -113,26 +118,48 @@ class Model(BaseModel):
+     """
+ 
+     func: core_schema.NoInfoValidatorFunction | core_schema.WithInfoValidatorFunction
++    json_schema_input_type: Any = PydanticUndefined
+ 
+-    def __get_pydantic_core_schema__(self, source_type: Any, handler: _GetCoreSchemaHandler) -> core_schema.CoreSchema:
++    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+         schema = handler(source_type)
++        input_schema = (
++            None
++            if self.json_schema_input_type is PydanticUndefined
++            else handler.generate_schema(self.json_schema_input_type)
++        )
++        metadata = _core_metadata.build_metadata_dict(js_input_core_schema=input_schema)
++
+         info_arg = _inspect_validator(self.func, 'before')
+         if info_arg:
+             func = cast(core_schema.WithInfoValidatorFunction, self.func)
+-            return core_schema.with_info_before_validator_function(func, schema=schema, field_name=handler.field_name)
++            return core_schema.with_info_before_validator_function(
++                func,
++                schema=schema,
++                field_name=handler.field_name,
++                metadata=metadata,
++            )
+         else:
+             func = cast(core_schema.NoInfoValidatorFunction, self.func)
+-            return core_schema.no_info_before_validator_function(func, schema=schema)
++            return core_schema.no_info_before_validator_function(func, schema=schema, metadata=metadata)
++
++    @classmethod
++    def _from_decorator(cls, decorator: _decorators.Decorator[_decorators.FieldValidatorDecoratorInfo]) -> Self:
++        return cls(
++            func=decorator.func,
++            json_schema_input_type=decorator.info.json_schema_input_type,
++        )
+ 
+ 
+ @dataclasses.dataclass(frozen=True, **_internal_dataclass.slots_true)
+ class PlainValidator:
+-    """Usage docs: https://docs.pydantic.dev/2.7/concepts/validators/#annotated-validators
++    """Usage docs: https://docs.pydantic.dev/2.9/concepts/validators/#annotated-validators
+ 
+     A metadata class that indicates that a validation should be applied **instead** of the inner validation logic.
+ 
+     Attributes:
+         func: The validator function.
++        json_schema_input_type: The input type of the function. This is only used to generate the appropriate
++            JSON Schema (in validation mode). If not provided, will default to `Any`.
+ 
+     Example:
+         ```py

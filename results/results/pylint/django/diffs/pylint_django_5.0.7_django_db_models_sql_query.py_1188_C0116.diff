@@ -1,0 +1,27 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1186,13 +1219,16 @@ def add_annotation(self, annotation, alias, select=True):
+         if select:
+             self.append_annotation_mask([alias])
+         else:
+-            annotation_mask = (
+-                value
+-                for value in dict.fromkeys(self.annotation_select)
+-                if value != alias
+-            )
+-            self.set_annotation_mask(annotation_mask)
++            self.set_annotation_mask(set(self.annotation_select).difference({alias}))
+         self.annotations[alias] = annotation
++        if self.selected:
++            self.selected[alias] = alias
++
++    @property
++    def _subquery_fields_len(self):
++        if self.has_select_fields:
++            return len(self.selected)
++        return len(self.model._meta.pk_fields)
+ 
+     def resolve_expression(self, query, *args, **kwargs):
+         clone = self.clone()

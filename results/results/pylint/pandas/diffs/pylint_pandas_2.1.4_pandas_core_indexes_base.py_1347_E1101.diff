@@ -1,0 +1,19 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -1341,10 +1336,13 @@ def _format_data(self, name=None) -> str_t:
+ 
+         if self.inferred_type == "string":
+             is_justify = False
+-        elif self.inferred_type == "categorical":
++        elif isinstance(self.dtype, CategoricalDtype):
+             self = cast("CategoricalIndex", self)
+             if is_object_dtype(self.categories.dtype):
+                 is_justify = False
++        elif isinstance(self, ABCRangeIndex):
++            # We will do the relevant formatting via attrs
++            return ""
+ 
+         return format_object_summary(
+             self,

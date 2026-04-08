@@ -1,0 +1,43 @@
+diff --git a/tools/c_coverage/c_coverage_report.py b/tools/c_coverage/c_coverage_report.py
+index bd3eeaee9776..2e5a4c270376 100755
+--- a/tools/c_coverage/c_coverage_report.py
++++ b/tools/c_coverage/c_coverage_report.py
+@@ -95,24 +93,24 @@ def clean_path(self, path):
+ 
+     def write_text(self, root):
+         for path, source in self.files.items():
+-            fd = open(os.path.join(root, self.clean_path(path)), "w")
+-            source.write_text(fd)
+-            fd.close()
++            with open(os.path.join(root, self.clean_path(path)), "w") as fd:
++                source.write_text(fd)
+ 
+     def write_html(self, root):
+         for path, source in self.files.items():
+-            fd = open(os.path.join(root, self.clean_path(path) + ".html"), "w")
+-            source.write_html(fd)
+-            fd.close()
++            with open(
++                os.path.join(root, self.clean_path(path) + ".html"), "w"
++            ) as fd:
++                source.write_html(fd)
+ 
+-        fd = open(os.path.join(root, 'index.html'), 'w')
+-        fd.write("<html>")
+-        paths = sorted(self.files.keys())
+-        for path in paths:
+-            fd.write('<p><a href="%s.html">%s</a></p>' %
+-                     (self.clean_path(path), escape(path[len(self.prefix):])))
+-        fd.write("</html>")
+-        fd.close()
++        with open(os.path.join(root, 'index.html'), 'w') as fd:
++            fd.write("<html>")
++            paths = sorted(self.files.keys())
++            for path in paths:
++                fd.write('<p><a href="%s.html">%s</a></p>' %
++                         (self.clean_path(path),
++                          escape(path[len(self.prefix):])))
++            fd.write("</html>")
+ 
+ 
+ def collect_stats(files, fd, pattern):

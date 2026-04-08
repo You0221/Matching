@@ -1,0 +1,25 @@
+diff --git a/django/utils/feedgenerator.py b/django/utils/feedgenerator.py
+index 3bd456ca687a..fae327143086 100644
+--- a/django/utils/feedgenerator.py
++++ b/django/utils/feedgenerator.py
+@@ -228,6 +295,9 @@ class RssFeed(SyndicationFeed):
+     def write(self, outfile, encoding):
+         handler = SimplerXMLGenerator(outfile, encoding, short_empty_elements=True)
+         handler.startDocument()
++        # Any stylesheet must come after the start of the document but before any tag.
++        # https://www.w3.org/Style/styling-XML.en.html
++        self.add_stylesheets(handler)
+         handler.startElement("rss", self.rss_attributes())
+         handler.startElement("channel", self.root_attributes())
+         self.add_root_elements(handler)
+@@ -247,6 +317,10 @@ def write_items(self, handler):
+             self.add_item_elements(handler, item)
+             handler.endElement("item")
+ 
++    def add_stylesheets(self, handler):
++        for stylesheet in self.feed["stylesheets"] or []:
++            handler.processingInstruction("xml-stylesheet", stylesheet)
++
+     def add_root_elements(self, handler):
+         handler.addQuickElement("title", self.feed["title"])
+         handler.addQuickElement("link", self.feed["link"])

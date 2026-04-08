@@ -1,0 +1,20 @@
+diff --git a/pydantic/_internal/_decorators.py b/pydantic/_internal/_decorators.py
+index 52a8ec17a6c..bb0f7207eae 100644
+--- a/pydantic/_internal/_decorators.py
++++ b/pydantic/_internal/_decorators.py
+@@ -804,14 +804,10 @@ def count_positional_required_params(sig: Signature) -> int:
+         # First argument is the value being validated/serialized, and can have a default value
+         # (e.g. `float`, which has signature `(x=0, /)`). We assume other parameters (the info arg
+         # for instance) should be required, and thus without any default value.
+-        and (param.default is Parameter.empty or param == parameters[0])
++        and (param.default is Parameter.empty or param is parameters[0])
+     )
+ 
+ 
+-def can_be_positional(param: Parameter) -> bool:
+-    return param.kind in (Parameter.POSITIONAL_ONLY, Parameter.POSITIONAL_OR_KEYWORD)
+-
+-
+ def ensure_property(f: Any) -> Any:
+     """Ensure that a function is a `property` or `cached_property`, or is a valid descriptor.
+ 

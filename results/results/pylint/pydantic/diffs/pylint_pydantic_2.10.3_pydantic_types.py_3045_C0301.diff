@@ -1,0 +1,40 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 9d05e152ad1..59160ab72b5 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -3034,16 +3086,27 @@ def _convert_schema(self, original_schema: core_schema.CoreSchema) -> core_schem
+             tag = None
+             if isinstance(choice, tuple):
+                 choice, tag = choice
+-            metadata = choice.get('metadata')
++            metadata = cast('CoreMetadata | None', choice.get('metadata'))
+             if metadata is not None:
+-                metadata_tag = metadata.get(_core_utils.TAGGED_UNION_TAG_KEY)
+-                if metadata_tag is not None:
+-                    tag = metadata_tag
++                tag = metadata.get('pydantic_internal_union_tag_key') or tag
+             if tag is None:
+-                raise PydanticUserError(
+-                    f'`Tag` not provided for choice {choice} used with `Discriminator`',
+-                    code='callable-discriminator-no-tag',
+-                )
++                # `handler` is None when this method is called from `apply_discriminator()` (deferred discriminators)
++                if handler is not None and choice['type'] == 'definition-ref':
++                    # If choice was built from a PEP 695 type alias, try to resolve the def:
++                    try:
++                        choice = handler.resolve_ref_schema(choice)
++                    except LookupError:
++                        pass
++                    else:
++                        metadata = cast('CoreMetadata | None', choice.get('metadata'))
++                        if metadata is not None:
++                            tag = metadata.get('pydantic_internal_union_tag_key')
++
++                if tag is None:
++                    raise PydanticUserError(
++                        f'`Tag` not provided for choice {choice} used with `Discriminator`',
++                        code='callable-discriminator-no-tag',
++                    )
+             tagged_union_choices[tag] = choice
+ 
+         # Have to do these verbose checks to ensure falsy values ('' and {}) don't get ignored

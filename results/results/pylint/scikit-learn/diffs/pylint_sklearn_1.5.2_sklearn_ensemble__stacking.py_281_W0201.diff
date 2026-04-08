@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -269,10 +259,10 @@ def fit(self, X, y, sample_weight=None):
+                     cv=deepcopy(cv),
+                     method=meth,
+                     n_jobs=self.n_jobs,
+-                    params=fit_params,
++                    params=routed_params[name]["fit"],
+                     verbose=self.verbose,
+                 )
+-                for est, meth in zip(all_estimators, self.stack_method_)
++                for name, est, meth in zip(names, all_estimators, self.stack_method_)
+                 if est != "drop"
+             )
+ 

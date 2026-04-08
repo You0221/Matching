@@ -1,0 +1,15 @@
+diff --git a/django/template/defaulttags.py b/django/template/defaulttags.py
+index dd0a6b3579e2..1152452081c8 100644
+--- a/django/template/defaulttags.py
++++ b/django/template/defaulttags.py
+@@ -1169,8 +1169,8 @@ def now(parser, token):
+     return NowNode(format_string, asvar)
+ 
+ 
+-@register.simple_tag(takes_context=True)
+-def query_string(context, query_dict=None, **kwargs):
++@register.simple_tag(name="querystring", takes_context=True)
++def querystring(context, query_dict=None, **kwargs):
+     """
+     Add, remove, and change parameters of a ``QueryDict`` and return the result
+     as a query string. If the ``query_dict`` argument is not provided, default

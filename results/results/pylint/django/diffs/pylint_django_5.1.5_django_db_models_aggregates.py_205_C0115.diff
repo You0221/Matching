@@ -1,0 +1,17 @@
+diff --git a/django/db/models/aggregates.py b/django/db/models/aggregates.py
+index bf94decab7a8..ea16cc440c46 100644
+--- a/django/db/models/aggregates.py
++++ b/django/db/models/aggregates.py
+@@ -200,10 +222,12 @@ class Sum(FixDurationInputMixin, Aggregate):
+     function = "SUM"
+     name = "Sum"
+     allow_distinct = True
++    arity = 1
+ 
+ 
+ class Variance(NumericOutputFieldMixin, Aggregate):
+     name = "Variance"
++    arity = 1
+ 
+     def __init__(self, expression, sample=False, **extra):
+         self.function = "VAR_SAMP" if sample else "VAR_POP"

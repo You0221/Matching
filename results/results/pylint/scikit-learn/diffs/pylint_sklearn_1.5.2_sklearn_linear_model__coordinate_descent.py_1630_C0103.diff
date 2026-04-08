@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 45cdb8bdf2ebb..b98cf08925910 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -1633,10 +1646,11 @@ def fit(self, X, y, sample_weight=None, **params):
+                 accept_sparse="csc",
+                 dtype=[np.float64, np.float32],
+                 order="F",
++                force_writeable=True,
+                 copy=copy_X,
+             )
+-            X, y = self._validate_data(
+-                X, y, validate_separately=(check_X_params, check_y_params)
++            X, y = validate_data(
++                self, X, y, validate_separately=(check_X_params, check_y_params)
+             )
+             copy_X = False
+ 

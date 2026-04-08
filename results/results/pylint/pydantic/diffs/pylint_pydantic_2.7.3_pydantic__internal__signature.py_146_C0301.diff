@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_signature.py b/pydantic/_internal/_signature.py
+index 816a1651b29..2273577ccb2 100644
+--- a/pydantic/_internal/_signature.py
++++ b/pydantic/_internal/_signature.py
+@@ -143,20 +162,25 @@ def _generate_signature_parameters(  # noqa: C901 (ignore complexity, could use
+ 
+ 
+ def generate_pydantic_signature(
+-    init: Callable[..., None], fields: dict[str, FieldInfo], config_wrapper: ConfigWrapper, is_dataclass: bool = False
++    init: Callable[..., None],
++    fields: dict[str, FieldInfo],
++    populate_by_name: bool,
++    extra: ExtraValues | None,
++    is_dataclass: bool = False,
+ ) -> Signature:
+     """Generate signature for a pydantic BaseModel or dataclass.
+ 
+     Args:
+         init: The class init.
+         fields: The model fields.
+-        config_wrapper: The config wrapper instance.
++        populate_by_name: The `populate_by_name` value of the config.
++        extra: The `extra` value of the config.
+         is_dataclass: Whether the model is a dataclass.
+ 
+     Returns:
+         The dataclass/BaseModel subclass signature.
+     """
+-    merged_params = _generate_signature_parameters(init, fields, config_wrapper)
++    merged_params = _generate_signature_parameters(init, fields, populate_by_name, extra)
+ 
+     if is_dataclass:
+         merged_params = {k: _process_param_defaults(v) for k, v in merged_params.items()}

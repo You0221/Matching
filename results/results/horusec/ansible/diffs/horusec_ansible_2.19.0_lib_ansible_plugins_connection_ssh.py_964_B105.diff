@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 3e854a612b591f..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -969,7 +981,7 @@ def _send_initial_data(self, fh: io.IOBase, in_data: bytes, ssh_process: subproc
+         try:
+             fh.write(to_bytes(in_data))
+             fh.close()
+-        except (OSError, IOError) as ex:
++        except OSError as ex:
+             # The ssh connection may have already terminated at this point, with a more useful error
+             # Only raise AnsibleConnectionFailure if the ssh process is still alive
+             time.sleep(0.001)

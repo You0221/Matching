@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..40ac2ddbdd9 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -746,7 +917,7 @@ def _generate_schema_inner(self, obj: Any) -> core_schema.CoreSchema:
+         if isinstance(obj, ForwardRef):
+             return self.generate_schema(self._resolve_forward_ref(obj))
+ 
+-        from ..main import BaseModel
++        BaseModel = import_cached_base_model()
+ 
+         if lenient_issubclass(obj, BaseModel):
+             with self.model_type_stack.push(obj):

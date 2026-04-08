@@ -1,0 +1,57 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1709,41 +1959,22 @@ def _computed_field_schema(
+             self._apply_alias_generator_to_computed_field_info(
+                 alias_generator=alias_generator, computed_field_info=d.info, computed_field_name=d.cls_var_name
+             )
+-
+-        def set_computed_field_metadata(schema: CoreSchemaOrField, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
+-            json_schema = handler(schema)
+-
+-            json_schema['readOnly'] = True
+-
+-            title = d.info.title
+-            if title is not None:
+-                json_schema['title'] = title
+-
+-            description = d.info.description
+-            if description is not None:
+-                json_schema['description'] = description
+-
+-            if d.info.deprecated or d.info.deprecated == '':
+-                json_schema['deprecated'] = True
+-
+-            examples = d.info.examples
+-            if examples is not None:
+-                json_schema['examples'] = to_jsonable_python(examples)
+-
+-            json_schema_extra = d.info.json_schema_extra
+-            if json_schema_extra is not None:
+-                add_json_schema_extra(json_schema, json_schema_extra)
+-
+-            return json_schema
+-
+-        metadata = build_metadata_dict(js_annotation_functions=[set_computed_field_metadata])
++        self._apply_field_title_generator_to_field_info(self._config_wrapper, d.info, d.cls_var_name)
++
++        pydantic_js_updates, pydantic_js_extra = _extract_json_schema_info_from_field_info(d.info)
++        core_metadata: dict[str, Any] = {}
++        update_core_metadata(
++            core_metadata,
++            pydantic_js_updates={'readOnly': True, **(pydantic_js_updates if pydantic_js_updates else {})},
++            pydantic_js_extra=pydantic_js_extra,
++        )
+         return core_schema.computed_field(
+-            d.cls_var_name, return_schema=return_type_schema, alias=d.info.alias, metadata=metadata
++            d.cls_var_name, return_schema=return_type_schema, alias=d.info.alias, metadata=core_metadata
+         )
+ 
+     def _annotated_schema(self, annotated_type: Any) -> core_schema.CoreSchema:
+         """Generate schema for an Annotated type, e.g. `Annotated[int, Field(...)]` or `Annotated[int, Gt(0)]`."""
+-        from ..fields import FieldInfo
++        FieldInfo = import_cached_field_info()
+ 
+         source_type, *annotations = self._get_args_resolving_forward_refs(
+             annotated_type,

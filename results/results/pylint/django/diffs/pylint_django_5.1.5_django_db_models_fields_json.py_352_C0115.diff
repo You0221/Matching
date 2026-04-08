@@ -1,0 +1,31 @@
+diff --git a/django/db/models/fields/json.py b/django/db/models/fields/json.py
+index 1b219e620c9a..188fcf520c48 100644
+--- a/django/db/models/fields/json.py
++++ b/django/db/models/fields/json.py
+@@ -362,10 +386,24 @@ def as_oracle(self, compiler, connection):
+         json_path = compile_json_path(key_transforms)
+         if connection.features.supports_primitives_in_json_field:
+             sql = (
+-                "COALESCE(JSON_VALUE(%s, '%s'), JSON_QUERY(%s, '%s' DISALLOW SCALARS))"
++                "COALESCE("
++                "JSON_VALUE(%s, q'\uffff%s\uffff'),"
++                "JSON_QUERY(%s, q'\uffff%s\uffff' DISALLOW SCALARS)"
++                ")"
+             )
+         else:
+-            sql = "COALESCE(JSON_QUERY(%s, '%s'), JSON_VALUE(%s, '%s'))"
++            sql = (
++                "COALESCE("
++                "JSON_QUERY(%s, q'\uffff%s\uffff'),"
++                "JSON_VALUE(%s, q'\uffff%s\uffff')"
++                ")"
++            )
++        # Add paths directly into SQL because path expressions cannot be passed
++        # as bind variables on Oracle. Use a custom delimiter to prevent the
++        # JSON path from escaping the SQL literal. Each key in the JSON path is
++        # passed through json.dumps() with ensure_ascii=True (the default),
++        # which converts the delimiter into the escaped \uffff format. This
++        # ensures that the delimiter is not present in the JSON path.
+         return sql % ((lhs, json_path) * 2), tuple(params) * 2
+ 
+     def as_postgresql(self, compiler, connection):

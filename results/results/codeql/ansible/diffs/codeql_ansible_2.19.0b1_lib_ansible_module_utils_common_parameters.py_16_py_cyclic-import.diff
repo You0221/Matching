@@ -1,0 +1,25 @@
+diff --git a/lib/ansible/module_utils/common/parameters.py b/lib/ansible/module_utils/common/parameters.py
+index fc886463c949a7..129bb05178acc5 100644
+--- a/lib/ansible/module_utils/common/parameters.py
++++ b/lib/ansible/module_utils/common/parameters.py
+@@ -9,9 +9,19 @@
+ import typing as t
+ 
+ from collections import deque
+-from itertools import chain
++from collections.abc import (
++    KeysView,
++    Set,
++    Sequence,
++    Mapping,
++    MutableMapping,
++    MutableSet,
++    MutableSequence,
++)
++from itertools import chain  # pylint: disable=unused-import
+ 
+ from ansible.module_utils.common.collections import is_iterable
++from ansible.module_utils._internal import _no_six
+ from ansible.module_utils._internal._datatag import AnsibleSerializable, AnsibleTagHelper
+ from ansible.module_utils.common.text.converters import to_bytes, to_native, to_text
+ from ansible.module_utils.common.warnings import warn

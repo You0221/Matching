@@ -1,0 +1,15 @@
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index bc26d82e934c..da2e934c960a 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -232,9 +230,8 @@ def get_del_batches(self, objs, fields):
+         """
+         Return the objs in suitably sized batches for the used connection.
+         """
+-        field_names = [field.name for field in fields]
+         conn_batch_size = max(
+-            connections[self.using].ops.bulk_batch_size(field_names, objs), 1
++            connections[self.using].ops.bulk_batch_size(fields, objs), 1
+         )
+         if len(objs) > conn_batch_size:
+             return [

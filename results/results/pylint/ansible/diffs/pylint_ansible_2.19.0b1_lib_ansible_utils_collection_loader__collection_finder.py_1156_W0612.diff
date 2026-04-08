@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index ece6fd7d44e028..c654667d9783bc 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -1151,7 +1151,7 @@ def _get_collection_resource_path(name, ref_type, collection_list=None):
+                 path = os.path.dirname(_to_bytes(sys.modules[acr.n_python_package_name].__file__))
+                 return resource, _to_text(path), collection_name
+ 
+-        except (IOError, ModuleNotFoundError) as e:
++        except (OSError, ModuleNotFoundError) as ex:
+             continue
+         except Exception as ex:
+             # FIXME: pick out typical import errors first, then error logging

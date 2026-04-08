@@ -1,0 +1,13 @@
+diff --git a/pandas/io/parsers/readers.py b/pandas/io/parsers/readers.py
+index 7fad2b779ab28..e26e7e7470461 100644
+--- a/pandas/io/parsers/readers.py
++++ b/pandas/io/parsers/readers.py
+@@ -1897,7 +2101,7 @@ def _floatify_na_values(na_values):
+     return result
+ 
+ 
+-def _stringify_na_values(na_values):
++def _stringify_na_values(na_values, floatify: bool):
+     """return a stringified and numeric for these values"""
+     result: list[str | float] = []
+     for x in na_values:

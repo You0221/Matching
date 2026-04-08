@@ -1,0 +1,60 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1473,14 +1556,16 @@ def _typed_dict_schema(self, typed_dict_cls: Any, origin: Any) -> core_schema.Co
+ 
+                 schema = self._apply_model_serializers(td_schema, decorators.model_serializers.values())
+                 schema = apply_model_validators(schema, decorators.model_validators.values(), 'all')
+-                self.defs.definitions[typed_dict_ref] = schema
+-                return core_schema.definition_reference_schema(typed_dict_ref)
++                return self.defs.create_definition_reference_schema(schema)
+ 
+     def _namedtuple_schema(self, namedtuple_cls: Any, origin: Any) -> core_schema.CoreSchema:
+         """Generate schema for a NamedTuple."""
+-        with self.model_type_stack.push(namedtuple_cls), self.defs.get_schema_or_ref(namedtuple_cls) as (
+-            namedtuple_ref,
+-            maybe_schema,
++        with (
++            self.model_type_stack.push(namedtuple_cls),
++            self.defs.get_schema_or_ref(namedtuple_cls) as (
++                namedtuple_ref,
++                maybe_schema,
++            ),
+         ):
+             if maybe_schema is not None:
+                 return maybe_schema
+@@ -1489,9 +1574,7 @@ def _namedtuple_schema(self, namedtuple_cls: Any, origin: Any) -> core_schema.Co
+                 namedtuple_cls = origin
+ 
+             try:
+-                annotations = _typing_extra.get_cls_type_hints(
+-                    namedtuple_cls, ns_resolver=self._ns_resolver, lenient=False
+-                )
++                annotations = _typing_extra.get_cls_type_hints(namedtuple_cls, ns_resolver=self._ns_resolver)
+             except NameError as e:
+                 raise PydanticUndefinedAnnotation.from_name_error(e) from e
+             if not annotations:
+@@ -1509,18 +1592,21 @@ def _namedtuple_schema(self, namedtuple_cls: Any, origin: Any) -> core_schema.Co
+                     self._generate_parameter_schema(
+                         field_name,
+                         annotation,
++                        source=AnnotationSource.NAMED_TUPLE,
+                         default=namedtuple_cls._field_defaults.get(field_name, Parameter.empty),
+                     )
+                     for field_name, annotation in annotations.items()
+                 ],
+                 metadata={'pydantic_js_prefer_positional_arguments': True},
+             )
+-            return core_schema.call_schema(arguments_schema, namedtuple_cls, ref=namedtuple_ref)
++            schema = core_schema.call_schema(arguments_schema, namedtuple_cls, ref=namedtuple_ref)
++            return self.defs.create_definition_reference_schema(schema)
+ 
+     def _generate_parameter_schema(
+         self,
+         name: str,
+         annotation: type[Any],
++        source: AnnotationSource,
+         default: Any = Parameter.empty,
+         mode: Literal['positional_only', 'positional_or_keyword', 'keyword_only'] | None = None,
+     ) -> core_schema.ArgumentsParameter:

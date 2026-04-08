@@ -1,0 +1,15 @@
+diff --git a/django/template/library.py b/django/template/library.py
+index 16db79e4cd88..4ee96cea893f 100644
+--- a/django/template/library.py
++++ b/django/template/library.py
+@@ -1,9 +1,9 @@
++from collections.abc import Iterable
+ from functools import wraps
+ from importlib import import_module
+ from inspect import getfullargspec, unwrap
+ 
+ from django.utils.html import conditional_escape
+-from django.utils.itercompat import is_iterable
+ 
+ from .base import Node, Template, token_kwargs
+ from .exceptions import TemplateSyntaxError

@@ -1,0 +1,19 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..86c9bf05fe4 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -231,14 +258,6 @@ def __getattr__(self, item: str) -> Any:
+             private_attributes = self.__dict__.get('__private_attributes__')
+             if private_attributes and item in private_attributes:
+                 return private_attributes[item]
+-            if item == '__pydantic_core_schema__':
+-                # This means the class didn't get a schema generated for it, likely because there was an undefined reference
+-                maybe_mock_validator = getattr(self, '__pydantic_validator__', None)
+-                if isinstance(maybe_mock_validator, MockValSer):
+-                    rebuilt_validator = maybe_mock_validator.rebuild()
+-                    if rebuilt_validator is not None:
+-                        # In this case, a validator was built, and so `__pydantic_core_schema__` should now be set
+-                        return getattr(self, '__pydantic_core_schema__')
+             raise AttributeError(item)
+ 
+     @classmethod

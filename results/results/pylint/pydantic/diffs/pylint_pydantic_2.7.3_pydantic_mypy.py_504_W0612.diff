@@ -1,0 +1,13 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 1a71bfe208b..0ce0a258d96 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -501,7 +546,7 @@ def adjust_decorator_signatures(self) -> None:
+         Teach mypy this by marking any function whose outermost decorator is a `validator()`,
+         `field_validator()` or `serializer()` call as a `classmethod`.
+         """
+-        for name, sym in self._cls.info.names.items():
++        for sym in self._cls.info.names.values():
+             if isinstance(sym.node, Decorator):
+                 first_dec = sym.node.original_decorators[0]
+                 if (

@@ -1,0 +1,31 @@
+diff --git a/lib/ansible/module_utils/common/parameters.py b/lib/ansible/module_utils/common/parameters.py
+index fc886463c949a7..129bb05178acc5 100644
+--- a/lib/ansible/module_utils/common/parameters.py
++++ b/lib/ansible/module_utils/common/parameters.py
+@@ -33,26 +43,6 @@
+     SubParameterTypeError,
+ )
+ from ansible.module_utils.parsing.convert_bool import BOOLEANS_FALSE, BOOLEANS_TRUE
+-
+-from ansible.module_utils.six.moves.collections_abc import (
+-    KeysView,
+-    Set,
+-    Sequence,
+-    Mapping,
+-    MutableMapping,
+-    MutableSet,
+-    MutableSequence,
+-)
+-
+-from ansible.module_utils.six import (
+-    binary_type,
+-    integer_types,
+-    string_types,
+-    text_type,
+-    PY2,
+-    PY3,
+-)
+-
+ from ansible.module_utils.common.validation import (
+     check_mutually_exclusive,
+     check_required_arguments,

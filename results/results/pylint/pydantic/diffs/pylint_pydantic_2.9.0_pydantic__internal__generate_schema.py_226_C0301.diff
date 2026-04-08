@@ -1,0 +1,89 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -223,68 +257,41 @@ def apply_each_item_validators(
+     # note that this won't work for any Annotated types that get wrapped by a function validator
+     # but that's okay because that didn't exist in V1
+     if schema['type'] == 'nullable':
+-        schema['schema'] = apply_each_item_validators(schema['schema'], each_item_validators, field_name)
++        schema['schema'] = apply_each_item_validators(schema['schema'], each_item_validators)
+         return schema
+     elif schema['type'] == 'tuple':
+         if (variadic_item_index := schema.get('variadic_item_index')) is not None:
+             schema['items_schema'][variadic_item_index] = apply_validators(
+                 schema['items_schema'][variadic_item_index],
+                 each_item_validators,
+-                field_name,
+             )
+     elif is_list_like_schema_with_items_schema(schema):
+         inner_schema = schema.get('items_schema', core_schema.any_schema())
+-        schema['items_schema'] = apply_validators(inner_schema, each_item_validators, field_name)
++        schema['items_schema'] = apply_validators(inner_schema, each_item_validators)
+     elif schema['type'] == 'dict':
+         inner_schema = schema.get('values_schema', core_schema.any_schema())
+-        schema['values_schema'] = apply_validators(inner_schema, each_item_validators, field_name)
++        schema['values_schema'] = apply_validators(inner_schema, each_item_validators)
+     else:
+         raise TypeError(
+-            f"`@validator(..., each_item=True)` cannot be applied to fields with a schema of {schema['type']}"
++            f'`@validator(..., each_item=True)` cannot be applied to fields with a schema of {schema["type"]}'
+         )
+     return schema
+ 
+ 
+-def modify_model_json_schema(
+-    schema_or_field: CoreSchemaOrField,
+-    handler: GetJsonSchemaHandler,
+-    *,
+-    cls: Any,
+-    title: str | None = None,
+-) -> JsonSchemaValue:
+-    """Add title and description for model-like classes' JSON schema.
+-
+-    Args:
+-        schema_or_field: The schema data to generate a JSON schema from.
+-        handler: The `GetCoreSchemaHandler` instance.
+-        cls: The model-like class.
+-        title: The title to set for the model's schema, defaults to the model's name
+-
+-    Returns:
+-        JsonSchemaValue: The updated JSON schema.
+-    """
+-    from ..dataclasses import is_pydantic_dataclass
+-    from ..root_model import RootModel
+-    from ._dataclasses import is_builtin_dataclass
+-
+-    BaseModel = import_cached_base_model()
+-
+-    json_schema = handler(schema_or_field)
+-    original_schema = handler.resolve_ref_schema(json_schema)
+-    if title is not None:
+-        original_schema['title'] = title
+-    elif 'title' not in original_schema:
+-        original_schema['title'] = cls.__name__
+-    # BaseModel + Dataclass; don't use cls.__doc__ as it will contain the verbose class signature by default
+-    docstring = None if cls is BaseModel or is_builtin_dataclass(cls) or is_pydantic_dataclass(cls) else cls.__doc__
+-    if docstring and 'description' not in original_schema:
+-        original_schema['description'] = inspect.cleandoc(docstring)
+-    elif issubclass(cls, RootModel) and cls.model_fields['root'].description:
+-        original_schema['description'] = cls.model_fields['root'].description
+-    return json_schema
++def _extract_json_schema_info_from_field_info(
++    info: FieldInfo | ComputedFieldInfo,
++) -> tuple[JsonDict | None, JsonDict | JsonSchemaExtraCallable | None]:
++    json_schema_updates = {
++        'title': info.title,
++        'description': info.description,
++        'deprecated': bool(info.deprecated) or info.deprecated == '' or None,
++        'examples': to_jsonable_python(info.examples),
++    }
++    json_schema_updates = {k: v for k, v in json_schema_updates.items() if v is not None}
++    return (json_schema_updates or None, info.json_schema_extra)
+ 
+ 
+-JsonEncoders = Dict[Type[Any], JsonEncoder]
++JsonEncoders = dict[type[Any], JsonEncoder]
+ 
+ 
+ def _add_custom_serialization_from_json_encoders(

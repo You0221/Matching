@@ -1,0 +1,39 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 86c9bf05fe4..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -596,22 +686,30 @@ def complete_model_class(
+     cls.__pydantic_complete__ = True
+ 
+     # set __signature__ attr only for model class, but not for its instances
+-    cls.__signature__ = ClassAttribute(
++    # (because instances can define `__call__`, and `inspect.signature` shouldn't
++    # use the `__signature__` attribute and instead generate from `__call__`).
++    cls.__signature__ = LazyClassAttribute(
+         '__signature__',
+-        generate_pydantic_signature(init=cls.__init__, fields=cls.model_fields, config_wrapper=config_wrapper),
++        partial(
++            generate_pydantic_signature,
++            init=cls.__init__,
++            fields=cls.__pydantic_fields__,
++            populate_by_name=config_wrapper.populate_by_name,
++            extra=config_wrapper.extra,
++        ),
+     )
+     return True
+ 
+ 
+ def set_deprecated_descriptors(cls: type[BaseModel]) -> None:
+     """Set data descriptors on the class for deprecated fields."""
+-    for field, field_info in cls.model_fields.items():
++    for field, field_info in cls.__pydantic_fields__.items():
+         if (msg := field_info.deprecation_message) is not None:
+             desc = _DeprecatedFieldDescriptor(msg)
+             desc.__set_name__(cls, field)
+             setattr(cls, field, desc)
+ 
+-    for field, computed_field_info in cls.model_computed_fields.items():
++    for field, computed_field_info in cls.__pydantic_computed_fields__.items():
+         if (
+             (msg := computed_field_info.deprecation_message) is not None
+             # Avoid having two warnings emitted:

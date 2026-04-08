@@ -1,0 +1,13 @@
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 2019529cb53b..3d093bdec433 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -575,7 +575,7 @@ def linkcode_resolve(domain, info):
+            numpy.__version__, fn, linespec)
+ 
+ from pygments.lexers import CLexer
+-from pygments.lexer import inherit, bygroups
++from pygments.lexer import inherit
+ from pygments.token import Comment
+ 
+ class NumPyLexer(CLexer):

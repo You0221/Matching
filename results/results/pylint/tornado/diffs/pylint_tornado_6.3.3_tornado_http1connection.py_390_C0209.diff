@@ -1,0 +1,24 @@
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index 5ca9168887..8dd0c9b6e2 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -387,16 +389,13 @@ def write_headers(
+         if self.is_client:
+             assert isinstance(start_line, httputil.RequestStartLine)
+             self._request_start_line = start_line
+-            lines.append(utf8("%s %s HTTP/1.1" % (start_line[0], start_line[1])))
++            lines.append(utf8(f"{start_line[0]} {start_line[1]} HTTP/1.1"))
+             # Client requests with a non-empty body must have either a
+-            # Content-Length or a Transfer-Encoding.
++            # Content-Length or a Transfer-Encoding. If Content-Length is not
++            # present we'll add our Transfer-Encoding below.
+             self._chunking_output = (
+                 start_line.method in ("POST", "PUT", "PATCH")
+                 and "Content-Length" not in headers
+-                and (
+-                    "Transfer-Encoding" not in headers
+-                    or headers["Transfer-Encoding"] == "chunked"
+-                )
+             )
+         else:
+             assert isinstance(start_line, httputil.ResponseStartLine)

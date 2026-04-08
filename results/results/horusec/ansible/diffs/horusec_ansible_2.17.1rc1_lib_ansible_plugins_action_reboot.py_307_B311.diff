@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/action/reboot.py b/lib/ansible/plugins/action/reboot.py
+index 3245716aa155c2..38d02535878e1d 100644
+--- a/lib/ansible/plugins/action/reboot.py
++++ b/lib/ansible/plugins/action/reboot.py
+@@ -304,7 +304,7 @@ def do_until_success_or_timeout(self, action, reboot_timeout, action_desc, distr
+                     except AnsibleConnectionFailure:
+                         pass
+                 # Use exponential backoff with a max timeout, plus a little bit of randomness
+-                random_int = random.randint(0, 1000) / 1000
++                random_int = secrets.randbelow(1000) / 1000
+                 fail_sleep = 2 ** fail_count + random_int
+                 if fail_sleep > max_fail_sleep:
+ 

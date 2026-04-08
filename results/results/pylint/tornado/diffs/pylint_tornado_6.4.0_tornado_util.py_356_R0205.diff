@@ -1,0 +1,13 @@
+diff --git a/tornado/util.py b/tornado/util.py
+index 3a3a52f1f2..2e5eee792b 100644
+--- a/tornado/util.py
++++ b/tornado/util.py
+@@ -353,7 +336,7 @@ def _restore_configuration(cls, saved):
+         base.__impl_kwargs = saved[1]
+ 
+ 
+-class ArgReplacer(object):
++class ArgReplacer:
+     """Replaces one value in an ``args, kwargs`` pair.
+ 
+     Inspects the function signature to find an argument by name

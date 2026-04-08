@@ -1,0 +1,295 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1575,120 +1911,237 @@ def _dataclass_schema(
+                     collect_init_only=has_post_init,
+                 )
+ 
+-                inner_schema = apply_validators(args_schema, decorators.root_validators.values(), None)
++                inner_schema = apply_validators(args_schema, decorators.root_validators.values())
+ 
+                 model_validators = decorators.model_validators.values()
+                 inner_schema = apply_model_validators(inner_schema, model_validators, 'inner')
+ 
++                core_config = self._config_wrapper.core_config(title=dataclass.__name__)
++
+                 dc_schema = core_schema.dataclass_schema(
+                     dataclass,
+                     inner_schema,
++                    generic_origin=origin,
+                     post_init=has_post_init,
+                     ref=dataclass_ref,
+                     fields=[field.name for field in dataclasses.fields(dataclass)],
+                     slots=has_slots,
+                     config=core_config,
++                    # we don't use a custom __setattr__ for dataclasses, so we must
++                    # pass along the frozen config setting to the pydantic-core schema
++                    frozen=self._config_wrapper_stack.tail.frozen,
+                 )
+                 schema = self._apply_model_serializers(dc_schema, decorators.model_serializers.values())
+                 schema = apply_model_validators(schema, model_validators, 'outer')
+-                self.defs.definitions[dataclass_ref] = schema
+-                return core_schema.definition_reference_schema(dataclass_ref)
++                return self.defs.create_definition_reference_schema(schema)
+ 
+-            # Type checkers seem to assume ExitStack may suppress exceptions and therefore
+-            # control flow can exit the `with` block without returning.
+-            assert False, 'Unreachable'
+-
+-    def _callable_schema(self, function: Callable[..., Any]) -> core_schema.CallSchema:
++    def _call_schema(self, function: ValidateCallSupportedTypes) -> core_schema.CallSchema:
+         """Generate schema for a Callable.
+ 
+         TODO support functional validators once we support them in Config
+         """
+-        sig = signature(function)
++        arguments_schema = self._arguments_schema(function)
++
++        return_schema: core_schema.CoreSchema | None = None
++        config_wrapper = self._config_wrapper
++        if config_wrapper.validate_return:
++            sig = signature(function)
++            return_hint = sig.return_annotation
++            if return_hint is not sig.empty:
++                globalns, localns = self._types_namespace
++                type_hints = _typing_extra.get_function_type_hints(
++                    function, globalns=globalns, localns=localns, include_keys={'return'}
++                )
++                return_schema = self.generate_schema(type_hints['return'])
+ 
+-        type_hints = _typing_extra.get_function_type_hints(function)
++        return core_schema.call_schema(
++            arguments_schema,
++            function,
++            return_schema=return_schema,
++        )
+ 
++    def _arguments_schema(
++        self, function: ValidateCallSupportedTypes, parameters_callback: ParametersCallback | None = None
++    ) -> core_schema.ArgumentsSchema:
++        """Generate schema for a Signature."""
+         mode_lookup: dict[_ParameterKind, Literal['positional_only', 'positional_or_keyword', 'keyword_only']] = {
+             Parameter.POSITIONAL_ONLY: 'positional_only',
+             Parameter.POSITIONAL_OR_KEYWORD: 'positional_or_keyword',
+             Parameter.KEYWORD_ONLY: 'keyword_only',
+         }
+ 
++        sig = signature(function)
++        globalns, localns = self._types_namespace
++        type_hints = _typing_extra.get_function_type_hints(function, globalns=globalns, localns=localns)
++
+         arguments_list: list[core_schema.ArgumentsParameter] = []
+         var_args_schema: core_schema.CoreSchema | None = None
+         var_kwargs_schema: core_schema.CoreSchema | None = None
++        var_kwargs_mode: core_schema.VarKwargsMode | None = None
+ 
+-        for name, p in sig.parameters.items():
++        for i, (name, p) in enumerate(sig.parameters.items()):
+             if p.annotation is sig.empty:
+-                annotation = Any
++                annotation = typing.cast(Any, Any)
+             else:
+                 annotation = type_hints[name]
+ 
++            if parameters_callback is not None:
++                result = parameters_callback(i, name, annotation)
++                if result == 'skip':
++                    continue
++
+             parameter_mode = mode_lookup.get(p.kind)
+             if parameter_mode is not None:
+-                arg_schema = self._generate_parameter_schema(name, annotation, p.default, parameter_mode)
++                arg_schema = self._generate_parameter_schema(
++                    name, annotation, AnnotationSource.FUNCTION, p.default, parameter_mode
++                )
+                 arguments_list.append(arg_schema)
+             elif p.kind == Parameter.VAR_POSITIONAL:
+                 var_args_schema = self.generate_schema(annotation)
+             else:
+                 assert p.kind == Parameter.VAR_KEYWORD, p.kind
+-                var_kwargs_schema = self.generate_schema(annotation)
+-
+-        return_schema: core_schema.CoreSchema | None = None
+-        config_wrapper = self._config_wrapper
+-        if config_wrapper.validate_return:
+-            return_hint = type_hints.get('return')
+-            if return_hint is not None:
+-                return_schema = self.generate_schema(return_hint)
+ 
+-        return core_schema.call_schema(
+-            core_schema.arguments_schema(
+-                arguments_list,
+-                var_args_schema=var_args_schema,
+-                var_kwargs_schema=var_kwargs_schema,
+-                populate_by_name=config_wrapper.populate_by_name,
+-            ),
+-            function,
+-            return_schema=return_schema,
++                unpack_type = _typing_extra.unpack_type(annotation)
++                if unpack_type is not None:
++                    origin = get_origin(unpack_type) or unpack_type
++                    if not is_typeddict(origin):
++                        raise PydanticUserError(
++                            f'Expected a `TypedDict` class inside `Unpack[...]`, got {unpack_type!r}',
++                            code='unpack-typed-dict',
++                        )
++                    non_pos_only_param_names = {
++                        name for name, p in sig.parameters.items() if p.kind != Parameter.POSITIONAL_ONLY
++                    }
++                    overlapping_params = non_pos_only_param_names.intersection(origin.__annotations__)
++                    if overlapping_params:
++                        raise PydanticUserError(
++                            f'Typed dictionary {origin.__name__!r} overlaps with parameter'
++                            f'{"s" if len(overlapping_params) >= 2 else ""} '
++                            f'{", ".join(repr(p) for p in sorted(overlapping_params))}',
++                            code='overlapping-unpack-typed-dict',
++                        )
++
++                    var_kwargs_mode = 'unpacked-typed-dict'
++                    var_kwargs_schema = self._typed_dict_schema(unpack_type, get_origin(unpack_type))
++                else:
++                    var_kwargs_mode = 'uniform'
++                    var_kwargs_schema = self.generate_schema(annotation)
++
++        return core_schema.arguments_schema(
++            arguments_list,
++            var_args_schema=var_args_schema,
++            var_kwargs_mode=var_kwargs_mode,
++            var_kwargs_schema=var_kwargs_schema,
++            validate_by_name=self._config_wrapper.validate_by_name,
+         )
+ 
+-    def _unsubstituted_typevar_schema(self, typevar: typing.TypeVar) -> core_schema.CoreSchema:
+-        assert isinstance(typevar, typing.TypeVar)
++    def _arguments_v3_schema(
++        self, function: ValidateCallSupportedTypes, parameters_callback: ParametersCallback | None = None
++    ) -> core_schema.ArgumentsV3Schema:
++        mode_lookup: dict[
++            _ParameterKind, Literal['positional_only', 'positional_or_keyword', 'var_args', 'keyword_only']
++        ] = {
++            Parameter.POSITIONAL_ONLY: 'positional_only',
++            Parameter.POSITIONAL_OR_KEYWORD: 'positional_or_keyword',
++            Parameter.VAR_POSITIONAL: 'var_args',
++            Parameter.KEYWORD_ONLY: 'keyword_only',
++        }
++
++        sig = signature(function)
++        globalns, localns = self._types_namespace
++        type_hints = _typing_extra.get_function_type_hints(function, globalns=globalns, localns=localns)
++
++        parameters_list: list[core_schema.ArgumentsV3Parameter] = []
+ 
+-        bound = typevar.__bound__
+-        constraints = typevar.__constraints__
+-        default = getattr(typevar, '__default__', None)
++        for i, (name, p) in enumerate(sig.parameters.items()):
++            if parameters_callback is not None:
++                result = parameters_callback(i, name, p.annotation)
++                if result == 'skip':
++                    continue
+ 
+-        if (bound is not None) + (len(constraints) != 0) + (default is not None) > 1:
+-            raise NotImplementedError(
+-                'Pydantic does not support mixing more than one of TypeVar bounds, constraints and defaults'
++            if p.annotation is Parameter.empty:
++                annotation = typing.cast(Any, Any)
++            else:
++                annotation = type_hints[name]
++
++            parameter_mode = mode_lookup.get(p.kind)
++            if parameter_mode is None:
++                assert p.kind == Parameter.VAR_KEYWORD, p.kind
++
++                unpack_type = _typing_extra.unpack_type(annotation)
++                if unpack_type is not None:
++                    origin = get_origin(unpack_type) or unpack_type
++                    if not is_typeddict(origin):
++                        raise PydanticUserError(
++                            f'Expected a `TypedDict` class inside `Unpack[...]`, got {unpack_type!r}',
++                            code='unpack-typed-dict',
++                        )
++                    non_pos_only_param_names = {
++                        name for name, p in sig.parameters.items() if p.kind != Parameter.POSITIONAL_ONLY
++                    }
++                    overlapping_params = non_pos_only_param_names.intersection(origin.__annotations__)
++                    if overlapping_params:
++                        raise PydanticUserError(
++                            f'Typed dictionary {origin.__name__!r} overlaps with parameter'
++                            f'{"s" if len(overlapping_params) >= 2 else ""} '
++                            f'{", ".join(repr(p) for p in sorted(overlapping_params))}',
++                            code='overlapping-unpack-typed-dict',
++                        )
++                    parameter_mode = 'var_kwargs_unpacked_typed_dict'
++                    annotation = unpack_type
++                else:
++                    parameter_mode = 'var_kwargs_uniform'
++
++            parameters_list.append(
++                self._generate_parameter_v3_schema(
++                    name, annotation, AnnotationSource.FUNCTION, parameter_mode, default=p.default
++                )
+             )
+ 
+-        if default is not None:
+-            return self.generate_schema(default)
+-        elif constraints:
+-            return self._union_schema(typing.Union[constraints])  # type: ignore
+-        elif bound:
++        return core_schema.arguments_v3_schema(
++            parameters_list,
++            validate_by_name=self._config_wrapper.validate_by_name,
++        )
++
++    def _unsubstituted_typevar_schema(self, typevar: typing.TypeVar) -> core_schema.CoreSchema:
++        try:
++            has_default = typevar.has_default()  # pyright: ignore[reportAttributeAccessIssue]
++        except AttributeError:
++            # Happens if using `typing.TypeVar` (and not `typing_extensions`) on Python < 3.13
++            pass
++        else:
++            if has_default:
++                return self.generate_schema(typevar.__default__)  # pyright: ignore[reportAttributeAccessIssue]
++
++        if constraints := typevar.__constraints__:
++            return self._union_schema(typing.Union[constraints])
++
++        if bound := typevar.__bound__:
+             schema = self.generate_schema(bound)
+-            schema['serialization'] = core_schema.wrap_serializer_function_ser_schema(
+-                lambda x, h: h(x), schema=core_schema.any_schema()
+-            )
++            schema['serialization'] = core_schema.simple_ser_schema('any')
+             return schema
+-        else:
+-            return core_schema.any_schema()
++
++        return core_schema.any_schema()
+ 
+     def _computed_field_schema(
+         self,
+         d: Decorator[ComputedFieldInfo],
+         field_serializers: dict[str, Decorator[FieldSerializerDecoratorInfo]],
+     ) -> core_schema.ComputedField:
+-        try:
+-            return_type = _decorators.get_function_return_type(d.func, d.info.return_type, self._types_namespace)
+-        except NameError as e:
+-            raise PydanticUndefinedAnnotation.from_name_error(e) from e
++        if d.info.return_type is not PydanticUndefined:
++            return_type = d.info.return_type
++        else:
++            try:
++                # Do not pass in globals as the function could be defined in a different module.
++                # Instead, let `get_callable_return_type` infer the globals to use, but still pass
++                # in locals that may contain a parent/rebuild namespace:
++                return_type = _decorators.get_callable_return_type(d.func, localns=self._types_namespace.locals)
++            except NameError as e:
++                raise PydanticUndefinedAnnotation.from_name_error(e) from e
+         if return_type is PydanticUndefined:
+             raise PydanticUserError(
+                 'Computed field is missing return type annotation or specifying `return_type`'
+-                ' to the `@computed_field` decorator (e.g. `@computed_field(return_type=int|str)`)',
++                ' to the `@computed_field` decorator (e.g. `@computed_field(return_type=int | str)`)',
+                 code='model-field-missing-annotation',
+             )
+ 

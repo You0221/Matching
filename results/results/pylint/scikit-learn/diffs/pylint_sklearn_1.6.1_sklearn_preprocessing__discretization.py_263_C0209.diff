@@ -1,0 +1,90 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index 8b5dea5c4f6c3..ef5081080bda1 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -231,32 +261,74 @@ def fit(self, X, y=None, sample_weight=None):
+ 
+         n_samples, n_features = X.shape
+ 
+-        if sample_weight is not None and self.strategy == "uniform":
+-            raise ValueError(
+-                "`sample_weight` was provided but it cannot be "
+-                "used with strategy='uniform'. Got strategy="
+-                f"{self.strategy!r} instead."
+-            )
++        if sample_weight is not None:
++            sample_weight = _check_sample_weight(sample_weight, X, dtype=X.dtype)
+ 
+         if self.subsample is not None and n_samples > self.subsample:
+             # Take a subsample of `X`
++            # When resampling, it is important to subsample **with replacement** to
++            # preserve the distribution, in particular in the presence of a few data
++            # points with large weights. You can check this by setting `replace=False`
++            # in sklearn.utils.test.test_indexing.test_resample_weighted and check that
++            # it fails as a justification for this claim.
+             X = resample(
+                 X,
+-                replace=False,
++                replace=True,
+                 n_samples=self.subsample,
+                 random_state=self.random_state,
++                sample_weight=sample_weight,
+             )
++            # Since we already used the weights when resampling when provided,
++            # we set them back to `None` to avoid accounting for the weights twice
++            # in subsequent operations to compute weight-aware bin edges with
++            # quantiles or k-means.
++            sample_weight = None
+ 
+         n_features = X.shape[1]
+         n_bins = self._validate_n_bins(n_features)
+ 
+-        if sample_weight is not None:
+-            sample_weight = _check_sample_weight(sample_weight, X, dtype=X.dtype)
+-
+         bin_edges = np.zeros(n_features, dtype=object)
++
++        # TODO(1.9): remove and switch to quantile_method="averaged_inverted_cdf"
++        # by default.
++        quantile_method = self.quantile_method
++        if self.strategy == "quantile" and quantile_method == "warn":
++            warnings.warn(
++                "The current default behavior, quantile_method='linear', will be "
++                "changed to quantile_method='averaged_inverted_cdf' in "
++                "scikit-learn version 1.9 to naturally support sample weight "
++                "equivalence properties by default. Pass "
++                "quantile_method='averaged_inverted_cdf' explicitly to silence this "
++                "warning.",
++                FutureWarning,
++            )
++            quantile_method = "linear"
++
++        if (
++            self.strategy == "quantile"
++            and quantile_method not in ["inverted_cdf", "averaged_inverted_cdf"]
++            and sample_weight is not None
++        ):
++            raise ValueError(
++                "When fitting with strategy='quantile' and sample weights, "
++                "quantile_method should either be set to 'averaged_inverted_cdf' or "
++                f"'inverted_cdf', got quantile_method='{quantile_method}' instead."
++            )
++
++        if self.strategy != "quantile" and sample_weight is not None:
++            # Prepare a mask to filter out zero-weight samples when extracting
++            # the min and max values of each columns which are needed for the
++            # "uniform" and "kmeans" strategies.
++            nnz_weight_mask = sample_weight != 0
++        else:
++            # Otherwise, all samples are used. Use a slice to avoid creating a
++            # new array.
++            nnz_weight_mask = slice(None)
++
+         for jj in range(n_features):
+             column = X[:, jj]
+-            col_min, col_max = column.min(), column.max()
++            col_min = column[nnz_weight_mask].min()
++            col_max = column[nnz_weight_mask].max()
+ 
+             if col_min == col_max:
+                 warnings.warn(

@@ -1,0 +1,15 @@
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index 1d4947fb308c..23ad424c5c31 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -80,9 +79,7 @@ def __init__(self, command, domain, translatable):
+ 
+     @cached_property
+     def is_templatized(self):
+-        if self.domain == "djangojs":
+-            return self.command.gettext_version < (0, 18, 3)
+-        elif self.domain == "django":
++        if self.domain == "django":
+             file_ext = os.path.splitext(self.translatable.file)[1]
+             return file_ext != ".py"
+         return False

@@ -1,0 +1,41 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index dfd7a67a546588..ece6fd7d44e028 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -9,28 +9,22 @@
+ import itertools
+ import os
+ import os.path
++import pathlib
+ import re
+ import sys
+-from keyword import iskeyword
+ 
++from contextlib import contextmanager
++from importlib import import_module, reload as reload_module
++from importlib.machinery import FileFinder
++from importlib.util import find_spec, spec_from_loader
++from keyword import iskeyword
++from types import ModuleType
+ 
+ # DO NOT add new non-stdlib import deps here, this loader is used by external tools (eg ansible-test import sanity)
+ # that only allow stdlib and module_utils
+-from ansible.module_utils.common.text.converters import to_native, to_text, to_bytes
++from . import _to_bytes, _to_text
+ from ._collection_config import AnsibleCollectionConfig
+ 
+-from contextlib import contextmanager
+-from types import ModuleType
+-
+-try:
+-    from importlib import import_module
+-except ImportError:
+-    def import_module(name):  # type: ignore[misc]
+-        __import__(name)
+-        return sys.modules[name]
+-
+-from importlib import reload as reload_module
+-
+ try:
+     try:
+         # Available on Python >= 3.11

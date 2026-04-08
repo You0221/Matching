@@ -1,0 +1,19 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index fe5ee918066fa..f0c97268c612d 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1459,13 +1485,7 @@ def predict_log_proba(self, X):
+ 
+     def __sklearn_tags__(self):
+         tags = super().__sklearn_tags__()
+-        tags._xfail_checks.update(
+-            {
+-                "check_non_transformer_estimators_n_iter": (
+-                    "n_iter_ cannot be easily accessed."
+-                )
+-            }
+-        )
++        tags.input_tags.sparse = True
+         return tags
+ 
+ 

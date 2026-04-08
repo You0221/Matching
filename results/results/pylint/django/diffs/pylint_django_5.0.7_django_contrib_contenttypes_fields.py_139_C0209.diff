@@ -1,0 +1,14 @@
+diff --git a/django/contrib/contenttypes/fields.py b/django/contrib/contenttypes/fields.py
+index 1b6abb98181c..4905fd1fffe3 100644
+--- a/django/contrib/contenttypes/fields.py
++++ b/django/contrib/contenttypes/fields.py
+@@ -162,7 +140,8 @@ def _check_content_type_field(self):
+             else:
+                 return []
+ 
+-    def get_cache_name(self):
++    @cached_property
++    def cache_name(self):
+         return self.name
+ 
+     def get_content_type(self, obj=None, id=None, using=None, model=None):

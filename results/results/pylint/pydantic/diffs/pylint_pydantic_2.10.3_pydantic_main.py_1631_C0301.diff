@@ -1,0 +1,53 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 0929b0935d9..03cb511eb30 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1617,40 +1717,22 @@ def create_model(  # noqa: C901
+ 
+     __cls_kwargs__ = __cls_kwargs__ or {}
+ 
+-    fields = {}
+-    annotations = {}
++    fields: dict[str, Any] = {}
++    annotations: dict[str, Any] = {}
+ 
+     for f_name, f_def in field_definitions.items():
+-        if not _fields.is_valid_field_name(f_name):
+-            warnings.warn(f'fields may not start with an underscore, ignoring "{f_name}"', RuntimeWarning)
+         if isinstance(f_def, tuple):
+-            f_def = cast('tuple[str, Any]', f_def)
+-            try:
+-                f_annotation, f_value = f_def
+-            except ValueError as e:
++            if len(f_def) != 2:
+                 raise PydanticUserError(
+-                    'Field definitions should be a `(<type>, <default>)`.',
+-                    code='create-model-field-definitions',
+-                ) from e
+-
+-        elif _typing_extra.is_annotated(f_def):
+-            (f_annotation, f_value, *_) = typing_extensions.get_args(
+-                f_def
+-            )  # first two input are expected from Annotated, refer to https://docs.python.org/3/library/typing.html#typing.Annotated
+-            FieldInfo = _import_utils.import_cached_field_info()
+-
+-            if not isinstance(f_value, FieldInfo):
+-                raise PydanticUserError(
+-                    'Field definitions should be a Annotated[<type>, <FieldInfo>]',
++                    f'Field definition for {f_name!r} should a single element representing the type or a two-tuple, the first element '
++                    'being the type and the second element the assigned value (either a default or the `Field()` function).',
+                     code='create-model-field-definitions',
+                 )
+ 
++            annotations[f_name] = f_def[0]
++            fields[f_name] = f_def[1]
+         else:
+-            f_annotation, f_value = None, f_def
+-
+-        if f_annotation:
+-            annotations[f_name] = f_annotation
+-        fields[f_name] = f_value
++            annotations[f_name] = f_def
+ 
+     if __module__ is None:
+         f = sys._getframe(1)

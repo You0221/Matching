@@ -1,0 +1,12 @@
+diff --git a/django/contrib/sessions/backends/db.py b/django/contrib/sessions/backends/db.py
+index e1f6b69c5582..6d6247d6c94b 100644
+--- a/django/contrib/sessions/backends/db.py
++++ b/django/contrib/sessions/backends/db.py
+@@ -1,5 +1,7 @@
+ import logging
+ 
++from asgiref.sync import sync_to_async
++
+ from django.contrib.sessions.backends.base import CreateError, SessionBase, UpdateError
+ from django.core.exceptions import SuspiciousOperation
+ from django.db import DatabaseError, IntegrityError, router, transaction

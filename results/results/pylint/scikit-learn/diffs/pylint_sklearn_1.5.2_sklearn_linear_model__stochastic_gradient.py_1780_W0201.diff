@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -1785,6 +1777,11 @@ def _fit_regressor(
+         else:
+             self.intercept_ = np.atleast_1d(intercept)
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class SGDRegressor(BaseSGDRegressor):
+     """Linear model fitted by minimizing a regularized empirical loss with SGD.

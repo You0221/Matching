@@ -1,0 +1,16 @@
+diff --git a/sklearn/datasets/_lfw.py b/sklearn/datasets/_lfw.py
+index 06420c41ed246..4f725b9250cc5 100644
+--- a/sklearn/datasets/_lfw.py
++++ b/sklearn/datasets/_lfw.py
+@@ -117,10 +118,7 @@ def _check_fetch_lfw(
+ 
+         logger.debug("Decompressing the data archive to %s", data_folder_path)
+         with tarfile.open(archive_path, "r:gz") as fp:
+-            # Use filter="data" to prevent the most dangerous security issues.
+-            # For more details, see
+-            # https://docs.python.org/3.9/library/tarfile.html#tarfile.TarFile.extractall
+-            fp.extractall(path=lfw_home, filter="data")
++            tarfile_extractall(fp, path=lfw_home)
+ 
+         remove(archive_path)
+ 

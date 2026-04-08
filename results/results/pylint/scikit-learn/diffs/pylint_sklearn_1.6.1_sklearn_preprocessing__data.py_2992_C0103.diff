@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 74ea7431a5d72..fe138cda73803 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2997,7 +3019,7 @@ def inverse_transform(self, X):
+ 
+         Returns
+         -------
+-        Xt : {ndarray, sparse matrix} of (n_samples, n_features)
++        X_original : {ndarray, sparse matrix} of (n_samples, n_features)
+             The projected data.
+         """
+         check_is_fitted(self)

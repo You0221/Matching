@@ -1,0 +1,12 @@
+diff --git a/django/utils/autoreload.py b/django/utils/autoreload.py
+index 31a6dfa99da5..7ffc61fc925c 100644
+--- a/django/utils/autoreload.py
++++ b/django/utils/autoreload.py
+@@ -82,7 +82,6 @@ def wrapper(*args, **kwargs):
+ 
+ 
+ def raise_last_exception():
+-    global _exception
+     if _exception is not None:
+         raise _exception[1]
+ 

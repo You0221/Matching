@@ -1,0 +1,26 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -406,16 +402,16 @@ def _logistic_regression_path(
+                 w0[:, : coef.shape[1]] = coef
+ 
+     if multi_class == "multinomial":
+-        if solver in ["lbfgs", "newton-cg"]:
++        if solver in ["lbfgs", "newton-cg", "newton-cholesky"]:
+             # scipy.optimize.minimize and newton-cg accept only ravelled parameters,
+             # i.e. 1d-arrays. LinearModelLoss expects classes to be contiguous and
+             # reconstructs the 2d-array via w0.reshape((n_classes, -1), order="F").
+             # As w0 is F-contiguous, ravel(order="F") also avoids a copy.
+             w0 = w0.ravel(order="F")
+-            loss = LinearModelLoss(
+-                base_loss=HalfMultinomialLoss(n_classes=classes.size),
+-                fit_intercept=fit_intercept,
+-            )
++        loss = LinearModelLoss(
++            base_loss=HalfMultinomialLoss(n_classes=classes.size),
++            fit_intercept=fit_intercept,
++        )
+         target = Y_multi
+         if solver == "lbfgs":
+             func = loss.loss_gradient

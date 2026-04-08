@@ -1,0 +1,29 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 91257dd3da56..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -125,23 +186,7 @@ def login(request, user, backend=None):
+     else:
+         request.session.cycle_key()
+ 
+-    try:
+-        backend = backend or user.backend
+-    except AttributeError:
+-        backends = _get_backends(return_tuples=True)
+-        if len(backends) == 1:
+-            _, backend = backends[0]
+-        else:
+-            raise ValueError(
+-                "You have multiple authentication backends configured and "
+-                "therefore must provide the `backend` argument or set the "
+-                "`backend` attribute on the user."
+-            )
+-    else:
+-        if not isinstance(backend, str):
+-            raise TypeError(
+-                "backend must be a dotted import path string (got %r)." % backend
+-            )
++    backend = _get_backend_from_user(user=user, backend=backend)
+ 
+     request.session[SESSION_KEY] = user._meta.pk.value_to_string(user)
+     request.session[BACKEND_SESSION_KEY] = backend

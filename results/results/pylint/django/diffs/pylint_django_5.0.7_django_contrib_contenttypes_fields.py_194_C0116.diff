@@ -1,0 +1,13 @@
+diff --git a/django/contrib/contenttypes/fields.py b/django/contrib/contenttypes/fields.py
+index 1b6abb98181c..4905fd1fffe3 100644
+--- a/django/contrib/contenttypes/fields.py
++++ b/django/contrib/contenttypes/fields.py
+@@ -209,7 +188,7 @@ def get_prefetch_querysets(self, instances, querysets=None):
+         fk_dict = defaultdict(set)
+         # We need one instance for each group in order to get the right db:
+         instance_dict = {}
+-        ct_attname = self.model._meta.get_field(self.ct_field).get_attname()
++        ct_attname = self.model._meta.get_field(self.ct_field).attname
+         for instance in instances:
+             # We avoid looking for values if either ct_id or fkey value is None
+             ct_id = getattr(instance, ct_attname)

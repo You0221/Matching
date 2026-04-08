@@ -1,0 +1,42 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index 8b5dea5c4f6c3..ef5081080bda1 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -270,14 +342,33 @@ def fit(self, X, y=None, sample_weight=None):
+                 bin_edges[jj] = np.linspace(col_min, col_max, n_bins[jj] + 1)
+ 
+             elif self.strategy == "quantile":
+-                quantiles = np.linspace(0, 100, n_bins[jj] + 1)
++                percentile_levels = np.linspace(0, 100, n_bins[jj] + 1)
++
++                # method="linear" is the implicit default for any numpy
++                # version. So we keep it version independent in that case by
++                # using an empty param dict.
++                percentile_kwargs = {}
++                if quantile_method != "linear" and sample_weight is None:
++                    percentile_kwargs["method"] = quantile_method
++
+                 if sample_weight is None:
+-                    bin_edges[jj] = np.asarray(np.percentile(column, quantiles))
++                    bin_edges[jj] = np.asarray(
++                        np.percentile(column, percentile_levels, **percentile_kwargs),
++                        dtype=np.float64,
++                    )
+                 else:
++                    # TODO: make _weighted_percentile and
++                    # _averaged_weighted_percentile accept an array of
++                    # quantiles instead of calling it multiple times and
++                    # sorting the column multiple times as a result.
++                    percentile_func = {
++                        "inverted_cdf": _weighted_percentile,
++                        "averaged_inverted_cdf": _averaged_weighted_percentile,
++                    }[quantile_method]
+                     bin_edges[jj] = np.asarray(
+                         [
+-                            _weighted_percentile(column, sample_weight, q)
+-                            for q in quantiles
++                            percentile_func(column, sample_weight, percentile_rank=p)
++                            for p in percentile_levels
+                         ],
+                         dtype=np.float64,
+                     )

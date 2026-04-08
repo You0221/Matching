@@ -1,0 +1,13 @@
+diff --git a/django/db/models/functions/text.py b/django/db/models/functions/text.py
+index df826ffdb5a1..9c48659bf990 100644
+--- a/django/db/models/functions/text.py
++++ b/django/db/models/functions/text.py
+@@ -78,7 +78,7 @@ def pipes_concat_sql(self, compiler, connection, **extra_context):
+         return super(ConcatPair, coalesced).as_sql(
+             compiler,
+             connection,
+-            template="%(expressions)s",
++            template="(%(expressions)s)",
+             arg_joiner=" || ",
+             **extra_context,
+         )

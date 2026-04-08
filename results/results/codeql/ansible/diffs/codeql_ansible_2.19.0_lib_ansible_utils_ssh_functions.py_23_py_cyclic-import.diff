@@ -1,0 +1,14 @@
+diff --git a/lib/ansible/utils/ssh_functions.py b/lib/ansible/utils/ssh_functions.py
+index 58c241fef193db..ed8e086ae396e6 100644
+--- a/lib/ansible/utils/ssh_functions.py
++++ b/lib/ansible/utils/ssh_functions.py
+@@ -20,9 +20,7 @@
+ 
+ import subprocess
+ 
+-from ansible import constants as C
+ from ansible.module_utils.common.text.converters import to_bytes
+-from ansible.module_utils.compat.paramiko import _paramiko as paramiko
+ from ansible.utils.display import Display
+ 
+ display = Display()

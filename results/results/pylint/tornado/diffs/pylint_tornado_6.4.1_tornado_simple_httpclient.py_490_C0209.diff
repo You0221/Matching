@@ -1,0 +1,13 @@
+diff --git a/tornado/simple_httpclient.py b/tornado/simple_httpclient.py
+index 5b2d4dcd98..cc16376133 100644
+--- a/tornado/simple_httpclient.py
++++ b/tornado/simple_httpclient.py
+@@ -487,7 +485,7 @@ def _on_timeout(self, info: Optional[str] = None) -> None:
+         :info string key: More detailed timeout information.
+         """
+         self._timeout = None
+-        error_message = "Timeout {0}".format(info) if info else "Timeout"
++        error_message = f"Timeout {info}" if info else "Timeout"
+         if self.final_callback is not None:
+             self._handle_exception(
+                 HTTPTimeoutError, HTTPTimeoutError(error_message), None

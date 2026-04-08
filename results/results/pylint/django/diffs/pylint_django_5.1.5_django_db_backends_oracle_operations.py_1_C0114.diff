@@ -1,0 +1,25 @@
+diff --git a/django/db/backends/oracle/operations.py b/django/db/backends/oracle/operations.py
+index 507c5fb369cb..59eecdba200c 100644
+--- a/django/db/backends/oracle/operations.py
++++ b/django/db/backends/oracle/operations.py
+@@ -1,12 +1,19 @@
+ import datetime
+ import uuid
+ from functools import lru_cache
++from itertools import chain
+ 
+ from django.conf import settings
+ from django.db import DatabaseError, NotSupportedError
+ from django.db.backends.base.operations import BaseDatabaseOperations
+ from django.db.backends.utils import split_tzname_delta, strip_quotes, truncate_name
+-from django.db.models import AutoField, Exists, ExpressionWrapper, Lookup
++from django.db.models import (
++    AutoField,
++    CompositePrimaryKey,
++    Exists,
++    ExpressionWrapper,
++    Lookup,
++)
+ from django.db.models.expressions import RawSQL
+ from django.db.models.sql.where import WhereNode
+ from django.utils import timezone

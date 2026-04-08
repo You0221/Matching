@@ -1,0 +1,37 @@
+diff --git a/pandas/core/reshape/merge.py b/pandas/core/reshape/merge.py
+index 6987a0ac7bf6b..410301b7697f2 100644
+--- a/pandas/core/reshape/merge.py
++++ b/pandas/core/reshape/merge.py
+@@ -1108,8 +1130,6 @@ def _get_join_indexers(self) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]
+     def _get_join_info(
+         self,
+     ) -> tuple[Index, npt.NDArray[np.intp] | None, npt.NDArray[np.intp] | None]:
+-        # make mypy happy
+-        assert self.how != "cross"
+         left_ax = self.left.index
+         right_ax = self.right.index
+ 
+@@ -1138,6 +1158,8 @@ def _get_join_info(
+                         left_indexer,
+                         how="right",
+                     )
++                elif right_indexer is None:
++                    join_index = right_ax.copy()
+                 else:
+                     join_index = right_ax.take(right_indexer)
+             elif self.left_index:
+@@ -1157,10 +1179,13 @@ def _get_join_info(
+                         right_indexer,
+                         how="left",
+                     )
++                elif left_indexer is None:
++                    join_index = left_ax.copy()
+                 else:
+                     join_index = left_ax.take(left_indexer)
+             else:
+-                join_index = default_index(len(left_indexer))
++                n = len(left_ax) if left_indexer is None else len(left_indexer)
++                join_index = default_index(n)
+ 
+         return join_index, left_indexer, right_indexer
+ 

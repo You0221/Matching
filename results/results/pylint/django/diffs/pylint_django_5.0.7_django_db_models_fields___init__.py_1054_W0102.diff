@@ -1,0 +1,44 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1051,14 +1066,9 @@ def get_choices(
+         as <select> choices for this field.
+         """
+         if self.choices is not None:
+-            choices = list(self.choices)
+             if include_blank:
+-                blank_defined = any(
+-                    choice in ("", None) for choice, _ in self.flatchoices
+-                )
+-                if not blank_defined:
+-                    choices = blank_choice + choices
+-            return choices
++                return BlankChoiceIterator(self.choices, blank_choice)
++            return self.choices
+         rel_model = self.remote_field.model
+         limit_choices_to = limit_choices_to or self.get_limit_choices_to()
+         choice_func = operator.attrgetter(
+@@ -1080,19 +1090,10 @@ def value_to_string(self, obj):
+         """
+         return str(self.value_from_object(obj))
+ 
+-    def _get_flatchoices(self):
++    @property
++    def flatchoices(self):
+         """Flattened version of choices tuple."""
+-        if self.choices is None:
+-            return []
+-        flat = []
+-        for choice, value in self.choices:
+-            if isinstance(value, (list, tuple)):
+-                flat.extend(value)
+-            else:
+-                flat.append((choice, value))
+-        return flat
+-
+-    flatchoices = property(_get_flatchoices)
++        return list(flatten_choices(self.choices))
+ 
+     def save_form_data(self, instance, data):
+         setattr(instance, self.name, data)

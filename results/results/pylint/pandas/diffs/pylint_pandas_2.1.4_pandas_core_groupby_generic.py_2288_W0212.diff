@@ -1,0 +1,29 @@
+diff --git a/pandas/core/groupby/generic.py b/pandas/core/groupby/generic.py
+index 8bef167b747e2..f2e314046fb74 100644
+--- a/pandas/core/groupby/generic.py
++++ b/pandas/core/groupby/generic.py
+@@ -2279,22 +2256,9 @@ def idxmin(
+         Beef                consumption
+         dtype: object
+         """
+-        if axis is not lib.no_default:
+-            if axis is None:
+-                axis = self.axis
+-            axis = self.obj._get_axis_number(axis)
+-            self._deprecate_axis(axis, "idxmin")
+-        else:
+-            axis = self.axis
+-
+-        def func(df):
+-            return df.idxmin(axis=axis, skipna=skipna, numeric_only=numeric_only)
+-
+-        func.__name__ = "idxmin"
+-        result = self._python_apply_general(
+-            func, self._obj_with_exclusions, not_indexed_same=True
++        return self._idxmax_idxmin(
++            "idxmin", axis=axis, numeric_only=numeric_only, skipna=skipna
+         )
+-        return result.astype(self.obj.index.dtype) if result.empty else result
+ 
+     boxplot = boxplot_frame_groupby
+ 

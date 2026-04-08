@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/grower.py b/sklearn/ensemble/_hist_gradient_boosting/grower.py
+index 8cf40d2a64539..419e2f26c2653 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/grower.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/grower.py
+@@ -389,7 +400,7 @@ def _apply_shrinkage(self):
+         for leaf in self.finalized_leaves:
+             leaf.value *= self.shrinkage
+ 
+-    def _intilialize_root(self, gradients, hessians, hessians_are_constant):
++    def _initialize_root(self, gradients, hessians):
+         """Initialize root node and finalize it if needed."""
+         n_samples = self.X_binned.shape[0]
+         depth = 0

@@ -1,0 +1,33 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 510c165a755..8fcb54dd934 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -304,7 +304,11 @@ def to_argument(
+         )
+ 
+     def expand_type(
+-        self, current_info: TypeInfo, api: SemanticAnalyzerPluginInterface, force_typevars_invariant: bool = False
++        self,
++        current_info: TypeInfo,
++        api: SemanticAnalyzerPluginInterface,
++        force_typevars_invariant: bool = False,
++        include_root_type: bool = False,
+     ) -> Type | None:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.expand_type."""
+         if force_typevars_invariant:
+@@ -332,10 +336,13 @@ def expand_type(
+                             arg.variance = INVARIANT
+ 
+                 expanded_type = expand_type(self.type, {self.info.self_type.id: filled_with_typevars})
+-                if isinstance(expanded_type, Instance) and is_root_model(expanded_type.type):
++                if include_root_type and isinstance(expanded_type, Instance) and is_root_model(expanded_type.type):
+                     # When a root model is used as a field, Pydantic allows both an instance of the root model
+                     # as well as instances of the `root` field type:
+-                    root_type = cast(Type, expanded_type.type['root'].type)
++                    root_type = expanded_type.type['root'].type
++                    if root_type is None:
++                        # Happens if the hint for 'root' has unsolved forward references
++                        return expanded_type
+                     expanded_root_type = expand_type_by_instance(root_type, expanded_type)
+                     expanded_type = UnionType([expanded_type, expanded_root_type])
+                 return expanded_type

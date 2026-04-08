@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -857,7 +834,7 @@ def fit(self, X, y, sample_weight=None):
+         )
+ 
+         for iteration in range(begin_at_stage, self.max_iter):
+-            if self.verbose:
++            if self.verbose >= 2:
+                 iteration_start_time = time()
+                 print(
+                     "[{}/{}] ".format(iteration + 1, self.max_iter), end="", flush=True

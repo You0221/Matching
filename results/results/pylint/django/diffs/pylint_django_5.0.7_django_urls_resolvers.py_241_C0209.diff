@@ -1,0 +1,20 @@
+diff --git a/django/urls/resolvers.py b/django/urls/resolvers.py
+index 89ae18694cdf..c667d7f26871 100644
+--- a/django/urls/resolvers.py
++++ b/django/urls/resolvers.py
+@@ -229,15 +235,6 @@ def _check_include_trailing_dollar(self):
+         else:
+             return []
+ 
+-    def _compile(self, regex):
+-        """Compile and return the given regular expression."""
+-        try:
+-            return re.compile(regex)
+-        except re.error as e:
+-            raise ImproperlyConfigured(
+-                '"%s" is not a valid regular expression: %s' % (regex, e)
+-            ) from e
+-
+     def __str__(self):
+         return str(self._regex)
+ 

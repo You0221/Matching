@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index bcf2d749725ff..369d3f0f5553e 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -391,7 +379,8 @@ def fit(self, X, y, *, sample_weight=None, **fit_params):
+         self : object
+             Returns the instance itself.
+         """
+-        _raise_for_params(fit_params, self, "fit")
++        _raise_for_params(fit_params, self, "fit", allow=["sample_weight"])
++
+         y_type = type_of_target(y, input_name="y")
+         if y_type in ("unknown", "continuous"):
+             # raise a specific ValueError for non-classification tasks

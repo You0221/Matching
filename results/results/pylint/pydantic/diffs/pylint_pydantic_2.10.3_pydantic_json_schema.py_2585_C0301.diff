@@ -1,0 +1,35 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 984183f859c..62be321eb6b 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -2567,26 +2575,24 @@ def _get_all_json_refs(item: Any) -> set[JsonRef]:
+ 
+     @dataclasses.dataclass(**_internal_dataclass.slots_true)
+     class SkipJsonSchema:
+-        """Usage docs: https://docs.pydantic.dev/2.10/concepts/json_schema/#skipjsonschema-annotation
++        """!!! abstract "Usage Documentation"
++            [`SkipJsonSchema` Annotation](../concepts/json_schema.md#skipjsonschema-annotation)
+ 
+         Add this as an annotation on a field to skip generating a JSON schema for that field.
+ 
+         Example:
+-            ```py
++            ```python
++            from pprint import pprint
+             from typing import Union
+ 
+             from pydantic import BaseModel
+             from pydantic.json_schema import SkipJsonSchema
+ 
+-            from pprint import pprint
+-
+-
+             class Model(BaseModel):
+                 a: Union[int, None] = None  # (1)!
+                 b: Union[int, SkipJsonSchema[None]] = None  # (2)!
+                 c: SkipJsonSchema[Union[int, None]] = None  # (3)!
+ 
+-
+             pprint(Model.model_json_schema())
+             '''
+             {

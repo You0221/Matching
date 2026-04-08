@@ -1,0 +1,17 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1022,10 +1115,11 @@ def __repr_args__(self) -> _repr.ReprArgs:
+ 
+         if pydantic_extra is not None:
+             yield from ((k, v) for k, v in pydantic_extra.items())
+-        yield from ((k, getattr(self, k)) for k, v in self.model_computed_fields.items() if v.repr)
++        yield from ((k, getattr(self, k)) for k, v in self.__pydantic_computed_fields__.items() if v.repr)
+ 
+     # take logic from `_repr.Representation` without the side effects of inheritance, see #5740
+     __repr_name__ = _repr.Representation.__repr_name__
++    __repr_recursion__ = _repr.Representation.__repr_recursion__
+     __repr_str__ = _repr.Representation.__repr_str__
+     __pretty__ = _repr.Representation.__pretty__
+     __rich_repr__ = _repr.Representation.__rich_repr__

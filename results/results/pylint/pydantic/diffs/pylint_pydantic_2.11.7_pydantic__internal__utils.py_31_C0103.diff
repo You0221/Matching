@@ -1,0 +1,18 @@
+diff --git a/pydantic/_internal/_utils.py b/pydantic/_internal/_utils.py
+index abe89c83449..47a61575a81 100644
+--- a/pydantic/_internal/_utils.py
++++ b/pydantic/_internal/_utils.py
+@@ -26,9 +27,10 @@
+ from . import _repr, _typing_extra
+ from ._import_utils import import_cached_base_model
+ 
+-if typing.TYPE_CHECKING:
+-    MappingIntStrAny: TypeAlias = 'typing.Mapping[int, Any] | typing.Mapping[str, Any]'
+-    AbstractSetIntStr: TypeAlias = 'typing.AbstractSet[int] | typing.AbstractSet[str]'
++if TYPE_CHECKING:
++    # TODO remove type error comments when we drop support for Python 3.9
++    MappingIntStrAny: TypeAlias = Mapping[int, Any] | Mapping[str, Any]  # pyright: ignore[reportGeneralTypeIssues]
++    AbstractSetIntStr: TypeAlias = AbstractSet[int] | AbstractSet[str]  # pyright: ignore[reportGeneralTypeIssues]
+     from ..main import BaseModel
+ 
+ 

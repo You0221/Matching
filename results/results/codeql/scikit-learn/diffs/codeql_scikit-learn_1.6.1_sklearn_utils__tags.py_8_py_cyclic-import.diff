@@ -1,0 +1,19 @@
+diff --git a/sklearn/utils/_tags.py b/sklearn/utils/_tags.py
+index de756901d98ef..44b3eb64523c9 100644
+--- a/sklearn/utils/_tags.py
++++ b/sklearn/utils/_tags.py
+@@ -3,13 +3,11 @@
+ import warnings
+ from dataclasses import dataclass, field
+ 
+-from .fixes import _dataclass_args
+-
+ # Authors: The scikit-learn developers
+ # SPDX-License-Identifier: BSD-3-Clause
+ 
+ 
+-@dataclass(**_dataclass_args())
++@dataclass(slots=True)
+ class InputTags:
+     """Tags for the input data.
+ 

@@ -1,0 +1,17 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index 8779f72b74b..fc4bbba6841 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -71,10 +74,10 @@ class Model(BaseModel):
+ 
+     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+         schema = handler(source_type)
+-        info_arg = _inspect_validator(self.func, 'after')
++        info_arg = _inspect_validator(self.func, mode='after', type='field')
+         if info_arg:
+             func = cast(core_schema.WithInfoValidatorFunction, self.func)
+-            return core_schema.with_info_after_validator_function(func, schema=schema, field_name=handler.field_name)
++            return core_schema.with_info_after_validator_function(func, schema=schema)
+         else:
+             func = cast(core_schema.NoInfoValidatorFunction, self.func)
+             return core_schema.no_info_after_validator_function(func, schema=schema)

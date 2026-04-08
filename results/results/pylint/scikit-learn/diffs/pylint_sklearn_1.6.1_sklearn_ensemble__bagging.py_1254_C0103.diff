@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index dd39b8cb607a8..34b613b15281a 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -1256,7 +1380,7 @@ def __init__(
+             verbose=verbose,
+         )
+ 
+-    def predict(self, X):
++    def predict(self, X, **params):
+         """Predict regression target for X.
+ 
+         The predicted regression target of an input sample is computed as the

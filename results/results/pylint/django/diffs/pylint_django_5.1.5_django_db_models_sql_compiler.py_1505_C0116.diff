@@ -1,0 +1,29 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1508,6 +1541,24 @@ def apply_converters(self, rows, converters):
+                 row[pos] = value
+             yield row
+ 
++    def has_composite_fields(self, expressions):
++        # Check for composite fields before calling the relatively costly
++        # composite_fields_to_tuples.
++        return any(isinstance(expression, ColPairs) for expression in expressions)
++
++    def composite_fields_to_tuples(self, rows, expressions):
++        col_pair_slices = [
++            slice(i, i + len(expression))
++            for i, expression in enumerate(expressions)
++            if isinstance(expression, ColPairs)
++        ]
++
++        for row in map(list, rows):
++            for pos in col_pair_slices:
++                row[pos] = (tuple(row[pos]),)
++
++            yield row
++
+     def results_iter(
+         self,
+         results=None,

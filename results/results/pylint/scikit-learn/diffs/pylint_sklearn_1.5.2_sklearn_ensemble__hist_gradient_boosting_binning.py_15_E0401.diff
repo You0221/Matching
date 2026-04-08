@@ -1,0 +1,22 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/binning.py b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+index d23f6e7b00a82..c428c742af883 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/binning.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+@@ -6,7 +6,8 @@
+ approximately the same number of samples.
+ """
+ 
+-# Author: Nicolas Hug
++# Authors: The scikit-learn developers
++# SPDX-License-Identifier: BSD-3-Clause
+ 
+ import numpy as np
+ 
+@@ -14,6 +15,7 @@
+ from ...utils import check_array, check_random_state
+ from ...utils._openmp_helpers import _openmp_effective_n_threads
+ from ...utils.fixes import percentile
++from ...utils.parallel import Parallel, delayed
+ from ...utils.validation import check_is_fitted
+ from ._binning import _map_to_bins
+ from ._bitset import set_bitset_memoryview

@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index af732d90dd877..6b1b842f5367b 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -855,8 +855,7 @@ def _validate_y_class_weight(self, y):
+                     raise ValueError(
+                         "Valid presets for class_weight include "
+                         '"balanced" and "balanced_subsample".'
+-                        'Given "%s".'
+-                        % self.class_weight
++                        'Given "%s".' % self.class_weight
+                     )
+                 if self.warm_start:
+                     warn(

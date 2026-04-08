@@ -1,0 +1,14 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index bc288c47ecec..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -511,8 +512,7 @@ def __get__(self, instance, cls=None):
+         try:
+             rel_obj = self.related.get_cached_value(instance)
+         except KeyError:
+-            related_pk = instance.pk
+-            if related_pk is None:
++            if not instance._is_pk_set():
+                 rel_obj = None
+             else:
+                 filter_args = self.related.field.get_forward_related_filter(instance)

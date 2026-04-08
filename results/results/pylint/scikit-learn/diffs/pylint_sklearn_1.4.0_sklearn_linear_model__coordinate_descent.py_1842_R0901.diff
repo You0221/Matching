@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index d1293bb62f262..45cdb8bdf2ebb 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -1833,7 +1860,7 @@ def get_metadata_routing(self):
+             .add_self_request(self)
+             .add(
+                 splitter=check_cv(self.cv),
+-                method_mapping=MethodMapping().add(callee="split", caller="fit"),
++                method_mapping=MethodMapping().add(caller="fit", callee="split"),
+             )
+         )
+         return router

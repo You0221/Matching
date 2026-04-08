@@ -1,0 +1,19 @@
+diff --git a/pydantic/_internal/_discriminated_union.py b/pydantic/_internal/_discriminated_union.py
+index 29a50a5ad79..5dd6fdaf418 100644
+--- a/pydantic/_internal/_discriminated_union.py
++++ b/pydantic/_internal/_discriminated_union.py
+@@ -8,13 +9,11 @@
+ from . import _core_utils
+ from ._core_utils import (
+     CoreSchemaField,
+-    collect_definitions,
+ )
+ 
+ if TYPE_CHECKING:
+     from ..types import Discriminator
+-
+-CORE_SCHEMA_METADATA_DISCRIMINATOR_PLACEHOLDER_KEY = 'pydantic.internal.union_discriminator'
++    from ._core_metadata import CoreMetadata
+ 
+ 
+ class MissingDefinitionForUnionRef(Exception):

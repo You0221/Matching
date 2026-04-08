@@ -1,0 +1,183 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1814,19 +2218,54 @@ def inner_handler(obj: Any) -> CoreSchema:
+             if annotation is None:
+                 continue
+             get_inner_schema = self._get_wrapped_inner_schema(
+-                get_inner_schema, annotation, pydantic_js_annotation_functions
++                get_inner_schema,
++                annotation,
++                pydantic_js_annotation_functions,
++                check_unsupported_field_info_attributes=check_unsupported_field_info_attributes,
+             )
+ 
+         schema = get_inner_schema(source_type)
+         if pydantic_js_annotation_functions:
+-            metadata = CoreMetadataHandler(schema).metadata
+-            metadata.setdefault('pydantic_js_annotation_functions', []).extend(pydantic_js_annotation_functions)
++            core_metadata = schema.setdefault('metadata', {})
++            update_core_metadata(core_metadata, pydantic_js_annotation_functions=pydantic_js_annotation_functions)
+         return _add_custom_serialization_from_json_encoders(self._config_wrapper.json_encoders, source_type, schema)
+ 
+-    def _apply_single_annotation(self, schema: core_schema.CoreSchema, metadata: Any) -> core_schema.CoreSchema:
+-        from ..fields import FieldInfo
++    def _apply_single_annotation(
++        self,
++        schema: core_schema.CoreSchema,
++        metadata: Any,
++        check_unsupported_field_info_attributes: bool = True,
++    ) -> core_schema.CoreSchema:
++        FieldInfo = import_cached_field_info()
+ 
+         if isinstance(metadata, FieldInfo):
++            if (
++                check_unsupported_field_info_attributes
++                # HACK: we don't want to emit the warning for `FieldInfo` subclasses, because FastAPI does weird manipulations
++                # with its subclasses and their annotations:
++                and type(metadata) is FieldInfo
++            ):
++                for attr, value in (unsupported_attributes := self._get_unsupported_field_info_attributes(metadata)):
++                    warnings.warn(
++                        f'The {attr!r} attribute with value {value!r} was provided to the `Field()` function, '
++                        f'which has no effect in the context it was used. {attr!r} is field-specific metadata, '
++                        'and can only be attached to a model field using `Annotated` metadata or by assignment. '
++                        'This may have happened because an `Annotated` type alias using the `type` statement was '
++                        'used, or if the `Field()` function was attached to a single member of a union type.',
++                        category=UnsupportedFieldAttributeWarning,
++                    )
++
++                if (
++                    metadata.default_factory_takes_validated_data
++                    and self.model_type_stack.get() is None
++                    and 'defaut_factory' not in unsupported_attributes
++                ):
++                    warnings.warn(
++                        "A 'default_factory' taking validated data as an argument was provided to the `Field()` function, "
++                        'but no validated data is available in the context it was used.',
++                        category=UnsupportedFieldAttributeWarning,
++                    )
++
+             for field_metadata in metadata.metadata:
+                 schema = self._apply_single_annotation(schema, field_metadata)
+ 
+@@ -1843,23 +2282,23 @@ def _apply_single_annotation(self, schema: core_schema.CoreSchema, metadata: Any
+             return schema
+ 
+         original_schema = schema
+-        ref = schema.get('ref', None)
++        ref = schema.get('ref')
+         if ref is not None:
+             schema = schema.copy()
+             new_ref = ref + f'_{repr(metadata)}'
+-            if new_ref in self.defs.definitions:
+-                return self.defs.definitions[new_ref]
+-            schema['ref'] = new_ref  # type: ignore
++            if (existing := self.defs.get_schema_from_ref(new_ref)) is not None:
++                return existing
++            schema['ref'] = new_ref  # pyright: ignore[reportGeneralTypeIssues]
+         elif schema['type'] == 'definition-ref':
+             ref = schema['schema_ref']
+-            if ref in self.defs.definitions:
+-                schema = self.defs.definitions[ref].copy()
++            if (referenced_schema := self.defs.get_schema_from_ref(ref)) is not None:
++                schema = referenced_schema.copy()
+                 new_ref = ref + f'_{repr(metadata)}'
+-                if new_ref in self.defs.definitions:
+-                    return self.defs.definitions[new_ref]
+-                schema['ref'] = new_ref  # type: ignore
++                if (existing := self.defs.get_schema_from_ref(new_ref)) is not None:
++                    return existing
++                schema['ref'] = new_ref  # pyright: ignore[reportGeneralTypeIssues]
+ 
+-        maybe_updated_schema = _known_annotated_metadata.apply_known_metadata(metadata, schema.copy())
++        maybe_updated_schema = _known_annotated_metadata.apply_known_metadata(metadata, schema)
+ 
+         if maybe_updated_schema is not None:
+             return maybe_updated_schema
+@@ -1868,42 +2307,63 @@ def _apply_single_annotation(self, schema: core_schema.CoreSchema, metadata: Any
+     def _apply_single_annotation_json_schema(
+         self, schema: core_schema.CoreSchema, metadata: Any
+     ) -> core_schema.CoreSchema:
+-        from ..fields import FieldInfo
++        FieldInfo = import_cached_field_info()
+ 
+         if isinstance(metadata, FieldInfo):
+             for field_metadata in metadata.metadata:
+                 schema = self._apply_single_annotation_json_schema(schema, field_metadata)
+-            json_schema_update: JsonSchemaValue = {}
+-            if metadata.title:
+-                json_schema_update['title'] = metadata.title
+-            if metadata.description:
+-                json_schema_update['description'] = metadata.description
+-            if metadata.examples:
+-                json_schema_update['examples'] = to_jsonable_python(metadata.examples)
+-
+-            json_schema_extra = metadata.json_schema_extra
+-            if json_schema_update or json_schema_extra:
+-                CoreMetadataHandler(schema).metadata.setdefault('pydantic_js_annotation_functions', []).append(
+-                    get_json_schema_update_func(json_schema_update, json_schema_extra)
+-                )
++
++            pydantic_js_updates, pydantic_js_extra = _extract_json_schema_info_from_field_info(metadata)
++            core_metadata = schema.setdefault('metadata', {})
++            update_core_metadata(
++                core_metadata, pydantic_js_updates=pydantic_js_updates, pydantic_js_extra=pydantic_js_extra
++            )
+         return schema
+ 
++    def _get_unsupported_field_info_attributes(self, field_info: FieldInfo) -> list[tuple[str, Any]]:
++        """Get the list of unsupported `FieldInfo` attributes when not directly used in `Annotated` for field annotations."""
++        unused_metadata: list[tuple[str, Any]] = []
++        for unused_metadata_name, unset_value in UNSUPPORTED_STANDALONE_FIELDINFO_ATTRIBUTES:
++            if (
++                (unused_metadata_value := getattr(field_info, unused_metadata_name)) is not unset_value
++                # `default` and `default_factory` can still be used with a type adapter, so only include them
++                # if used with a model-like class:
++                and (
++                    unused_metadata_name not in ('default', 'default_factory')
++                    or self.model_type_stack.get() is not None
++                )
++                # Setting `alias` will set `validation/serialization_alias` as well, so we want to avoid duplicate warnings:
++                and (
++                    unused_metadata_name not in ('validation_alias', 'serialization_alias')
++                    or 'alias' not in field_info._attributes_set
++                )
++            ):
++                unused_metadata.append((unused_metadata_name, unused_metadata_value))
++
++        return unused_metadata
++
+     def _get_wrapped_inner_schema(
+         self,
+         get_inner_schema: GetCoreSchemaHandler,
+         annotation: Any,
+         pydantic_js_annotation_functions: list[GetJsonSchemaFunction],
++        check_unsupported_field_info_attributes: bool = False,
+     ) -> CallbackGetCoreSchemaHandler:
+-        metadata_get_schema: GetCoreSchemaFunction = getattr(annotation, '__get_pydantic_core_schema__', None) or (
+-            lambda source, handler: handler(source)
+-        )
++        annotation_get_schema: GetCoreSchemaFunction | None = getattr(annotation, '__get_pydantic_core_schema__', None)
+ 
+         def new_handler(source: Any) -> core_schema.CoreSchema:
+-            schema = metadata_get_schema(source, get_inner_schema)
+-            schema = self._apply_single_annotation(schema, annotation)
+-            schema = self._apply_single_annotation_json_schema(schema, annotation)
++            if annotation_get_schema is not None:
++                schema = annotation_get_schema(source, get_inner_schema)
++            else:
++                schema = get_inner_schema(source)
++                schema = self._apply_single_annotation(
++                    schema,
++                    annotation,
++                    check_unsupported_field_info_attributes=check_unsupported_field_info_attributes,
++                )
++                schema = self._apply_single_annotation_json_schema(schema, annotation)
+ 
+-            metadata_js_function = _extract_get_pydantic_json_schema(annotation, schema)
++            metadata_js_function = _extract_get_pydantic_json_schema(annotation)
+             if metadata_js_function is not None:
+                 pydantic_js_annotation_functions.append(metadata_js_function)
+             return schema

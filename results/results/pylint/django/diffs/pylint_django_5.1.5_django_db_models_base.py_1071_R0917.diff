@@ -1,0 +1,51 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1063,10 +1092,11 @@ def _save_table(
+         for a single table.
+         """
+         meta = cls._meta
++        pk_fields = meta.pk_fields
+         non_pks_non_generated = [
+             f
+             for f in meta.local_concrete_fields
+-            if not f.primary_key and not f.generated
++            if f not in pk_fields and not f.generated
+         ]
+ 
+         if update_fields:
+@@ -1076,11 +1106,10 @@ def _save_table(
+                 if f.name in update_fields or f.attname in update_fields
+             ]
+ 
+-        pk_val = self._get_pk_val(meta)
+-        if pk_val is None:
++        if not self._is_pk_set(meta):
+             pk_val = meta.pk.get_pk_value_on_save(self)
+             setattr(self, meta.pk.attname, pk_val)
+-        pk_set = pk_val is not None
++        pk_set = self._is_pk_set(meta)
+         if not pk_set and (force_update or update_fields):
+             raise ValueError("Cannot force an update in save() with no primary key.")
+         updated = False
+@@ -1090,10 +1119,7 @@ def _save_table(
+             and not force_insert
+             and not force_update
+             and self._state.adding
+-            and (
+-                (meta.pk.default and meta.pk.default is not NOT_PROVIDED)
+-                or (meta.pk.db_default and meta.pk.db_default is not NOT_PROVIDED)
+-            )
++            and all(f.has_default() or f.has_db_default() for f in meta.pk_fields)
+         ):
+             force_insert = True
+         # If possible, try an UPDATE. If that doesn't update anything, do an INSERT.
+@@ -1108,6 +1134,7 @@ def _save_table(
+                 for f in non_pks_non_generated
+             ]
+             forced_update = update_fields or force_update
++            pk_val = self._get_pk_val(meta)
+             updated = self._do_update(
+                 base_qs, using, pk_val, values, update_fields, forced_update
+             )

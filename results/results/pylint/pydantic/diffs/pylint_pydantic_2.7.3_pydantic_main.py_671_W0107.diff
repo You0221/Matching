@@ -1,0 +1,46 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -654,21 +854,36 @@ def __get_pydantic_json_schema__(
+     @classmethod
+     def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
+         """This is intended to behave just like `__init_subclass__`, but is called by `ModelMetaclass`
+-        only after the class is actually fully initialized. In particular, attributes like `model_fields` will
+-        be present when this is called.
++        only after basic class initialization is complete. In particular, attributes like `model_fields` will
++        be present when this is called, but forward annotations are not guaranteed to be resolved yet,
++        meaning that creating an instance of the class may fail.
+ 
+         This is necessary because `__init_subclass__` will always be called by `type.__new__`,
+         and it would require a prohibitively large refactor to the `ModelMetaclass` to ensure that
+         `type.__new__` was called in such a manner that the class would already be sufficiently initialized.
+ 
+         This will receive the same `kwargs` that would be passed to the standard `__init_subclass__`, namely,
+-        any kwargs passed to the class definition that aren't used internally by pydantic.
++        any kwargs passed to the class definition that aren't used internally by Pydantic.
+ 
+         Args:
+             **kwargs: Any keyword arguments passed to the class definition that aren't used internally
+-                by pydantic.
++                by Pydantic.
++
++        Note:
++            You may want to override [`__pydantic_on_complete__()`][pydantic.main.BaseModel.__pydantic_on_complete__]
++            instead, which is called once the class and its fields are fully initialized and ready for validation.
++        """
++
++    @classmethod
++    def __pydantic_on_complete__(cls) -> None:
++        """This is called once the class and its fields are fully initialized and ready to be used.
++
++        This typically happens when the class is created (just before
++        [`__pydantic_init_subclass__()`][pydantic.main.BaseModel.__pydantic_init_subclass__] is called on the superclass),
++        except when forward annotations are used that could not immediately be resolved.
++        In that case, it will be called later, when the model is rebuilt automatically or explicitly using
++        [`model_rebuild()`][pydantic.main.BaseModel.model_rebuild].
+         """
+-        pass
+ 
+     def __class_getitem__(
+         cls, typevar_values: type[Any] | tuple[type[Any], ...]

@@ -1,0 +1,14 @@
+diff --git a/django/contrib/gis/db/models/functions.py b/django/contrib/gis/db/models/functions.py
+index 19da355d28b3..10272b7d68cc 100644
+--- a/django/contrib/gis/db/models/functions.py
++++ b/django/contrib/gis/db/models/functions.py
+@@ -195,8 +197,7 @@ def __init__(self, expression, bbox=False, crs=False, precision=8, **extra):
+             options = 1
+         elif crs:
+             options = 2
+-        if options:
+-            expressions.append(options)
++        expressions.append(options)
+         super().__init__(*expressions, **extra)
+ 
+     def as_oracle(self, compiler, connection, **extra_context):

@@ -1,0 +1,39 @@
+diff --git a/sklearn/linear_model/_quantile.py b/sklearn/linear_model/_quantile.py
+index 33451d8640bff..446d232958e8d 100644
+--- a/sklearn/linear_model/_quantile.py
++++ b/sklearn/linear_model/_quantile.py
+@@ -181,30 +181,18 @@ def fit(self, X, y, sample_weight=None):
+         # So we rescale the penalty term, which is equivalent.
+         alpha = np.sum(sample_weight) * self.alpha
+ 
+-        if self.solver in (
+-            "highs-ds",
+-            "highs-ipm",
+-            "highs",
+-        ) and sp_version < parse_version("1.6.0"):
+-            raise ValueError(
+-                f"Solver {self.solver} is only available "
+-                f"with scipy>=1.6.0, got {sp_version}"
+-            )
+-        else:
+-            solver = self.solver
+-
+-        if solver == "interior-point" and sp_version >= parse_version("1.11.0"):
++        if self.solver == "interior-point" and sp_version >= parse_version("1.11.0"):
+             raise ValueError(
+-                f"Solver {solver} is not anymore available in SciPy >= 1.11.0."
++                f"Solver {self.solver} is not anymore available in SciPy >= 1.11.0."
+             )
+ 
+-        if sparse.issparse(X) and solver not in ["highs", "highs-ds", "highs-ipm"]:
++        if sparse.issparse(X) and self.solver not in ["highs", "highs-ds", "highs-ipm"]:
+             raise ValueError(
+                 f"Solver {self.solver} does not support sparse X. "
+                 "Use solver 'highs' for example."
+             )
+         # make default solver more stable
+-        if self.solver_options is None and solver == "interior-point":
++        if self.solver_options is None and self.solver == "interior-point":
+             solver_options = {"lstsq": True}
+         else:
+             solver_options = self.solver_options

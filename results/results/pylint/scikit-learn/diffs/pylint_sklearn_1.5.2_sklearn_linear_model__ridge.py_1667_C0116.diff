@@ -1,0 +1,22 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -1659,7 +1674,7 @@ def _matmat(self, v):
+         return res
+ 
+ 
+-class _IdentityRegressor:
++class _IdentityRegressor(RegressorMixin, BaseEstimator):
+     """Fake regressor which will directly output the prediction."""
+ 
+     def decision_function(self, y_predict):
+@@ -1669,7 +1684,7 @@ def predict(self, y_predict):
+         return y_predict
+ 
+ 
+-class _IdentityClassifier(LinearClassifierMixin):
++class _IdentityClassifier(LinearClassifierMixin, BaseEstimator):
+     """Fake classifier which will directly output the prediction.
+ 
+     We inherit from LinearClassifierMixin to get the proper shape for the

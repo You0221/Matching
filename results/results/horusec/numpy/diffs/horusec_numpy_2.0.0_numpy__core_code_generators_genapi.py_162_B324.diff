@@ -1,0 +1,13 @@
+diff --git a/numpy/_core/code_generators/genapi.py b/numpy/_core/code_generators/genapi.py
+index 27e42bcb4c14..da2f8f636e59 100644
+--- a/numpy/_core/code_generators/genapi.py
++++ b/numpy/_core/code_generators/genapi.py
+@@ -159,7 +160,7 @@ def __str__(self):
+         return '%s%s %s(%s)' % (doccomment, self.return_type, self.name, argstr)
+ 
+     def api_hash(self):
+-        m = hashlib.md5()
++        m = hashlib.md5(usedforsecurity=False)
+         m.update(remove_whitespace(self.return_type))
+         m.update('\000')
+         m.update(self.name)

@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index fd5d68b37f7..4fe223c97c6 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -227,9 +248,6 @@ def wrapped_model_post_init(self: BaseModel, context: Any, /) -> None:
+             }
+ 
+             if config_wrapper.defer_build:
+-                # TODO we can also stop there if `__pydantic_fields_complete__` is False.
+-                # However, `set_model_fields()` is currently lenient and we don't have access to the `NameError`.
+-                # (which is useful as we can provide the name in the error message: `set_model_mock(cls, e.name)`)
+                 set_model_mocks(cls)
+             else:
+                 # Any operation that requires accessing the field infos instances should be put inside
+@@ -237,8 +255,8 @@ def wrapped_model_post_init(self: BaseModel, context: Any, /) -> None:
+                 complete_model_class(
+                     cls,
+                     config_wrapper,
++                    ns_resolver,
+                     raise_errors=False,
+-                    ns_resolver=ns_resolver,
+                     create_model_module=_create_model_module,
+                 )
+ 
+@@ -260,7 +278,7 @@ def wrapped_model_post_init(self: BaseModel, context: Any, /) -> None:
+             namespace.get('__annotations__', {}).clear()
+             return super().__new__(mcs, cls_name, bases, namespace, **kwargs)
+ 
+-    if not typing.TYPE_CHECKING:  # pragma: no branch
++    if not TYPE_CHECKING:  # pragma: no branch
+         # We put `__getattr__` in a non-TYPE_CHECKING block because otherwise, mypy allows arbitrary attribute access
+ 
+         def __getattr__(self, item: str) -> Any:

@@ -1,0 +1,12 @@
+diff --git a/django/http/request.py b/django/http/request.py
+index 4c27d576ba4b..986d4eee8904 100644
+--- a/django/http/request.py
++++ b/django/http/request.py
+@@ -732,7 +795,3 @@ def validate_host(host, allowed_hosts):
+     return any(
+         pattern == "*" or is_same_domain(host, pattern) for pattern in allowed_hosts
+     )
+-
+-
+-def parse_accept_header(header):
+-    return [MediaType(token) for token in header.split(",") if token.strip()]

@@ -1,0 +1,41 @@
+diff --git a/pandas/io/parsers/arrow_parser_wrapper.py b/pandas/io/parsers/arrow_parser_wrapper.py
+index 71bfb00a95b50..7fe5ecb0e54c2 100644
+--- a/pandas/io/parsers/arrow_parser_wrapper.py
++++ b/pandas/io/parsers/arrow_parser_wrapper.py
+@@ -1,26 +1,27 @@
+ from __future__ import annotations
+ 
+ from typing import TYPE_CHECKING
+-
+-from pandas._config import using_pyarrow_string_dtype
++import warnings
+ 
+ from pandas._libs import lib
+ from pandas.compat._optional import import_optional_dependency
++from pandas.errors import (
++    ParserError,
++    ParserWarning,
++)
++from pandas.util._exceptions import find_stack_level
+ 
++from pandas.core.dtypes.common import pandas_dtype
+ from pandas.core.dtypes.inference import is_integer
+ 
+-import pandas as pd
+-from pandas import DataFrame
+-
+-from pandas.io._util import (
+-    _arrow_dtype_mapping,
+-    arrow_string_types_mapper,
+-)
++from pandas.io._util import arrow_table_to_pandas
+ from pandas.io.parsers.base_parser import ParserBase
+ 
+ if TYPE_CHECKING:
+     from pandas._typing import ReadBuffer
+ 
++    from pandas import DataFrame
++
+ 
+ class ArrowParserWrapper(ParserBase):
+     """

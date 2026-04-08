@@ -1,0 +1,44 @@
+diff --git a/pandas/core/algorithms.py b/pandas/core/algorithms.py
+index 14dee202a9d8d..c6084880bea5d 100644
+--- a/pandas/core/algorithms.py
++++ b/pandas/core/algorithms.py
+@@ -921,15 +924,28 @@ def value_counts_internal(
+ 
+         else:
+             values = _ensure_arraylike(values, func_name="value_counts")
+-            keys, counts = value_counts_arraylike(values, dropna)
++            keys, counts, _ = value_counts_arraylike(values, dropna)
+             if keys.dtype == np.float16:
+                 keys = keys.astype(np.float32)
+ 
+             # For backwards compatibility, we let Index do its normal type
+             #  inference, _except_ for if if infers from object to bool.
+             idx = Index(keys)
+-            if idx.dtype == bool and keys.dtype == object:
++            if idx.dtype in [bool, "string"] and keys.dtype == object:
+                 idx = idx.astype(object)
++            elif (
++                idx.dtype != keys.dtype  # noqa: PLR1714  # # pylint: disable=R1714
++                and idx.dtype != "string"
++            ):
++                warnings.warn(
++                    # GH#56161
++                    "The behavior of value_counts with object-dtype is deprecated. "
++                    "In a future version, this will *not* perform dtype inference "
++                    "on the resulting index. To retain the old behavior, use "
++                    "`result.index = result.index.infer_objects()`",
++                    FutureWarning,
++                    stacklevel=find_stack_level(),
++                )
+             idx.name = index_name
+ 
+             result = Series(counts, index=idx, name=name, copy=False)
+@@ -946,7 +962,7 @@ def value_counts_internal(
+ # Called once from SparseArray, otherwise could be private
+ def value_counts_arraylike(
+     values: np.ndarray, dropna: bool, mask: npt.NDArray[np.bool_] | None = None
+-) -> tuple[ArrayLike, npt.NDArray[np.int64]]:
++) -> tuple[ArrayLike, npt.NDArray[np.int64], int]:
+     """
+     Parameters
+     ----------

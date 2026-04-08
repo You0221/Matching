@@ -1,0 +1,21 @@
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index 1d4947fb308c..23ad424c5c31 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -35,13 +34,13 @@ def check_programs(*programs):
+     for program in programs:
+         if find_command(program) is None:
+             raise CommandError(
+-                "Can't find %s. Make sure you have GNU gettext tools 0.15 or "
+-                "newer installed." % program
++                f"Can't find {program}. Make sure you have GNU gettext tools "
++                "0.19 or newer installed."
+             )
+ 
+ 
+ def is_valid_locale(locale):
+-    return re.match(r"^[a-z]+$", locale) or re.match(r"^[a-z]+_[A-Z].*$", locale)
++    return re.match(r"^[a-z]+$", locale) or re.match(r"^[a-z]+_[A-Z0-9].*$", locale)
+ 
+ 
+ @total_ordering

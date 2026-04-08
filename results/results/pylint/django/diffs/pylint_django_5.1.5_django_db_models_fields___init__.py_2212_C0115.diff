@@ -1,0 +1,22 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 796c4d23c458..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -2232,7 +2233,7 @@ def __init__(
+         self.default_validators = validators.ip_address_validators(
+             protocol, unpack_ipv4
+         )
+-        kwargs["max_length"] = 39
++        kwargs["max_length"] = MAX_IPV6_ADDRESS_LENGTH
+         super().__init__(verbose_name, name, *args, **kwargs)
+ 
+     def check(self, **kwargs):
+@@ -2259,7 +2260,7 @@ def deconstruct(self):
+             kwargs["unpack_ipv4"] = self.unpack_ipv4
+         if self.protocol != "both":
+             kwargs["protocol"] = self.protocol
+-        if kwargs.get("max_length") == 39:
++        if kwargs.get("max_length") == self.max_length:
+             del kwargs["max_length"]
+         return name, path, args, kwargs
+ 

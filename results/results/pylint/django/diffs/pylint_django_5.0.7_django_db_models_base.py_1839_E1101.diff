@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1851,7 +2048,7 @@ def _check_column_name_clashes(cls):
+         errors = []
+ 
+         for f in cls._meta.local_fields:
+-            _, column_name = f.get_attname_column()
++            column_name = f.column
+ 
+             # Ensure the column name is not already in use.
+             if column_name and column_name in used_column_names:

@@ -1,0 +1,27 @@
+diff --git a/lib/ansible/config/manager.py b/lib/ansible/config/manager.py
+index f4a308d58e471b..c4b0ffbc3624f9 100644
+--- a/lib/ansible/config/manager.py
++++ b/lib/ansible/config/manager.py
+@@ -368,16 +396,16 @@ def server_config_def(section, key, required, option_type):
+                 defs = dict((k, server_config_def(server_key, k, req, value_type)) for k, req, value_type in GALAXY_SERVER_DEF)
+                 self.initialize_plugin_configuration_definitions('galaxy_server', server_key, defs)
+ 
+-    def template_default(self, value, variables):
+-        if isinstance(value, string_types) and (value.startswith('{{') and value.endswith('}}')) and variables is not None:
++    def template_default(self, value, variables, key_name: str = '<unknown>'):
++        if isinstance(value, str) and (value.startswith('{{') and value.endswith('}}')) and variables is not None:
+             # template default values if possible
+             # NOTE: cannot use is_template due to circular dep
+             try:
+                 # FIXME: This really should be using an immutable sandboxed native environment, not just native environment
+-                t = NativeEnvironment().from_string(value)
+-                value = t.render(variables)
+-            except Exception:
+-                pass  # not templatable
++                template = NativeEnvironment().from_string(value)
++                value = template.render(variables)
++            except Exception as ex:
++                self._errors.append((f'Failed to template default for config {key_name}.', ex))
+         return value
+ 
+     def _read_config_yaml_file(self, yml_file):

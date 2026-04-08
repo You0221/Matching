@@ -1,0 +1,45 @@
+diff --git a/django/conf/__init__.py b/django/conf/__init__.py
+index 22f1eaba0677..5568d7cc83cf 100644
+--- a/django/conf/__init__.py
++++ b/django/conf/__init__.py
+@@ -217,40 +204,6 @@ def __init__(self, settings_module):
+             os.environ["TZ"] = self.TIME_ZONE
+             time.tzset()
+ 
+-        if self.is_overridden("DEFAULT_FILE_STORAGE"):
+-            if self.is_overridden("STORAGES"):
+-                raise ImproperlyConfigured(
+-                    "DEFAULT_FILE_STORAGE/STORAGES are mutually exclusive."
+-                )
+-            self.STORAGES = {
+-                **self.STORAGES,
+-                DEFAULT_STORAGE_ALIAS: {"BACKEND": self.DEFAULT_FILE_STORAGE},
+-            }
+-            warnings.warn(DEFAULT_FILE_STORAGE_DEPRECATED_MSG, RemovedInDjango51Warning)
+-
+-        if self.is_overridden("STATICFILES_STORAGE"):
+-            if self.is_overridden("STORAGES"):
+-                raise ImproperlyConfigured(
+-                    "STATICFILES_STORAGE/STORAGES are mutually exclusive."
+-                )
+-            self.STORAGES = {
+-                **self.STORAGES,
+-                STATICFILES_STORAGE_ALIAS: {"BACKEND": self.STATICFILES_STORAGE},
+-            }
+-            warnings.warn(STATICFILES_STORAGE_DEPRECATED_MSG, RemovedInDjango51Warning)
+-        # RemovedInDjango51Warning.
+-        if self.is_overridden("STORAGES"):
+-            setattr(
+-                self,
+-                "DEFAULT_FILE_STORAGE",
+-                self.STORAGES.get(DEFAULT_STORAGE_ALIAS, {}).get("BACKEND"),
+-            )
+-            setattr(
+-                self,
+-                "STATICFILES_STORAGE",
+-                self.STORAGES.get(STATICFILES_STORAGE_ALIAS, {}).get("BACKEND"),
+-            )
+-
+     def is_overridden(self, setting):
+         return setting in self._explicit_settings
+ 

@@ -1,0 +1,34 @@
+diff --git a/pandas/core/series.py b/pandas/core/series.py
+index 814a770b192bf..83eb545b9b681 100644
+--- a/pandas/core/series.py
++++ b/pandas/core/series.py
+@@ -599,23 +681,17 @@ def _constructor_expanddim(self) -> Callable[..., DataFrame]:
+         return DataFrame
+ 
+     def _expanddim_from_mgr(self, mgr, axes) -> DataFrame:
+-        # https://github.com/pandas-dev/pandas/pull/52132#issuecomment-1481491828
+-        #  This is a short-term implementation that will be replaced
+-        #  with self._constructor_expanddim._constructor_from_mgr(...)
+-        #  once downstream packages (geopandas) have had a chance to implement
+-        #  their own overrides.
+-        # error: "Callable[..., DataFrame]" has no attribute "_from_mgr"  [attr-defined]
+-        from pandas import DataFrame
++        from pandas.core.frame import DataFrame
+ 
+         return DataFrame._from_mgr(mgr, axes=mgr.axes)
+ 
+     def _constructor_expanddim_from_mgr(self, mgr, axes):
+-        df = self._expanddim_from_mgr(mgr, axes)
+-        if type(self) is Series:
+-            # fastpath avoiding constructor
+-            return df
++        from pandas.core.frame import DataFrame
++
++        if self._constructor_expanddim is DataFrame:
++            return self._expanddim_from_mgr(mgr, axes)
+         assert axes is mgr.axes
+-        return self._constructor_expanddim(df, copy=False)
++        return self._constructor_expanddim(mgr)
+ 
+     # types
+     @property

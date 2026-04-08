@@ -1,0 +1,86 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index 3619fdff3c7..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -372,13 +409,24 @@ def validate_python(
+         Returns:
+             The validated object.
+         """
+-        return self.validator.validate_python(object, strict=strict, from_attributes=from_attributes, context=context)
++        return self.validator.validate_python(
++            object,
++            strict=strict,
++            from_attributes=from_attributes,
++            context=context,
++            allow_partial=experimental_allow_partial,
++        )
+ 
+-    @_frame_depth(1)
+     def validate_json(
+-        self, data: str | bytes, /, *, strict: bool | None = None, context: dict[str, Any] | None = None
++        self,
++        data: str | bytes | bytearray,
++        /,
++        *,
++        strict: bool | None = None,
++        context: dict[str, Any] | None = None,
++        experimental_allow_partial: bool | Literal['off', 'on', 'trailing-strings'] = False,
+     ) -> T:
+-        """Usage docs: https://docs.pydantic.dev/2.9/concepts/json/#json-parsing
++        """Usage docs: https://docs.pydantic.dev/2.10/concepts/json/#json-parsing
+ 
+         Validate a JSON string or bytes against the model.
+ 
+@@ -386,27 +434,47 @@ def validate_json(
+             data: The JSON data to validate against the model.
+             strict: Whether to strictly check types.
+             context: Additional context to use during validation.
++            experimental_allow_partial: **Experimental** whether to enable
++                [partial validation](../concepts/experimental.md#partial-validation), e.g. to process streams.
++                * False / 'off': Default behavior, no partial validation.
++                * True / 'on': Enable partial validation.
++                * 'trailing-strings': Enable partial validation and allow trailing strings in the input.
+ 
+         Returns:
+             The validated object.
+         """
+-        return self.validator.validate_json(data, strict=strict, context=context)
++        return self.validator.validate_json(
++            data, strict=strict, context=context, allow_partial=experimental_allow_partial
++        )
+ 
+-    @_frame_depth(1)
+-    def validate_strings(self, obj: Any, /, *, strict: bool | None = None, context: dict[str, Any] | None = None) -> T:
++    def validate_strings(
++        self,
++        obj: Any,
++        /,
++        *,
++        strict: bool | None = None,
++        context: dict[str, Any] | None = None,
++        experimental_allow_partial: bool | Literal['off', 'on', 'trailing-strings'] = False,
++    ) -> T:
+         """Validate object contains string data against the model.
+ 
+         Args:
+             obj: The object contains string data to validate.
+             strict: Whether to strictly check types.
+             context: Additional context to use during validation.
++            experimental_allow_partial: **Experimental** whether to enable
++                [partial validation](../concepts/experimental.md#partial-validation), e.g. to process streams.
++                * False / 'off': Default behavior, no partial validation.
++                * True / 'on': Enable partial validation.
++                * 'trailing-strings': Enable partial validation and allow trailing strings in the input.
+ 
+         Returns:
+             The validated object.
+         """
+-        return self.validator.validate_strings(obj, strict=strict, context=context)
++        return self.validator.validate_strings(
++            obj, strict=strict, context=context, allow_partial=experimental_allow_partial
++        )
+ 
+-    @_frame_depth(1)
+     def get_default_value(self, *, strict: bool | None = None, context: dict[str, Any] | None = None) -> Some[T] | None:
+         """Get the default value for the wrapped type.
+ 

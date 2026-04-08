@@ -1,0 +1,12 @@
+diff --git a/hacking/update-sanity-requirements.py b/hacking/update-sanity-requirements.py
+index 997d6dbf87adfd..aaaa803cde891e 100755
+--- a/hacking/update-sanity-requirements.py
++++ b/hacking/update-sanity-requirements.py
+@@ -52,7 +52,6 @@ def freeze_requirements(self) -> None:
+             if pip_freeze.stdout:
+                 raise Exception(f'Initial virtual environment is not empty:\n{pip_freeze.stdout}')
+ 
+-            subprocess.run(pip + ['install', 'wheel'], env=env, check=True)  # make bdist_wheel available during pip install
+             subprocess.run(pip + ['install', '-r', self.source_path], env=env, check=True)
+ 
+             freeze_options = ['--all']

@@ -1,0 +1,28 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index 8779f72b74b..fc4bbba6841 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -4,17 +4,19 @@
+ 
+ import dataclasses
+ import sys
++import warnings
+ from functools import partialmethod
+ from types import FunctionType
+-from typing import TYPE_CHECKING, Any, Callable, TypeVar, Union, cast, overload
++from typing import TYPE_CHECKING, Annotated, Any, Callable, Literal, TypeVar, Union, cast, overload
+ 
+ from pydantic_core import PydanticUndefined, core_schema
+-from pydantic_core import core_schema as _core_schema
+-from typing_extensions import Annotated, Literal, Self, TypeAlias
++from typing_extensions import Self, TypeAlias
+ 
+-from ._internal import _core_metadata, _decorators, _generics, _internal_dataclass
++from ._internal import _decorators, _generics, _internal_dataclass
+ from .annotated_handlers import GetCoreSchemaHandler
+ from .errors import PydanticUserError
++from .version import version_short
++from .warnings import ArbitraryTypeWarning, PydanticDeprecatedSince212
+ 
+ if sys.version_info < (3, 11):
+     from typing_extensions import Protocol

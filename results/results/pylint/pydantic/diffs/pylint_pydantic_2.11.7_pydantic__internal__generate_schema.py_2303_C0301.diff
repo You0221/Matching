@@ -1,0 +1,52 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index c7efbf5b209..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2318,11 +2320,34 @@ def _apply_single_annotation_json_schema(
+             )
+         return schema
+ 
++    def _get_unsupported_field_info_attributes(self, field_info: FieldInfo) -> list[tuple[str, Any]]:
++        """Get the list of unsupported `FieldInfo` attributes when not directly used in `Annotated` for field annotations."""
++        unused_metadata: list[tuple[str, Any]] = []
++        for unused_metadata_name, unset_value in UNSUPPORTED_STANDALONE_FIELDINFO_ATTRIBUTES:
++            if (
++                (unused_metadata_value := getattr(field_info, unused_metadata_name)) is not unset_value
++                # `default` and `default_factory` can still be used with a type adapter, so only include them
++                # if used with a model-like class:
++                and (
++                    unused_metadata_name not in ('default', 'default_factory')
++                    or self.model_type_stack.get() is not None
++                )
++                # Setting `alias` will set `validation/serialization_alias` as well, so we want to avoid duplicate warnings:
++                and (
++                    unused_metadata_name not in ('validation_alias', 'serialization_alias')
++                    or 'alias' not in field_info._attributes_set
++                )
++            ):
++                unused_metadata.append((unused_metadata_name, unused_metadata_value))
++
++        return unused_metadata
++
+     def _get_wrapped_inner_schema(
+         self,
+         get_inner_schema: GetCoreSchemaHandler,
+         annotation: Any,
+         pydantic_js_annotation_functions: list[GetJsonSchemaFunction],
++        check_unsupported_field_info_attributes: bool = False,
+     ) -> CallbackGetCoreSchemaHandler:
+         annotation_get_schema: GetCoreSchemaFunction | None = getattr(annotation, '__get_pydantic_core_schema__', None)
+ 
+@@ -2331,7 +2356,11 @@ def new_handler(source: Any) -> core_schema.CoreSchema:
+                 schema = annotation_get_schema(source, get_inner_schema)
+             else:
+                 schema = get_inner_schema(source)
+-                schema = self._apply_single_annotation(schema, annotation)
++                schema = self._apply_single_annotation(
++                    schema,
++                    annotation,
++                    check_unsupported_field_info_attributes=check_unsupported_field_info_attributes,
++                )
+                 schema = self._apply_single_annotation_json_schema(schema, annotation)
+ 
+             metadata_js_function = _extract_get_pydantic_json_schema(annotation)

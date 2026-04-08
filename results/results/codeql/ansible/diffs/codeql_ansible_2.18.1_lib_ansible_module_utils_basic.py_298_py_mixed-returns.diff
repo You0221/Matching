@@ -1,0 +1,78 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 19dbb1d15415ae..731f8ded7d1002 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -296,7 +314,7 @@ def heuristic_log_sanitize(data, no_log_values=None):
+ 
+ 
+ def _load_params():
+-    ''' read the modules parameters and store them globally.
++    """ read the modules parameters and store them globally.
+ 
+     This function may be needed for certain very dynamic custom modules which
+     want to process the parameters that are being handed the module.  Since
+@@ -305,42 +323,32 @@ def _load_params():
+     will try not to break it gratuitously.  It is certainly more future-proof
+     to call this function and consume its outputs than to implement the logic
+     inside it as a copy in your own code.
+-    '''
+-    global _ANSIBLE_ARGS
+-    if _ANSIBLE_ARGS is not None:
+-        buffer = _ANSIBLE_ARGS
+-    else:
+-        # debug overrides to read args from file or cmdline
++    """
++    global _ANSIBLE_ARGS, _ANSIBLE_PROFILE
+ 
+-        # Avoid tracebacks when locale is non-utf8
+-        # We control the args and we pass them as utf8
+-        if len(sys.argv) > 1:
+-            if os.path.isfile(sys.argv[1]):
+-                fd = open(sys.argv[1], 'rb')
+-                buffer = fd.read()
+-                fd.close()
+-            else:
+-                buffer = sys.argv[1].encode('utf-8', errors='surrogateescape')
+-        # default case, read from stdin
+-        else:
+-            buffer = sys.stdin.buffer.read()
+-        _ANSIBLE_ARGS = buffer
++    if _ANSIBLE_ARGS is None:
++        _ANSIBLE_ARGS, _ANSIBLE_PROFILE = _debugging.load_params()
+ 
+-    try:
+-        params = json.loads(buffer.decode('utf-8'))
+-    except ValueError:
+-        # This helper is used too early for fail_json to work.
+-        print('\n{"msg": "Error: Module unable to decode stdin/parameters as valid JSON. Unable to parse what parameters were passed", "failed": true}')
+-        sys.exit(1)
++    buffer = _ANSIBLE_ARGS
++    profile = _ANSIBLE_PROFILE
++
++    if not profile:
++        raise Exception("No serialization profile was specified.")
+ 
+     try:
+-        return params['ANSIBLE_MODULE_ARGS']
+-    except KeyError:
+-        # This helper does not have access to fail_json so we have to print
+-        # json output on our own.
+-        print('\n{"msg": "Error: Module unable to locate ANSIBLE_MODULE_ARGS in JSON data from stdin. Unable to figure out what parameters were passed", '
+-              '"failed": true}')
+-        sys.exit(1)
++        decoder = _json.get_module_decoder(profile, _json.Direction.CONTROLLER_TO_MODULE)
++        params = json.loads(buffer.decode(), cls=decoder)
++    except Exception as ex:
++        raise Exception("Failed to decode JSON module parameters.") from ex
++
++    if (ansible_module_args := params.get('ANSIBLE_MODULE_ARGS', ...)) is ...:
++        raise Exception("ANSIBLE_MODULE_ARGS not provided.")
++
++    global _PARSED_MODULE_ARGS
++
++    _PARSED_MODULE_ARGS = copy.deepcopy(ansible_module_args)  # AnsibleModule mutates the returned dict, so a copy is needed
++
++    return ansible_module_args
+ 
+ 
+ def missing_required_lib(library, reason=None, url=None):

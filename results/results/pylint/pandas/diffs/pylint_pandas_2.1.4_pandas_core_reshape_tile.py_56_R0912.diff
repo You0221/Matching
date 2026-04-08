@@ -1,0 +1,78 @@
+diff --git a/pandas/core/reshape/tile.py b/pandas/core/reshape/tile.py
+index 43eea7c669ce7..2b0c6fbb8e3bf 100644
+--- a/pandas/core/reshape/tile.py
++++ b/pandas/core/reshape/tile.py
+@@ -243,66 +239,33 @@ def cut(
+     # NOTE: this binning code is changed a bit from histogram for var(x) == 0
+ 
+     original = x
+-    x = _preprocess_for_cut(x)
+-    x, dtype = _coerce_to_type(x)
++    x_idx = _preprocess_for_cut(x)
++    x_idx, _ = _coerce_to_type(x_idx)
+ 
+     if not np.iterable(bins):
+-        if is_scalar(bins) and bins < 1:
+-            raise ValueError("`bins` should be a positive integer.")
+-
+-        sz = x.size
+-
+-        if sz == 0:
+-            raise ValueError("Cannot cut empty array")
+-
+-        rng = (nanops.nanmin(x), nanops.nanmax(x))
+-        mn, mx = (mi + 0.0 for mi in rng)
+-
+-        if np.isinf(mn) or np.isinf(mx):
+-            # GH 24314
+-            raise ValueError(
+-                "cannot specify integer `bins` when input data contains infinity"
+-            )
+-        if mn == mx:  # adjust end points before binning
+-            mn -= 0.001 * abs(mn) if mn != 0 else 0.001
+-            mx += 0.001 * abs(mx) if mx != 0 else 0.001
+-            bins = np.linspace(mn, mx, bins + 1, endpoint=True)
+-        else:  # adjust end points after binning
+-            bins = np.linspace(mn, mx, bins + 1, endpoint=True)
+-            adj = (mx - mn) * 0.001  # 0.1% of the range
+-            if right:
+-                bins[0] -= adj
+-            else:
+-                bins[-1] += adj
++        bins = _nbins_to_bins(x_idx, bins, right)
+ 
+     elif isinstance(bins, IntervalIndex):
+         if bins.is_overlapping:
+             raise ValueError("Overlapping IntervalIndex is not accepted.")
+ 
+     else:
+-        if isinstance(getattr(bins, "dtype", None), DatetimeTZDtype):
+-            bins = np.asarray(bins, dtype=DT64NS_DTYPE)
+-        else:
+-            bins = np.asarray(bins)
+-        bins = _convert_bin_to_numeric_type(bins, dtype)
+-
+-        # GH 26045: cast to float64 to avoid an overflow
+-        if (np.diff(bins.astype("float64")) < 0).any():
++        bins = Index(bins)
++        if not bins.is_monotonic_increasing:
+             raise ValueError("bins must increase monotonically.")
+ 
+     fac, bins = _bins_to_cuts(
+-        x,
++        x_idx,
+         bins,
+         right=right,
+         labels=labels,
+         precision=precision,
+         include_lowest=include_lowest,
+-        dtype=dtype,
+         duplicates=duplicates,
+         ordered=ordered,
+     )
+ 
+-    return _postprocess_for_cut(fac, bins, retbins, dtype, original)
++    return _postprocess_for_cut(fac, bins, retbins, original)
+ 
+ 
+ def qcut(

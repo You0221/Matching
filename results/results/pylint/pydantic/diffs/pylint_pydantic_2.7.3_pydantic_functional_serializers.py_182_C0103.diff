@@ -1,0 +1,39 @@
+diff --git a/pydantic/functional_serializers.py b/pydantic/functional_serializers.py
+index 1a9e5563637..d1579bbd8ae 100644
+--- a/pydantic/functional_serializers.py
++++ b/pydantic/functional_serializers.py
+@@ -175,23 +177,19 @@ def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaH
+ 
+ 
+ if TYPE_CHECKING:
+-    _PartialClsOrStaticMethod: TypeAlias = Union[classmethod[Any, Any, Any], staticmethod[Any, Any], partialmethod[Any]]
+-    _PlainSerializationFunction = Union[_core_schema.SerializerFunction, _PartialClsOrStaticMethod]
+-    _WrapSerializationFunction = Union[_core_schema.WrapSerializerFunction, _PartialClsOrStaticMethod]
+-    _PlainSerializeMethodType = TypeVar('_PlainSerializeMethodType', bound=_PlainSerializationFunction)
+-    _WrapSerializeMethodType = TypeVar('_WrapSerializeMethodType', bound=_WrapSerializationFunction)
++    _Partial: TypeAlias = 'partial[Any] | partialmethod[Any]'
+ 
++    FieldPlainSerializer: TypeAlias = 'core_schema.SerializerFunction | _Partial'
++    """A field serializer method or function in `plain` mode."""
+ 
+-@overload
+-def field_serializer(
+-    field: str,
+-    /,
+-    *fields: str,
+-    return_type: Any = ...,
+-    when_used: Literal['always', 'unless-none', 'json', 'json-unless-none'] = ...,
+-    check_fields: bool | None = ...,
+-) -> Callable[[_PlainSerializeMethodType], _PlainSerializeMethodType]:
+-    ...
++    FieldWrapSerializer: TypeAlias = 'core_schema.WrapSerializerFunction | _Partial'
++    """A field serializer method or function in `wrap` mode."""
++
++    FieldSerializer: TypeAlias = 'FieldPlainSerializer | FieldWrapSerializer'
++    """A field serializer method or function."""
++
++    _FieldPlainSerializerT = TypeVar('_FieldPlainSerializerT', bound=FieldPlainSerializer)
++    _FieldWrapSerializerT = TypeVar('_FieldWrapSerializerT', bound=FieldWrapSerializer)
+ 
+ 
+ @overload

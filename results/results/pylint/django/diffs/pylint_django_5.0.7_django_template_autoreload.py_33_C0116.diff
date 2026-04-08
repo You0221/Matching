@@ -1,0 +1,13 @@
+diff --git a/django/template/autoreload.py b/django/template/autoreload.py
+index 01dd564da4a8..adf463bb6627 100644
+--- a/django/template/autoreload.py
++++ b/django/template/autoreload.py
+@@ -39,7 +39,7 @@ def reset_loaders():
+         for loader in backend.engine.template_loaders:
+             loader.reset()
+ 
+-    backend = get_default_renderer().engine
++    backend = getattr(get_default_renderer(), "engine", None)
+     if isinstance(backend, DjangoTemplates):
+         for loader in backend.engine.template_loaders:
+             loader.reset()

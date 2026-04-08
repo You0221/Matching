@@ -1,0 +1,17 @@
+diff --git a/django/views/generic/list.py b/django/views/generic/list.py
+index 830a8df630d5..8ed92920c4b3 100644
+--- a/django/views/generic/list.py
++++ b/django/views/generic/list.py
+@@ -148,7 +148,11 @@ def get_context_data(self, *, object_list=None, **kwargs):
+ 
+ 
+ class BaseListView(MultipleObjectMixin, View):
+-    """A base view for displaying a list of objects."""
++    """
++    Base view for displaying a list of objects.
++
++    This requires subclassing to provide a response mixin.
++    """
+ 
+     def get(self, request, *args, **kwargs):
+         self.object_list = self.get_queryset()

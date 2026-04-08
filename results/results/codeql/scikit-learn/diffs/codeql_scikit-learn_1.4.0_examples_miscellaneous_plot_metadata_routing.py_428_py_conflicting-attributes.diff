@@ -1,0 +1,185 @@
+diff --git a/examples/miscellaneous/plot_metadata_routing.py b/examples/miscellaneous/plot_metadata_routing.py
+index 9984bb6183348..634ca304d125d 100644
+--- a/examples/miscellaneous/plot_metadata_routing.py
++++ b/examples/miscellaneous/plot_metadata_routing.py
+@@ -373,61 +415,68 @@ def predict(self, X, **predict_params):
+ 
+ # %%
+ # - No metadata requested
+-est = RouterConsumerClassifier(estimator=ExampleClassifier())
+-print_routing(est)
++meta_est = RouterConsumerClassifier(estimator=ExampleClassifier())
++print_routing(meta_est)
+ 
+ 
+ # %%
+-# - ``sample_weight`` requested by underlying estimator
+-est = RouterConsumerClassifier(
++# - ``sample_weight`` requested by sub-estimator
++meta_est = RouterConsumerClassifier(
+     estimator=ExampleClassifier().set_fit_request(sample_weight=True)
+ )
+-print_routing(est)
++print_routing(meta_est)
+ 
+ # %%
+ # - ``sample_weight`` requested by meta-estimator
+-est = RouterConsumerClassifier(estimator=ExampleClassifier()).set_fit_request(
++meta_est = RouterConsumerClassifier(estimator=ExampleClassifier()).set_fit_request(
+     sample_weight=True
+ )
+-print_routing(est)
++print_routing(meta_est)
+ 
+ # %%
+ # Note the difference in the requested metadata representations above.
+ #
+-# - We can also alias the metadata to pass different values to them:
++# - We can also alias the metadata to pass different values to the fit methods
++#   of the meta- and the sub-estimator:
+ 
+-est = RouterConsumerClassifier(
++meta_est = RouterConsumerClassifier(
+     estimator=ExampleClassifier().set_fit_request(sample_weight="clf_sample_weight"),
+ ).set_fit_request(sample_weight="meta_clf_sample_weight")
+-print_routing(est)
++print_routing(meta_est)
+ 
+ # %%
+ # However, ``fit`` of the meta-estimator only needs the alias for the
+-# sub-estimator, since it doesn't validate and route its own required metadata:
+-est.fit(X, y, sample_weight=my_weights, clf_sample_weight=my_other_weights)
++# sub-estimator and addresses their own sample weight as `sample_weight`, since
++# it doesn't validate and route its own required metadata:
++meta_est.fit(X, y, sample_weight=my_weights, clf_sample_weight=my_other_weights)
+ 
+ # %%
+-# - Alias only on the sub-estimator. This is useful if we don't want the
+-#   meta-estimator to use the metadata, and we only want the metadata to be used
+-#   by the sub-estimator.
+-est = RouterConsumerClassifier(
++# - Alias only on the sub-estimator:
++#
++# This is useful when we don't want the meta-estimator to use the metadata, but
++# the sub-estimator should.
++meta_est = RouterConsumerClassifier(
+     estimator=ExampleClassifier().set_fit_request(sample_weight="aliased_sample_weight")
+-).set_fit_request(sample_weight=True)
+-print_routing(est)
+-
++)
++print_routing(meta_est)
++# %%
++# The meta-estimator cannot use `aliased_sample_weight`, because it expects
++# it passed as `sample_weight`. This would apply even if
++# `set_fit_request(sample_weight=True)` was set on it.
+ 
+ # %%
+ # Simple Pipeline
+ # ---------------
+-# A slightly more complicated use-case is a meta-estimator which does something
+-# similar to the :class:`~pipeline.Pipeline`. Here is a meta-estimator, which
+-# accepts a transformer and a classifier, and applies the transformer before
+-# running the classifier.
++# A slightly more complicated use-case is a meta-estimator resembling a
++# :class:`~pipeline.Pipeline`. Here is a meta-estimator, which accepts a
++# transformer and a classifier. When calling its `fit` method, it applies the
++# transformer's `fit` and `transform` before running the classifier on the
++# transformed data. Upon `predict`, it applies the transformer's `transform`
++# before predicting with the classifier's `predict` method on the transformed
++# new data.
+ 
+ 
+ class SimplePipeline(ClassifierMixin, BaseEstimator):
+-    _required_parameters = ["estimator"]
+-
+     def __init__(self, transformer, classifier):
+         self.transformer = transformer
+         self.classifier = classifier
+@@ -435,48 +484,66 @@ def __init__(self, transformer, classifier):
+     def get_metadata_routing(self):
+         router = (
+             MetadataRouter(owner=self.__class__.__name__)
++            # We add the routing for the transformer.
+             .add(
+                 transformer=self.transformer,
+                 method_mapping=MethodMapping()
+-                .add(callee="fit", caller="fit")
+-                .add(callee="transform", caller="fit")
+-                .add(callee="transform", caller="predict"),
++                # The metadata is routed such that it retraces how
++                # `SimplePipeline` internally calls the transformer's `fit` and
++                # `transform` methods in its own methods (`fit` and `predict`).
++                .add(caller="fit", callee="fit")
++                .add(caller="fit", callee="transform")
++                .add(caller="predict", callee="transform"),
++            )
++            # We add the routing for the classifier.
++            .add(
++                classifier=self.classifier,
++                method_mapping=MethodMapping()
++                .add(caller="fit", callee="fit")
++                .add(caller="predict", callee="predict"),
+             )
+-            .add(classifier=self.classifier, method_mapping="one-to-one")
+         )
+         return router
+ 
+     def fit(self, X, y, **fit_params):
+-        params = process_routing(self, "fit", **fit_params)
++        routed_params = process_routing(self, "fit", **fit_params)
+ 
+-        self.transformer_ = clone(self.transformer).fit(X, y, **params.transformer.fit)
+-        X_transformed = self.transformer_.transform(X, **params.transformer.transform)
++        self.transformer_ = clone(self.transformer).fit(
++            X, y, **routed_params.transformer.fit
++        )
++        X_transformed = self.transformer_.transform(
++            X, **routed_params.transformer.transform
++        )
+ 
+         self.classifier_ = clone(self.classifier).fit(
+-            X_transformed, y, **params.classifier.fit
++            X_transformed, y, **routed_params.classifier.fit
+         )
+         return self
+ 
+     def predict(self, X, **predict_params):
+-        params = process_routing(self, "predict", **predict_params)
++        routed_params = process_routing(self, "predict", **predict_params)
+ 
+-        X_transformed = self.transformer_.transform(X, **params.transformer.transform)
+-        return self.classifier_.predict(X_transformed, **params.classifier.predict)
++        X_transformed = self.transformer_.transform(
++            X, **routed_params.transformer.transform
++        )
++        return self.classifier_.predict(
++            X_transformed, **routed_params.classifier.predict
++        )
+ 
+ 
+ # %%
+-# Note the usage of :class:`~utils.metadata_routing.MethodMapping` to declare
+-# which methods of the child estimator (callee) are used in which methods of
+-# the meta estimator (caller). As you can see, we use the transformer's
+-# ``transform`` and ``fit`` methods in ``fit``, and its ``transform`` method in
+-# ``predict``, and that's what you see implemented in the routing structure of
+-# the pipeline class.
++# Note the usage of :class:`~utils.metadata_routing.MethodMapping` to
++# declare which methods of the child estimator (callee) are used in which
++# methods of the meta estimator (caller). As you can see, `SimplePipeline` uses
++# the transformer's ``transform`` and ``fit`` methods in ``fit``, and its
++# ``transform`` method in ``predict``, and that's what you see implemented in
++# the routing structure of the pipeline class.
+ #
+ # Another difference in the above example with the previous ones is the usage
+ # of :func:`~utils.metadata_routing.process_routing`, which processes the input
+-# parameters, does the required validation, and returns the `params` which we
+-# had created in previous examples. This reduces the boilerplate code a
+-# developer needs to write in each meta-estimator's method. Developers are
++# parameters, does the required validation, and returns the `routed_params`
++# which we had created in previous examples. This reduces the boilerplate code
++# a developer needs to write in each meta-estimator's method. Developers are
+ # strongly recommended to use this function unless there is a good reason
+ # against it.
+ #

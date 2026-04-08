@@ -1,0 +1,26 @@
+diff --git a/numpy/f2py/diagnose.py b/numpy/f2py/diagnose.py
+index 86d7004abad4..7eb1697cc787 100644
+--- a/numpy/f2py/diagnose.py
++++ b/numpy/f2py/diagnose.py
+@@ -4,19 +4,13 @@
+ import tempfile
+ 
+ 
+-def run_command(cmd):
+-    print('Running %r:' % (cmd))
+-    os.system(cmd)
+-    print('------')
+-
+-
+ def run():
+     _path = os.getcwd()
+     os.chdir(tempfile.gettempdir())
+     print('------')
+-    print('os.name=%r' % (os.name))
++    print(f'os.name={os.name!r}')
+     print('------')
+-    print('sys.platform=%r' % (sys.platform))
++    print(f'sys.platform={sys.platform!r}')
+     print('------')
+     print('sys.version:')
+     print(sys.version)

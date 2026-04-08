@@ -1,0 +1,12 @@
+diff --git a/pydantic/_internal/_schema_generation_shared.py b/pydantic/_internal/_schema_generation_shared.py
+index 2cf01c669f1..b231a82e196 100644
+--- a/pydantic/_internal/_schema_generation_shared.py
++++ b/pydantic/_internal/_schema_generation_shared.py
+@@ -12,6 +12,7 @@
+     from ..json_schema import GenerateJsonSchema, JsonSchemaValue
+     from ._core_utils import CoreSchemaOrField
+     from ._generate_schema import GenerateSchema
++    from ._namespace_utils import NamespacesTuple
+ 
+     GetJsonSchemaFunction = Callable[[CoreSchemaOrField, GetJsonSchemaHandler], JsonSchemaValue]
+     HandlerOverride = Callable[[CoreSchemaOrField], JsonSchemaValue]

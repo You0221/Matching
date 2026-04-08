@@ -1,0 +1,29 @@
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index b18ef553695e..266a3efadcc4 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -41,6 +41,7 @@ def can_reduce_through(self, operation, app_label):
+ class CreateModel(ModelOperation):
+     """Create a model's table."""
+ 
++    category = OperationCategory.ADDITION
+     serialization_expand_args = ["fields", "options", "managers"]
+ 
+     def __init__(self, name, fields, options=None, bases=None, managers=None):
+@@ -55,11 +56,11 @@ def __init__(self, name, fields, options=None, bases=None, managers=None):
+         _check_for_duplicates(
+             "bases",
+             (
+-                base._meta.label_lower
+-                if hasattr(base, "_meta")
+-                else base.lower()
+-                if isinstance(base, str)
+-                else base
++                (
++                    base._meta.label_lower
++                    if hasattr(base, "_meta")
++                    else base.lower() if isinstance(base, str) else base
++                )
+                 for base in self.bases
+             ),
+         )

@@ -1,0 +1,34 @@
+diff --git a/lib/ansible/modules/dnf.py b/lib/ansible/modules/dnf.py
+index 593f006eb86c0b..c9ddbb5ae5e837 100644
+--- a/lib/ansible/modules/dnf.py
++++ b/lib/ansible/modules/dnf.py
+@@ -1136,25 +1106,11 @@ def ensure(self):
+                         # Environment is already uninstalled.
+                         pass
+ 
+-                installed = self.base.sack.query().installed()
+                 for pkg_spec in pkg_specs:
+-                    # short-circuit installed check for wildcard matching
+-                    if '*' in pkg_spec:
+-                        try:
+-                            self.base.remove(pkg_spec)
+-                        except dnf.exceptions.MarkingError as e:
+-                            is_failure, handled_remove_error = self._sanitize_dnf_error_msg_remove(pkg_spec, to_native(e))
+-                            if is_failure:
+-                                failure_response['failures'].append('{0} - {1}'.format(pkg_spec, to_native(e)))
+-                            else:
+-                                response['results'].append(handled_remove_error)
+-                        continue
+-
+-                    installed_pkg = dnf.subject.Subject(pkg_spec).get_best_query(
+-                        sack=self.base.sack).installed().run()
+-
+-                    for pkg in installed_pkg:
+-                        self.base.remove(str(pkg))
++                    try:
++                        self.base.remove(pkg_spec)
++                    except dnf.exceptions.MarkingError as e:
++                        response['results'].append(f"{e.value}: {pkg_spec}")
+ 
+                 # Like the dnf CLI we want to allow recursive removal of dependent
+                 # packages

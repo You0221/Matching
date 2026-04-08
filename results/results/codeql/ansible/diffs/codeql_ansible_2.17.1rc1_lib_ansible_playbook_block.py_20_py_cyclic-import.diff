@@ -1,0 +1,14 @@
+diff --git a/lib/ansible/playbook/block.py b/lib/ansible/playbook/block.py
+index 9c82ed27900e9a..81a2197e9de5d5 100644
+--- a/lib/ansible/playbook/block.py
++++ b/lib/ansible/playbook/block.py
+@@ -17,8 +17,8 @@
+ 
+ from __future__ import annotations
+ 
+-import ansible.constants as C
+ from ansible.errors import AnsibleParserError
++from ansible.module_utils.common.sentinel import Sentinel
+ from ansible.playbook.attribute import NonInheritableFieldAttribute
+ from ansible.playbook.base import Base
+ from ansible.playbook.conditional import Conditional

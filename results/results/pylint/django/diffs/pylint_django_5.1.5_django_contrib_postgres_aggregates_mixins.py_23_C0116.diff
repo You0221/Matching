@@ -1,0 +1,20 @@
+diff --git a/django/contrib/postgres/aggregates/mixins.py b/django/contrib/postgres/aggregates/mixins.py
+index d6ff535158db..6af43a7fea23 100644
+--- a/django/contrib/postgres/aggregates/mixins.py
++++ b/django/contrib/postgres/aggregates/mixins.py
+@@ -25,12 +40,12 @@ def set_source_expressions(self, exprs):
+         return super().set_source_expressions(exprs)
+ 
+     def as_sql(self, compiler, connection):
+-        *source_exprs, filtering_expr, ordering_expr = self.get_source_expressions()
++        *source_exprs, filtering_expr, order_by_expr = self.get_source_expressions()
+ 
+         order_by_sql = ""
+         order_by_params = []
+-        if ordering_expr is not None:
+-            order_by_sql, order_by_params = compiler.compile(ordering_expr)
++        if order_by_expr is not None:
++            order_by_sql, order_by_params = compiler.compile(order_by_expr)
+ 
+         filter_params = []
+         if filtering_expr is not None:

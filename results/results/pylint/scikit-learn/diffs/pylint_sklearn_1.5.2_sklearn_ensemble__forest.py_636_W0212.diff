@@ -1,0 +1,26 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index 6b1b842f5367b..5c2152f34e93d 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -634,16 +631,17 @@ def _validate_X_predict(self, X):
+         Validate X whenever one tries to predict, apply, predict_proba."""
+         check_is_fitted(self)
+         if self.estimators_[0]._support_missing_values(X):
+-            force_all_finite = "allow-nan"
++            ensure_all_finite = "allow-nan"
+         else:
+-            force_all_finite = True
++            ensure_all_finite = True
+ 
+-        X = self._validate_data(
++        X = validate_data(
++            self,
+             X,
+             dtype=DTYPE,
+             accept_sparse="csr",
+             reset=False,
+-            force_all_finite=force_all_finite,
++            ensure_all_finite=ensure_all_finite,
+         )
+         if issparse(X) and (X.indices.dtype != np.intc or X.indptr.dtype != np.intc):
+             raise ValueError("No support for np.int64 index based sparse matrices")

@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index c5c940bed6c39..cfef023692d68 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -14,6 +14,7 @@
+ 
+ from ..._loss.loss import HalfSquaredError
+ from ...exceptions import ConvergenceWarning
++from ...utils.fixes import _get_additional_lbfgs_options_dict
+ from ...utils.optimize import _check_optimize_result
+ from .._linear_loss import LinearModelLoss
+ 

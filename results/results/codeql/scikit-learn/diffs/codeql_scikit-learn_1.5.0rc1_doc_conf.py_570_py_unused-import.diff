@@ -1,0 +1,17 @@
+diff --git a/doc/conf.py b/doc/conf.py
+index 9d77fc68d0f71..71c9ec5bb60c3 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -566,8 +772,10 @@ def reset_sklearn_config(gallery_conf, fname):
+ 
+ # enable experimental module so that experimental estimators can be
+ # discovered properly by sphinx
+-from sklearn.experimental import enable_iterative_imputer  # noqa
+-from sklearn.experimental import enable_halving_search_cv  # noqa
++from sklearn.experimental import (  # noqa: F401
++    enable_halving_search_cv,
++    enable_iterative_imputer,
++)
+ 
+ 
+ def make_carousel_thumbs(app, exception):

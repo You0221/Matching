@@ -1,0 +1,17 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 58b7899645f..5ba60605e54 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -1598,12 +1667,6 @@ def validate_secret_value(value, handler) -> Secret[SecretType]:
+             validated_inner = handler(value)
+             return cls(validated_inner)
+ 
+-        def serialize(value: Secret[SecretType], info: core_schema.SerializationInfo) -> str | Secret[SecretType]:
+-            if info.mode == 'json':
+-                return str(value)
+-            else:
+-                return value
+-
+         return core_schema.json_or_python_schema(
+             python_schema=core_schema.no_info_wrap_validator_function(
+                 validate_secret_value,

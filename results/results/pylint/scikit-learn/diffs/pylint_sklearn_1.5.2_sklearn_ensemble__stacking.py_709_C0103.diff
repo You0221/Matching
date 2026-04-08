@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -705,7 +771,11 @@ def predict(self, X, **predict_params):
+             y_pred = self._label_encoder.inverse_transform(y_pred)
+         return y_pred
+ 
+-    @available_if(_estimator_has("predict_proba"))
++    @available_if(
++        _estimator_has(
++            "predict_proba", delegates=("final_estimator_", "final_estimator")
++        )
++    )
+     def predict_proba(self, X):
+         """Predict class probabilities for `X` using the final estimator.
+ 

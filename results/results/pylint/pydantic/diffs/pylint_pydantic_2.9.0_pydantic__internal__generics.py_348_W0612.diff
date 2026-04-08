@@ -1,0 +1,22 @@
+diff --git a/pydantic/_internal/_generics.py b/pydantic/_internal/_generics.py
+index fad5f9479b2..d6fea96cb76 100644
+--- a/pydantic/_internal/_generics.py
++++ b/pydantic/_internal/_generics.py
+@@ -340,13 +354,12 @@ def has_instance_in_type(type_: Any, isinstance_target: Any) -> bool:
+     """
+     if isinstance(type_, isinstance_target):
+         return True
++    if _typing_extra.is_annotated(type_):
++        return has_instance_in_type(type_.__origin__, isinstance_target)
++    if _typing_extra.is_literal(type_):
++        return False
+ 
+     type_args = get_args(type_)
+-    origin_type = get_origin(type_)
+-
+-    if origin_type is typing_extensions.Annotated:
+-        annotated_type, *annotations = type_args
+-        return has_instance_in_type(annotated_type, isinstance_target)
+ 
+     # Having type args is a good indicator that this is a typing module
+     # class instantiation or a generic alias of some sort.

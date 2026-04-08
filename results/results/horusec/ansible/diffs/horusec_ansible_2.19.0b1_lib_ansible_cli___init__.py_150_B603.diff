@@ -1,0 +1,82 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index 462393868e01af..0adc00c9bc9a4d 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -124,77 +128,6 @@ def initialize_locale():
+     HAS_ARGCOMPLETE = False
+ 
+ 
+-_SSH_AGENT_STDOUT_READ_TIMEOUT = 5  # seconds
+-
+-
+-def _ssh_agent_timeout_handler(signum, frame):
+-    raise TimeoutError
+-
+-
+-def _launch_ssh_agent() -> None:
+-    ssh_agent_cfg = C.config.get_config_value('SSH_AGENT')
+-    match ssh_agent_cfg:
+-        case 'none':
+-            display.debug('SSH_AGENT set to none')
+-            return
+-        case 'auto':
+-            try:
+-                ssh_agent_bin = get_bin_path('ssh-agent', required=True)
+-            except ValueError as e:
+-                raise AnsibleError('SSH_AGENT set to auto, but cannot find ssh-agent binary') from e
+-            ssh_agent_dir = os.path.join(C.DEFAULT_LOCAL_TMP, 'ssh_agent')
+-            os.mkdir(ssh_agent_dir, 0o700)
+-            sock = os.path.join(ssh_agent_dir, 'agent.sock')
+-            display.vvv('SSH_AGENT: starting...')
+-            try:
+-                p = subprocess.Popen(
+-                    [ssh_agent_bin, '-D', '-s', '-a', sock],
+-                    stdin=subprocess.PIPE,
+-                    stdout=subprocess.PIPE,
+-                    stderr=subprocess.PIPE,
+-                )
+-            except OSError as e:
+-                raise AnsibleError(
+-                    f'Could not start ssh-agent: {e}'
+-                ) from e
+-
+-            if p.poll() is not None:
+-                raise AnsibleError(
+-                    f'Could not start ssh-agent: rc={p.returncode} stderr="{p.stderr.read().decode()}"'
+-                )
+-
+-            old_sigalrm_handler = signal.signal(signal.SIGALRM, _ssh_agent_timeout_handler)
+-            signal.alarm(_SSH_AGENT_STDOUT_READ_TIMEOUT)
+-            try:
+-                stdout = p.stdout.read(13)
+-            except TimeoutError:
+-                stdout = b''
+-            finally:
+-                signal.alarm(0)
+-                signal.signal(signal.SIGALRM, old_sigalrm_handler)
+-
+-            if stdout != b'SSH_AUTH_SOCK':
+-                display.warning(
+-                    f'The first 13 characters of stdout did not match the '
+-                    f'expected SSH_AUTH_SOCK. This may not be the right binary, '
+-                    f'or an incompatible agent: {stdout.decode()}'
+-                )
+-            display.vvv(f'SSH_AGENT: ssh-agent[{p.pid}] started and bound to {sock}')
+-            atexit.register(p.terminate)
+-        case _:
+-            sock = ssh_agent_cfg
+-
+-    try:
+-        with SshAgentClient(sock) as client:
+-            client.list()
+-    except Exception as e:
+-        raise AnsibleError(
+-            f'Could not communicate with ssh-agent using auth sock {sock}: {e}'
+-        ) from e
+-
+-    os.environ['SSH_AUTH_SOCK'] = os.environ['ANSIBLE_SSH_AGENT'] = sock
+-
+-
+ class CLI(ABC):
+     """ code behind bin/ansible* programs """
+ 

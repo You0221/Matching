@@ -1,0 +1,35 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1026,10 +1030,12 @@ def _get_default(self):
+                 return self.default
+             return lambda: self.default
+ 
+-        if self.db_default is not NOT_PROVIDED:
++        if self.has_db_default():
+             from django.db.models.expressions import DatabaseDefault
+ 
+-            return DatabaseDefault
++            return lambda: DatabaseDefault(
++                self._db_default_expression, output_field=self
++            )
+ 
+         if (
+             not self.empty_strings_allowed
+@@ -1039,6 +1045,15 @@ def _get_default(self):
+             return return_None
+         return str  # return empty string
+ 
++    @cached_property
++    def _db_default_expression(self):
++        db_default = self.db_default
++        if self.has_db_default() and not hasattr(db_default, "resolve_expression"):
++            from django.db.models.expressions import Value
++
++            db_default = Value(db_default, self)
++        return db_default
++
+     def get_choices(
+         self,
+         include_blank=True,

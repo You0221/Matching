@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2481,6 +2542,11 @@ def _get_scorer(self):
+     def cv_values_(self):
+         return self.cv_results_
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class RidgeCV(MultiOutputMixin, RegressorMixin, _BaseRidgeCV):
+     """Ridge regression with built-in cross-validation.

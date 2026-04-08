@@ -1,0 +1,23 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index 44e1026e3ff8..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -727,6 +746,18 @@ def point_count(self):
+         return sum(self[i].point_count for i in range(self.geom_count))
+ 
+ 
++class CircularString(LineString):
++    geos_support = False
++
++
++class CurvePolygon(Polygon):
++    geos_support = False
++
++
++class CompoundCurve(OGRGeometry):
++    geos_support = False
++
++
+ # Geometry Collection base class.
+ class GeometryCollection(OGRGeometry):
+     "The Geometry Collection class."

@@ -1,0 +1,19 @@
+diff --git a/django/utils/deconstruct.py b/django/utils/deconstruct.py
+index f8754c197418..2e5463a651d9 100644
+--- a/django/utils/deconstruct.py
++++ b/django/utils/deconstruct.py
+@@ -42,9 +42,11 @@ def deconstruct(obj):
+                     "#serializing-values" % (name, module_name, get_docs_version())
+                 )
+             return (
+-                path
+-                if path and type(obj) is klass
+-                else f"{obj.__class__.__module__}.{name}",
++                (
++                    path
++                    if path and type(obj) is klass
++                    else f"{obj.__class__.__module__}.{name}"
++                ),
+                 obj._constructor_args[0],
+                 obj._constructor_args[1],
+             )

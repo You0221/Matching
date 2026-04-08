@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_repr.py b/pydantic/_internal/_repr.py
+index de81c8bd4f6..7e80a9c83db 100644
+--- a/pydantic/_internal/_repr.py
++++ b/pydantic/_internal/_repr.py
+@@ -60,7 +61,7 @@ def __repr_recursion__(self, object: Any) -> str:
+     def __repr_str__(self, join_str: str) -> str:
+         return join_str.join(repr(v) if a is None else f'{a}={v!r}' for a, v in self.__repr_args__())
+ 
+-    def __pretty__(self, fmt: typing.Callable[[Any], Any], **kwargs: Any) -> typing.Generator[Any, None, None]:
++    def __pretty__(self, fmt: Callable[[Any], Any], **kwargs: Any) -> Generator[Any]:
+         """Used by devtools (https://python-devtools.helpmanual.io/) to pretty print objects."""
+         yield self.__repr_name__() + '('
+         yield 1

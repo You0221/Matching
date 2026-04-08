@@ -1,0 +1,30 @@
+diff --git a/numpy/_core/src/multiarray/stringdtype/casts.c b/numpy/_core/src/multiarray/stringdtype/casts.cpp
+similarity index 50%
+rename from numpy/_core/src/multiarray/stringdtype/casts.c
+rename to numpy/_core/src/multiarray/stringdtype/casts.cpp
+index e6819e3212dd..3632e359c9a9 100644
+--- a/numpy/_core/src/multiarray/stringdtype/casts.c
++++ b/numpy/_core/src/multiarray/stringdtype/casts.cpp
+@@ -1069,14 +1124,19 @@ string_to_longdouble(PyArrayMethod_Context *context, char *const data[],
+ 
+         if (errno == ERANGE) {
+             /* strtold returns INFINITY of the correct sign. */
+-            if (PyErr_Warn(PyExc_RuntimeWarning,
+-                           "overflow encountered in conversion from string") < 0) {
++            if (
++                npy_gil_warning(
++                    PyExc_RuntimeWarning,
++                    1,
++                    "overflow encountered in conversion from string"
++                ) < 0
++            ) {
+                 PyMem_RawFree(buf);
+                 goto fail;
+             }
+         }
+         else if (errno || end == buf || *end) {
+-            PyErr_Format(PyExc_ValueError,
++            npy_gil_error(PyExc_ValueError,
+                          "invalid literal for long double: %s (%s)",
+                          buf,
+                          strerror(errno));

@@ -1,0 +1,92 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 7d42d1ea38a1..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -578,6 +580,7 @@ def check(self, **kwargs):
+         return [
+             *super().check(**kwargs),
+             *self._check_to_fields_exist(),
++            *self._check_to_fields_composite_pk(),
+             *self._check_unique_target(),
+         ]
+ 
+@@ -603,6 +606,36 @@ def _check_to_fields_exist(self):
+                     )
+         return errors
+ 
++    def _check_to_fields_composite_pk(self):
++        from django.db.models.fields.composite import CompositePrimaryKey
++
++        # Skip nonexistent models.
++        if isinstance(self.remote_field.model, str):
++            return []
++
++        errors = []
++        for to_field in self.to_fields:
++            try:
++                field = (
++                    self.remote_field.model._meta.pk
++                    if to_field is None
++                    else self.remote_field.model._meta.get_field(to_field)
++                )
++            except exceptions.FieldDoesNotExist:
++                pass
++            else:
++                if isinstance(field, CompositePrimaryKey):
++                    errors.append(
++                        checks.Error(
++                            "Field defines a relation to the CompositePrimaryKey of "
++                            f"model {self.remote_field.model._meta.object_name!r} "
++                            "which is not supported.",
++                            obj=self,
++                            id="fields.E347",
++                        )
++                    )
++        return errors
++
+     def _check_unique_target(self):
+         rel_is_string = isinstance(self.remote_field.model, str)
+         if rel_is_string or not self.requires_unique_target:
+@@ -622,11 +655,21 @@ def _check_unique_target(self):
+         if not has_unique_constraint:
+             foreign_fields = {f.name for f in self.foreign_related_fields}
+             remote_opts = self.remote_field.model._meta
+-            has_unique_constraint = any(
+-                frozenset(ut) <= foreign_fields for ut in remote_opts.unique_together
+-            ) or any(
+-                frozenset(uc.fields) <= foreign_fields
+-                for uc in remote_opts.total_unique_constraints
++            has_unique_constraint = (
++                any(
++                    frozenset(ut) <= foreign_fields
++                    for ut in remote_opts.unique_together
++                )
++                or any(
++                    frozenset(uc.fields) <= foreign_fields
++                    for uc in remote_opts.total_unique_constraints
++                )
++                # If the model defines a composite primary key and the foreign key
++                # refers to it, the target is unique.
++                or (
++                    frozenset(field.name for field in remote_opts.pk_fields)
++                    == foreign_fields
++                )
+             )
+ 
+         if not has_unique_constraint:
+@@ -779,6 +822,7 @@ def get_joining_columns(self, reverse_join=False):
+             "ForeignObject.get_joining_columns() is deprecated. Use "
+             "get_joining_fields() instead.",
+             RemovedInDjango60Warning,
++            stacklevel=2,
+         )
+         source = self.reverse_related_fields if reverse_join else self.related_fields
+         return tuple(
+@@ -790,6 +834,7 @@ def get_reverse_joining_columns(self):
+             "ForeignObject.get_reverse_joining_columns() is deprecated. Use "
+             "get_reverse_joining_fields() instead.",
+             RemovedInDjango60Warning,
++            stacklevel=2,
+         )
+         return self.get_joining_columns(reverse_join=True)
+ 

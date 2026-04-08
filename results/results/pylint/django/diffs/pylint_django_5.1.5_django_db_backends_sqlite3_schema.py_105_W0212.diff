@@ -1,0 +1,18 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index c5b428fc678c..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -104,6 +104,13 @@ def is_self_referential(f):
+             f.name: f.clone() if is_self_referential(f) else f
+             for f in model._meta.local_concrete_fields
+         }
++
++        # Since CompositePrimaryKey is not a concrete field (column is None),
++        # it's not copied by default.
++        pk = model._meta.pk
++        if isinstance(pk, CompositePrimaryKey):
++            body[pk.name] = pk.clone()
++
+         # Since mapping might mix column names and default values,
+         # its values must be already quoted.
+         mapping = {

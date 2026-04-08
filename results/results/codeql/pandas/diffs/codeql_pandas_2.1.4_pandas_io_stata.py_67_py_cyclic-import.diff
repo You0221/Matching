@@ -1,0 +1,16 @@
+diff --git a/pandas/io/stata.py b/pandas/io/stata.py
+index 698a2882ada39..4abf9af185a01 100644
+--- a/pandas/io/stata.py
++++ b/pandas/io/stata.py
+@@ -63,10 +64,9 @@
+     to_datetime,
+     to_timedelta,
+ )
+-from pandas.core.arrays.boolean import BooleanDtype
+-from pandas.core.arrays.integer import IntegerDtype
+ from pandas.core.frame import DataFrame
+ from pandas.core.indexes.base import Index
++from pandas.core.indexes.range import RangeIndex
+ from pandas.core.series import Series
+ from pandas.core.shared_docs import _shared_docs
+ 

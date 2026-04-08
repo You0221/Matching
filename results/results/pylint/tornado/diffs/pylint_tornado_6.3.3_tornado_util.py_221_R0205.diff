@@ -1,0 +1,31 @@
+diff --git a/tornado/util.py b/tornado/util.py
+index 3a3a52f1f2..2e5eee792b 100644
+--- a/tornado/util.py
++++ b/tornado/util.py
+@@ -218,7 +201,7 @@ def re_unescape(s: str) -> str:
+     return _re_unescape_pattern.sub(_re_unescape_replacement, s)
+ 
+ 
+-class Configurable(object):
++class Configurable:
+     """Base class for configurable interfaces.
+ 
+     A configurable interface is an (abstract) class whose constructor
+@@ -269,7 +252,7 @@ def __new__(cls, *args: Any, **kwargs: Any) -> Any:
+         if impl.configurable_base() is not base:
+             # The impl class is itself configurable, so recurse.
+             return impl(*args, **init_kwargs)
+-        instance = super(Configurable, cls).__new__(impl)
++        instance = super().__new__(impl)
+         # initialize vs __init__ chosen for compatibility with AsyncHTTPClient
+         # singleton magic.  If we get rid of that we can switch to __init__
+         # here too.
+@@ -353,7 +336,7 @@ def _restore_configuration(cls, saved):
+         base.__impl_kwargs = saved[1]
+ 
+ 
+-class ArgReplacer(object):
++class ArgReplacer:
+     """Replaces one value in an ``args, kwargs`` pair.
+ 
+     Inspects the function signature to find an argument by name

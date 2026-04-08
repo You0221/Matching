@@ -1,0 +1,24 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -69,15 +73,15 @@ def _fit(
+         self,
+         X,
+         handle_unknown="error",
+-        force_all_finite=True,
++        ensure_all_finite=True,
+         return_counts=False,
+         return_and_ignore_missing_for_infrequent=False,
+     ):
+         self._check_infrequent_enabled()
+-        self._check_n_features(X, reset=True)
+-        self._check_feature_names(X, reset=True)
++        _check_n_features(self, X, reset=True)
++        _check_feature_names(self, X, reset=True)
+         X_list, n_samples, n_features = self._check_X(
+-            X, force_all_finite=force_all_finite
++            X, ensure_all_finite=ensure_all_finite
+         )
+         self.n_features_in_ = n_features
+ 

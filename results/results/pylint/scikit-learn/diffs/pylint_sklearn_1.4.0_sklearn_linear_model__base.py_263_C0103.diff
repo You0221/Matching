@@ -1,0 +1,32 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index f07e974542a5b..eac754f3f88b4 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -247,12 +263,12 @@ def _rescale_data(X, y, sample_weight, inplace=False):
+             if y.ndim == 1:
+                 y *= sample_weight_sqrt
+             else:
+-                y *= sample_weight_sqrt[:, np.newaxis]
++                y *= sample_weight_sqrt[:, None]
+         else:
+             if y.ndim == 1:
+                 y = y * sample_weight_sqrt
+             else:
+-                y = y * sample_weight_sqrt[:, np.newaxis]
++                y = y * sample_weight_sqrt[:, None]
+     return X, y, sample_weight_sqrt
+ 
+ 
+@@ -267,7 +283,11 @@ def _decision_function(self, X):
+         check_is_fitted(self)
+ 
+         X = self._validate_data(X, accept_sparse=["csr", "csc", "coo"], reset=False)
+-        return safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_
++        coef_ = self.coef_
++        if coef_.ndim == 1:
++            return X @ coef_ + self.intercept_
++        else:
++            return X @ coef_.T + self.intercept_
+ 
+     def predict(self, X):
+         """

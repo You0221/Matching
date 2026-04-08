@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_linear_loss.py b/sklearn/linear_model/_linear_loss.py
+index 3bfd5fcd09491..9213008a19841 100644
+--- a/sklearn/linear_model/_linear_loss.py
++++ b/sklearn/linear_model/_linear_loss.py
+@@ -795,7 +795,7 @@ def hessp(s):
+             #   = sum_{i, m} (X')_{ji} * p_i_k
+             #                * (X_{im} * s_k_m - sum_l p_i_l * X_{im} * s_l_m)
+             #
+-            # See also https://github.com/scikit-learn/scikit-learn/pull/3646#discussion_r17461411  # noqa
++            # See also https://github.com/scikit-learn/scikit-learn/pull/3646#discussion_r17461411
+             def hessp(s):
+                 s = s.reshape((n_classes, -1), order="F")  # shape = (n_classes, n_dof)
+                 if self.fit_intercept:

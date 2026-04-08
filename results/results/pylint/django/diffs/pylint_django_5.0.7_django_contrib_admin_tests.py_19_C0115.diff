@@ -1,0 +1,30 @@
+diff --git a/django/contrib/admin/tests.py b/django/contrib/admin/tests.py
+index dc857055b117..636a6ffdf263 100644
+--- a/django/contrib/admin/tests.py
++++ b/django/contrib/admin/tests.py
+@@ -215,19 +218,16 @@ def assertSelectedOptions(self, selector, values):
+         """
+         self._assertOptionsValues("%s > option:checked" % selector, values)
+ 
+-    def has_css_class(self, selector, klass):
++    def is_disabled(self, selector):
+         """
+-        Return True if the element identified by `selector` has the CSS class
+-        `klass`.
++        Return True if the element identified by `selector` has the `disabled`
++        attribute.
+         """
+         from selenium.webdriver.common.by import By
+ 
+         return (
+-            self.selenium.find_element(
+-                By.CSS_SELECTOR,
+-                selector,
++            self.selenium.find_element(By.CSS_SELECTOR, selector).get_attribute(
++                "disabled"
+             )
+-            .get_attribute("class")
+-            .find(klass)
+-            != -1
++            == "true"
+         )

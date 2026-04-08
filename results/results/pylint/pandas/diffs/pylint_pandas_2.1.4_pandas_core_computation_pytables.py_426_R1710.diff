@@ -1,0 +1,21 @@
+diff --git a/pandas/core/computation/pytables.py b/pandas/core/computation/pytables.py
+index 77d8d79506258..04a8ad7ef0be6 100644
+--- a/pandas/core/computation/pytables.py
++++ b/pandas/core/computation/pytables.py
+@@ -423,13 +431,15 @@ def __init__(self, env, engine, parser, **kwargs) -> None:
+                 lambda node, bin_op=bin_op: partial(BinOp, bin_op, **kwargs),
+             )
+ 
+-    def visit_UnaryOp(self, node, **kwargs):
++    def visit_UnaryOp(self, node, **kwargs) -> ops.Term | UnaryOp | None:
+         if isinstance(node.op, (ast.Not, ast.Invert)):
+             return UnaryOp("~", self.visit(node.operand))
+         elif isinstance(node.op, ast.USub):
+             return self.const_type(-self.visit(node.operand).value, self.env)
+         elif isinstance(node.op, ast.UAdd):
+             raise NotImplementedError("Unary addition not supported")
++        # TODO: return None might never be reached
++        return None
+ 
+     def visit_Index(self, node, **kwargs):
+         return self.visit(node.value).value

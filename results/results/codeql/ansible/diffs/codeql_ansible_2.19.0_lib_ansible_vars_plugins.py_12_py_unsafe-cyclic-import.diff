@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/vars/plugins.py b/lib/ansible/vars/plugins.py
+index a5fcd7bc602756..d00a87cdb1c346 100644
+--- a/lib/ansible/vars/plugins.py
++++ b/lib/ansible/vars/plugins.py
+@@ -8,8 +8,6 @@
+ from functools import lru_cache
+ 
+ from ansible import constants as C
+-from ansible.errors import AnsibleError
+-from ansible.inventory.group import InventoryObjectType
+ from ansible.plugins.loader import vars_loader
+ from ansible.utils.display import Display
+ from ansible.utils.vars import combine_vars

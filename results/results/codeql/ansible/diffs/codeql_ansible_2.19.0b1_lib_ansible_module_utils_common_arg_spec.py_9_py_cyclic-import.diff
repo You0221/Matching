@@ -1,0 +1,12 @@
+diff --git a/lib/ansible/module_utils/common/arg_spec.py b/lib/ansible/module_utils/common/arg_spec.py
+index 37019e7df33f8d..5044f58a8cc7d6 100644
+--- a/lib/ansible/module_utils/common/arg_spec.py
++++ b/lib/ansible/module_utils/common/arg_spec.py
+@@ -6,6 +6,7 @@
+ 
+ from copy import deepcopy
+ 
++from ansible.module_utils.datatag import deprecator_from_collection_name
+ from ansible.module_utils.common.parameters import (
+     _ADDITIONAL_CHECKS,
+     _get_legal_inputs,

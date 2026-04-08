@@ -1,0 +1,16 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 7c54be40dc013..bcf2d749725ff 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -551,6 +547,11 @@ def get_feature_names_out(self, input_features=None):
+         ]
+         return np.asarray(names_out, dtype=object)
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.transformer_tags.preserves_dtype = []
++        return tags
++
+ 
+ class VotingRegressor(RegressorMixin, _BaseVoting):
+     """Prediction voting regressor for unfitted estimators.

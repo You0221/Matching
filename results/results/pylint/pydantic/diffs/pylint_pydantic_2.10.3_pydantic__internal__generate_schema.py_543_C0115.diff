@@ -1,0 +1,35 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -540,29 +652,11 @@ def _apply_discriminator_to_union(
+             )
+             return schema
+ 
+-    class CollectedInvalid(Exception):
+-        pass
+-
+     def clean_schema(self, schema: CoreSchema) -> CoreSchema:
+-        schema = self.collect_definitions(schema)
+-        schema = simplify_schema_references(schema)
+-        if collect_invalid_schemas(schema):
+-            raise self.CollectedInvalid()
+-        schema = _discriminated_union.apply_discriminators(schema)
++        schema = self.defs.finalize_schema(schema)
+         schema = validate_core_schema(schema)
+         return schema
+ 
+-    def collect_definitions(self, schema: CoreSchema) -> CoreSchema:
+-        ref = cast('str | None', schema.get('ref', None))
+-        if ref:
+-            self.defs.definitions[ref] = schema
+-        if 'ref' in schema:
+-            schema = core_schema.definition_reference_schema(schema['ref'])
+-        return core_schema.definitions_schema(
+-            schema,
+-            list(self.defs.definitions.values()),
+-        )
+-
+     def _add_js_function(self, metadata_schema: CoreSchema, js_function: Callable[..., Any]) -> None:
+         metadata = metadata_schema.get('metadata', {})
+         pydantic_js_functions = metadata.setdefault('pydantic_js_functions', [])

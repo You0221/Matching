@@ -1,0 +1,24 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -42,16 +46,16 @@ def _check_X(self, X, force_all_finite=True):
+         """
+         if not (hasattr(X, "iloc") and getattr(X, "ndim", 0) == 2):
+             # if not a dataframe, do normal check_array validation
+-            X_temp = check_array(X, dtype=None, force_all_finite=force_all_finite)
++            X_temp = check_array(X, dtype=None, ensure_all_finite=ensure_all_finite)
+             if not hasattr(X, "dtype") and np.issubdtype(X_temp.dtype, np.str_):
+-                X = check_array(X, dtype=object, force_all_finite=force_all_finite)
++                X = check_array(X, dtype=object, ensure_all_finite=ensure_all_finite)
+             else:
+                 X = X_temp
+             needs_validation = False
+         else:
+             # pandas dataframe, do validation later column by column, in order
+             # to keep the dtype information to be used in the encoder.
+-            needs_validation = force_all_finite
++            needs_validation = ensure_all_finite
+ 
+         n_samples, n_features = X.shape
+         X_columns = []

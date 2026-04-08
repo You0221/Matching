@@ -1,0 +1,11 @@
+diff --git a/sklearn/tree/_classes.py b/sklearn/tree/_classes.py
+index 93246a1376e85..8536ccf0d6f6b 100644
+--- a/sklearn/tree/_classes.py
++++ b/sklearn/tree/_classes.py
+@@ -1988,5 +1993,5 @@ def __sklearn_tags__(self):
+             "friedman_mse",
+             "poisson",
+         }
+-        tags.input_tags.allow_nan: allow_nan
++        tags.input_tags.allow_nan = allow_nan
+         return tags

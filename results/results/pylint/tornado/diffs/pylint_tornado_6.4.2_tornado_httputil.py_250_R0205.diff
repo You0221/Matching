@@ -1,0 +1,77 @@
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index 9ce992d82b..7044aca02b 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -241,13 +335,13 @@ def copy(self) -> "HTTPHeaders":
+     def __str__(self) -> str:
+         lines = []
+         for name, value in self.get_all():
+-            lines.append("%s: %s\n" % (name, value))
++            lines.append(f"{name}: {value}\n")
+         return "".join(lines)
+ 
+     __unicode__ = __str__
+ 
+ 
+-class HTTPServerRequest(object):
++class HTTPServerRequest:
+     """A single HTTP request.
+ 
+     All attributes are type `str` unless otherwise noted.
+@@ -353,7 +447,7 @@ def __init__(
+         version: str = "HTTP/1.0",
+         headers: Optional[HTTPHeaders] = None,
+         body: Optional[bytes] = None,
+-        host: Optional[str] = None,
++        # host: Optional[str] = None,
+         files: Optional[Dict[str, List["HTTPFile"]]] = None,
+         connection: Optional["HTTPConnection"] = None,
+         start_line: Optional["RequestStartLine"] = None,
+@@ -372,7 +466,35 @@ def __init__(
+         self.remote_ip = getattr(context, "remote_ip", None)
+         self.protocol = getattr(context, "protocol", "http")
+ 
+-        self.host = host or self.headers.get("Host") or "127.0.0.1"
++        try:
++            self.host = self.headers["Host"]
++        except KeyError:
++            if version == "HTTP/1.0":
++                # HTTP/1.0 does not require the Host header.
++                self.host = "127.0.0.1"
++            else:
++                raise HTTPInputError("Missing Host header")
++        if not _ABNF.host.fullmatch(self.host):
++            print(_ABNF.host.pattern)
++            raise HTTPInputError("Invalid Host header: %r" % self.host)
++        if "," in self.host:
++            # https://www.rfc-editor.org/rfc/rfc9112.html#name-request-target
++            # Server MUST respond with 400 Bad Request if multiple
++            # Host headers are present.
++            #
++            # We test for the presence of a comma instead of the number of
++            # headers received because a proxy may have converted
++            # multiple headers into a single comma-separated value
++            # (per RFC 9110 section 5.3).
++            #
++            # This is technically a departure from the RFC since the ABNF
++            # does not forbid commas in the host header. However, since
++            # commas are not allowed in DNS names, it is appropriate to
++            # disallow them. (The same argument could be made for other special
++            # characters, but commas are the most problematic since they could
++            # be used to exploit differences between proxies when multiple headers
++            # are supplied).
++            raise HTTPInputError("Multiple host headers not allowed: %r" % self.host)
+         self.host_name = split_host_and_port(self.host.lower())[0]
+         self.files = files or {}
+         self.connection = connection
+@@ -465,8 +587,8 @@ def _parse_body(self) -> None:
+ 
+     def __repr__(self) -> str:
+         attrs = ("protocol", "host", "method", "uri", "version", "remote_ip")
+-        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+-        return "%s(%s)" % (self.__class__.__name__, args)
++        args = ", ".join([f"{n}={getattr(self, n)!r}" for n in attrs])
++        return f"{self.__class__.__name__}({args})"
+ 
+ 
+ class HTTPInputError(Exception):

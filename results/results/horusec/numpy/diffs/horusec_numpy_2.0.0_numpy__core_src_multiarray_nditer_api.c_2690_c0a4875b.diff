@@ -1,0 +1,241 @@
+diff --git a/numpy/_core/src/multiarray/nditer_api.c b/numpy/_core/src/multiarray/nditer_api.c
+index 28b7bf6e632f..da58489c6b9d 100644
+--- a/numpy/_core/src/multiarray/nditer_api.c
++++ b/numpy/_core/src/multiarray/nditer_api.c
+@@ -2654,236 +2305,6 @@ npyiter_clear_buffers(NpyIter *iter)
+ }
+ 
+ 
+-/*
+- * This checks how much space can be buffered without encountering the
+- * same value twice, or for operands whose innermost stride is zero,
+- * without encountering a different value.  By reducing the buffered
+- * amount to this size, reductions can be safely buffered.
+- *
+- * Reductions are buffered with two levels of looping, to avoid
+- * frequent copying to the buffers.  The return value is the over-all
+- * buffer size, and when the flag NPY_ITFLAG_REDUCE is set, reduce_innersize
+- * receives the size of the inner of the two levels of looping.
+- *
+- * The value placed in reduce_outerdim is the index into the AXISDATA
+- * for where the second level of the double loop begins.
+- *
+- * The return value is always a multiple of the value placed in
+- * reduce_innersize.
+- */
+-static npy_intp
+-npyiter_checkreducesize(NpyIter *iter, npy_intp count,
+-                                npy_intp *reduce_innersize,
+-                                npy_intp *reduce_outerdim)
+-{
+-    npy_uint32 itflags = NIT_ITFLAGS(iter);
+-    int idim, ndim = NIT_NDIM(iter);
+-    int iop, nop = NIT_NOP(iter);
+-
+-    NpyIter_AxisData *axisdata;
+-    npy_intp sizeof_axisdata;
+-    npy_intp coord, shape, *strides;
+-    npy_intp reducespace = 1, factor;
+-    npy_bool nonzerocoord;
+-
+-    npyiter_opitflags *op_itflags = NIT_OPITFLAGS(iter);
+-    char stride0op[NPY_MAXARGS];
+-
+-    /* Default to no outer axis */
+-    *reduce_outerdim = 0;
+-
+-    /* If there's only one dimension, no need to calculate anything */
+-    if (ndim == 1 || count == 0) {
+-        *reduce_innersize = count;
+-        return count;
+-    }
+-
+-    sizeof_axisdata = NIT_AXISDATA_SIZEOF(itflags, ndim, nop);
+-    axisdata = NIT_AXISDATA(iter);
+-
+-    /* Indicate which REDUCE operands have stride 0 in the inner loop */
+-    strides = NAD_STRIDES(axisdata);
+-    for (iop = 0; iop < nop; ++iop) {
+-        stride0op[iop] = (op_itflags[iop]&NPY_OP_ITFLAG_REDUCE) &&
+-                           (strides[iop] == 0);
+-        NPY_IT_DBG_PRINT2("Iterator: Operand %d has stride 0 in "
+-                        "the inner loop? %d\n", iop, (int)stride0op[iop]);
+-    }
+-    shape = NAD_SHAPE(axisdata);
+-    coord = NAD_INDEX(axisdata);
+-    reducespace += (shape-coord-1);
+-    factor = shape;
+-    NIT_ADVANCE_AXISDATA(axisdata, 1);
+-
+-    /* Initialize nonzerocoord based on the first coordinate */
+-    nonzerocoord = (coord != 0);
+-
+-    /* Go forward through axisdata, calculating the space available */
+-    for (idim = 1; idim < ndim && reducespace < count;
+-                                ++idim, NIT_ADVANCE_AXISDATA(axisdata, 1)) {
+-        NPY_IT_DBG_PRINT2("Iterator: inner loop reducespace %d, count %d\n",
+-                                (int)reducespace, (int)count);
+-
+-        strides = NAD_STRIDES(axisdata);
+-        for (iop = 0; iop < nop; ++iop) {
+-            /*
+-             * If a reduce stride switched from zero to non-zero, or
+-             * vice versa, that's the point where the data will stop
+-             * being the same element or will repeat, and if the
+-             * buffer starts with an all zero multi-index up to this
+-             * point, gives us the reduce_innersize.
+-             */
+-            if((stride0op[iop] && (strides[iop] != 0)) ||
+-                        (!stride0op[iop] &&
+-                         (strides[iop] == 0) &&
+-                         (op_itflags[iop]&NPY_OP_ITFLAG_REDUCE))) {
+-                NPY_IT_DBG_PRINT1("Iterator: Reduce operation limits "
+-                                    "buffer to %d\n", (int)reducespace);
+-                /*
+-                 * If we already found more elements than count, or
+-                 * the starting coordinate wasn't zero, the two-level
+-                 * looping is unnecessary/can't be done, so return.
+-                 */
+-                if (count <= reducespace) {
+-                    *reduce_innersize = count;
+-                    NIT_ITFLAGS(iter) |= NPY_ITFLAG_REUSE_REDUCE_LOOPS;
+-                    return count;
+-                }
+-                else if (nonzerocoord) {
+-                    if (reducespace < count) {
+-                        count = reducespace;
+-                    }
+-                    *reduce_innersize = count;
+-                    /* NOTE: This is similar to the (coord != 0) case below. */
+-                    NIT_ITFLAGS(iter) &= ~NPY_ITFLAG_REUSE_REDUCE_LOOPS;
+-                    return count;
+-                }
+-                else {
+-                    *reduce_innersize = reducespace;
+-                    break;
+-                }
+-            }
+-        }
+-        /* If we broke out of the loop early, we found reduce_innersize */
+-        if (iop != nop) {
+-            NPY_IT_DBG_PRINT2("Iterator: Found first dim not "
+-                            "reduce (%d of %d)\n", iop, nop);
+-            break;
+-        }
+-
+-        shape = NAD_SHAPE(axisdata);
+-        coord = NAD_INDEX(axisdata);
+-        if (coord != 0) {
+-            nonzerocoord = 1;
+-        }
+-        reducespace += (shape-coord-1) * factor;
+-        factor *= shape;
+-    }
+-
+-    /*
+-     * If there was any non-zero coordinate, the reduction inner
+-     * loop doesn't fit in the buffersize, or the reduction inner loop
+-     * covered the entire iteration size, can't do the double loop.
+-     */
+-    if (nonzerocoord || count < reducespace || idim == ndim) {
+-        if (reducespace < count) {
+-            count = reducespace;
+-        }
+-        *reduce_innersize = count;
+-        /* In this case, we can't reuse the reduce loops */
+-        NIT_ITFLAGS(iter) &= ~NPY_ITFLAG_REUSE_REDUCE_LOOPS;
+-        return count;
+-    }
+-
+-    coord = NAD_INDEX(axisdata);
+-    if (coord != 0) {
+-        /*
+-         * In this case, it is only safe to reuse the buffer if the amount
+-         * of data copied is not more than the current axes, as is the
+-         * case when reuse_reduce_loops was active already.
+-         * It should be in principle OK when the idim loop returns immediately.
+-         */
+-        NIT_ITFLAGS(iter) &= ~NPY_ITFLAG_REUSE_REDUCE_LOOPS;
+-    }
+-    else {
+-        /* In this case, we can reuse the reduce loops */
+-        NIT_ITFLAGS(iter) |= NPY_ITFLAG_REUSE_REDUCE_LOOPS;
+-    }
+-
+-    *reduce_innersize = reducespace;
+-    count /= reducespace;
+-
+-    NPY_IT_DBG_PRINT2("Iterator: reduce_innersize %d count /ed %d\n",
+-                    (int)reducespace, (int)count);
+-
+-    /*
+-     * Continue through the rest of the dimensions.  If there are
+-     * two separated reduction axes, we may have to cut the buffer
+-     * short again.
+-     */
+-    *reduce_outerdim = idim;
+-    reducespace = 1;
+-    factor = 1;
+-    /* Indicate which REDUCE operands have stride 0 at the current level */
+-    strides = NAD_STRIDES(axisdata);
+-    for (iop = 0; iop < nop; ++iop) {
+-        stride0op[iop] = (op_itflags[iop]&NPY_OP_ITFLAG_REDUCE) &&
+-                           (strides[iop] == 0);
+-        NPY_IT_DBG_PRINT2("Iterator: Operand %d has stride 0 in "
+-                        "the outer loop? %d\n", iop, (int)stride0op[iop]);
+-    }
+-    shape = NAD_SHAPE(axisdata);
+-    reducespace += (shape-coord-1) * factor;
+-    factor *= shape;
+-    NIT_ADVANCE_AXISDATA(axisdata, 1);
+-    ++idim;
+-
+-    for (; idim < ndim && reducespace < count;
+-                                ++idim, NIT_ADVANCE_AXISDATA(axisdata, 1)) {
+-        NPY_IT_DBG_PRINT2("Iterator: outer loop reducespace %d, count %d\n",
+-                                (int)reducespace, (int)count);
+-        strides = NAD_STRIDES(axisdata);
+-        for (iop = 0; iop < nop; ++iop) {
+-            /*
+-             * If a reduce stride switched from zero to non-zero, or
+-             * vice versa, that's the point where the data will stop
+-             * being the same element or will repeat, and if the
+-             * buffer starts with an all zero multi-index up to this
+-             * point, gives us the reduce_innersize.
+-             */
+-            if((stride0op[iop] && (strides[iop] != 0)) ||
+-                        (!stride0op[iop] &&
+-                         (strides[iop] == 0) &&
+-                         (op_itflags[iop]&NPY_OP_ITFLAG_REDUCE))) {
+-                NPY_IT_DBG_PRINT1("Iterator: Reduce operation limits "
+-                                    "buffer to %d\n", (int)reducespace);
+-                /*
+-                 * This terminates the outer level of our double loop.
+-                 */
+-                if (count <= reducespace) {
+-                    return count * (*reduce_innersize);
+-                }
+-                else {
+-                    return reducespace * (*reduce_innersize);
+-                }
+-            }
+-        }
+-
+-        shape = NAD_SHAPE(axisdata);
+-        coord = NAD_INDEX(axisdata);
+-        if (coord != 0) {
+-            nonzerocoord = 1;
+-        }
+-        reducespace += (shape-coord-1) * factor;
+-        factor *= shape;
+-    }
+-
+-    if (reducespace < count) {
+-        count = reducespace;
+-    }
+-    return count * (*reduce_innersize);
+-}
+-
+ NPY_NO_EXPORT npy_bool
+ npyiter_has_writeback(NpyIter *iter)
+ {

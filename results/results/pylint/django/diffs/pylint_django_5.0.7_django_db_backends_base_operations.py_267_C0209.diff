@@ -1,0 +1,16 @@
+diff --git a/django/db/backends/base/operations.py b/django/db/backends/base/operations.py
+index 0ee2ffc5c498..60de2d6c79f8 100644
+--- a/django/db/backends/base/operations.py
++++ b/django/db/backends/base/operations.py
+@@ -269,6 +276,11 @@ def limit_offset_sql(self, low_mark, high_mark):
+             if sql
+         )
+ 
++    def bulk_insert_sql(self, fields, placeholder_rows):
++        placeholder_rows_sql = (", ".join(row) for row in placeholder_rows)
++        values_sql = ", ".join([f"({sql})" for sql in placeholder_rows_sql])
++        return f"VALUES {values_sql}"
++
+     def last_executed_query(self, cursor, sql, params):
+         """
+         Return a string of the query last executed by the given cursor, with

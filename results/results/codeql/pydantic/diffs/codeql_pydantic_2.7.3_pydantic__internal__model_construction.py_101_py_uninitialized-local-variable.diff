@@ -1,0 +1,20 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -98,12 +118,12 @@ def __new__(
+                 if original_model_post_init is not None:
+                     # if there are private_attributes and a model_post_init function, we handle both
+ 
+-                    def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
++                    def wrapped_model_post_init(self: BaseModel, context: Any, /) -> None:
+                         """We need to both initialize private attributes and call the user-defined model_post_init
+                         method.
+                         """
+-                        init_private_attributes(self, __context)
+-                        original_model_post_init(self, __context)
++                        init_private_attributes(self, context)
++                        original_model_post_init(self, context)
+ 
+                     namespace['model_post_init'] = wrapped_model_post_init
+                 else:

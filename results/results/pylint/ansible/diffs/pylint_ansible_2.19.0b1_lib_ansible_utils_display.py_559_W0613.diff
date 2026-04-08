@@ -1,0 +1,22 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -555,7 +572,7 @@ def get_deprecation_message(
+         msg: str,
+         version: str | None = None,
+         removed: bool = False,
+-        date: str | datetime.date | None = None,
++        date: str | None = None,
+         collection_name: str | None = None,
+     ) -> str:
+         """Return a deprecation message and help text for non-display purposes (e.g., exception messages)."""
+@@ -570,7 +587,7 @@ def get_deprecation_message(
+             version=version,
+             removed=removed,
+             date=date,
+-            plugin=_plugin_exec_context.PluginExecContext.get_current_plugin_info(),
++            deprecator=deprecator_from_collection_name(collection_name),
+         )
+ 
+         if removed:

@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/coordseq.py b/django/contrib/gis/geos/prototypes/coordseq.py
+index ed05de99f4e4..cfc242c00dd1 100644
+--- a/django/contrib/gis/geos/prototypes/coordseq.py
++++ b/django/contrib/gis/geos/prototypes/coordseq.py
+@@ -23,6 +23,7 @@ def check_cs_get(result, func, cargs):
+ # ## Coordinate sequence prototype factory classes. ##
+ class CsInt(GEOSFuncFactory):
+     "For coordinate sequence routines that return an integer."
++
+     argtypes = [CS_PTR, POINTER(c_uint)]
+     restype = c_int
+     errcheck = staticmethod(check_cs_get)

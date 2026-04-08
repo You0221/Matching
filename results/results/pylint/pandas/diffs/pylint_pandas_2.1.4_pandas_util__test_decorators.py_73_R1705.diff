@@ -1,0 +1,80 @@
+diff --git a/pandas/util/_test_decorators.py b/pandas/util/_test_decorators.py
+index 03011a1ffe622..2c1912bce856d 100644
+--- a/pandas/util/_test_decorators.py
++++ b/pandas/util/_test_decorators.py
+@@ -31,72 +31,21 @@ def test_foo():
+     Callable,
+ )
+ 
+-import numpy as np
+ import pytest
+ 
+ from pandas._config import get_option
+ 
+ if TYPE_CHECKING:
+     from pandas._typing import F
++
++from pandas._config.config import _get_option
++
+ from pandas.compat import (
+     IS64,
+     is_platform_windows,
+ )
+ from pandas.compat._optional import import_optional_dependency
+ 
+-from pandas.core.computation.expressions import (
+-    NUMEXPR_INSTALLED,
+-    USE_NUMEXPR,
+-)
+-from pandas.util.version import Version
+-
+-
+-def safe_import(mod_name: str, min_version: str | None = None):
+-    """
+-    Parameters
+-    ----------
+-    mod_name : str
+-        Name of the module to be imported
+-    min_version : str, default None
+-        Minimum required version of the specified mod_name
+-
+-    Returns
+-    -------
+-    object
+-        The imported module if successful, or False
+-    """
+-    try:
+-        mod = __import__(mod_name)
+-    except ImportError:
+-        return False
+-
+-    if not min_version:
+-        return mod
+-    else:
+-        import sys
+-
+-        version = getattr(sys.modules[mod_name], "__version__")
+-        if version and Version(version) >= Version(min_version):
+-            return mod
+-
+-    return False
+-
+-
+-def _skip_if_not_us_locale() -> bool:
+-    lang, _ = locale.getlocale()
+-    if lang != "en_US":
+-        return True
+-    return False
+-
+-
+-def _skip_if_no_scipy() -> bool:
+-    return not (
+-        safe_import("scipy.stats")
+-        and safe_import("scipy.sparse")
+-        and safe_import("scipy.interpolate")
+-        and safe_import("scipy.signal")
+-    )
+-
+ 
+ def skip_if_installed(package: str) -> pytest.MarkDecorator:
+     """

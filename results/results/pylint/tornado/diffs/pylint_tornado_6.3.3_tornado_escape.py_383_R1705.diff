@@ -1,0 +1,33 @@
+diff --git a/tornado/escape.py b/tornado/escape.py
+index 55354c30f4..84abfca604 100644
+--- a/tornado/escape.py
++++ b/tornado/escape.py
+@@ -375,28 +401,3 @@ def make_link(m: typing.Match) -> str:
+     # that we won't pick up &quot;, etc.
+     text = _unicode(xhtml_escape(text))
+     return _URL_RE.sub(make_link, text)
+-
+-
+-def _convert_entity(m: typing.Match) -> str:
+-    if m.group(1) == "#":
+-        try:
+-            if m.group(2)[:1].lower() == "x":
+-                return chr(int(m.group(2)[1:], 16))
+-            else:
+-                return chr(int(m.group(2)))
+-        except ValueError:
+-            return "&#%s;" % m.group(2)
+-    try:
+-        return _HTML_UNICODE_MAP[m.group(2)]
+-    except KeyError:
+-        return "&%s;" % m.group(2)
+-
+-
+-def _build_unicode_map() -> Dict[str, str]:
+-    unicode_map = {}
+-    for name, value in html.entities.name2codepoint.items():
+-        unicode_map[name] = chr(value)
+-    return unicode_map
+-
+-
+-_HTML_UNICODE_MAP = _build_unicode_map()

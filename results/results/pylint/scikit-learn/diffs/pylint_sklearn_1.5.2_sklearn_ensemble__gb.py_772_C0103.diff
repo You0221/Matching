@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index 960e469a090cd..fded8a535413d 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -774,7 +778,7 @@ def fit(self, X, y, sample_weight=None, monitor=None):
+                 dtype=DTYPE,
+                 order="C",
+                 accept_sparse="csr",
+-                force_all_finite=False,
++                ensure_all_finite=False,
+             )
+             raw_predictions = self._raw_predict(X_train)
+             self._resize_state()

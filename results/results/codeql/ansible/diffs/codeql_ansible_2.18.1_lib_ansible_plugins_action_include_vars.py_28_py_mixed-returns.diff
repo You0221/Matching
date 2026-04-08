@@ -1,0 +1,28 @@
+diff --git a/lib/ansible/plugins/action/include_vars.py b/lib/ansible/plugins/action/include_vars.py
+index c32e6227dbfb26..5b3cd4b6c3cecd 100644
+--- a/lib/ansible/plugins/action/include_vars.py
++++ b/lib/ansible/plugins/action/include_vars.py
+@@ -37,14 +37,17 @@ def _set_dir_defaults(self):
+         if not self.ignore_files:
+             self.ignore_files = list()
+ 
+-        if isinstance(self.ignore_files, string_types):
++        if isinstance(self.ignore_files, str):
++            self._display.deprecated(
++                msg="Specifying 'ignore_files' as a string is deprecated.",
++                version="2.24",
++                help_text="Use a list of strings instead.",
++                obj=self.ignore_files,
++            )
+             self.ignore_files = self.ignore_files.split()
+ 
+-        elif isinstance(self.ignore_files, dict):
+-            return {
+-                'failed': True,
+-                'message': '{0} must be a list'.format(self.ignore_files)
+-            }
++        if not isinstance(self.ignore_files, list):
++            raise AnsibleError("The 'ignore_files' option must be a list.", obj=self.ignore_files)
+ 
+     def _set_args(self):
+         """ Set instance variables based on the arguments that were passed """

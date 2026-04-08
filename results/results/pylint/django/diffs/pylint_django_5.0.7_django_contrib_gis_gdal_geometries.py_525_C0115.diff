@@ -1,0 +1,35 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -544,16 +617,25 @@ def y(self):
+     @property
+     def z(self):
+         "Return the Z coordinate for this Point."
+-        if self.coord_dim == 3:
++        if self.is_3d:
+             return capi.getz(self.ptr, 0)
+ 
++    @property
++    def m(self):
++        """Return the M coordinate for this Point."""
++        if self.is_measured:
++            return capi.getm(self.ptr, 0)
++
+     @property
+     def tuple(self):
+         "Return the tuple of this point."
+-        if self.coord_dim == 2:
+-            return (self.x, self.y)
+-        elif self.coord_dim == 3:
+-            return (self.x, self.y, self.z)
++        if self.is_3d and self.is_measured:
++            return self.x, self.y, self.z, self.m
++        if self.is_3d:
++            return self.x, self.y, self.z
++        if self.is_measured:
++            return self.x, self.y, self.m
++        return self.x, self.y
+ 
+     coords = tuple
+ 

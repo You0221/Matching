@@ -1,0 +1,16 @@
+diff --git a/sklearn/preprocessing/_function_transformer.py b/sklearn/preprocessing/_function_transformer.py
+index 3d7592b17e2af..f3530f3284dc9 100644
+--- a/sklearn/preprocessing/_function_transformer.py
++++ b/sklearn/preprocessing/_function_transformer.py
+@@ -200,7 +200,10 @@ def _check_inverse_transform(self, X):
+             # Dataframes can have multiple dtypes
+             dtypes = X.dtypes
+ 
+-        if not all(np.issubdtype(d, np.number) for d in dtypes):
++        # Not all dtypes are numpy dtypes, they can be pandas dtypes as well
++        if not all(
++            isinstance(d, np.dtype) and np.issubdtype(d, np.number) for d in dtypes
++        ):
+             raise ValueError(
+                 "'check_inverse' is only supported when all the elements in `X` is"
+                 " numerical."

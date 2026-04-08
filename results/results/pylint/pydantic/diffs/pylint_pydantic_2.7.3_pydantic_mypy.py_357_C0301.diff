@@ -1,0 +1,105 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 1a71bfe208b..8fcb54dd934 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -340,40 +278,90 @@ def to_argument(
+         self,
+         current_info: TypeInfo,
+         typed: bool,
++        model_strict: bool,
+         force_optional: bool,
+         use_alias: bool,
+         api: SemanticAnalyzerPluginInterface,
++        force_typevars_invariant: bool,
++        is_root_model_root: bool,
+     ) -> Argument:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.to_argument."""
+-        variable = self.to_var(current_info, api, use_alias)
+-        type_annotation = self.expand_type(current_info, api) if typed else AnyType(TypeOfAny.explicit)
++        variable = self.to_var(current_info, api, use_alias, force_typevars_invariant)
++
++        strict = model_strict if self.strict is None else self.strict
++        if typed or strict:
++            type_annotation = self.expand_type(current_info, api, include_root_type=True)
++        else:
++            type_annotation = AnyType(TypeOfAny.explicit)
++
+         return Argument(
+             variable=variable,
+             type_annotation=type_annotation,
+             initializer=None,
+-            kind=ARG_NAMED_OPT if force_optional or self.has_default else ARG_NAMED,
++            kind=ARG_OPT
++            if is_root_model_root
++            else (ARG_NAMED_OPT if force_optional or self.has_default else ARG_NAMED),
+         )
+ 
+-    def expand_type(self, current_info: TypeInfo, api: SemanticAnalyzerPluginInterface) -> Type | None:
++    def expand_type(
++        self,
++        current_info: TypeInfo,
++        api: SemanticAnalyzerPluginInterface,
++        force_typevars_invariant: bool = False,
++        include_root_type: bool = False,
++    ) -> Type | None:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.expand_type."""
+-        # The getattr in the next line is used to prevent errors in legacy versions of mypy without this attribute
+-        if self.type is not None and getattr(self.info, 'self_type', None) is not None:
+-            # In general, it is not safe to call `expand_type()` during semantic analyzis,
++        if force_typevars_invariant:
++            # In some cases, mypy will emit an error "Cannot use a covariant type variable as a parameter"
++            # To prevent that, we add an option to replace typevars with invariant ones while building certain
++            # method signatures (in particular, `__init__`). There may be a better way to do this, if this causes
++            # us problems in the future, we should look into why the dataclasses plugin doesn't have this issue.
++            if isinstance(self.type, TypeVarType):
++                modified_type = self.type.copy_modified()
++                modified_type.variance = INVARIANT
++                self.type = modified_type
++
++        if self.type is not None and self.info.self_type is not None:
++            # In general, it is not safe to call `expand_type()` during semantic analysis,
+             # however this plugin is called very late, so all types should be fully ready.
+             # Also, it is tricky to avoid eager expansion of Self types here (e.g. because
+             # we serialize attributes).
+             with state.strict_optional_set(api.options.strict_optional):
+-                return expand_type(self.type, {self.info.self_type.id: fill_typevars(current_info)})
++                filled_with_typevars = fill_typevars(current_info)
++                # Cannot be TupleType as current_info represents a Pydantic model:
++                assert isinstance(filled_with_typevars, Instance)
++                if force_typevars_invariant:
++                    for arg in filled_with_typevars.args:
++                        if isinstance(arg, TypeVarType):
++                            arg.variance = INVARIANT
++
++                expanded_type = expand_type(self.type, {self.info.self_type.id: filled_with_typevars})
++                if include_root_type and isinstance(expanded_type, Instance) and is_root_model(expanded_type.type):
++                    # When a root model is used as a field, Pydantic allows both an instance of the root model
++                    # as well as instances of the `root` field type:
++                    root_type = expanded_type.type['root'].type
++                    if root_type is None:
++                        # Happens if the hint for 'root' has unsolved forward references
++                        return expanded_type
++                    expanded_root_type = expand_type_by_instance(root_type, expanded_type)
++                    expanded_type = UnionType([expanded_type, expanded_root_type])
++                return expanded_type
+         return self.type
+ 
+-    def to_var(self, current_info: TypeInfo, api: SemanticAnalyzerPluginInterface, use_alias: bool) -> Var:
++    def to_var(
++        self,
++        current_info: TypeInfo,
++        api: SemanticAnalyzerPluginInterface,
++        use_alias: bool,
++        force_typevars_invariant: bool = False,
++    ) -> Var:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.to_var."""
+         if use_alias and self.alias is not None:
+             name = self.alias
+         else:
+             name = self.name
+ 
+-        return Var(name, self.expand_type(current_info, api))
++        return Var(name, self.expand_type(current_info, api, force_typevars_invariant))
+ 
+     def serialize(self) -> JsonDict:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.serialize."""

@@ -1,0 +1,19 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -419,9 +446,11 @@ def prefix_references(self, prefix):
+         clone = self.copy()
+         clone.set_source_expressions(
+             [
+-                F(f"{prefix}{expr.name}")
+-                if isinstance(expr, F)
+-                else expr.prefix_references(prefix)
++                (
++                    F(f"{prefix}{expr.name}")
++                    if isinstance(expr, F)
++                    else expr.prefix_references(prefix)
++                )
+                 for expr in self.get_source_expressions()
+             ]
+         )

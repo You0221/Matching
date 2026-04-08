@@ -1,0 +1,23 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1670,12 +1714,12 @@ def add_filtered_relation(self, filtered_relation, alias):
+                             "relations outside the %r (got %r)."
+                             % (filtered_relation.relation_name, lookup)
+                         )
+-                else:
+-                    raise ValueError(
+-                        "FilteredRelation's condition doesn't support nested "
+-                        "relations deeper than the relation_name (got %r for "
+-                        "%r)." % (lookup, filtered_relation.relation_name)
+-                    )
++            if len(lookup_field_parts) > len(relation_field_parts) + 1:
++                raise ValueError(
++                    "FilteredRelation's condition doesn't support nested "
++                    "relations deeper than the relation_name (got %r for "
++                    "%r)." % (lookup, filtered_relation.relation_name)
++                )
+         filtered_relation.condition = rename_prefix_from_q(
+             filtered_relation.relation_name,
+             alias,

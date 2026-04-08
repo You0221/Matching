@@ -1,0 +1,19 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 796c4d23c458..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1028,10 +1030,12 @@ def _get_default(self):
+                 return self.default
+             return lambda: self.default
+ 
+-        if self.db_default is not NOT_PROVIDED:
++        if self.has_db_default():
+             from django.db.models.expressions import DatabaseDefault
+ 
+-            return DatabaseDefault
++            return lambda: DatabaseDefault(
++                self._db_default_expression, output_field=self
++            )
+ 
+         if (
+             not self.empty_strings_allowed

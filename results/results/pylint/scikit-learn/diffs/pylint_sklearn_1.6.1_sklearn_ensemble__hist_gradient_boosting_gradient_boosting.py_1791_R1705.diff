@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index b136cd373a03f..064391abab24d 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -1793,6 +1858,9 @@ def _encode_y(self, y):
+                 )
+         return y
+ 
++    def _encode_y_val(self, y=None):
++        return self._encode_y(y)
++
+     def _get_loss(self, sample_weight):
+         if self.loss == "quantile":
+             return _LOSSES[self.loss](

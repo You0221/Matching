@@ -1,0 +1,21 @@
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index e8f614ff855c0..a57ada5a5b3b3 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -19,15 +18,12 @@
+ from pandas.compat import (
+     pa_version_under10p1,
+     pa_version_under13p0,
++    pa_version_under16p0,
+ )
+ from pandas.util._exceptions import find_stack_level
+ 
+ from pandas.core.dtypes.common import (
+-    is_bool_dtype,
+-    is_integer_dtype,
+-    is_object_dtype,
+     is_scalar,
+-    is_string_dtype,
+     pandas_dtype,
+ )
+ from pandas.core.dtypes.missing import isna

@@ -1,0 +1,53 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2234,10 +2444,45 @@ def fit(self, X, y, sample_weight=None):
+ 
+         return self
+ 
++    def get_metadata_routing(self):
++        """Get metadata routing of this object.
+ 
+-class RidgeCV(
+-    _RoutingNotSupportedMixin, MultiOutputMixin, RegressorMixin, _BaseRidgeCV
+-):
++        Please check :ref:`User Guide <metadata_routing>` on how the routing
++        mechanism works.
++
++        .. versionadded:: 1.5
++
++        Returns
++        -------
++        routing : MetadataRouter
++            A :class:`~sklearn.utils.metadata_routing.MetadataRouter` encapsulating
++            routing information.
++        """
++        router = (
++            MetadataRouter(owner=self.__class__.__name__)
++            .add_self_request(self)
++            .add(
++                scorer=self._get_scorer(),
++                method_mapping=MethodMapping().add(callee="score", caller="fit"),
++            )
++        )
++        return router
++
++    def _get_scorer(self):
++        return check_scoring(self, scoring=self.scoring, allow_none=True)
++
++    # TODO(1.7): Remove
++    # mypy error: Decorated property not supported
++    @deprecated(  # type: ignore
++        "Attribute `cv_values_` is deprecated in version 1.5 and will be removed "
++        "in 1.7. Use `cv_results_` instead."
++    )
++    @property
++    def cv_values_(self):
++        return self.cv_results_
++
++
++class RidgeCV(MultiOutputMixin, RegressorMixin, _BaseRidgeCV):
+     """Ridge regression with built-in cross-validation.
+ 
+     See glossary entry for :term:`cross-validation estimator`.

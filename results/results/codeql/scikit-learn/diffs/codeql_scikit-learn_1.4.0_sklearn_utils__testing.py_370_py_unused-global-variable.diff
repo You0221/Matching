@@ -1,0 +1,12 @@
+diff --git a/sklearn/utils/_testing.py b/sklearn/utils/_testing.py
+index a9ecaa8cd2d9d..ba8901e4b9050 100644
+--- a/sklearn/utils/_testing.py
++++ b/sklearn/utils/_testing.py
+@@ -367,7 +324,6 @@ def set_random_state(estimator, random_state=0):
+     import pytest
+ 
+     skip_if_32bit = pytest.mark.skipif(_IS_32BIT, reason="skipped on 32bit platforms")
+-    fails_if_pypy = pytest.mark.xfail(IS_PYPY, reason="not compatible with PyPy")
+     fails_if_unstable_openblas = pytest.mark.xfail(
+         _in_unstable_openblas_configuration(),
+         reason="OpenBLAS is unstable for this configuration",

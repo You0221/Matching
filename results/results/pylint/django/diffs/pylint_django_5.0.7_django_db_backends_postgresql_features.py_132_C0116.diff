@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/postgresql/features.py b/django/db/backends/postgresql/features.py
+index 0a0ade4ced31..ef697e85b03a 100644
+--- a/django/db/backends/postgresql/features.py
++++ b/django/db/backends/postgresql/features.py
+@@ -126,10 +152,6 @@ def introspected_field_types(self):
+             "PositiveSmallIntegerField": "SmallIntegerField",
+         }
+ 
+-    @cached_property
+-    def is_postgresql_13(self):
+-        return self.connection.pg_version >= 130000
+-
+     @cached_property
+     def is_postgresql_14(self):
+         return self.connection.pg_version >= 140000

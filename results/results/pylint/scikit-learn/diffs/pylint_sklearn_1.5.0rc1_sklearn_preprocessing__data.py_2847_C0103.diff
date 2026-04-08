@@ -1,0 +1,14 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..0d57f7d69f827 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2852,6 +2873,9 @@ def _check_inputs(self, X, in_fit, accept_sparse_negative=False, copy=False):
+             accept_sparse="csc",
+             copy=copy,
+             dtype=FLOAT_DTYPES,
++            # only set force_writeable for the validation at transform time because
++            # it's the only place where QuantileTransformer performs inplace operations.
++            force_writeable=True if not in_fit else None,
+             force_all_finite="allow-nan",
+         )
+         # we only accept positive sparse matrix when ignore_implicit_zeros is

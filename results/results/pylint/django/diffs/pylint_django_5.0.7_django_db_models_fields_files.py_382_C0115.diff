@@ -1,0 +1,17 @@
+diff --git a/django/db/models/fields/files.py b/django/db/models/fields/files.py
+index 95985684ee12..0716d3599e94 100644
+--- a/django/db/models/fields/files.py
++++ b/django/db/models/fields/files.py
+@@ -380,6 +401,12 @@ def __set__(self, instance, value):
+ 
+ 
+ class ImageFieldFile(ImageFile, FieldFile):
++    def _set_instance_attribute(self, name, content):
++        setattr(self.instance, self.field.attname, content)
++        # Update the name in case generate_filename() or storage.save() changed
++        # it, but bypass the descriptor to avoid re-reading the file.
++        self.instance.__dict__[self.field.attname] = self.name
++
+     def delete(self, save=True):
+         # Clear the image dimensions cache
+         if hasattr(self, "_dimensions_cache"):

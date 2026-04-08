@@ -1,0 +1,25 @@
+diff --git a/pandas/io/formats/xml.py b/pandas/io/formats/xml.py
+index 76b938755755a..f56fca8d7ef44 100644
+--- a/pandas/io/formats/xml.py
++++ b/pandas/io/formats/xml.py
+@@ -137,14 +142,14 @@ def __init__(
+         self.storage_options = storage_options
+ 
+         self.orig_cols = self.frame.columns.tolist()
+-        self.frame_dicts = self.process_dataframe()
++        self.frame_dicts = self._process_dataframe()
+ 
+-        self.validate_columns()
+-        self.validate_encoding()
+-        self.prefix_uri = self.get_prefix_uri()
+-        self.handle_indexes()
++        self._validate_columns()
++        self._validate_encoding()
++        self.prefix_uri = self._get_prefix_uri()
++        self._handle_indexes()
+ 
+-    def build_tree(self) -> bytes:
++    def _build_tree(self) -> bytes:
+         """
+         Build tree from  data.
+ 

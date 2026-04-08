@@ -1,0 +1,22 @@
+diff --git a/sklearn/linear_model/_glm/glm.py b/sklearn/linear_model/_glm/glm.py
+index 093a813f60550..7f138f420dc36 100644
+--- a/sklearn/linear_model/_glm/glm.py
++++ b/sklearn/linear_model/_glm/glm.py
+@@ -557,13 +560,13 @@ class PoissonRegressor(_GeneralizedLinearRegressor):
+     >>> clf.fit(X, y)
+     PoissonRegressor()
+     >>> clf.score(X, y)
+-    np.float64(0.990...)
++    np.float64(0.990)
+     >>> clf.coef_
+-    array([0.121..., 0.158...])
++    array([0.121, 0.158])
+     >>> clf.intercept_
+-    np.float64(2.088...)
++    np.float64(2.088)
+     >>> clf.predict([[1, 1], [3, 4]])
+-    array([10.676..., 21.875...])
++    array([10.676, 21.875])
+     """
+ 
+     _parameter_constraints: dict = {

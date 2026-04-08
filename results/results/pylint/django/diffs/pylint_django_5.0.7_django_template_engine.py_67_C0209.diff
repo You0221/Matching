@@ -1,0 +1,19 @@
+diff --git a/django/template/engine.py b/django/template/engine.py
+index f2215c0e4e9c..9882d3a16d17 100644
+--- a/django/template/engine.py
++++ b/django/template/engine.py
+@@ -70,9 +70,11 @@ def __repr__(self):
+             self.__class__.__qualname__,
+             "" if not self.dirs else " dirs=%s" % repr(self.dirs),
+             self.app_dirs,
+-            ""
+-            if not self.context_processors
+-            else " context_processors=%s" % repr(self.context_processors),
++            (
++                ""
++                if not self.context_processors
++                else " context_processors=%s" % repr(self.context_processors)
++            ),
+             self.debug,
+             repr(self.loaders),
+             repr(self.string_if_invalid),

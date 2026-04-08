@@ -1,0 +1,12 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -283,6 +284,7 @@ def _check_clashes(self):
+                 )
+ 
+             if clash_field.name == rel_query_name:
++                clash_name = f"{rel_opts.label}.{clash_field.name}"
+                 errors.append(
+                     checks.Error(
+                         "Reverse query name for '%s' clashes with field name '%s'."

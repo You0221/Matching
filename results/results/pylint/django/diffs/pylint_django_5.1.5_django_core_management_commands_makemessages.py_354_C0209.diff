@@ -1,0 +1,16 @@
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index dc3d4026e269..23ad424c5c31 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -349,11 +340,6 @@ def handle(self, *args, **options):
+             self.msgattrib_options = self.msgattrib_options[:] + ["--no-location"]
+             self.xgettext_options = self.xgettext_options[:] + ["--no-location"]
+         if options["add_location"]:
+-            if self.gettext_version < (0, 19):
+-                raise CommandError(
+-                    "The --add-location option requires gettext 0.19 or later. "
+-                    "You have %s." % ".".join(str(x) for x in self.gettext_version)
+-                )
+             arg_add_location = "--add-location=%s" % options["add_location"]
+             self.msgmerge_options = self.msgmerge_options[:] + [arg_add_location]
+             self.msguniq_options = self.msguniq_options[:] + [arg_add_location]

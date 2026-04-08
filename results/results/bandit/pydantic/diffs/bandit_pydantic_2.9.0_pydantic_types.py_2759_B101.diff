@@ -1,0 +1,24 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 58b7899645f..b5c4fd6060b 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2755,15 +2971,15 @@ class ThanksgivingDinner(BaseModel):
+ 
+     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
+         schema = handler(source_type)
+-        metadata = schema.setdefault('metadata', {})
+-        assert isinstance(metadata, dict)
+-        metadata[_core_utils.TAGGED_UNION_TAG_KEY] = self.tag
++        metadata = cast('CoreMetadata', schema.setdefault('metadata', {}))
++        metadata['pydantic_internal_union_tag_key'] = self.tag
+         return schema
+ 
+ 
+ @_dataclasses.dataclass(**_internal_dataclass.slots_true, frozen=True)
+ class Discriminator:
+-    """Usage docs: https://docs.pydantic.dev/2.9/concepts/unions/#discriminated-unions-with-callable-discriminator
++    """!!! abstract "Usage Documentation"
++        [Discriminated Unions with `Callable` `Discriminator`](../concepts/unions.md#discriminated-unions-with-callable-discriminator)
+ 
+     Provides a way to use a custom callable as the way to extract the value of a union discriminator.
+ 

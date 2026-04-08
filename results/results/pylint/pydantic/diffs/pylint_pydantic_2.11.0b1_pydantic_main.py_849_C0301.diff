@@ -1,0 +1,36 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 03cb511eb30..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -846,7 +896,7 @@ def __class_getitem__(
+             raise TypeError('Type parameters should be placed on typing.Generic, not BaseModel')
+         if not hasattr(cls, '__parameters__'):
+             raise TypeError(f'{cls} cannot be parametrized because it does not inherit from typing.Generic')
+-        if not cls.__pydantic_generic_metadata__['parameters'] and typing.Generic not in cls.__bases__:
++        if not cls.__pydantic_generic_metadata__['parameters'] and Generic not in cls.__bases__:
+             raise TypeError(f'{cls} is not a generic class')
+ 
+         if not isinstance(typevar_values, tuple):
+@@ -871,7 +921,7 @@ def __class_getitem__(
+             origin = cls.__pydantic_generic_metadata__['origin'] or cls
+             model_name = origin.model_parametrized_name(args)
+             params = tuple(
+-                {param: None for param in _generics.iter_contained_typevars(typevars_map.values())}
++                dict.fromkeys(_generics.iter_contained_typevars(typevars_map.values()))
+             )  # use dict as ordered set
+ 
+             with _generics.generic_recursion_self_type(origin, args) as maybe_self_type:
+@@ -898,12 +948,7 @@ def __class_getitem__(
+ 
+                 submodel = _generics.create_generic_submodel(model_name, origin, args, params)
+ 
+-                # Cache the generated model *only* if not in the process of parametrizing
+-                # another model. In some valid scenarios, we miss the opportunity to cache
+-                # it but in some cases this results in `PydanticRecursiveRef` instances left
+-                # on `FieldInfo` annotations:
+-                if len(_generics.recursively_defined_type_refs()) == 1:
+-                    _generics.set_cached_generic_type(cls, typevar_values, submodel, origin, args)
++                _generics.set_cached_generic_type(cls, typevar_values, submodel, origin, args)
+ 
+         return submodel
+ 

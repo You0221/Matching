@@ -1,0 +1,22 @@
+diff --git a/django/contrib/admindocs/views.py b/django/contrib/admindocs/views.py
+index 38a2bb9286ff..0c4ece29feb2 100644
+--- a/django/contrib/admindocs/views.py
++++ b/django/contrib/admindocs/views.py
+@@ -228,6 +246,8 @@ def get_context_data(self, **kwargs):
+             )
+ 
+         opts = model._meta
++        if not user_has_model_view_permission(self.request.user, opts):
++            raise PermissionDenied
+ 
+         title, body, metadata = utils.parse_docstring(model.__doc__)
+         title = title and utils.parse_rst(title, "model", _("model:") + model_name)
+@@ -384,7 +404,7 @@ def get_context_data(self, **kwargs):
+             **{
+                 **kwargs,
+                 "name": opts.label,
+-                "summary": title,
++                "summary": strip_p_tags(title),
+                 "description": body,
+                 "fields": fields,
+                 "methods": methods,

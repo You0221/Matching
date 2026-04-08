@@ -1,0 +1,149 @@
+diff --git a/django/db/models/constraints.py b/django/db/models/constraints.py
+index 56d547e6b086..1601fc993390 100644
+--- a/django/db/models/constraints.py
++++ b/django/db/models/constraints.py
+@@ -91,13 +151,30 @@ def clone(self):
+ 
+ 
+ class CheckConstraint(BaseConstraint):
++    # RemovedInDjango60Warning: when the deprecation ends, replace with
++    # def __init__(
++    #  self, *, condition, name, violation_error_code=None, violation_error_message=None
++    # )
+     def __init__(
+-        self, *, check, name, violation_error_code=None, violation_error_message=None
++        self,
++        *,
++        name,
++        condition=None,
++        check=None,
++        violation_error_code=None,
++        violation_error_message=None,
+     ):
+-        self.check = check
+-        if not getattr(check, "conditional", False):
++        if check is not None:
++            warnings.warn(
++                "CheckConstraint.check is deprecated in favor of `.condition`.",
++                RemovedInDjango60Warning,
++                stacklevel=2,
++            )
++            condition = check
++        self.condition = condition
++        if not getattr(condition, "conditional", False):
+             raise TypeError(
+-                "CheckConstraint.check must be a Q instance or boolean expression."
++                "CheckConstraint.condition must be a Q instance or boolean expression."
+             )
+         super().__init__(
+             name=name,
+@@ -105,9 +182,66 @@ def __init__(
+             violation_error_message=violation_error_message,
+         )
+ 
++    def _get_check(self):
++        warnings.warn(
++            "CheckConstraint.check is deprecated in favor of `.condition`.",
++            RemovedInDjango60Warning,
++            stacklevel=2,
++        )
++        return self.condition
++
++    def _set_check(self, value):
++        warnings.warn(
++            "CheckConstraint.check is deprecated in favor of `.condition`.",
++            RemovedInDjango60Warning,
++            stacklevel=2,
++        )
++        self.condition = value
++
++    check = property(_get_check, _set_check)
++
++    def _check(self, model, connection):
++        errors = []
++        if not (
++            connection.features.supports_table_check_constraints
++            or "supports_table_check_constraints" in model._meta.required_db_features
++        ):
++            errors.append(
++                checks.Warning(
++                    f"{connection.display_name} does not support check constraints.",
++                    hint=(
++                        "A constraint won't be created. Silence this warning if you "
++                        "don't care about it."
++                    ),
++                    obj=model,
++                    id="models.W027",
++                )
++            )
++        elif (
++            connection.features.supports_table_check_constraints
++            or "supports_table_check_constraints"
++            not in model._meta.required_db_features
++        ):
++            references = set()
++            condition = self.condition
++            if isinstance(condition, Q):
++                references.update(model._get_expr_references(condition))
++            if any(isinstance(expr, RawSQL) for expr in condition.flatten()):
++                errors.append(
++                    checks.Warning(
++                        f"Check constraint {self.name!r} contains RawSQL() expression "
++                        "and won't be validated during the model full_clean().",
++                        hint="Silence this warning if you don't care about it.",
++                        obj=model,
++                        id="models.W045",
++                    ),
++                )
++            errors.extend(self._check_references(model, references))
++        return errors
++
+     def _get_check_sql(self, model, schema_editor):
+         query = Query(model=model, alias_cols=False)
+-        where = query.build_where(self.check)
++        where = query.build_where(self.condition)
+         compiler = query.get_compiler(connection=schema_editor.connection)
+         sql, params = where.as_sql(compiler, schema_editor.connection)
+         return sql % tuple(schema_editor.quote_value(p) for p in params)
+@@ -124,9 +258,9 @@ def remove_sql(self, model, schema_editor):
+         return schema_editor._delete_check_sql(model, self.name)
+ 
+     def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+-        against = instance._get_field_value_map(meta=model._meta, exclude=exclude)
++        against = instance._get_field_expression_map(meta=model._meta, exclude=exclude)
+         try:
+-            if not Q(self.check).check(against, using=using):
++            if not Q(self.condition).check(against, using=using):
+                 raise ValidationError(
+                     self.get_violation_error_message(), code=self.violation_error_code
+                 )
+@@ -134,9 +268,9 @@ def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+             pass
+ 
+     def __repr__(self):
+-        return "<%s: check=%s name=%s%s%s>" % (
++        return "<%s: condition=%s name=%s%s%s>" % (
+             self.__class__.__qualname__,
+-            self.check,
++            self.condition,
+             repr(self.name),
+             (
+                 ""
+@@ -155,7 +289,7 @@ def __eq__(self, other):
+         if isinstance(other, CheckConstraint):
+             return (
+                 self.name == other.name
+-                and self.check == other.check
++                and self.condition == other.condition
+                 and self.violation_error_code == other.violation_error_code
+                 and self.violation_error_message == other.violation_error_message
+             )
+@@ -163,7 +297,7 @@ def __eq__(self, other):
+ 
+     def deconstruct(self):
+         path, args, kwargs = super().deconstruct()
+-        kwargs["check"] = self.check
++        kwargs["condition"] = self.condition
+         return path, args, kwargs
+ 
+ 

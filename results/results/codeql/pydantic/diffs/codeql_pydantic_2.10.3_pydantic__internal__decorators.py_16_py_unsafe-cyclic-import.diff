@@ -1,0 +1,25 @@
+diff --git a/pydantic/_internal/_decorators.py b/pydantic/_internal/_decorators.py
+index bb0f7207eae..92880a49fcc 100644
+--- a/pydantic/_internal/_decorators.py
++++ b/pydantic/_internal/_decorators.py
+@@ -2,15 +2,17 @@
+ 
+ from __future__ import annotations as _annotations
+ 
++import types
+ from collections import deque
++from collections.abc import Iterable
+ from dataclasses import dataclass, field
+ from functools import cached_property, partial, partialmethod
+ from inspect import Parameter, Signature, isdatadescriptor, ismethoddescriptor, signature
+ from itertools import islice
+-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Generic, Iterable, TypeVar, Union
++from typing import TYPE_CHECKING, Any, Callable, ClassVar, Generic, Literal, TypeVar, Union
+ 
+-from pydantic_core import PydanticUndefined, core_schema
+-from typing_extensions import Literal, TypeAlias, is_typeddict
++from pydantic_core import PydanticUndefined, PydanticUndefinedType, core_schema
++from typing_extensions import TypeAlias, is_typeddict
+ 
+ from ..errors import PydanticUserError
+ from ._core_utils import get_type_ref

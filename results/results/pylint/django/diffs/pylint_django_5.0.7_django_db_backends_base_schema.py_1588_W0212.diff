@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -1585,8 +1628,8 @@ def _index_columns(self, table, columns, col_suffixes, opclasses):
+ 
+     def _model_indexes_sql(self, model):
+         """
+-        Return a list of all index SQL statements (field indexes,
+-        index_together, Meta.indexes) for the specified model.
++        Return a list of all index SQL statements (field indexes, Meta.indexes)
++        for the specified model.
+         """
+         if not model._meta.managed or model._meta.proxy or model._meta.swapped:
+             return []

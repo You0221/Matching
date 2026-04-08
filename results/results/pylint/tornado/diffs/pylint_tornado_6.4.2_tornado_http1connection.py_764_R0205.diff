@@ -1,0 +1,13 @@
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index 1a23f5c7fd..8dd0c9b6e2 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -761,7 +761,7 @@ def on_connection_close(self) -> None:
+         return self._delegate.on_connection_close()
+ 
+ 
+-class HTTP1ServerConnection(object):
++class HTTP1ServerConnection:
+     """An HTTP/1.x server."""
+ 
+     def __init__(

@@ -1,0 +1,134 @@
+diff --git a/sklearn/linear_model/_linear_loss.py b/sklearn/linear_model/_linear_loss.py
+index e8c1466b30623..3bfd5fcd09491 100644
+--- a/sklearn/linear_model/_linear_loss.py
++++ b/sklearn/linear_model/_linear_loss.py
+@@ -426,77 +462,82 @@ def gradient_hessian(
+         gradient : ndarray of shape coef.shape
+              The gradient of the loss.
+ 
+-        hessian : ndarray
++        hessian : ndarray of shape (n_dof, n_dof) or \
++            (n_classes, n_dof, n_dof, n_classes)
+             Hessian matrix.
+ 
+         hessian_warning : bool
+-            True if pointwise hessian has more than half of its elements non-positive.
++            True if pointwise hessian has more than 25% of its elements non-positive.
+         """
+-        n_samples, n_features = X.shape
++        (n_samples, n_features), n_classes = X.shape, self.base_loss.n_classes
+         n_dof = n_features + int(self.fit_intercept)
+-
+         if raw_prediction is None:
+             weights, intercept, raw_prediction = self.weight_intercept_raw(coef, X)
+         else:
+             weights, intercept = self.weight_intercept(coef)
+-
+-        grad_pointwise, hess_pointwise = self.base_loss.gradient_hessian(
+-            y_true=y,
+-            raw_prediction=raw_prediction,
+-            sample_weight=sample_weight,
+-            n_threads=n_threads,
+-        )
+         sw_sum = n_samples if sample_weight is None else np.sum(sample_weight)
+-        grad_pointwise /= sw_sum
+-        hess_pointwise /= sw_sum
+ 
+-        # For non-canonical link functions and far away from the optimum, the pointwise
+-        # hessian can be negative. We take care that 75% of the hessian entries are
+-        # positive.
+-        hessian_warning = np.mean(hess_pointwise <= 0) > 0.25
+-        hess_pointwise = np.abs(hess_pointwise)
++        # Allocate gradient.
++        if gradient_out is None:
++            grad = np.empty_like(coef, dtype=weights.dtype, order="F")
++        elif gradient_out.shape != coef.shape:
++            raise ValueError(
++                f"gradient_out is required to have shape coef.shape = {coef.shape}; "
++                f"got {gradient_out.shape}."
++            )
++        elif self.base_loss.is_multiclass and not gradient_out.flags.f_contiguous:
++            raise ValueError("gradient_out must be F-contiguous.")
++        else:
++            grad = gradient_out
++        # Allocate hessian.
++        n = coef.size  # for multinomial this equals n_dof * n_classes
++        if hessian_out is None:
++            hess = np.empty((n, n), dtype=weights.dtype)
++        elif hessian_out.shape != (n, n):
++            raise ValueError(
++                f"hessian_out is required to have shape ({n, n}); got "
++                f"{hessian_out.shape=}."
++            )
++        elif self.base_loss.is_multiclass and (
++            not hessian_out.flags.c_contiguous and not hessian_out.flags.f_contiguous
++        ):
++            raise ValueError("hessian_out must be contiguous.")
++        else:
++            hess = hessian_out
+ 
+         if not self.base_loss.is_multiclass:
+-            # gradient
+-            if gradient_out is None:
+-                grad = np.empty_like(coef, dtype=weights.dtype)
+-            else:
+-                grad = gradient_out
++            grad_pointwise, hess_pointwise = self.base_loss.gradient_hessian(
++                y_true=y,
++                raw_prediction=raw_prediction,
++                sample_weight=sample_weight,
++                n_threads=n_threads,
++            )
++            grad_pointwise /= sw_sum
++            hess_pointwise /= sw_sum
++
++            # For non-canonical link functions and far away from the optimum, the
++            # pointwise hessian can be negative. We take care that 75% of the hessian
++            # entries are positive.
++            hessian_warning = (
++                np.average(hess_pointwise <= 0, weights=sample_weight) > 0.25
++            )
++            hess_pointwise = np.abs(hess_pointwise)
++
+             grad[:n_features] = X.T @ grad_pointwise + l2_reg_strength * weights
+             if self.fit_intercept:
+                 grad[-1] = grad_pointwise.sum()
+ 
+-            # hessian
+-            if hessian_out is None:
+-                hess = np.empty(shape=(n_dof, n_dof), dtype=weights.dtype)
+-            else:
+-                hess = hessian_out
+-
+             if hessian_warning:
+                 # Exit early without computing the hessian.
+                 return grad, hess, hessian_warning
+ 
+-            # TODO: This "sandwich product", X' diag(W) X, is the main computational
+-            # bottleneck for solvers. A dedicated Cython routine might improve it
+-            # exploiting the symmetry (as opposed to, e.g., BLAS gemm).
+-            if sparse.issparse(X):
+-                hess[:n_features, :n_features] = (
+-                    X.T
+-                    @ sparse.dia_matrix(
+-                        (hess_pointwise, 0), shape=(n_samples, n_samples)
+-                    )
+-                    @ X
+-                ).toarray()
+-            else:
+-                # np.einsum may use less memory but the following, using BLAS matrix
+-                # multiplication (gemm), is by far faster.
+-                WX = hess_pointwise[:, None] * X
+-                hess[:n_features, :n_features] = np.dot(X.T, WX)
++            hess[:n_features, :n_features] = sandwich_dot(X, hess_pointwise)
+ 
+             if l2_reg_strength > 0:
+                 # The L2 penalty enters the Hessian on the diagonal only. To add those
+-                # terms, we use a flattened view on the array.
+-                hess.reshape(-1)[
++                # terms, we use a flattened view of the array.
++                order = "C" if hess.flags.c_contiguous else "F"
++                hess.reshape(-1, order=order)[
+                     : (n_features * n_dof) : (n_dof + 1)
+                 ] += l2_reg_strength
+ 

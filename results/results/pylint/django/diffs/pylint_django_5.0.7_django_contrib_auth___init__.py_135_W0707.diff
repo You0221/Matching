@@ -1,0 +1,74 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 91257dd3da56..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -96,7 +131,23 @@ def authenticate(request=None, **credentials):
+ @sensitive_variables("credentials")
+ async def aauthenticate(request=None, **credentials):
+     """See authenticate()."""
+-    return await sync_to_async(authenticate)(request, **credentials)
++    for backend, backend_path in _get_compatible_backends(request, **credentials):
++        try:
++            user = await backend.aauthenticate(request, **credentials)
++        except PermissionDenied:
++            # This backend says to stop in our tracks - this user should not be
++            # allowed in at all.
++            break
++        if user is None:
++            continue
++        # Annotate the user object with the path of the backend.
++        user.backend = backend_path
++        return user
++
++    # The credentials supplied are invalid to all backends, fire signal.
++    await user_login_failed.asend(
++        sender=__name__, credentials=_clean_credentials(credentials), request=request
++    )
+ 
+ 
+ def login(request, user, backend=None):
+@@ -105,9 +156,19 @@ def login(request, user, backend=None):
+     have to reauthenticate on every request. Note that data set during
+     the anonymous session is retained when the user logs in.
+     """
++    # RemovedInDjango61Warning: When the deprecation ends, replace with:
++    # session_auth_hash = user.get_session_auth_hash()
+     session_auth_hash = ""
++    # RemovedInDjango61Warning.
+     if user is None:
+         user = request.user
++        warnings.warn(
++            "Fallback to request.user when user is None will be removed.",
++            RemovedInDjango61Warning,
++            stacklevel=2,
++        )
++
++    # RemovedInDjango61Warning.
+     if hasattr(user, "get_session_auth_hash"):
+         session_auth_hash = user.get_session_auth_hash()
+ 
+@@ -125,23 +186,7 @@ def login(request, user, backend=None):
+     else:
+         request.session.cycle_key()
+ 
+-    try:
+-        backend = backend or user.backend
+-    except AttributeError:
+-        backends = _get_backends(return_tuples=True)
+-        if len(backends) == 1:
+-            _, backend = backends[0]
+-        else:
+-            raise ValueError(
+-                "You have multiple authentication backends configured and "
+-                "therefore must provide the `backend` argument or set the "
+-                "`backend` attribute on the user."
+-            )
+-    else:
+-        if not isinstance(backend, str):
+-            raise TypeError(
+-                "backend must be a dotted import path string (got %r)." % backend
+-            )
++    backend = _get_backend_from_user(user=user, backend=backend)
+ 
+     request.session[SESSION_KEY] = user._meta.pk.value_to_string(user)
+     request.session[BACKEND_SESSION_KEY] = backend

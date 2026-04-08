@@ -1,0 +1,14 @@
+diff --git a/pandas/io/json/_json.py b/pandas/io/json/_json.py
+index 833f4986b6da6..4c490c6b2cda2 100644
+--- a/pandas/io/json/_json.py
++++ b/pandas/io/json/_json.py
+@@ -1279,7 +1309,8 @@ def _try_convert_data(
+ 
+         return data, True
+ 
+-    def _try_convert_to_date(self, data):
++    @final
++    def _try_convert_to_date(self, data: Series) -> tuple[Series, bool]:
+         """
+         Try to parse a ndarray like into a date column.
+ 

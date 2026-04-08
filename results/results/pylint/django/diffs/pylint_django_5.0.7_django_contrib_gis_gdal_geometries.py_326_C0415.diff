@@ -1,0 +1,21 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -322,9 +374,14 @@ def _geos_ptr(self):
+     @property
+     def geos(self):
+         "Return a GEOSGeometry object from this OGRGeometry."
+-        from django.contrib.gis.geos import GEOSGeometry
++        if self.geos_support:
++            from django.contrib.gis.geos import GEOSGeometry
+ 
+-        return GEOSGeometry(self._geos_ptr(), self.srid)
++            return GEOSGeometry(self._geos_ptr(), self.srid)
++        else:
++            from django.contrib.gis.geos import GEOSException
++
++            raise GEOSException(f"GEOS does not support {self.__class__.__qualname__}.")
+ 
+     @property
+     def gml(self):

@@ -1,0 +1,107 @@
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index b18ef553695e..266a3efadcc4 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -183,6 +195,38 @@ def reduce(self, operation, app_label):
+                     managers=operation.managers,
+                 ),
+             ]
++        elif (
++            isinstance(operation, AlterModelTable)
++            and self.name_lower == operation.name_lower
++        ):
++            return [
++                CreateModel(
++                    self.name,
++                    fields=self.fields,
++                    options={
++                        **self.options,
++                        "db_table": operation.table,
++                    },
++                    bases=self.bases,
++                    managers=self.managers,
++                ),
++            ]
++        elif (
++            isinstance(operation, AlterModelTableComment)
++            and self.name_lower == operation.name_lower
++        ):
++            return [
++                CreateModel(
++                    self.name,
++                    fields=self.fields,
++                    options={
++                        **self.options,
++                        "db_table_comment": operation.table_comment,
++                    },
++                    bases=self.bases,
++                    managers=self.managers,
++                ),
++            ]
+         elif (
+             isinstance(operation, AlterTogetherOptionOperation)
+             and self.name_lower == operation.name_lower
+@@ -341,39 +385,48 @@ def reduce(self, operation, app_label):
+                         managers=self.managers,
+                     ),
+                 ]
+-            elif isinstance(operation, RenameIndex) and operation.old_fields:
+-                options_index_together = {
+-                    fields
+-                    for fields in self.options.get("index_together", [])
+-                    if fields != operation.old_fields
+-                }
+-                if options_index_together:
+-                    self.options["index_together"] = options_index_together
+-                else:
+-                    self.options.pop("index_together", None)
++            elif isinstance(operation, AddConstraint):
+                 return [
+                     CreateModel(
+                         self.name,
+                         fields=self.fields,
+                         options={
+                             **self.options,
+-                            "indexes": [
+-                                *self.options.get("indexes", []),
+-                                models.Index(
+-                                    fields=operation.old_fields, name=operation.new_name
+-                                ),
++                            "constraints": [
++                                *self.options.get("constraints", []),
++                                operation.constraint,
+                             ],
+                         },
+                         bases=self.bases,
+                         managers=self.managers,
+                     ),
+                 ]
++            elif isinstance(operation, RemoveConstraint):
++                options_constraints = [
++                    constraint
++                    for constraint in self.options.get("constraints", [])
++                    if constraint.name != operation.name
++                ]
++                return [
++                    CreateModel(
++                        self.name,
++                        fields=self.fields,
++                        options={
++                            **self.options,
++                            "constraints": options_constraints,
++                        },
++                        bases=self.bases,
++                        managers=self.managers,
++                    ),
++                ]
+         return super().reduce(operation, app_label)
+ 
+ 
+ class DeleteModel(ModelOperation):
+     """Drop a model's table."""
+ 
++    category = OperationCategory.REMOVAL
++
+     def deconstruct(self):
+         kwargs = {
+             "name": self.name,

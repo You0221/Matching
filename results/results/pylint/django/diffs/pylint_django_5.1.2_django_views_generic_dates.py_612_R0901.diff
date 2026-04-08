@@ -1,0 +1,17 @@
+diff --git a/django/views/generic/dates.py b/django/views/generic/dates.py
+index d2b776c1223d..12ec4104cd67 100644
+--- a/django/views/generic/dates.py
++++ b/django/views/generic/dates.py
+@@ -610,7 +632,11 @@ class DayArchiveView(MultipleObjectTemplateResponseMixin, BaseDayArchiveView):
+ 
+ 
+ class BaseTodayArchiveView(BaseDayArchiveView):
+-    """List of objects published today."""
++    """
++    Base view for a list of objects published today.
++
++    This requires subclassing to provide a response mixin.
++    """
+ 
+     def get_dated_items(self):
+         """Return (date_list, items, extra_context) for this request."""

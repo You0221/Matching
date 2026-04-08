@@ -1,0 +1,16 @@
+diff --git a/sklearn/ensemble/_weight_boosting.py b/sklearn/ensemble/_weight_boosting.py
+index 7780230b046cb..37c6468a5ebf6 100644
+--- a/sklearn/ensemble/_weight_boosting.py
++++ b/sklearn/ensemble/_weight_boosting.py
+@@ -312,6 +312,11 @@ def feature_importances_(self):
+                 "feature_importances_ attribute"
+             ) from e
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ def _samme_proba(estimator, n_classes, X):
+     """Calculate algorithm 4, step 2, equation c) of Zhu et al [1].

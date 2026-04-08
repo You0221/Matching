@@ -1,0 +1,22 @@
+diff --git a/pandas/io/orc.py b/pandas/io/orc.py
+index 774f9d797b011..fed9463c38d5d 100644
+--- a/pandas/io/orc.py
++++ b/pandas/io/orc.py
+@@ -12,17 +12,9 @@
+ from pandas._config import using_pyarrow_string_dtype
+ 
+ from pandas._libs import lib
+-from pandas.compat import pa_version_under8p0
+ from pandas.compat._optional import import_optional_dependency
+ from pandas.util._validators import check_dtype_backend
+ 
+-from pandas.core.dtypes.common import is_unsigned_integer_dtype
+-from pandas.core.dtypes.dtypes import (
+-    CategoricalDtype,
+-    IntervalDtype,
+-    PeriodDtype,
+-)
+-
+ import pandas as pd
+ from pandas.core.indexes.api import default_index
+ 

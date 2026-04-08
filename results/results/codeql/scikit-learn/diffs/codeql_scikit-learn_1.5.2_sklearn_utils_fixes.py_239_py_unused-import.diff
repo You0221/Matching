@@ -1,0 +1,18 @@
+diff --git a/sklearn/utils/fixes.py b/sklearn/utils/fixes.py
+index 21e62150b0356..56f18c98f44d1 100644
+--- a/sklearn/utils/fixes.py
++++ b/sklearn/utils/fixes.py
+@@ -227,13 +227,6 @@ def _sparse_nan_min_max(X, axis):
+     from numpy import ComplexWarning, VisibleDeprecationWarning  # type: ignore  # noqa
+ 
+ 
+-# TODO: Remove when Scipy 1.6 is the minimum supported version
+-try:
+-    from scipy.integrate import trapezoid  # type: ignore  # noqa
+-except ImportError:
+-    from scipy.integrate import trapz as trapezoid  # type: ignore  # noqa
+-
+-
+ # TODO: Adapt when Pandas > 2.2 is the minimum supported version
+ def pd_fillna(pd, frame):
+     pd_version = parse_version(pd.__version__).base_version

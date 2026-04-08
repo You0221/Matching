@@ -1,0 +1,13 @@
+diff --git a/tornado/httpserver.py b/tornado/httpserver.py
+index 757f711b24..68c6301b1d 100644
+--- a/tornado/httpserver.py
++++ b/tornado/httpserver.py
+@@ -295,7 +295,7 @@ def on_connection_close(self) -> None:
+         del self._chunks
+ 
+ 
+-class _HTTPRequestContext(object):
++class _HTTPRequestContext:
+     def __init__(
+         self,
+         stream: iostream.IOStream,

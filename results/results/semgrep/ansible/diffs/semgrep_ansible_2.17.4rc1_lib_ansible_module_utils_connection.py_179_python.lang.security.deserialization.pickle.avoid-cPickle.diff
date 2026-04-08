@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/module_utils/connection.py b/lib/ansible/module_utils/connection.py
+index cc889696e7096e..b6720125855002 100644
+--- a/lib/ansible/module_utils/connection.py
++++ b/lib/ansible/module_utils/connection.py
+@@ -176,7 +160,7 @@ def _exec_jsonrpc(self, name, *args, **kwargs):
+         if response['id'] != reqid:
+             raise ConnectionError('invalid json-rpc id received')
+         if "result_type" in response:
+-            response["result"] = cPickle.loads(to_bytes(response["result"]))
++            response["result"] = pickle.loads(to_bytes(response["result"], errors="surrogateescape"))
+ 
+         return response
+ 

@@ -1,0 +1,26 @@
+diff --git a/django/contrib/admin/templatetags/admin_list.py b/django/contrib/admin/templatetags/admin_list.py
+index 2dcdf62afb28..6615e98bbff2 100644
+--- a/django/contrib/admin/templatetags/admin_list.py
++++ b/django/contrib/admin/templatetags/admin_list.py
+@@ -239,14 +243,19 @@ def link_in_col(is_first, field_name, cl):
+                     else:
+                         result_repr = field_val
+                 else:
+-                    result_repr = display_for_field(value, f, empty_value_display)
++                    result_repr = display_for_field(
++                        value,
++                        f,
++                        empty_value_display,
++                        avoid_link=link_to_changelist,
++                    )
+                 if isinstance(
+                     f, (models.DateField, models.TimeField, models.ForeignKey)
+                 ):
+                     row_classes.append("nowrap")
+         row_class = mark_safe(' class="%s"' % " ".join(row_classes))
+         # If list_display_links not defined, add the link tag to the first field
+-        if link_in_col(first, field_name, cl):
++        if link_to_changelist:
+             table_tag = "th" if first else "td"
+             first = False
+ 

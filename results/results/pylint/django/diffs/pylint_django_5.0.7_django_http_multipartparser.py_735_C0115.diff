@@ -1,0 +1,10 @@
+diff --git a/django/http/multipartparser.py b/django/http/multipartparser.py
+index 5ab63455efcd..58b8546be720 100644
+--- a/django/http/multipartparser.py
++++ b/django/http/multipartparser.py
+@@ -740,4 +751,4 @@ def __iter__(self):
+         boundarystream = InterBoundaryIter(self._stream, self._separator)
+         for sub_stream in boundarystream:
+             # Iterate over each part
+-            yield parse_boundary_stream(sub_stream, 1024)
++            yield parse_boundary_stream(sub_stream, MAX_TOTAL_HEADER_SIZE)

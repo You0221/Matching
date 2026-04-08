@@ -1,0 +1,56 @@
+diff --git a/numpy/testing/_private/extbuild.py b/numpy/testing/_private/extbuild.py
+index 4fd0d839f249..2a724b73cfc3 100644
+--- a/numpy/testing/_private/extbuild.py
++++ b/numpy/testing/_private/extbuild.py
+@@ -176,41 +177,28 @@ def _make_source(name, init, body):
+     PyInit_%(name)s(void) {
+     %(init)s
+     }
+-    """ % dict(
+-        name=name, init=init, body=body,
+-    )
++    """ % {
++        'name': name, 'init': init, 'body': body,
++    }
+     return code
+ 
+ 
+-def _c_compile(cfile, outputfilename, include_dirs=[], libraries=[],
+-               library_dirs=[]):
++def _c_compile(cfile, outputfilename, include_dirs, libraries,
++               library_dirs):
++    link_extra = []
+     if sys.platform == 'win32':
+         compile_extra = ["/we4013"]
+-        link_extra = ["/LIBPATH:" + os.path.join(sys.base_prefix, 'libs')]
++        link_extra.append('/DEBUG')  # generate .pdb file
+     elif sys.platform.startswith('linux'):
+         compile_extra = [
+             "-O0", "-g", "-Werror=implicit-function-declaration", "-fPIC"]
+-        link_extra = []
+     else:
+-        compile_extra = link_extra = []
+-        pass
+-    if sys.platform == 'win32':
+-        link_extra = link_extra + ['/DEBUG']  # generate .pdb file
+-    if sys.platform == 'darwin':
+-        # support Fink & Darwinports
+-        for s in ('/sw/', '/opt/local/'):
+-            if (s + 'include' not in include_dirs
+-                    and os.path.exists(s + 'include')):
+-                include_dirs.append(s + 'include')
+-            if s + 'lib' not in library_dirs and os.path.exists(s + 'lib'):
+-                library_dirs.append(s + 'lib')
+-
+-    outputfilename = outputfilename.with_suffix(get_so_suffix())
+-    build(
++        compile_extra = []
++
++    return build(
+         cfile, outputfilename,
+         compile_extra, link_extra,
+         include_dirs, libraries, library_dirs)
+-    return outputfilename
+ 
+ 
+ def build(cfile, outputfilename, compile_extra, link_extra,

@@ -1,0 +1,12 @@
+diff --git a/django/contrib/auth/management/commands/createsuperuser.py b/django/contrib/auth/management/commands/createsuperuser.py
+index 6d650cca67ee..d5d5d193c845 100644
+--- a/django/contrib/auth/management/commands/createsuperuser.py
++++ b/django/contrib/auth/management/commands/createsuperuser.py
+@@ -55,6 +56,7 @@ def add_arguments(self, parser):
+         parser.add_argument(
+             "--database",
+             default=DEFAULT_DB_ALIAS,
++            choices=tuple(connections),
+             help='Specifies the database to use. Default is "default".',
+         )
+         for field_name in self.UserModel.REQUIRED_FIELDS:

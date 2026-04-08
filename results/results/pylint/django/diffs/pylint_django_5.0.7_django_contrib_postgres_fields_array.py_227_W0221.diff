@@ -1,0 +1,17 @@
+diff --git a/django/contrib/postgres/fields/array.py b/django/contrib/postgres/fields/array.py
+index c8e8e132e01d..28c0f6679e7b 100644
+--- a/django/contrib/postgres/fields/array.py
++++ b/django/contrib/postgres/fields/array.py
+@@ -234,6 +233,12 @@ def formfield(self, **kwargs):
+             }
+         )
+ 
++    def slice_expression(self, expression, start, length):
++        # If length is not provided, don't specify an end to slice to the end
++        # of the array.
++        end = None if length is None else start + length - 1
++        return SliceTransform(start, end, expression)
++
+ 
+ class ArrayRHSMixin:
+     def __init__(self, lhs, rhs):

@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..86c9bf05fe4 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -254,7 +273,7 @@ def __instancecheck__(self, instance: Any) -> bool:
+ 
+     @staticmethod
+     def _collect_bases_data(bases: tuple[type[Any], ...]) -> tuple[set[str], set[str], dict[str, ModelPrivateAttr]]:
+-        from ..main import BaseModel
++        BaseModel = import_cached_base_model()
+ 
+         field_names: set[str] = set()
+         class_vars: set[str] = set()

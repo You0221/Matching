@@ -1,0 +1,39 @@
+diff --git a/sklearn/utils/fixes.py b/sklearn/utils/fixes.py
+index 21e62150b0356..56f18c98f44d1 100644
+--- a/sklearn/utils/fixes.py
++++ b/sklearn/utils/fixes.py
+@@ -4,26 +4,26 @@
+ at which the fix is no longer needed.
+ """
+ 
+-# Authors: Emmanuelle Gouillart <emmanuelle.gouillart@normalesup.org>
+-#          Gael Varoquaux <gael.varoquaux@normalesup.org>
+-#          Fabian Pedregosa <fpedregosa@acm.org>
+-#          Lars Buitinck
+-#
+-# License: BSD 3 clause
++# Authors: The scikit-learn developers
++# SPDX-License-Identifier: BSD-3-Clause
+ 
+ import platform
+ import struct
++import sys
+ 
+ import numpy as np
+ import scipy
+ import scipy.sparse.linalg
+ import scipy.stats
+ 
+-import sklearn
++try:
++    import pandas as pd
++except ImportError:
++    pd = None
+ 
+ from ..externals._packaging.version import parse as parse_version
++from .parallel import _get_threadpool_controller
+ 
+-_IS_PYPY = platform.python_implementation() == "PyPy"
+ _IS_32BIT = 8 * struct.calcsize("P") == 32
+ _IS_WASM = platform.machine() in ["wasm32", "wasm64"]
+ 

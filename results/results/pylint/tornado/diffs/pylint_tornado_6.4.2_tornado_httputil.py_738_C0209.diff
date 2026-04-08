@@ -1,0 +1,13 @@
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index 9ce992d82b..7044aca02b 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -735,7 +857,7 @@ def _get_content_range(start: Optional[int], end: Optional[int], total: int) ->
+     """
+     start = start or 0
+     end = (end or total) - 1
+-    return "bytes %s-%s/%s" % (start, end, total)
++    return f"bytes {start}-{end}/{total}"
+ 
+ 
+ def _int_or_none(val: str) -> Optional[int]:

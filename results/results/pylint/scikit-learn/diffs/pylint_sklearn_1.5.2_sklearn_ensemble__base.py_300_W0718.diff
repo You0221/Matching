@@ -1,0 +1,32 @@
+diff --git a/sklearn/ensemble/_base.py b/sklearn/ensemble/_base.py
+index 5483206de51d5..db5a0944a72c3 100644
+--- a/sklearn/ensemble/_base.py
++++ b/sklearn/ensemble/_base.py
+@@ -291,15 +285,20 @@ def get_params(self, deep=True):
+         """
+         return super()._get_params("estimators", deep=deep)
+ 
+-    def _more_tags(self):
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
+         try:
+-            allow_nan = all(
+-                _safe_tags(est[1])["allow_nan"] if est[1] != "drop" else True
++            tags.input_tags.allow_nan = all(
++                get_tags(est[1]).input_tags.allow_nan if est[1] != "drop" else True
++                for est in self.estimators
++            )
++            tags.input_tags.sparse = all(
++                get_tags(est[1]).input_tags.sparse if est[1] != "drop" else True
+                 for est in self.estimators
+             )
+         except Exception:
+             # If `estimators` does not comply with our API (list of tuples) then it will
+-            # fail. In this case, we assume that `allow_nan` is False but the parameter
+-            # validation will raise an error during `fit`.
+-            allow_nan = False
+-        return {"preserves_dtype": [], "allow_nan": allow_nan}
++            # fail. In this case, we assume that `allow_nan` and `sparse` are False but
++            # the parameter validation will raise an error during `fit`.
++            pass  # pragma: no cover
++        return tags

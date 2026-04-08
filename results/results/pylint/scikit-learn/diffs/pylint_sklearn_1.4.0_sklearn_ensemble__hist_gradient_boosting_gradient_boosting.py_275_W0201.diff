@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index a83b1dbd0f4b9..78f8456e969de 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -272,7 +273,7 @@ def _preprocess_X(self, X, *, reset):
+ 
+         if self.is_categorical_ is None:
+             self._preprocessor = None
+-            self._is_categorical_remapped = self.is_categorical_
++            self._is_categorical_remapped = None
+ 
+             X = self._validate_data(X, **check_X_kwargs)
+             return X, None

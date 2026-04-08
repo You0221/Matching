@@ -1,0 +1,17 @@
+diff --git a/numpy/_core/src/multiarray/nditer_constr.c b/numpy/_core/src/multiarray/nditer_constr.c
+index ab1a540cb283..3ed5cf1a0245 100644
+--- a/numpy/_core/src/multiarray/nditer_constr.c
++++ b/numpy/_core/src/multiarray/nditer_constr.c
+@@ -1596,11 +1566,11 @@ npyiter_fill_axisdata(NpyIter *iter, npy_uint32 flags, npyiter_opitflags *op_itf
+     axisdata = NIT_AXISDATA(iter);
+     sizeof_axisdata = NIT_AXISDATA_SIZEOF(itflags, ndim, nop);
+ 
++    memcpy(NIT_DATAPTRS(iter), op_dataptr, nop * sizeof(void *));
+     if (ndim == 0) {
+         /* Need to fill the first axisdata, even if the iterator is 0-d */
+         NAD_SHAPE(axisdata) = 1;
+         NAD_INDEX(axisdata) = 0;
+-        memcpy(NAD_PTRS(axisdata), op_dataptr, NPY_SIZEOF_INTP*nop);
+         memset(NAD_STRIDES(axisdata), 0, NPY_SIZEOF_INTP*nop);
+     }
+ 

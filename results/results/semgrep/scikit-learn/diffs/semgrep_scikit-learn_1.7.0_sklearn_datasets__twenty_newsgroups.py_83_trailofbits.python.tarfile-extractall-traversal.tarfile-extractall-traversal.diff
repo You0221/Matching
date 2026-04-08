@@ -1,0 +1,16 @@
+diff --git a/sklearn/datasets/_twenty_newsgroups.py b/sklearn/datasets/_twenty_newsgroups.py
+index 62db8c5cbdc8e..1dc5fb6244f1b 100644
+--- a/sklearn/datasets/_twenty_newsgroups.py
++++ b/sklearn/datasets/_twenty_newsgroups.py
+@@ -81,10 +82,7 @@ def _download_20newsgroups(target_dir, cache_path, n_retries, delay):
+ 
+     logger.debug("Decompressing %s", archive_path)
+     with tarfile.open(archive_path, "r:gz") as fp:
+-        # Use filter="data" to prevent the most dangerous security issues.
+-        # For more details, see
+-        # https://docs.python.org/3.9/library/tarfile.html#tarfile.TarFile.extractall
+-        fp.extractall(path=target_dir, filter="data")
++        tarfile_extractall(fp, path=target_dir)
+ 
+     with suppress(FileNotFoundError):
+         os.remove(archive_path)

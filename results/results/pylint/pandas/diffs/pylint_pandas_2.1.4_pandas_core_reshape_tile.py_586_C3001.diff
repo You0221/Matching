@@ -1,0 +1,111 @@
+diff --git a/pandas/core/reshape/tile.py b/pandas/core/reshape/tile.py
+index 43eea7c669ce7..2b0c6fbb8e3bf 100644
+--- a/pandas/core/reshape/tile.py
++++ b/pandas/core/reshape/tile.py
+@@ -498,92 +531,35 @@ def _coerce_to_type(x):
+     # https://github.com/pandas-dev/pandas/pull/31290
+     # https://github.com/pandas-dev/pandas/issues/31389
+     elif isinstance(x.dtype, ExtensionDtype) and is_numeric_dtype(x.dtype):
+-        x = x.to_numpy(dtype=np.float64, na_value=np.nan)
+-
+-    if dtype is not None:
+-        # GH 19768: force NaT to NaN during integer conversion
+-        x = np.where(x.notna(), x.view(np.int64), np.nan)
+-
+-    return x, dtype
+-
+-
+-def _convert_bin_to_numeric_type(bins, dtype: DtypeObj | None):
+-    """
+-    if the passed bin is of datetime/timedelta type,
+-    this method converts it to integer
+-
+-    Parameters
+-    ----------
+-    bins : list-like of bins
+-    dtype : dtype of data
++        x_arr = x.to_numpy(dtype=np.float64, na_value=np.nan)
++        x = Index(x_arr)
+ 
+-    Raises
+-    ------
+-    ValueError if bins are not of a compat dtype to dtype
+-    """
+-    bins_dtype = infer_dtype(bins, skipna=False)
+-    if lib.is_np_dtype(dtype, "m"):
+-        if bins_dtype in ["timedelta", "timedelta64"]:
+-            bins = to_timedelta(bins).view(np.int64)
+-        else:
+-            raise ValueError("bins must be of timedelta64 dtype")
+-    elif lib.is_np_dtype(dtype, "M") or isinstance(dtype, DatetimeTZDtype):
+-        if bins_dtype in ["datetime", "datetime64"]:
+-            bins = to_datetime(bins)
+-            if lib.is_np_dtype(bins.dtype, "M"):
+-                # As of 2.0, to_datetime may give non-nano, so we need to convert
+-                #  here until the rest of this file recognizes non-nano
+-                bins = bins.astype("datetime64[ns]", copy=False)
+-            bins = bins.view(np.int64)
+-        else:
+-            raise ValueError("bins must be of datetime64 dtype")
+-
+-    return bins
+-
+-
+-def _convert_bin_to_datelike_type(bins, dtype: DtypeObj | None):
+-    """
+-    Convert bins to a DatetimeIndex or TimedeltaIndex if the original dtype is
+-    datelike
++    return Index(x), dtype
+ 
+-    Parameters
+-    ----------
+-    bins : list-like of bins
+-    dtype : dtype of data
+ 
+-    Returns
+-    -------
+-    bins : Array-like of bins, DatetimeIndex or TimedeltaIndex if dtype is
+-           datelike
+-    """
+-    if isinstance(dtype, DatetimeTZDtype):
+-        bins = to_datetime(bins.astype(np.int64), utc=True).tz_convert(dtype.tz)
+-    elif lib.is_np_dtype(dtype, "mM"):
+-        bins = Index(bins.astype(np.int64), dtype=dtype)
+-    return bins
++def _is_dt_or_td(dtype: DtypeObj) -> bool:
++    # Note: the dtype here comes from an Index.dtype, so we know that that any
++    #  dt64/td64 dtype is of a supported unit.
++    return isinstance(dtype, DatetimeTZDtype) or lib.is_np_dtype(dtype, "mM")
+ 
+ 
+ def _format_labels(
+-    bins,
++    bins: Index,
+     precision: int,
+     right: bool = True,
+     include_lowest: bool = False,
+-    dtype: DtypeObj | None = None,
+ ):
+     """based on the dtype, return our labels"""
+     closed: IntervalLeftRight = "right" if right else "left"
+ 
+     formatter: Callable[[Any], Timestamp] | Callable[[Any], Timedelta]
+ 
+-    if isinstance(dtype, DatetimeTZDtype):
+-        formatter = lambda x: Timestamp(x, tz=dtype.tz)
+-        adjust = lambda x: x - Timedelta("1ns")
+-    elif lib.is_np_dtype(dtype, "M"):
+-        formatter = Timestamp
+-        adjust = lambda x: x - Timedelta("1ns")
+-    elif lib.is_np_dtype(dtype, "m"):
+-        formatter = Timedelta
+-        adjust = lambda x: x - Timedelta("1ns")
++    if _is_dt_or_td(bins.dtype):
++        # error: Argument 1 to "dtype_to_unit" has incompatible type
++        # "dtype[Any] | ExtensionDtype"; expected "DatetimeTZDtype | dtype[Any]"
++        unit = dtype_to_unit(bins.dtype)  # type: ignore[arg-type]
++        formatter = lambda x: x
++        adjust = lambda x: x - Timedelta(1, unit=unit).as_unit(unit)
+     else:
+         precision = _infer_precision(precision, bins)
+         formatter = lambda x: _round_frac(x, precision)

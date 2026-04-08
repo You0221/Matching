@@ -1,0 +1,32 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index 85660b41d743b1..dfd7a67a546588 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -77,26 +70,7 @@ def import_module(name):  # type: ignore[misc]
+ except ImportError:
+     _meta_yml_to_dict = None
+ 
+-
+-if not hasattr(__builtins__, 'ModuleNotFoundError'):
+-    # this was introduced in Python 3.6
+-    ModuleNotFoundError = ImportError
+-
+-
+-_VALID_IDENTIFIER_STRING_REGEX = re.compile(
+-    ''.join((_VALID_IDENTIFIER_REGEX, r'\Z')),
+-)
+-
+-
+-try:  # NOTE: py3/py2 compat
+-    # py2 mypy can't deal with try/excepts
+-    is_python_identifier = str.isidentifier  # type: ignore[attr-defined]
+-except AttributeError:  # Python 2
+-    def is_python_identifier(self):  # type: (str) -> bool
+-        """Determine whether the given string is a Python identifier."""
+-        # Ref: https://stackoverflow.com/a/55802320/595220
+-        return bool(re.match(_VALID_IDENTIFIER_STRING_REGEX, self))
+-
++is_python_identifier = str.isidentifier  # type: ignore[attr-defined]
+ 
+ PB_EXTENSIONS = ('.yml', '.yaml')
+ SYNTHETIC_PACKAGE_NAME = '<ansible_synthetic_collection_package>'

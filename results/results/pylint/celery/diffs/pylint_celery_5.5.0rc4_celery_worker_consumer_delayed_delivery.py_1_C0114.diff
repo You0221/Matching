@@ -1,0 +1,19 @@
+diff --git a/celery/worker/consumer/delayed_delivery.py b/celery/worker/consumer/delayed_delivery.py
+index d6672d32f5e..66a55015618 100644
+--- a/celery/worker/consumer/delayed_delivery.py
++++ b/celery/worker/consumer/delayed_delivery.py
+@@ -1,5 +1,14 @@
++"""Native delayed delivery functionality for Celery workers.
++
++This module provides the DelayedDelivery bootstep which handles setup and configuration
++of native delayed delivery functionality when using quorum queues.
++"""
++from typing import Iterator, List, Optional, Set, Union, ValuesView
++
++from kombu import Connection, Queue
+ from kombu.transport.native_delayed_delivery import (bind_queue_to_native_delayed_delivery_exchange,
+                                                      declare_native_delayed_delivery_exchanges_and_queues)
++from kombu.utils.functional import retry_over_time
+ 
+ from celery import Celery, bootsteps
+ from celery.utils.log import get_logger

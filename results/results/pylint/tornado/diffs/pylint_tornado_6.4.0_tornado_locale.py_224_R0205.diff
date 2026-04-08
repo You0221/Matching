@@ -1,0 +1,13 @@
+diff --git a/tornado/locale.py b/tornado/locale.py
+index c5526703b1..abd8668c6e 100644
+--- a/tornado/locale.py
++++ b/tornado/locale.py
+@@ -221,7 +221,7 @@ def get_supported_locales() -> Iterable[str]:
+     return _supported_locales
+ 
+ 
+-class Locale(object):
++class Locale:
+     """Object representing a locale.
+ 
+     After calling one of `load_translations` or `load_gettext_translations`,

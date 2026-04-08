@@ -1,0 +1,16 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -310,9 +339,8 @@ def _output_field_or_none(self):
+         """
+         try:
+             return self.output_field
+-        except FieldError:
+-            if not self._output_field_resolved_to_none:
+-                raise
++        except OutputFieldIsNoneError:
++            return
+ 
+     def _resolve_output_field(self):
+         """

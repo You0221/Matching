@@ -1,0 +1,13 @@
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index 1a23f5c7fd..8dd0c9b6e2 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -70,7 +70,7 @@ def __exit__(
+             raise _QuietException
+ 
+ 
+-class HTTP1ConnectionParameters(object):
++class HTTP1ConnectionParameters:
+     """Parameters for `.HTTP1Connection` and `.HTTP1ServerConnection`."""
+ 
+     def __init__(

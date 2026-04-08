@@ -1,0 +1,16 @@
+diff --git a/django/db/models/fields/json.py b/django/db/models/fields/json.py
+index 1b219e620c9a..188fcf520c48 100644
+--- a/django/db/models/fields/json.py
++++ b/django/db/models/fields/json.py
+@@ -455,9 +493,9 @@ def as_oracle(self, compiler, connection):
+         return "(NOT %s OR %s IS NULL)" % (sql, lhs), tuple(params) + tuple(lhs_params)
+ 
+     def as_sqlite(self, compiler, connection):
+-        template = "JSON_TYPE(%s, %%s) IS NULL"
++        template = "JSON_TYPE(%s, %s) IS NULL"
+         if not self.rhs:
+-            template = "JSON_TYPE(%s, %%s) IS NOT NULL"
++            template = "JSON_TYPE(%s, %s) IS NOT NULL"
+         return HasKeyOrArrayIndex(self.lhs.lhs, self.lhs.key_name).as_sql(
+             compiler,
+             connection,

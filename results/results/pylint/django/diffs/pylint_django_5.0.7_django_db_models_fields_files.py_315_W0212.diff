@@ -1,0 +1,20 @@
+diff --git a/django/db/models/fields/files.py b/django/db/models/fields/files.py
+index 95985684ee12..0716d3599e94 100644
+--- a/django/db/models/fields/files.py
++++ b/django/db/models/fields/files.py
+@@ -312,6 +324,15 @@ def get_prep_value(self, value):
+ 
+     def pre_save(self, model_instance, add):
+         file = super().pre_save(model_instance, add)
++        if file.name is None and file._file is not None:
++            exc = FieldError(
++                f"File for {self.name} must have "
++                "the name attribute specified to be saved."
++            )
++            if PY311 and isinstance(file._file, ContentFile):
++                exc.add_note("Pass a 'name' argument to ContentFile.")
++            raise exc
++
+         if file and not file._committed:
+             # Commit the file to storage prior to saving the model
+             file.save(file.name, file.file, save=False)

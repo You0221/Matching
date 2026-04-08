@@ -1,0 +1,152 @@
+diff --git a/pandas/core/arrays/arrow/array.py b/pandas/core/arrays/arrow/array.py
+index 88695f11fba59..a5ce46ed612f3 100644
+--- a/pandas/core/arrays/arrow/array.py
++++ b/pandas/core/arrays/arrow/array.py
+@@ -1219,50 +1355,88 @@ def to_numpy(
+         copy: bool = False,
+         na_value: object = lib.no_default,
+     ) -> np.ndarray:
+-        if dtype is not None:
+-            dtype = np.dtype(dtype)
+-        elif self._hasna:
+-            dtype = np.dtype(object)
+-
+-        if na_value is lib.no_default:
+-            na_value = self.dtype.na_value
+-
++        original_na_value = na_value
++        dtype, na_value = to_numpy_dtype_inference(self, dtype, na_value, self._hasna)
+         pa_type = self._pa_array.type
++        if not self._hasna or isna(na_value) or pa.types.is_null(pa_type):
++            data = self
++        else:
++            data = self.fillna(na_value)
++            copy = False
++
+         if pa.types.is_timestamp(pa_type) or pa.types.is_duration(pa_type):
+-            result = self._maybe_convert_datelike_array()
+-            if dtype is None or dtype.kind == "O":
+-                result = result.to_numpy(dtype=object, na_value=na_value)
+-            else:
+-                result = result.to_numpy(dtype=dtype)
+-            return result
++            # GH 55997
++            if dtype != object and na_value is self.dtype.na_value:
++                na_value = lib.no_default
++            result = data._maybe_convert_datelike_array().to_numpy(
++                dtype=dtype, na_value=na_value
++            )
+         elif pa.types.is_time(pa_type) or pa.types.is_date(pa_type):
+             # convert to list of python datetime.time objects before
+             # wrapping in ndarray
+-            result = np.array(list(self), dtype=dtype)
+-        elif is_object_dtype(dtype) and self._hasna:
+-            result = np.empty(len(self), dtype=object)
+-            mask = ~self.isna()
+-            result[mask] = np.asarray(self[mask]._pa_array)
+-        elif pa.types.is_null(self._pa_array.type):
+-            fill_value = None if isna(na_value) else na_value
+-            return np.full(len(self), fill_value=fill_value, dtype=dtype)
+-        elif self._hasna:
+-            data = self.fillna(na_value)
++            result = np.array(list(data), dtype=dtype)
++            if data._hasna:
++                result[data.isna()] = na_value
++        elif pa.types.is_null(pa_type):
++            if dtype is not None and isna(na_value):
++                na_value = None
++            result = np.full(len(data), fill_value=na_value, dtype=dtype)
++        elif not data._hasna or (
++            pa.types.is_floating(pa_type)
++            and (
++                na_value is np.nan
++                or original_na_value is lib.no_default
++                and is_float_dtype(dtype)
++            )
++        ):
+             result = data._pa_array.to_numpy()
+-            if dtype is not None:
+-                result = result.astype(dtype, copy=False)
+-            return result
+-        else:
+-            result = self._pa_array.to_numpy()
+             if dtype is not None:
+                 result = result.astype(dtype, copy=False)
+             if copy:
+                 result = result.copy()
+-            return result
+-        if self._hasna:
+-            result[self.isna()] = na_value
++        else:
++            if dtype is None:
++                empty = pa.array([], type=pa_type).to_numpy(zero_copy_only=False)
++                if can_hold_element(empty, na_value):
++                    dtype = empty.dtype
++                else:
++                    dtype = np.object_
++            result = np.empty(len(data), dtype=dtype)
++            mask = data.isna()
++            result[mask] = na_value
++            result[~mask] = data[~mask]._pa_array.to_numpy()
+         return result
+ 
++    def map(self, mapper, na_action=None):
++        if is_numeric_dtype(self.dtype):
++            return map_array(self.to_numpy(), mapper, na_action=None)
++        else:
++            return super().map(mapper, na_action)
++
++    @doc(ExtensionArray.duplicated)
++    def duplicated(
++        self, keep: Literal["first", "last", False] = "first"
++    ) -> npt.NDArray[np.bool_]:
++        pa_type = self._pa_array.type
++        if pa.types.is_floating(pa_type) or pa.types.is_integer(pa_type):
++            values = self.to_numpy(na_value=0)
++        elif pa.types.is_boolean(pa_type):
++            values = self.to_numpy(na_value=False)
++        elif pa.types.is_temporal(pa_type):
++            if pa_type.bit_width == 32:
++                pa_type = pa.int32()
++            else:
++                pa_type = pa.int64()
++            arr = self.astype(ArrowDtype(pa_type))
++            values = arr.to_numpy(na_value=0)
++        else:
++            # factorize the values to avoid the performance penalty of
++            # converting to object dtype
++            values = self.factorize()[0]
++
++        mask = self.isna() if self._hasna else None
++        return algos.duplicated(values, keep=keep, mask=mask)
++
+     def unique(self) -> Self:
+         """
+         Compute the ArrowExtensionArray of unique values.
+@@ -1273,7 +1447,7 @@ def unique(self) -> Self:
+         """
+         pa_type = self._pa_array.type
+ 
+-        if pa.types.is_duration(pa_type):
++        if pa_version_under11p0 and pa.types.is_duration(pa_type):
+             # https://github.com/apache/arrow/issues/15226#issuecomment-1376578323
+             data = self._pa_array.cast(pa.int64())
+         else:
+@@ -1281,7 +1455,7 @@ def unique(self) -> Self:
+ 
+         pa_result = pc.unique(data)
+ 
+-        if pa.types.is_duration(pa_type):
++        if pa_version_under11p0 and pa.types.is_duration(pa_type):
+             pa_result = pa_result.cast(pa_type)
+ 
+         return type(self)(pa_result)
+@@ -1304,7 +1478,7 @@ def value_counts(self, dropna: bool = True) -> Series:
+         Series.value_counts
+         """
+         pa_type = self._pa_array.type
+-        if pa.types.is_duration(pa_type):
++        if pa_version_under11p0 and pa.types.is_duration(pa_type):
+             # https://github.com/apache/arrow/issues/15226#issuecomment-1376578323
+             data = self._pa_array.cast(pa.int64())
+         else:

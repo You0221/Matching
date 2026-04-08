@@ -1,0 +1,12 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -314,7 +328,6 @@ def __init__(self, verbosity: int = 0) -> None:
+         self.noncow = C.ANSIBLE_COW_SELECTION
+ 
+         self.set_cowsay_info()
+-        self._wrap_stderr = C.WRAP_STDERR
+ 
+         if self.b_cowsay:
+             try:

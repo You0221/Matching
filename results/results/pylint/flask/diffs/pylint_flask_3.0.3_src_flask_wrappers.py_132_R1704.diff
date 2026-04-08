@@ -1,0 +1,18 @@
+diff --git a/src/flask/wrappers.py b/src/flask/wrappers.py
+index c1eca80783..bab610291c 100644
+--- a/src/flask/wrappers.py
++++ b/src/flask/wrappers.py
+@@ -129,11 +212,11 @@ def _load_form_data(self) -> None:
+     def on_json_loading_failed(self, e: ValueError | None) -> t.Any:
+         try:
+             return super().on_json_loading_failed(e)
+-        except BadRequest as e:
++        except BadRequest as ebr:
+             if current_app and current_app.debug:
+                 raise
+ 
+-            raise BadRequest() from e
++            raise BadRequest() from ebr
+ 
+ 
+ class Response(ResponseBase):

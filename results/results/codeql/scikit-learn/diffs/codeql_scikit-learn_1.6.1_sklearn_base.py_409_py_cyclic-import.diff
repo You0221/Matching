@@ -1,0 +1,41 @@
+diff --git a/sklearn/base.py b/sklearn/base.py
+index bd5e07c2167dd..309b482357e12 100644
+--- a/sklearn/base.py
++++ b/sklearn/base.py
+@@ -409,36 +472,6 @@ class attribute, which is a dictionary `param_name: list of constraints`. See
+             caller_name=self.__class__.__name__,
+         )
+ 
+-    @property
+-    def _repr_html_(self):
+-        """HTML representation of estimator.
+-
+-        This is redundant with the logic of `_repr_mimebundle_`. The latter
+-        should be favorted in the long term, `_repr_html_` is only
+-        implemented for consumers who do not interpret `_repr_mimbundle_`.
+-        """
+-        if get_config()["display"] != "diagram":
+-            raise AttributeError(
+-                "_repr_html_ is only defined when the "
+-                "'display' configuration option is set to "
+-                "'diagram'"
+-            )
+-        return self._repr_html_inner
+-
+-    def _repr_html_inner(self):
+-        """This function is returned by the @property `_repr_html_` to make
+-        `hasattr(estimator, "_repr_html_") return `True` or `False` depending
+-        on `get_config()["display"]`.
+-        """
+-        return estimator_html_repr(self)
+-
+-    def _repr_mimebundle_(self, **kwargs):
+-        """Mime bundle used by jupyter kernels to display estimator"""
+-        output = {"text/plain": repr(self)}
+-        if get_config()["display"] == "diagram":
+-            output["text/html"] = estimator_html_repr(self)
+-        return output
+-
+ 
+ class ClassifierMixin:
+     """Mixin class for all classifiers in scikit-learn.

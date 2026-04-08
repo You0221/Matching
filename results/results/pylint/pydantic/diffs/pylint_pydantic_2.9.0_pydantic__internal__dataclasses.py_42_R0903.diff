@@ -1,0 +1,83 @@
+diff --git a/pydantic/_internal/_dataclasses.py b/pydantic/_internal/_dataclasses.py
+index a537cd18b32..869286b2d06 100644
+--- a/pydantic/_internal/_dataclasses.py
++++ b/pydantic/_internal/_dataclasses.py
+@@ -14,32 +17,27 @@
+     SchemaValidator,
+     core_schema,
+ )
+-from typing_extensions import TypeGuard
++from typing_extensions import TypeAlias, TypeIs
+ 
+ from ..errors import PydanticUndefinedAnnotation
++from ..fields import FieldInfo
+ from ..plugin._schema_validator import PluggableSchemaValidator, create_schema_validator
+ from ..warnings import PydanticDeprecatedSince20
+-from . import _config, _decorators, _typing_extra
++from . import _config, _decorators
+ from ._fields import collect_dataclass_fields
+-from ._generate_schema import GenerateSchema
++from ._generate_schema import GenerateSchema, InvalidSchemaError
+ from ._generics import get_standard_typevars_map
+ from ._mock_val_ser import set_dataclass_mocks
+-from ._schema_generation_shared import CallbackGetCoreSchemaHandler
++from ._namespace_utils import NsResolver
+ from ._signature import generate_pydantic_signature
++from ._utils import LazyClassAttribute
+ 
+-if typing.TYPE_CHECKING:
+-    from ..config import ConfigDict
+-    from ..fields import FieldInfo
+-
+-    class StandardDataclass(typing.Protocol):
+-        __dataclass_fields__: ClassVar[dict[str, Any]]
+-        __dataclass_params__: ClassVar[Any]  # in reality `dataclasses._DataclassParams`
+-        __post_init__: ClassVar[Callable[..., None]]
++if TYPE_CHECKING:
++    from _typeshed import DataclassInstance as StandardDataclass
+ 
+-        def __init__(self, *args: object, **kwargs: object) -> None:
+-            pass
++    from ..config import ConfigDict
+ 
+-    class PydanticDataclass(StandardDataclass, typing.Protocol):
++    class PydanticDataclass(StandardDataclass, Protocol):
+         """A protocol containing attributes only available once a class has been decorated as a Pydantic dataclass.
+ 
+         Attributes:
+@@ -60,26 +58,26 @@ class PydanticDataclass(StandardDataclass, typing.Protocol):
+         __pydantic_serializer__: ClassVar[SchemaSerializer]
+         __pydantic_validator__: ClassVar[SchemaValidator | PluggableSchemaValidator]
+ 
+-else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
++        @classmethod
++        def __pydantic_fields_complete__(cls) -> bool: ...
+ 
+ 
+ def set_dataclass_fields(
+     cls: type[StandardDataclass],
+-    types_namespace: dict[str, Any] | None = None,
+-    config_wrapper: _config.ConfigWrapper | None = None,
++    config_wrapper: _config.ConfigWrapper,
++    ns_resolver: NsResolver | None = None,
+ ) -> None:
+     """Collect and set `cls.__pydantic_fields__`.
+ 
+     Args:
+         cls: The class.
+-        types_namespace: The types namespace, defaults to `None`.
+-        config_wrapper: The config wrapper instance, defaults to `None`.
++        config_wrapper: The config wrapper instance.
++        ns_resolver: Namespace resolver to use when getting dataclass annotations.
+     """
+     typevars_map = get_standard_typevars_map(cls)
+-    fields = collect_dataclass_fields(cls, types_namespace, typevars_map=typevars_map, config_wrapper=config_wrapper)
++    fields = collect_dataclass_fields(
++        cls, ns_resolver=ns_resolver, typevars_map=typevars_map, config_wrapper=config_wrapper
++    )
+ 
+     cls.__pydantic_fields__ = fields  # type: ignore
+ 

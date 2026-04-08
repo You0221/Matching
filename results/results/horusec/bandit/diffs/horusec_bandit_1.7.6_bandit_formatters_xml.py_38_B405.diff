@@ -1,0 +1,13 @@
+diff --git a/bandit/formatters/xml.py b/bandit/formatters/xml.py
+index 36352f046..6e196d92f 100644
+--- a/bandit/formatters/xml.py
++++ b/bandit/formatters/xml.py
+@@ -35,7 +35,7 @@
+ """
+ import logging
+ import sys
+-from xml.etree import ElementTree as ET
++from xml.etree import ElementTree as ET  # nosec: B405
+ 
+ from bandit.core import docs_utils
+ 

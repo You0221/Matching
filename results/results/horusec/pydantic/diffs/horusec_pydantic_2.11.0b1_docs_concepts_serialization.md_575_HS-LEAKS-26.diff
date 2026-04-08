@@ -1,0 +1,167 @@
+diff --git a/docs/concepts/serialization.md b/docs/concepts/serialization.md
+index a4595f927e4..574ad26b139 100644
+--- a/docs/concepts/serialization.md
++++ b/docs/concepts/serialization.md
+@@ -539,133 +701,55 @@ print(outer_model.model_dump(serialize_as_any=False))  # (2)!
+ 
+ 1. With `serialize_as_any` set to `True`, the result matches that of V1.
+ 2. With `serialize_as_any` set to `False` (the V2 default), fields present on the subclass,
+-but not the base class, are not included in serialization.
++   but not the base class, are not included in serialization.
+ 
+-This setting even takes effect with nested and recursive patterns as well. For example:
++However, do note that the *serialize as any* behavior will apply to *all* values, not only the values where duck typing
++is relevant. You may want to prefer using the `SerializeAsAny` annotation when required instead.
+ 
+-```python
+-from pydantic import BaseModel
+-
+-
+-class User(BaseModel):
+-    name: str
+-    friends: list['User']
+-
+-
+-class UserLogin(User):
+-    password: str
+-
+-
+-class OuterModel(BaseModel):
+-    user: User
+-
+-
+-user = UserLogin(
+-    name='samuel',
+-    password='pydantic-pw',
+-    friends=[UserLogin(name='sebastian', password='fastapi-pw', friends=[])],
+-)
+-
+-print(OuterModel(user=user).model_dump(serialize_as_any=True))  # (1)!
+-"""
+-{
+-    'user': {
+-        'name': 'samuel',
+-        'friends': [
+-            {'name': 'sebastian', 'friends': [], 'password': 'fastapi-pw'}
+-        ],
+-        'password': 'pydantic-pw',
+-    }
+-}
+-"""
+-
+-print(OuterModel(user=user).model_dump(serialize_as_any=False))  # (2)!
+-"""
+-{'user': {'name': 'samuel', 'friends': [{'name': 'sebastian', 'friends': []}]}}
+-"""
+-```
++<!-- old anchor added for backwards compatibility -->
++<!-- markdownlint-disable-next-line no-empty-links -->
++[](){#advanced-include-and-exclude}
++<!-- markdownlint-disable-next-line no-empty-links -->
++[](){#model-and-field-level-include-and-exclude}
+ 
+-1. Even nested `User` model instances are dumped with fields unique to `User` subclasses.
+-2. Even nested `User` model instances are dumped without fields unique to `User` subclasses.
++## Field inclusion and exclusion
+ 
+-!!! note
+-    The behavior of the `serialize_as_any` runtime flag is almost the same as the behavior of the `SerializeAsAny` annotation.
+-    There are a few nuanced differences that we're working to resolve, but for the most part, you can expect the same behavior from both.
+-    See more about the differences in this [active issue](https://github.com/pydantic/pydantic/issues/9049)
++For serialization, field inclusion and exclusion can be configured in two ways:
+ 
+-#### Overriding the `serialize_as_any` default (False)
++* at the field level, using the `exclude` and `exclude_if` parameters on [the `Field()` function](fields.md).
++* using the various serialization parameters on the [serialization methods](#serializing-data).
+ 
+-You can override the default setting for `serialize_as_any` by configuring a subclass of `BaseModel` that overrides the default for the `serialize_as_any` argument to `model_dump()` and `model_dump_json()`, and then use that as the base class (instead of `pydantic.BaseModel`) for any model you want to have this default behavior.
++### At the field level
+ 
+-For example, you could do the following if you want to use duck-typing serialization by default:
++At the field level, the `exclude` and `exclude_if` parameters can be used:
+ 
+ ```python
+-from typing import Any
+-
+-from pydantic import BaseModel, SecretStr
+-
+-
+-class MyBaseModel(BaseModel):
+-    def model_dump(self, **kwargs) -> dict[str, Any]:
+-        return super().model_dump(serialize_as_any=True, **kwargs)
+-
+-    def model_dump_json(self, **kwargs) -> str:
+-        return super().model_dump_json(serialize_as_any=True, **kwargs)
+-
+-
+-class User(MyBaseModel):
+-    name: str
+-
+-
+-class UserInfo(User):
+-    password: SecretStr
++from pydantic import BaseModel, Field
+ 
+ 
+-class OuterModel(MyBaseModel):
+-    user: User
++class Transaction(BaseModel):
++    id: int
++    private_id: int = Field(exclude=True)
++    value: int = Field(ge=0, exclude_if=lambda v: v == 0)
+ 
+ 
+-u = OuterModel(user=UserInfo(name='John', password='secret_pw'))
+-print(u.model_dump_json())  # (1)!
+-#> {"user":{"name":"John","password":"**********"}}
++print(Transaction(id=1, private_id=2, value=0).model_dump())
++#> {'id': 1}
+ ```
+ 
+-1. By default, `model_dump_json` will use duck-typing serialization behavior, which means that the `password` field is included in the output.
+-
+-## `pickle.dumps(model)`
+-
+-Pydantic models support efficient pickling and unpickling.
+-
+-<!-- TODO need to get pickling doctest to work -->
+-```python {test="skip"}
+-import pickle
++Exclusion at the field level takes priority over the `include` serialization parameter described below.
+ 
+-from pydantic import BaseModel
++### As parameters to the serialization methods
+ 
++When using the [serialization methods](#serializing-data) (such as [`model_dump()`][pydantic.BaseModel.model_dump]),
++several parameters can be used to exclude or include fields.
+ 
+-class FooBarModel(BaseModel):
+-    a: str
+-    b: int
++#### Excluding and including specific fields
+ 
++Consider the following models:
+ 
+-m = FooBarModel(a='hello', b=123)
+-print(m)
+-#> a='hello' b=123
+-data = pickle.dumps(m)
+-print(data[:20])
+-#> b'\x80\x04\x95\x95\x00\x00\x00\x00\x00\x00\x00\x8c\x08__main_'
+-m2 = pickle.loads(data)
+-print(m2)
+-#> a='hello' b=123
+-```
+-
+-## Advanced include and exclude
+-
+-The `model_dump` and `model_dump_json` methods support `include` and `exclude` arguments which can either be
+-sets or dictionaries. This allows nested selection of which fields to export:
+-
+-```python
+-from pydantic import BaseModel, SecretStr
++```python {group="simple-exclude-include"}
++from pydantic import BaseModel, Field, SecretStr
+ 
+ 
+ class User(BaseModel):

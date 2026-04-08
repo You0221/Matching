@@ -1,0 +1,39 @@
+diff --git a/django/db/models/fields/files.py b/django/db/models/fields/files.py
+index 95985684ee12..0716d3599e94 100644
+--- a/django/db/models/fields/files.py
++++ b/django/db/models/fields/files.py
+@@ -3,15 +3,18 @@
+ 
+ from django import forms
+ from django.core import checks
+-from django.core.files.base import File
++from django.core.exceptions import FieldError
++from django.core.files.base import ContentFile, File
+ from django.core.files.images import ImageFile
+ from django.core.files.storage import Storage, default_storage
+ from django.core.files.utils import validate_file_name
+ from django.db.models import signals
++from django.db.models.expressions import DatabaseDefault
+ from django.db.models.fields import Field
+ from django.db.models.query_utils import DeferredAttribute
+ from django.db.models.utils import AltersData
+ from django.utils.translation import gettext_lazy as _
++from django.utils.version import PY311
+ 
+ 
+ class FieldFile(File, AltersData):
+@@ -88,10 +91,13 @@ def open(self, mode="rb"):
+     # to further manipulate the underlying file, as well as update the
+     # associated model instance.
+ 
++    def _set_instance_attribute(self, name, content):
++        setattr(self.instance, self.field.attname, name)
++
+     def save(self, name, content, save=True):
+         name = self.field.generate_filename(self.instance, name)
+         self.name = self.storage.save(name, content, max_length=self.field.max_length)
+-        setattr(self.instance, self.field.attname, self.name)
++        self._set_instance_attribute(self.name, content)
+         self._committed = True
+ 
+         # Save the object because it has changed, unless save is False

@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index dd39b8cb607a8..34b613b15281a 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -887,7 +934,7 @@ def _validate_y(self, y):
+ 
+         return y
+ 
+-    def predict(self, X):
++    def predict(self, X, **params):
+         """Predict class for X.
+ 
+         The predicted class of an input sample is computed as the class with

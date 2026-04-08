@@ -1,0 +1,28 @@
+diff --git a/pandas/core/sorting.py b/pandas/core/sorting.py
+index bc6e29c3c7fbf..a431842218b3b 100644
+--- a/pandas/core/sorting.py
++++ b/pandas/core/sorting.py
+@@ -298,22 +298,8 @@ def decons_obs_group_ids(
+     return [lab[indexer].astype(np.intp, subok=False, copy=True) for lab in labels]
+ 
+ 
+-def indexer_from_factorized(
+-    labels, shape: Shape, compress: bool = True
+-) -> npt.NDArray[np.intp]:
+-    ids = get_group_index(labels, shape, sort=True, xnull=False)
+-
+-    if not compress:
+-        ngroups = (ids.size and ids.max()) + 1
+-    else:
+-        ids, obs = compress_group_index(ids, sort=True)
+-        ngroups = len(obs)
+-
+-    return get_group_index_sorter(ids, ngroups)
+-
+-
+ def lexsort_indexer(
+-    keys: list[ArrayLike] | list[Series],
++    keys: Sequence[ArrayLike | Index | Series],
+     orders=None,
+     na_position: str = "last",
+     key: Callable | None = None,

@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_target_encoder.py b/sklearn/preprocessing/_target_encoder.py
+index b3b7c3d5e7bd9..dc328dc5cf5db 100644
+--- a/sklearn/preprocessing/_target_encoder.py
++++ b/sklearn/preprocessing/_target_encoder.py
+@@ -322,7 +325,7 @@ def transform(self, X):
+             Transformed input.
+         """
+         X_ordinal, X_known_mask = self._transform(
+-            X, handle_unknown="ignore", force_all_finite="allow-nan"
++            X, handle_unknown="ignore", ensure_all_finite="allow-nan"
+         )
+ 
+         # If 'multiclass' multiply axis=1 by num of classes else keep shape the same

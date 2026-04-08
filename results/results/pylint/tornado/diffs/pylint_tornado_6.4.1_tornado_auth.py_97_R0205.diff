@@ -1,0 +1,44 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index d1edcc6550..64428c59ea 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -94,7 +91,7 @@ class AuthError(Exception):
+     pass
+ 
+ 
+-class OpenIdMixin(object):
++class OpenIdMixin:
+     """Abstract implementation of OpenID and Attribute Exchange.
+ 
+     Class attributes:
+@@ -150,9 +147,9 @@ async def get_authenticated_user(
+         """
+         handler = cast(RequestHandler, self)
+         # Verify the OpenID response via direct request to the OP
+-        args = dict(
+-            (k, v[-1]) for k, v in handler.request.arguments.items()
+-        )  # type: Dict[str, Union[str, bytes]]
++        args = {
++            k: v[-1] for k, v in handler.request.arguments.items()
++        }  # type: Dict[str, Union[str, bytes]]
+         args["openid.mode"] = "check_authentication"
+         url = self._OPENID_ENDPOINT  # type: ignore
+         if http_client is None:
+@@ -188,7 +185,7 @@ def _openid_args(
+             ax_attrs = set(ax_attrs)
+             required = []  # type: List[str]
+             if "name" in ax_attrs:
+-                ax_attrs -= set(["name", "firstname", "fullname", "lastname"])
++                ax_attrs -= {"name", "firstname", "fullname", "lastname"}
+                 required += ["firstname", "fullname", "lastname"]
+                 args.update(
+                     {
+@@ -287,7 +284,7 @@ def get_auth_http_client(self) -> httpclient.AsyncHTTPClient:
+         return httpclient.AsyncHTTPClient()
+ 
+ 
+-class OAuthMixin(object):
++class OAuthMixin:
+     """Abstract implementation of OAuth 1.0 and 1.0a.
+ 
+     See `TwitterMixin` below for an example implementation.

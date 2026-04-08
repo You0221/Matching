@@ -1,0 +1,25 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1413,6 +1460,11 @@ def _get_unique_checks(self, exclude=None, include_meta_constraints=False):
+                 name = f.name
+                 if name in exclude:
+                     continue
++                if isinstance(f, CompositePrimaryKey):
++                    names = tuple(field.name for field in f.fields)
++                    if exclude.isdisjoint(names):
++                        unique_checks.append((model_class, names))
++                    continue
+                 if f.unique:
+                     unique_checks.append((model_class, (name,)))
+                 if f.unique_for_date and f.unique_for_date not in exclude:
+@@ -1441,7 +1493,7 @@ def _perform_unique_checks(self, unique_checks):
+                 ):
+                     # no value, skip the lookup
+                     continue
+-                if f.primary_key and not self._state.adding:
++                if f in model_class._meta.pk_fields and not self._state.adding:
+                     # no need to check for unique primary key when editing
+                     continue
+                 lookup_kwargs[str(field_name)] = lookup_value

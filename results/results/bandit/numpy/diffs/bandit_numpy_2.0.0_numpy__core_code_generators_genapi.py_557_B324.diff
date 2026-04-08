@@ -1,0 +1,13 @@
+diff --git a/numpy/_core/code_generators/genapi.py b/numpy/_core/code_generators/genapi.py
+index 27e42bcb4c14..da2f8f636e59 100644
+--- a/numpy/_core/code_generators/genapi.py
++++ b/numpy/_core/code_generators/genapi.py
+@@ -554,7 +557,7 @@ def main():
+     tagname = sys.argv[1]
+     order_file = sys.argv[2]
+     functions = get_api_functions(tagname, order_file)
+-    m = hashlib.md5(tagname)
++    m = hashlib.md5(tagname, usedforsecurity=False)
+     for func in functions:
+         print(func)
+         ah = func.api_hash()

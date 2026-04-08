@@ -1,0 +1,12 @@
+diff --git a/django/contrib/postgres/operations.py b/django/contrib/postgres/operations.py
+index 5ac396bedf38..84360febf90f 100644
+--- a/django/contrib/postgres/operations.py
++++ b/django/contrib/postgres/operations.py
+@@ -145,6 +147,7 @@ class RemoveIndexConcurrently(NotInTransactionMixin, RemoveIndex):
+     """Remove an index using PostgreSQL's DROP INDEX CONCURRENTLY syntax."""
+ 
+     atomic = False
++    category = OperationCategory.REMOVAL
+ 
+     def describe(self):
+         return "Concurrently remove index %s from %s" % (self.name, self.model_name)

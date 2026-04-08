@@ -1,0 +1,32 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -1834,17 +2048,27 @@ def set_source_expressions(self, exprs):
+     def get_source_expressions(self):
+         return [self.start, self.end]
+ 
++    def get_exclusion(self):
++        if self.exclusion is None:
++            return ""
++        return f" EXCLUDE {self.exclusion.value}"
++
+     def as_sql(self, compiler, connection):
+         connection.ops.check_expression_support(self)
+         start, end = self.window_frame_start_end(
+             connection, self.start.value, self.end.value
+         )
++        if self.exclusion and not connection.features.supports_frame_exclusion:
++            raise NotSupportedError(
++                "This backend does not support window frame exclusions."
++            )
+         return (
+             self.template
+             % {
+                 "frame_type": self.frame_type,
+                 "start": start,
+                 "end": end,
++                "exclude": self.get_exclusion(),
+             },
+             [],
+         )

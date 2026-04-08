@@ -1,0 +1,21 @@
+diff --git a/django/db/models/fields/generated.py b/django/db/models/fields/generated.py
+index deb5875638ce..5b6b188df077 100644
+--- a/django/db/models/fields/generated.py
++++ b/django/db/models/fields/generated.py
+@@ -152,8 +184,7 @@ def deconstruct(self):
+         del kwargs["editable"]
+         kwargs["db_persist"] = self.db_persist
+         kwargs["expression"] = self.expression
+-        if self._output_field is not None:
+-            kwargs["output_field"] = self._output_field
++        kwargs["output_field"] = self.output_field
+         return name, path, args, kwargs
+ 
+     def get_internal_type(self):
+@@ -161,3 +192,6 @@ def get_internal_type(self):
+ 
+     def db_parameters(self, connection):
+         return self.output_field.db_parameters(connection)
++
++    def db_type_parameters(self, connection):
++        return self.output_field.db_type_parameters(connection)

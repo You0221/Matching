@@ -1,0 +1,95 @@
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 00197a150fb97..9c8dc2054106a 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -198,13 +295,43 @@ def construct_array_type(  # type: ignore[override]
+             ArrowStringArrayNumpySemantics,
+         )
+ 
+-        if self.storage == "python":
++        if self.storage == "python" and self._na_value is libmissing.NA:
+             return StringArray
+-        elif self.storage == "pyarrow":
++        elif self.storage == "pyarrow" and self._na_value is libmissing.NA:
+             return ArrowStringArray
++        elif self.storage == "python":
++            return StringArrayNumpySemantics
+         else:
+             return ArrowStringArrayNumpySemantics
+ 
++    def _get_common_dtype(self, dtypes: list[DtypeObj]) -> DtypeObj | None:
++        storages = set()
++        na_values = set()
++
++        for dtype in dtypes:
++            if isinstance(dtype, StringDtype):
++                storages.add(dtype.storage)
++                na_values.add(dtype.na_value)
++            elif isinstance(dtype, np.dtype) and dtype.kind in ("U", "T"):
++                continue
++            else:
++                return None
++
++        if len(storages) == 2:
++            # if both python and pyarrow storage -> priority to pyarrow
++            storage = "pyarrow"
++        else:
++            storage = next(iter(storages))  # type: ignore[assignment]
++
++        na_value: libmissing.NAType | float
++        if len(na_values) == 2:
++            # if both NaN and NA -> priority to NA
++            na_value = libmissing.NA
++        else:
++            na_value = next(iter(na_values))
++
++        return StringDtype(storage=storage, na_value=na_value)
++
+     def __from_arrow__(
+         self, array: pyarrow.Array | pyarrow.ChunkedArray
+     ) -> BaseStringArray:
+@@ -212,13 +339,17 @@ def __from_arrow__(
+         Construct StringArray from pyarrow Array/ChunkedArray.
+         """
+         if self.storage == "pyarrow":
+-            from pandas.core.arrays.string_arrow import ArrowStringArray
++            if self._na_value is libmissing.NA:
++                from pandas.core.arrays.string_arrow import ArrowStringArray
+ 
+-            return ArrowStringArray(array)
+-        elif self.storage == "pyarrow_numpy":
+-            from pandas.core.arrays.string_arrow import ArrowStringArrayNumpySemantics
++                return ArrowStringArray(array)
++            else:
++                from pandas.core.arrays.string_arrow import (
++                    ArrowStringArrayNumpySemantics,
++                )
++
++                return ArrowStringArrayNumpySemantics(array)
+ 
+-            return ArrowStringArrayNumpySemantics(array)
+         else:
+             import pyarrow
+ 
+@@ -233,7 +364,7 @@ def __from_arrow__(
+                 # convert chunk by chunk to numpy and concatenate then, to avoid
+                 # overflow for large string data when concatenating the pyarrow arrays
+                 arr = arr.to_numpy(zero_copy_only=False)
+-                arr = ensure_string_array(arr, na_value=libmissing.NA)
++                arr = ensure_string_array(arr, na_value=self.na_value)
+                 results.append(arr)
+ 
+         if len(chunks) == 0:
+@@ -243,11 +374,7 @@ def __from_arrow__(
+ 
+         # Bypass validation inside StringArray constructor, see GH#47781
+         new_string_array = StringArray.__new__(StringArray)
+-        NDArrayBacked.__init__(
+-            new_string_array,
+-            arr,
+-            StringDtype(storage="python"),
+-        )
++        NDArrayBacked.__init__(new_string_array, arr, self)
+         return new_string_array
+ 
+ 

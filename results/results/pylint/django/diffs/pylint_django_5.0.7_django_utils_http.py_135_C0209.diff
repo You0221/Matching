@@ -1,0 +1,13 @@
+diff --git a/django/utils/http.py b/django/utils/http.py
+index cfd982fc016d..65b8eb7990e2 100644
+--- a/django/utils/http.py
++++ b/django/utils/http.py
+@@ -129,7 +129,7 @@ def parse_http_date(date):
+         hour = int(m["hour"])
+         min = int(m["min"])
+         sec = int(m["sec"])
+-        result = datetime.datetime(year, month, day, hour, min, sec, tzinfo=tz)
++        result = datetime(year, month, day, hour, min, sec, tzinfo=timezone.utc)
+         return int(result.timestamp())
+     except Exception as exc:
+         raise ValueError("%r is not a valid date" % date) from exc

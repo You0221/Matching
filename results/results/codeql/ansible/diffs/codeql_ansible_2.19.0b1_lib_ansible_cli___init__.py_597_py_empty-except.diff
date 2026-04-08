@@ -1,0 +1,15 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index 462393868e01af..0adc00c9bc9a4d 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -592,9 +525,7 @@ def pager_pipe(text):
+         try:
+             cmd = subprocess.Popen(CLI.PAGER, shell=True, stdin=subprocess.PIPE, stdout=sys.stdout)
+             cmd.communicate(input=to_bytes(text))
+-        except IOError:
+-            pass
+-        except KeyboardInterrupt:
++        except (OSError, KeyboardInterrupt):
+             pass
+ 
+     def _play_prereqs(self):

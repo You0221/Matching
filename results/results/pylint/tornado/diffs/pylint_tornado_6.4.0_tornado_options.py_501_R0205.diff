@@ -1,0 +1,22 @@
+diff --git a/tornado/options.py b/tornado/options.py
+index b82966910b..b6578bb901 100644
+--- a/tornado/options.py
++++ b/tornado/options.py
+@@ -498,7 +494,7 @@ def mockable(self) -> "_Mockable":
+         return _Mockable(self)
+ 
+ 
+-class _Mockable(object):
++class _Mockable:
+     """`mock.patch` compatible wrapper for `OptionParser`.
+ 
+     As of ``mock`` version 1.0.1, when an object uses ``__getattr__``
+@@ -528,7 +524,7 @@ def __delattr__(self, name: str) -> None:
+         setattr(self._options, name, self._originals.pop(name))
+ 
+ 
+-class _Option(object):
++class _Option:
+     # This class could almost be made generic, but the way the types
+     # interact with the multiple argument makes this tricky. (default
+     # and the callback use List[T], but type is still Type[T]).

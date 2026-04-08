@@ -1,0 +1,18 @@
+diff --git a/pandas/core/arrays/period.py b/pandas/core/arrays/period.py
+index 28f25d38b2363..c1229e27ab51a 100644
+--- a/pandas/core/arrays/period.py
++++ b/pandas/core/arrays/period.py
+@@ -1186,12 +1191,7 @@ def dt64arr_to_periodarr(
+ 
+     reso = get_unit_from_dtype(data.dtype)
+     freq = Period._maybe_convert_freq(freq)
+-    try:
+-        base = freq._period_dtype_code
+-    except (AttributeError, TypeError):
+-        # AttributeError: _period_dtype_code might not exist
+-        # TypeError: _period_dtype_code might intentionally raise
+-        raise TypeError(f"{freq.name} is not supported as period frequency")
++    base = freq._period_dtype_code
+     return c_dt64arr_to_periodarr(data.view("i8"), base, tz, reso=reso), freq
+ 
+ 

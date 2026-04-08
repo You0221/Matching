@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/predicates.py b/django/contrib/gis/geos/prototypes/predicates.py
+index 32b790173a67..71cfd8d94b59 100644
+--- a/django/contrib/gis/geos/prototypes/predicates.py
++++ b/django/contrib/gis/geos/prototypes/predicates.py
+@@ -11,6 +12,7 @@
+ # ## Binary & unary predicate factories ##
+ class UnaryPredicate(GEOSFuncFactory):
+     "For GEOS unary predicate functions."
++
+     argtypes = [GEOM_PTR]
+     restype = c_byte
+     errcheck = staticmethod(check_predicate)

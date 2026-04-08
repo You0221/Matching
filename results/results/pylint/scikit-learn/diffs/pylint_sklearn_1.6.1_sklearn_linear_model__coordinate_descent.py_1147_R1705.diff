@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 2dbb83c82fbaa..62096133ada2f 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -1149,6 +1149,11 @@ def _decision_function(self, X):
+         else:
+             return super()._decision_function(X)
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ ###############################################################################
+ # Lasso model

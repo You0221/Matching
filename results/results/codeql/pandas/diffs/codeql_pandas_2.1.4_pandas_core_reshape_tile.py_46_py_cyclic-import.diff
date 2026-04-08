@@ -1,0 +1,17 @@
+diff --git a/pandas/core/reshape/tile.py b/pandas/core/reshape/tile.py
+index 43eea7c669ce7..2b0c6fbb8e3bf 100644
+--- a/pandas/core/reshape/tile.py
++++ b/pandas/core/reshape/tile.py
+@@ -40,11 +38,9 @@
+     Categorical,
+     Index,
+     IntervalIndex,
+-    to_datetime,
+-    to_timedelta,
+ )
+-from pandas.core import nanops
+ import pandas.core.algorithms as algos
++from pandas.core.arrays.datetimelike import dtype_to_unit
+ 
+ if TYPE_CHECKING:
+     from pandas._typing import (

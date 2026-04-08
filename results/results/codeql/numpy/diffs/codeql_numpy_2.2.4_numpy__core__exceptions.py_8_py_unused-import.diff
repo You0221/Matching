@@ -1,0 +1,12 @@
+diff --git a/numpy/_core/_exceptions.py b/numpy/_core/_exceptions.py
+index 87d4213a6d42..73b07d25ef1f 100644
+--- a/numpy/_core/_exceptions.py
++++ b/numpy/_core/_exceptions.py
+@@ -5,7 +5,6 @@
+ By putting the formatting in `__str__`, we also avoid paying the cost for
+ users who silence the exceptions.
+ """
+-from .._utils import set_module
+ 
+ def _unpack_tuple(tup):
+     if len(tup) == 1:

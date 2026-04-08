@@ -1,0 +1,56 @@
+diff --git a/pydantic/_internal/_generics.py b/pydantic/_internal/_generics.py
+index a24763a07ba..5bc668930ed 100644
+--- a/pydantic/_internal/_generics.py
++++ b/pydantic/_internal/_generics.py
+@@ -34,39 +38,25 @@
+ KT = TypeVar('KT')
+ VT = TypeVar('VT')
+ _LIMITED_DICT_SIZE = 100
+-if TYPE_CHECKING:
+-
+-    class LimitedDict(dict, MutableMapping[KT, VT]):
+-        def __init__(self, size_limit: int = _LIMITED_DICT_SIZE):
+-            ...
+ 
+-else:
+ 
+-    class LimitedDict(dict):
+-        """Limit the size/length of a dict used for caching to avoid unlimited increase in memory usage.
++class LimitedDict(dict[KT, VT]):
++    def __init__(self, size_limit: int = _LIMITED_DICT_SIZE) -> None:
++        self.size_limit = size_limit
++        super().__init__()
+ 
+-        Since the dict is ordered, and we always remove elements from the beginning, this is effectively a FIFO cache.
+-        """
+-
+-        def __init__(self, size_limit: int = _LIMITED_DICT_SIZE):
+-            self.size_limit = size_limit
+-            super().__init__()
+-
+-        def __setitem__(self, key: Any, value: Any, /) -> None:
+-            super().__setitem__(key, value)
+-            if len(self) > self.size_limit:
+-                excess = len(self) - self.size_limit + self.size_limit // 10
+-                to_remove = list(self.keys())[:excess]
+-                for k in to_remove:
+-                    del self[k]
++    def __setitem__(self, key: KT, value: VT, /) -> None:
++        super().__setitem__(key, value)
++        if len(self) > self.size_limit:
++            excess = len(self) - self.size_limit + self.size_limit // 10
++            to_remove = list(self.keys())[:excess]
++            for k in to_remove:
++                del self[k]
+ 
+ 
+ # weak dictionaries allow the dynamically created parametrized versions of generic models to get collected
+ # once they are no longer referenced by the caller.
+-if sys.version_info >= (3, 9):  # Typing for weak dictionaries available at 3.9
+-    GenericTypesCache = WeakValueDictionary[GenericTypesCacheKey, 'type[BaseModel]']
+-else:
+-    GenericTypesCache = WeakValueDictionary
++GenericTypesCache = WeakValueDictionary[GenericTypesCacheKey, 'type[BaseModel]']
+ 
+ if TYPE_CHECKING:
+ 

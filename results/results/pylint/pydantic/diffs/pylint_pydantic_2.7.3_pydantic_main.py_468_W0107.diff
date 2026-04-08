@@ -1,0 +1,17 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -461,11 +609,10 @@ def model_parametrized_name(cls, params: tuple[type[Any], ...]) -> str:
+         params_component = ', '.join(param_names)
+         return f'{cls.__name__}[{params_component}]'
+ 
+-    def model_post_init(self, __context: Any) -> None:
++    def model_post_init(self, context: Any, /) -> None:
+         """Override this method to perform additional initialization after `__init__` and `model_construct`.
+         This is useful if you want to do some validation that requires the entire model to be initialized.
+         """
+-        pass
+ 
+     @classmethod
+     def model_rebuild(

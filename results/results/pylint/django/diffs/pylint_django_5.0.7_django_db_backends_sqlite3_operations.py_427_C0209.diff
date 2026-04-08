@@ -1,0 +1,11 @@
+diff --git a/django/db/backends/sqlite3/operations.py b/django/db/backends/sqlite3/operations.py
+index 85ad8043487b..08de246d7008 100644
+--- a/django/db/backends/sqlite3/operations.py
++++ b/django/db/backends/sqlite3/operations.py
+@@ -439,3 +438,6 @@ def on_conflict_suffix_sql(self, fields, on_conflict, update_fields, unique_fiel
+             update_fields,
+             unique_fields,
+         )
++
++    def force_group_by(self):
++        return ["GROUP BY TRUE"] if Database.sqlite_version_info < (3, 39) else []

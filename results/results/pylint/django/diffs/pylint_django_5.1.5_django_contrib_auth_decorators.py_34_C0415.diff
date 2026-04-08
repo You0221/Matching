@@ -1,0 +1,18 @@
+diff --git a/django/contrib/auth/decorators.py b/django/contrib/auth/decorators.py
+index ea1cef079514..4d62aec93a03 100644
+--- a/django/contrib/auth/decorators.py
++++ b/django/contrib/auth/decorators.py
+@@ -35,11 +34,11 @@ def _redirect_to_login(request):
+ 
+             return redirect_to_login(path, resolved_login_url, redirect_field_name)
+ 
+-        if asyncio.iscoroutinefunction(view_func):
++        if iscoroutinefunction(view_func):
+ 
+             async def _view_wrapper(request, *args, **kwargs):
+                 auser = await request.auser()
+-                if asyncio.iscoroutinefunction(test_func):
++                if iscoroutinefunction(test_func):
+                     test_pass = await test_func(auser)
+                 else:
+                     test_pass = await sync_to_async(test_func)(auser)

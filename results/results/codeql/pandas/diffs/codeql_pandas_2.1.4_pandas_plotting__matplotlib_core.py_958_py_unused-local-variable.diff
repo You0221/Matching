@@ -1,0 +1,34 @@
+diff --git a/pandas/plotting/_matplotlib/core.py b/pandas/plotting/_matplotlib/core.py
+index c62f73271577d..2979903edf360 100644
+--- a/pandas/plotting/_matplotlib/core.py
++++ b/pandas/plotting/_matplotlib/core.py
+@@ -948,23 +1037,18 @@ def _get_ax(self, i: int):
+         ax.get_yaxis().set_visible(True)
+         return ax
+ 
+-    @classmethod
+-    def get_default_ax(cls, ax) -> None:
+-        import matplotlib.pyplot as plt
+-
+-        if ax is None and len(plt.get_fignums()) > 0:
+-            with plt.rc_context():
+-                ax = plt.gca()
+-            ax = cls._get_ax_layer(ax)
+-
+-    def on_right(self, i):
++    @final
++    def on_right(self, i: int):
+         if isinstance(self.secondary_y, bool):
+             return self.secondary_y
+ 
+         if isinstance(self.secondary_y, (tuple, list, np.ndarray, ABCIndex)):
+             return self.data.columns[i] in self.secondary_y
+ 
+-    def _apply_style_colors(self, colors, kwds, col_num, label: str):
++    @final
++    def _apply_style_colors(
++        self, colors, kwds: dict[str, Any], col_num: int, label: str
++    ):
+         """
+         Manage style and color based on column number and its label.
+         Returns tuple of appropriate style and kwds which "color" may be added.

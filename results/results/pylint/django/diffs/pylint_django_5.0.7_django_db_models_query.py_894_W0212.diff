@@ -1,0 +1,15 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -896,7 +894,9 @@ def bulk_update(self, objs, fields, batch_size=None):
+         # and once in the WHEN. Each field will also have one CAST.
+         self._for_write = True
+         connection = connections[self.db]
+-        max_batch_size = connection.ops.bulk_batch_size(["pk", "pk"] + fields, objs)
++        max_batch_size = connection.ops.bulk_batch_size(
++            [opts.pk, opts.pk] + fields, objs
++        )
+         batch_size = min(batch_size, max_batch_size) if batch_size else max_batch_size
+         requires_casting = connection.features.requires_casted_case_in_updates
+         batches = (objs[i : i + batch_size] for i in range(0, len(objs), batch_size))

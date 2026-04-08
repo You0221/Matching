@@ -1,0 +1,28 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index fb26f70b19d..b091710a861 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -792,13 +1279,21 @@ def Field(  # noqa: C901
+ 
+     min_items = extra.pop('min_items', None)  # type: ignore
+     if min_items is not None:
+-        warn('`min_items` is deprecated and will be removed, use `min_length` instead', DeprecationWarning)
++        warn(
++            '`min_items` is deprecated and will be removed, use `min_length` instead',
++            PydanticDeprecatedSince20,
++            stacklevel=2,
++        )
+         if min_length in (None, _Unset):
+             min_length = min_items  # type: ignore
+ 
+     max_items = extra.pop('max_items', None)  # type: ignore
+     if max_items is not None:
+-        warn('`max_items` is deprecated and will be removed, use `max_length` instead', DeprecationWarning)
++        warn(
++            '`max_items` is deprecated and will be removed, use `max_length` instead',
++            PydanticDeprecatedSince20,
++            stacklevel=2,
++        )
+         if max_length in (None, _Unset):
+             max_length = max_items  # type: ignore
+ 

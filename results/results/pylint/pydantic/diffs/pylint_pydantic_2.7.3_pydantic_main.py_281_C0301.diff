@@ -1,0 +1,15 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..4b3d8eff730 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -278,8 +320,8 @@ def model_construct(cls: type[Model], _fields_set: set[str] | None = None, **val
+ 
+         return m
+ 
+-    def model_copy(self: Model, *, update: dict[str, Any] | None = None, deep: bool = False) -> Model:
+-        """Usage docs: https://docs.pydantic.dev/2.7/concepts/serialization/#model_copy
++    def model_copy(self, *, update: dict[str, Any] | None = None, deep: bool = False) -> Self:
++        """Usage docs: https://docs.pydantic.dev/2.9/concepts/serialization/#model_copy
+ 
+         Returns a copy of the model.
+ 

@@ -1,0 +1,22 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index d289aa29cbefc..a572c82e6e158 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -231,16 +182,12 @@ class BayesianRidge(RegressorMixin, LinearModel):
+         "fit_intercept": ["boolean"],
+         "copy_X": ["boolean"],
+         "verbose": ["verbose"],
+-        "n_iter": [
+-            Interval(Integral, 1, None, closed="left"),
+-            Hidden(StrOptions({"deprecated"})),
+-        ],
+     }
+ 
+     def __init__(
+         self,
+         *,
+-        max_iter=None,  # TODO(1.5): Set to 300
++        max_iter=300,
+         tol=1.0e-3,
+         alpha_1=1.0e-6,
+         alpha_2=1.0e-6,

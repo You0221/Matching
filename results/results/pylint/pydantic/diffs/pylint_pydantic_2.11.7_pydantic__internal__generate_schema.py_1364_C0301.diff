@@ -1,0 +1,16 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index c7efbf5b209..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1356,9 +1293,9 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+             field_info.validate_default = True
+         each_item_validators = [v for v in this_field_validators if v.info.each_item is True]
+         this_field_validators = [v for v in this_field_validators if v not in each_item_validators]
+-        schema = apply_each_item_validators(schema, each_item_validators, name)
++        schema = apply_each_item_validators(schema, each_item_validators)
+ 
+-        schema = apply_validators(schema, this_field_validators, name)
++        schema = apply_validators(schema, this_field_validators)
+ 
+         # the default validator needs to go outside of any other validators
+         # so that it is the topmost validator for the field validator

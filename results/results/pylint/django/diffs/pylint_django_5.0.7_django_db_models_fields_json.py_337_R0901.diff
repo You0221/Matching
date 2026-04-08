@@ -1,0 +1,19 @@
+diff --git a/django/db/models/fields/json.py b/django/db/models/fields/json.py
+index b7cde157c4fa..188fcf520c48 100644
+--- a/django/db/models/fields/json.py
++++ b/django/db/models/fields/json.py
+@@ -333,6 +334,14 @@ def process_rhs(self, compiler, connection):
+             rhs %= tuple(func)
+         return rhs, rhs_params
+ 
++    def as_oracle(self, compiler, connection):
++        lhs, lhs_params = self.process_lhs(compiler, connection)
++        rhs, rhs_params = self.process_rhs(compiler, connection)
++        if connection.features.supports_primitives_in_json_field:
++            lhs = f"JSON({lhs})"
++            rhs = f"JSON({rhs})"
++        return f"JSON_EQUAL({lhs}, {rhs} ERROR ON ERROR)", (*lhs_params, *rhs_params)
++
+ 
+ class JSONIContains(CaseInsensitiveMixin, lookups.IContains):
+     pass

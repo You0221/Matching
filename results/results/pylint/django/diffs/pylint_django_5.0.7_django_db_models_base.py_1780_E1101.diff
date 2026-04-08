@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1781,7 +1978,7 @@ def _check_field_name_clashes(cls):
+         used_fields = {}  # name or attname -> field
+ 
+         # Check that multi-inheritance doesn't cause field name shadowing.
+-        for parent in cls._meta.get_parent_list():
++        for parent in cls._meta.all_parents:
+             for f in parent._meta.local_fields:
+                 clash = used_fields.get(f.name) or used_fields.get(f.attname) or None
+                 if clash:

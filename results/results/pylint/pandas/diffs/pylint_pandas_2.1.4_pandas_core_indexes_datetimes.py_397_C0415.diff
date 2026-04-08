@@ -1,0 +1,29 @@
+diff --git a/pandas/core/indexes/datetimes.py b/pandas/core/indexes/datetimes.py
+index dcb5f8caccd3e..c978abd8c2427 100644
+--- a/pandas/core/indexes/datetimes.py
++++ b/pandas/core/indexes/datetimes.py
+@@ -393,19 +395,13 @@ def _is_dates_only(self) -> bool:
+         -------
+         bool
+         """
++        if isinstance(self.freq, Tick):
++            delta = Timedelta(self.freq)
+ 
+-        from pandas.io.formats.format import is_dates_only
+-
+-        delta = getattr(self.freq, "delta", None)
+-
+-        if delta and delta % dt.timedelta(days=1) != dt.timedelta(days=0):
+-            return False
++            if delta % dt.timedelta(days=1) != dt.timedelta(days=0):
++                return False
+ 
+-        # error: Argument 1 to "is_dates_only" has incompatible type
+-        # "Union[ExtensionArray, ndarray]"; expected "Union[ndarray,
+-        # DatetimeArray, Index, DatetimeIndex]"
+-
+-        return self.tz is None and is_dates_only(self._values)  # type: ignore[arg-type]
++        return self._values._is_dates_only
+ 
+     def __reduce__(self):
+         d = {"data": self._data, "name": self.name}

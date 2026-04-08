@@ -1,0 +1,18 @@
+diff --git a/pandas/core/reshape/melt.py b/pandas/core/reshape/melt.py
+index 74e6a6a28ccb0..bb1cd0d738dac 100644
+--- a/pandas/core/reshape/melt.py
++++ b/pandas/core/reshape/melt.py
+@@ -12,12 +12,7 @@
+ from pandas.core.dtypes.missing import notna
+ 
+ import pandas.core.algorithms as algos
+-from pandas.core.arrays import Categorical
+-import pandas.core.common as com
+-from pandas.core.indexes.api import (
+-    Index,
+-    MultiIndex,
+-)
++from pandas.core.indexes.api import MultiIndex
+ from pandas.core.reshape.concat import concat
+ from pandas.core.reshape.util import tile_compat
+ from pandas.core.shared_docs import _shared_docs

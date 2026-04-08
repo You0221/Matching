@@ -1,0 +1,32 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index d1edcc6550..64428c59ea 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -555,7 +552,7 @@ def get_auth_http_client(self) -> httpclient.AsyncHTTPClient:
+         return httpclient.AsyncHTTPClient()
+ 
+ 
+-class OAuth2Mixin(object):
++class OAuth2Mixin:
+     """Abstract implementation of OAuth 2.0.
+ 
+     See `FacebookGraphMixin` or `GoogleOAuth2Mixin` below for example
+@@ -635,7 +632,7 @@ async def oauth2_request(
+         url: str,
+         access_token: Optional[str] = None,
+         post_args: Optional[Dict[str, Any]] = None,
+-        **args: Any
++        **args: Any,
+     ) -> Any:
+         """Fetches the given URL auth an OAuth2 access token.
+ 
+@@ -661,9 +658,6 @@ async def get(self):
+                         return
+                     self.finish("Posted a message!")
+ 
+-        .. testoutput::
+-           :hide:
+-
+         .. versionadded:: 4.3
+ 
+         .. versionchanged::: 6.0

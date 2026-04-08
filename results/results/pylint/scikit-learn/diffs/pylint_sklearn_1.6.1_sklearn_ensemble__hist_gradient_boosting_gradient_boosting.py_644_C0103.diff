@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index b136cd373a03f..064391abab24d 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -642,7 +698,8 @@ def fit(self, X, y, sample_weight=None):
+                 )
+         else:
+             X_train, y_train, sample_weight_train = X, y, sample_weight
+-            X_val = y_val = sample_weight_val = None
++            if not validation_data_provided:
++                X_val = y_val = sample_weight_val = None
+ 
+         # Bin the data
+         # For ease of use of the API, the user-facing GBDT classes accept the

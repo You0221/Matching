@@ -1,0 +1,14 @@
+diff --git a/pandas/core/resample.py b/pandas/core/resample.py
+index 9b8d1c870091d..3e9507bd4347f 100644
+--- a/pandas/core/resample.py
++++ b/pandas/core/resample.py
+@@ -2128,8 +2220,7 @@ def _get_resampler(self, obj: NDFrame, kind=None) -> Resampler:
+         TypeError if incompatible axis
+ 
+         """
+-        _, ax, indexer = self._set_grouper(obj, gpr_index=None)
+-
++        _, ax, _ = self._set_grouper(obj, gpr_index=None)
+         if isinstance(ax, DatetimeIndex):
+             return DatetimeIndexResampler(
+                 obj,

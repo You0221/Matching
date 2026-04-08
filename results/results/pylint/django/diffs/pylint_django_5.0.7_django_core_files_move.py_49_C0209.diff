@@ -1,0 +1,31 @@
+diff --git a/django/core/files/move.py b/django/core/files/move.py
+index 95d69f9d944c..d7a9c7026eac 100644
+--- a/django/core/files/move.py
++++ b/django/core/files/move.py
+@@ -40,16 +26,18 @@ def file_move_safe(
+     ``FileExistsError``.
+     """
+     # There's no reason to move if we don't have to.
+-    if _samefile(old_file_name, new_file_name):
+-        return
+-
+     try:
+-        if not allow_overwrite and os.access(new_file_name, os.F_OK):
+-            raise FileExistsError(
+-                "Destination file %s exists and allow_overwrite is False."
+-                % new_file_name
+-            )
++        if os.path.samefile(old_file_name, new_file_name):
++            return
++    except OSError:
++        pass
+ 
++    if not allow_overwrite and os.access(new_file_name, os.F_OK):
++        raise FileExistsError(
++            f"Destination file {new_file_name} exists and allow_overwrite is False."
++        )
++
++    try:
+         os.rename(old_file_name, new_file_name)
+         return
+     except OSError:

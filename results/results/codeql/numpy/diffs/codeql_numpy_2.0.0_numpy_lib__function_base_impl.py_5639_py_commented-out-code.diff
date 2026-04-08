@@ -1,0 +1,27 @@
+diff --git a/numpy/lib/_function_base_impl.py b/numpy/lib/_function_base_impl.py
+index 65bc7c592b29..3fa9c5f99d95 100644
+--- a/numpy/lib/_function_base_impl.py
++++ b/numpy/lib/_function_base_impl.py
+@@ -5622,18 +5575,10 @@ def insert(arr, obj, values, axis=None):
+         # need to copy obj, because indices will be changed in-place
+         indices = np.array(obj)
+         if indices.dtype == bool:
+-            # See also delete
+-            # 2012-10-11, NumPy 1.8
+-            warnings.warn(
+-                "in the future insert will treat boolean arrays and "
+-                "array-likes as a boolean index instead of casting it to "
+-                "integer", FutureWarning, stacklevel=2)
+-            indices = indices.astype(intp)
+-            # Code after warning period:
+-            #if obj.ndim != 1:
+-            #    raise ValueError('boolean array argument obj to insert '
+-            #                     'must be one dimensional')
+-            #indices = np.flatnonzero(obj)
++            if obj.ndim != 1:
++                raise ValueError('boolean array argument obj to insert '
++                                'must be one dimensional')
++            indices = np.flatnonzero(obj)
+         elif indices.ndim > 1:
+             raise ValueError(
+                 "index array argument obj to insert must be one dimensional "

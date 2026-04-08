@@ -1,0 +1,28 @@
+diff --git a/django/contrib/sessions/backends/db.py b/django/contrib/sessions/backends/db.py
+index e1f6b69c5582..6d6247d6c94b 100644
+--- a/django/contrib/sessions/backends/db.py
++++ b/django/contrib/sessions/backends/db.py
+@@ -105,6 +176,23 @@ def delete(self, session_key=None):
+         except self.model.DoesNotExist:
+             pass
+ 
++    async def adelete(self, session_key=None):
++        if session_key is None:
++            if self.session_key is None:
++                return
++            session_key = self.session_key
++        try:
++            obj = await self.model.objects.aget(session_key=session_key)
++            await obj.adelete()
++        except self.model.DoesNotExist:
++            pass
++
+     @classmethod
+     def clear_expired(cls):
+         cls.get_model_class().objects.filter(expire_date__lt=timezone.now()).delete()
++
++    @classmethod
++    async def aclear_expired(cls):
++        await cls.get_model_class().objects.filter(
++            expire_date__lt=timezone.now()
++        ).adelete()

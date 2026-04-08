@@ -1,0 +1,31 @@
+diff --git a/tornado/template.py b/tornado/template.py
+index d53e977c5e..0064c6fbd1 100644
+--- a/tornado/template.py
++++ b/tornado/template.py
+@@ -936,20 +936,18 @@ def _parse(
+ 
+         # Intermediate ("else", "elif", etc) blocks
+         intermediate_blocks = {
+-            "else": set(["if", "for", "while", "try"]),
+-            "elif": set(["if"]),
+-            "except": set(["try"]),
+-            "finally": set(["try"]),
++            "else": {"if", "for", "while", "try"},
++            "elif": {"if"},
++            "except": {"try"},
++            "finally": {"try"},
+         }
+         allowed_parents = intermediate_blocks.get(operator)
+         if allowed_parents is not None:
+             if not in_block:
+-                reader.raise_parse_error(
+-                    "%s outside %s block" % (operator, allowed_parents)
+-                )
++                reader.raise_parse_error(f"{operator} outside {allowed_parents} block")
+             if in_block not in allowed_parents:
+                 reader.raise_parse_error(
+-                    "%s block cannot be attached to %s block" % (operator, in_block)
++                    f"{operator} block cannot be attached to {in_block} block"
+                 )
+             body.chunks.append(_IntermediateControlBlock(contents, line))
+             continue

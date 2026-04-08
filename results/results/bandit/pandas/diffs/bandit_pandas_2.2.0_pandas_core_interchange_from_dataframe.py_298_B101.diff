@@ -1,0 +1,26 @@
+diff --git a/pandas/core/interchange/from_dataframe.py b/pandas/core/interchange/from_dataframe.py
+index d45ae37890ba7..4162ebc33f0d6 100644
+--- a/pandas/core/interchange/from_dataframe.py
++++ b/pandas/core/interchange/from_dataframe.py
+@@ -295,13 +295,14 @@ def string_column_to_ndarray(col: Column) -> tuple[np.ndarray, Any]:
+ 
+     null_pos = None
+     if null_kind in (ColumnNullType.USE_BITMASK, ColumnNullType.USE_BYTEMASK):
+-        assert buffers["validity"], "Validity buffers cannot be empty for masks"
+-        valid_buff, valid_dtype = buffers["validity"]
+-        null_pos = buffer_to_ndarray(
+-            valid_buff, valid_dtype, offset=col.offset, length=col.size()
+-        )
+-        if sentinel_val == 0:
+-            null_pos = ~null_pos
++        validity = buffers["validity"]
++        if validity is not None:
++            valid_buff, valid_dtype = validity
++            null_pos = buffer_to_ndarray(
++                valid_buff, valid_dtype, offset=col.offset, length=col.size()
++            )
++            if sentinel_val == 0:
++                null_pos = ~null_pos
+ 
+     # Assemble the strings from the code units
+     str_list: list[None | float | str] = [None] * col.size()

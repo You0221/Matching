@@ -1,0 +1,211 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 704af79e78a..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1187,138 +1243,24 @@ def _generate_dc_field_schema(
+         decorators: DecoratorInfos,
+     ) -> core_schema.DataclassField:
+         """Prepare a DataclassField to represent the parameter/field, of a dataclass."""
+-        common_field = self._common_field_schema(name, field_info, decorators)
++        schema, metadata = self._common_field_schema(name, field_info, decorators)
+         return core_schema.dataclass_field(
+             name,
+-            common_field['schema'],
++            schema,
+             init=field_info.init,
+             init_only=field_info.init_var or None,
+             kw_only=None if field_info.kw_only else False,
+-            serialization_exclude=common_field['serialization_exclude'],
+-            validation_alias=common_field['validation_alias'],
+-            serialization_alias=common_field['serialization_alias'],
+-            frozen=common_field['frozen'],
+-            metadata=common_field['metadata'],
++            serialization_exclude=field_info.exclude,
++            validation_alias=_convert_to_aliases(field_info.validation_alias),
++            serialization_alias=field_info.serialization_alias,
++            serialization_exclude_if=field_info.exclude_if,
++            frozen=field_info.frozen,
++            metadata=metadata,
+         )
+ 
+-    @staticmethod
+-    def _apply_alias_generator_to_field_info(
+-        alias_generator: Callable[[str], str] | AliasGenerator, field_info: FieldInfo, field_name: str
+-    ) -> None:
+-        """Apply an alias_generator to aliases on a FieldInfo instance if appropriate.
+-
+-        Args:
+-            alias_generator: A callable that takes a string and returns a string, or an AliasGenerator instance.
+-            field_info: The FieldInfo instance to which the alias_generator is (maybe) applied.
+-            field_name: The name of the field from which to generate the alias.
+-        """
+-        # Apply an alias_generator if
+-        # 1. An alias is not specified
+-        # 2. An alias is specified, but the priority is <= 1
+-        if (
+-            field_info.alias_priority is None
+-            or field_info.alias_priority <= 1
+-            or field_info.alias is None
+-            or field_info.validation_alias is None
+-            or field_info.serialization_alias is None
+-        ):
+-            alias, validation_alias, serialization_alias = None, None, None
+-
+-            if isinstance(alias_generator, AliasGenerator):
+-                alias, validation_alias, serialization_alias = alias_generator.generate_aliases(field_name)
+-            elif isinstance(alias_generator, Callable):
+-                alias = alias_generator(field_name)
+-                if not isinstance(alias, str):
+-                    raise TypeError(f'alias_generator {alias_generator} must return str, not {alias.__class__}')
+-
+-            # if priority is not set, we set to 1
+-            # which supports the case where the alias_generator from a child class is used
+-            # to generate an alias for a field in a parent class
+-            if field_info.alias_priority is None or field_info.alias_priority <= 1:
+-                field_info.alias_priority = 1
+-
+-            # if the priority is 1, then we set the aliases to the generated alias
+-            if field_info.alias_priority == 1:
+-                field_info.serialization_alias = _get_first_non_null(serialization_alias, alias)
+-                field_info.validation_alias = _get_first_non_null(validation_alias, alias)
+-                field_info.alias = alias
+-
+-            # if any of the aliases are not set, then we set them to the corresponding generated alias
+-            if field_info.alias is None:
+-                field_info.alias = alias
+-            if field_info.serialization_alias is None:
+-                field_info.serialization_alias = _get_first_non_null(serialization_alias, alias)
+-            if field_info.validation_alias is None:
+-                field_info.validation_alias = _get_first_non_null(validation_alias, alias)
+-
+-    @staticmethod
+-    def _apply_alias_generator_to_computed_field_info(
+-        alias_generator: Callable[[str], str] | AliasGenerator,
+-        computed_field_info: ComputedFieldInfo,
+-        computed_field_name: str,
+-    ):
+-        """Apply an alias_generator to alias on a ComputedFieldInfo instance if appropriate.
+-
+-        Args:
+-            alias_generator: A callable that takes a string and returns a string, or an AliasGenerator instance.
+-            computed_field_info: The ComputedFieldInfo instance to which the alias_generator is (maybe) applied.
+-            computed_field_name: The name of the computed field from which to generate the alias.
+-        """
+-        # Apply an alias_generator if
+-        # 1. An alias is not specified
+-        # 2. An alias is specified, but the priority is <= 1
+-
+-        if (
+-            computed_field_info.alias_priority is None
+-            or computed_field_info.alias_priority <= 1
+-            or computed_field_info.alias is None
+-        ):
+-            alias, validation_alias, serialization_alias = None, None, None
+-
+-            if isinstance(alias_generator, AliasGenerator):
+-                alias, validation_alias, serialization_alias = alias_generator.generate_aliases(computed_field_name)
+-            elif isinstance(alias_generator, Callable):
+-                alias = alias_generator(computed_field_name)
+-                if not isinstance(alias, str):
+-                    raise TypeError(f'alias_generator {alias_generator} must return str, not {alias.__class__}')
+-
+-            # if priority is not set, we set to 1
+-            # which supports the case where the alias_generator from a child class is used
+-            # to generate an alias for a field in a parent class
+-            if computed_field_info.alias_priority is None or computed_field_info.alias_priority <= 1:
+-                computed_field_info.alias_priority = 1
+-
+-            # if the priority is 1, then we set the aliases to the generated alias
+-            # note that we use the serialization_alias with priority over alias, as computed_field
+-            # aliases are used for serialization only (not validation)
+-            if computed_field_info.alias_priority == 1:
+-                computed_field_info.alias = _get_first_non_null(serialization_alias, alias)
+-
+-    @staticmethod
+-    def _apply_field_title_generator_to_field_info(
+-        config_wrapper: ConfigWrapper, field_info: FieldInfo | ComputedFieldInfo, field_name: str
+-    ) -> None:
+-        """Apply a field_title_generator on a FieldInfo or ComputedFieldInfo instance if appropriate
+-        Args:
+-            config_wrapper: The config of the model
+-            field_info: The FieldInfo or ComputedField instance to which the title_generator is (maybe) applied.
+-            field_name: The name of the field from which to generate the title.
+-        """
+-        field_title_generator = field_info.field_title_generator or config_wrapper.field_title_generator
+-
+-        if field_title_generator is None:
+-            return
+-
+-        if field_info.title is None:
+-            title = field_title_generator(field_name, field_info)  # type: ignore
+-            if not isinstance(title, str):
+-                raise TypeError(f'field_title_generator {field_title_generator} must return str, not {title.__class__}')
+-
+-            field_info.title = title
+-
+     def _common_field_schema(  # C901
+         self, name: str, field_info: FieldInfo, decorators: DecoratorInfos
+-    ) -> _CommonField:
++    ) -> tuple[CoreSchema, dict[str, Any]]:
+         source_type, annotations = field_info.annotation, field_info.metadata
+ 
+         def set_discriminator(schema: CoreSchema) -> CoreSchema:
+@@ -1326,9 +1268,10 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+             return schema
+ 
+         # Convert `@field_validator` decorators to `Before/After/Plain/WrapValidator` instances:
+-        validators_from_decorators = []
+-        for decorator in filter_field_decorator_info_by_field(decorators.field_validators.values(), name):
+-            validators_from_decorators.append(_mode_to_validator[decorator.info.mode]._from_decorator(decorator))
++        validators_from_decorators = [
++            _mode_to_validator[decorator.info.mode]._from_decorator(decorator)
++            for decorator in filter_field_decorator_info_by_field(decorators.field_validators.values(), name)
++        ]
+ 
+         with self.field_name_stack.push(name):
+             if field_info.discriminator is not None:
+@@ -1350,9 +1293,9 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+             field_info.validate_default = True
+         each_item_validators = [v for v in this_field_validators if v.info.each_item is True]
+         this_field_validators = [v for v in this_field_validators if v not in each_item_validators]
+-        schema = apply_each_item_validators(schema, each_item_validators, name)
++        schema = apply_each_item_validators(schema, each_item_validators)
+ 
+-        schema = apply_validators(schema, this_field_validators, name)
++        schema = apply_validators(schema, this_field_validators)
+ 
+         # the default validator needs to go outside of any other validators
+         # so that it is the topmost validator for the field validator
+@@ -1363,7 +1306,6 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+         schema = self._apply_field_serializers(
+             schema, filter_field_decorator_info_by_field(decorators.field_serializers.values(), name)
+         )
+-        self._apply_field_title_generator_to_field_info(self._config_wrapper, field_info, name)
+ 
+         pydantic_js_updates, pydantic_js_extra = _extract_json_schema_info_from_field_info(field_info)
+         core_metadata: dict[str, Any] = {}
+@@ -1371,23 +1313,7 @@ def set_discriminator(schema: CoreSchema) -> CoreSchema:
+             core_metadata, pydantic_js_updates=pydantic_js_updates, pydantic_js_extra=pydantic_js_extra
+         )
+ 
+-        alias_generator = self._config_wrapper.alias_generator
+-        if alias_generator is not None:
+-            self._apply_alias_generator_to_field_info(alias_generator, field_info, name)
+-
+-        if isinstance(field_info.validation_alias, (AliasChoices, AliasPath)):
+-            validation_alias = field_info.validation_alias.convert_to_aliases()
+-        else:
+-            validation_alias = field_info.validation_alias
+-
+-        return _common_field(
+-            schema,
+-            serialization_exclude=True if field_info.exclude else None,
+-            validation_alias=validation_alias,
+-            serialization_alias=field_info.serialization_alias,
+-            frozen=field_info.frozen,
+-            metadata=core_metadata,
+-        )
++        return schema, core_metadata
+ 
+     def _union_schema(self, union_type: Any) -> core_schema.CoreSchema:
+         """Generate schema for a Union."""

@@ -1,0 +1,14 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -550,6 +557,9 @@ def get_aggregation(self, using, aggregate_exprs):
+                         if annotation.get_group_by_cols():
+                             annotation_mask.add(annotation_alias)
+                     inner_query.set_annotation_mask(annotation_mask)
++                    # Annotations that possibly return multiple rows cannot
++                    # be masked as they might have an incidence on the query.
++                    annotation_mask |= set_returning_annotations
+ 
+             # Add aggregates to the outer AggregateQuery. This requires making
+             # sure all columns referenced by the aggregates are selected in the

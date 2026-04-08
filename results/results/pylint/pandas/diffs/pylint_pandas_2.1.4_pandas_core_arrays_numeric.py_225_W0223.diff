@@ -1,0 +1,15 @@
+diff --git a/pandas/core/arrays/numeric.py b/pandas/core/arrays/numeric.py
+index 0e86c1efba17a..210450e868698 100644
+--- a/pandas/core/arrays/numeric.py
++++ b/pandas/core/arrays/numeric.py
+@@ -260,9 +263,8 @@ def _coerce_to_array(
+     ) -> tuple[np.ndarray, np.ndarray]:
+         dtype_cls = cls._dtype_cls
+         default_dtype = dtype_cls._default_np_dtype
+-        mask = None
+         values, mask, _, _ = _coerce_to_data_and_mask(
+-            value, mask, dtype, copy, dtype_cls, default_dtype
++            value, dtype, copy, dtype_cls, default_dtype
+         )
+         return values, mask
+ 

@@ -1,0 +1,113 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 4540b8d83f1..aad2ac94bdd 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -199,49 +328,46 @@ def collect_model_fields(  # noqa: C901
+                     f'Field name "{ann_name}" in "{cls.__qualname__}" shadows an attribute in parent '
+                     f'"{base.__qualname__}"',
+                     UserWarning,
++                    stacklevel=4,
+                 )
+ 
+         if assigned_value is PydanticUndefined:  # no assignment, just a plain annotation
+-            if ann_name in annotations:
+-                # field is present in the current model's annotations (and *not* from parent classes)
++            if ann_name in annotations or ann_name not in parent_fields_lookup:
++                # field is either:
++                # - present in the current model's annotations (and *not* from parent classes)
++                # - not found on any base classes; this seems to be caused by fields bot getting
++                #   generated due to models not being fully defined while initializing recursive models.
++                #   Nothing stops us from just creating a `FieldInfo` for this type hint, so we do this.
+                 field_info = FieldInfo_.from_annotation(ann_type, _source=AnnotationSource.CLASS)
+-            elif ann_name in parent_fields_lookup:
++                if not evaluated:
++                    field_info._complete = False
++                    # Store the original annotation that should be used to rebuild
++                    # the field info later:
++                    field_info._original_annotation = ann_type
++            else:
+                 # The field was present on one of the (possibly multiple) base classes
+                 # copy the field to make sure typevar substitutions don't cause issues with the base classes
+-                field_info = copy(parent_fields_lookup[ann_name])
+-            else:
+-                # The field was not found on any base classes; this seems to be caused by fields not getting
+-                # generated thanks to models not being fully defined while initializing recursive models.
+-                # Nothing stops us from just creating a new FieldInfo for this type hint, so we do this.
+-                field_info = FieldInfo_.from_annotation(ann_type, _source=AnnotationSource.CLASS)
++                field_info = parent_fields_lookup[ann_name]._copy()
+ 
+-            if not evaluated:
+-                field_info._complete = False
+-                # Store the original annotation that should be used to rebuild
+-                # the field info later:
+-                field_info._original_annotation = ann_type
+         else:  # An assigned value is present (either the default value, or a `Field()` function)
+-            _warn_on_nested_alias_in_annotation(ann_type, ann_name)
+             if isinstance(assigned_value, FieldInfo_) and ismethoddescriptor(assigned_value.default):
+                 # `assigned_value` was fetched using `getattr`, which triggers a call to `__get__`
+                 # for descriptors, so we do the same if the `= field(default=...)` form is used.
+                 # Note that we only do this for method descriptors for now, we might want to
+                 # extend this to any descriptor in the future (by simply checking for
+                 # `hasattr(assigned_value.default, '__get__')`).
+-                assigned_value.default = assigned_value.default.__get__(None, cls)
+-
+-            # The `from_annotated_attribute()` call below mutates the assigned `Field()`, so make a copy:
+-            original_assignment = (
+-                copy(assigned_value) if not evaluated and isinstance(assigned_value, FieldInfo_) else assigned_value
+-            )
++                default = assigned_value.default.__get__(None, cls)
++                assigned_value.default = default
++                assigned_value._attributes_set['default'] = default
+ 
+             field_info = FieldInfo_.from_annotated_attribute(ann_type, assigned_value, _source=AnnotationSource.CLASS)
++            # Store the original annotation and assignment value that should be used to rebuild the field info later.
++            # Note that the assignment is always stored as the annotation might contain a type var that is later
++            #  parameterized with an unknown forward reference (and we'll need it to rebuild the field info):
++            field_info._original_assignment = assigned_value
+             if not evaluated:
+                 field_info._complete = False
+-                # Store the original annotation and assignment value that should be used to rebuild
+-                # the field info later:
+                 field_info._original_annotation = ann_type
+-                field_info._original_assignment = original_assignment
+             elif 'final' in field_info._qualifiers and not field_info.is_required():
+                 warnings.warn(
+                     f'Annotation {ann_name!r} is marked as final and has a default value. Pydantic treats {ann_name!r} as a '
+@@ -272,6 +398,10 @@ def collect_model_fields(  # noqa: C901
+             )
+         fields[ann_name] = field_info
+ 
++        if field_info._complete:
++            # If not complete, this will be called in `rebuild_model_fields()`:
++            update_field_from_config(config_wrapper, ann_name, field_info)
++
+     if typevars_map:
+         for field in fields.values():
+             if field._complete:
+@@ -282,25 +412,10 @@ def collect_model_fields(  # noqa: C901
+     return fields, class_vars
+ 
+ 
+-def _warn_on_nested_alias_in_annotation(ann_type: type[Any], ann_name: str) -> None:
+-    FieldInfo = import_cached_field_info()
+-
+-    args = getattr(ann_type, '__args__', None)
+-    if args:
+-        for anno_arg in args:
+-            if typing_objects.is_annotated(get_origin(anno_arg)):
+-                for anno_type_arg in _typing_extra.get_args(anno_arg):
+-                    if isinstance(anno_type_arg, FieldInfo) and anno_type_arg.alias is not None:
+-                        warnings.warn(
+-                            f'`alias` specification on field "{ann_name}" must be set on outermost annotation to take effect.',
+-                            UserWarning,
+-                        )
+-                        return
+-
+-
+ def rebuild_model_fields(
+     cls: type[BaseModel],
+     *,
++    config_wrapper: ConfigWrapper,
+     ns_resolver: NsResolver,
+     typevars_map: Mapping[TypeVar, Any],
+ ) -> dict[str, FieldInfo]:

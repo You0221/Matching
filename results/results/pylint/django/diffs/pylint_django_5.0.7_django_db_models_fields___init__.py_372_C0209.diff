@@ -1,0 +1,20 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -310,13 +312,13 @@ def _check_field_name(self):
+ 
+     @classmethod
+     def _choices_is_value(cls, value):
+-        return isinstance(value, (str, Promise)) or not is_iterable(value)
++        return isinstance(value, (str, Promise)) or not isinstance(value, Iterable)
+ 
+     def _check_choices(self):
+         if not self.choices:
+             return []
+ 
+-        if not is_iterable(self.choices) or isinstance(self.choices, str):
++        if not isinstance(self.choices, Iterable) or isinstance(self.choices, str):
+             return [
+                 checks.Error(
+                     "'choices' must be a mapping (e.g. a dictionary) or an iterable "

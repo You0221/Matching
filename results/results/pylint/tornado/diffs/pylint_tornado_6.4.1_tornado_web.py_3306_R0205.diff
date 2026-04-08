@@ -1,0 +1,22 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 039396470f..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -3303,7 +3368,7 @@ def wrapper(  # type: ignore
+     return wrapper
+ 
+ 
+-class UIModule(object):
++class UIModule:
+     """A re-usable, modular UI unit on a page.
+ 
+     UI modules often execute additional queries, and they can include
+@@ -3323,7 +3388,7 @@ def __init__(self, handler: RequestHandler) -> None:
+     def current_user(self) -> Any:
+         return self.handler.current_user
+ 
+-    def render(self, *args: Any, **kwargs: Any) -> str:
++    def render(self, *args: Any, **kwargs: Any) -> Union[str, bytes]:
+         """Override in subclasses to return this module's output."""
+         raise NotImplementedError()
+ 

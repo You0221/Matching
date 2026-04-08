@@ -1,0 +1,38 @@
+diff --git a/hacking/test-module.py b/hacking/test-module.py
+index 7b39798de5b471..ca0e1ab425dfbd 100755
+--- a/hacking/test-module.py
++++ b/hacking/test-module.py
+@@ -87,15 +89,29 @@ def parse():
+         return options, args
+ 
+ 
++def jsonify(result, format=False):
++    """ format JSON output (uncompressed or uncompressed) """
++
++    if result is None:
++        return "{}"
++
++    indent = None
++    if format:
++        indent = 4
++
++    try:
++        return json.dumps(result, sort_keys=True, indent=indent, ensure_ascii=False)
++    except UnicodeDecodeError:
++        return json.dumps(result, sort_keys=True, indent=indent)
++
++
+ def write_argsfile(argstring, json=False):
+     """ Write args to a file for old-style module's use. """
+-    argspath = os.path.expanduser("~/.ansible_test_module_arguments")
+-    argsfile = open(argspath, 'w')
++    argspath = Path("~/.ansible_test_module_arguments").expanduser()
+     if json:
+         args = parse_kv(argstring)
+         argstring = jsonify(args)
+-    argsfile.write(argstring)
+-    argsfile.close()
++    argspath.write_text(argstring)
+     return argspath
+ 
+ 

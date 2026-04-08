@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -70,7 +80,6 @@ def _dynamic_max_trials(n_inliers, n_samples, min_samples, probability):
+ 
+ 
+ class RANSACRegressor(
+-    _RoutingNotSupportedMixin,
+     MetaEstimatorMixin,
+     RegressorMixin,
+     MultiOutputMixin,

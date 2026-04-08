@@ -1,0 +1,20 @@
+diff --git a/pandas/core/tools/numeric.py b/pandas/core/tools/numeric.py
+index a50dbeb110bff..09652a7d8bc92 100644
+--- a/pandas/core/tools/numeric.py
++++ b/pandas/core/tools/numeric.py
+@@ -219,12 +229,13 @@ def to_numeric(
+         values = ensure_object(values)
+         coerce_numeric = errors not in ("ignore", "raise")
+         try:
+-            values, new_mask = lib.maybe_convert_numeric(  # type: ignore[call-overload]  # noqa: E501
++            values, new_mask = lib.maybe_convert_numeric(  # type: ignore[call-overload]
+                 values,
+                 set(),
+                 coerce_numeric=coerce_numeric,
+                 convert_to_masked_nullable=dtype_backend is not lib.no_default
+-                or isinstance(values_dtype, StringDtype),
++                or isinstance(values_dtype, StringDtype)
++                and not values_dtype.storage == "pyarrow_numpy",
+             )
+         except (ValueError, TypeError):
+             if errors == "raise":

@@ -1,0 +1,75 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -529,38 +639,41 @@ def _model_schema(self, cls: type[BaseModel]) -> core_schema.CoreSchema:
+                 {*fields.keys(), *computed_fields.keys()},
+             )
+             config_wrapper = ConfigWrapper(cls.model_config, check=False)
+-            core_config = config_wrapper.core_config(cls)
+-            metadata = build_metadata_dict(js_functions=[partial(modify_model_json_schema, cls=cls)])
+-
++            core_config = config_wrapper.core_config(title=cls.__name__)
+             model_validators = decorators.model_validators.values()
+ 
+-            extras_schema = None
+-            if core_config.get('extra_fields_behavior') == 'allow':
+-                assert cls.__mro__[0] is cls
+-                assert cls.__mro__[-1] is object
+-                for candidate_cls in cls.__mro__[:-1]:
+-                    extras_annotation = getattr(candidate_cls, '__annotations__', {}).get('__pydantic_extra__', None)
+-                    if extras_annotation is not None:
+-                        if isinstance(extras_annotation, str):
+-                            extras_annotation = _typing_extra.eval_type_backport(
+-                                _typing_extra._make_forward_ref(extras_annotation, is_argument=False, is_class=True),
+-                                self._types_namespace,
+-                            )
+-                        tp = get_origin(extras_annotation)
+-                        if tp not in (Dict, dict):
+-                            raise PydanticSchemaGenerationError(
+-                                'The type annotation for `__pydantic_extra__` must be `Dict[str, ...]`'
+-                            )
+-                        extra_items_type = self._get_args_resolving_forward_refs(
+-                            extras_annotation,
+-                            required=True,
+-                        )[1]
+-                        if extra_items_type is not Any:
+-                            extras_schema = self.generate_schema(extra_items_type)
+-                            break
++            with self._config_wrapper_stack.push(config_wrapper), self._ns_resolver.push(cls):
++                extras_schema = None
++                if core_config.get('extra_fields_behavior') == 'allow':
++                    assert cls.__mro__[0] is cls
++                    assert cls.__mro__[-1] is object
++                    for candidate_cls in cls.__mro__[:-1]:
++                        extras_annotation = getattr(candidate_cls, '__annotations__', {}).get(
++                            '__pydantic_extra__', None
++                        )
++                        if extras_annotation is not None:
++                            if isinstance(extras_annotation, str):
++                                extras_annotation = _typing_extra.eval_type_backport(
++                                    _typing_extra._make_forward_ref(
++                                        extras_annotation, is_argument=False, is_class=True
++                                    ),
++                                    *self._types_namespace,
++                                )
++                            tp = get_origin(extras_annotation)
++                            if tp not in (Dict, dict):
++                                raise PydanticSchemaGenerationError(
++                                    'The type annotation for `__pydantic_extra__` must be `Dict[str, ...]`'
++                                )
++                            extra_items_type = self._get_args_resolving_forward_refs(
++                                extras_annotation,
++                                required=True,
++                            )[1]
++                            if not _typing_extra.is_any(extra_items_type):
++                                extras_schema = self.generate_schema(extra_items_type)
++                                break
++
++                generic_origin: type[BaseModel] | None = getattr(cls, '__pydantic_generic_metadata__', {}).get('origin')
+ 
+-            with self._config_wrapper_stack.push(config_wrapper), self._types_namespace_stack.push(cls):
+-                self = self._current_generate_schema
+                 if cls.__pydantic_root_model__:
+                     root_field = self._common_field_schema('root', fields['root'], decorators)
+                     inner_schema = root_field['schema']

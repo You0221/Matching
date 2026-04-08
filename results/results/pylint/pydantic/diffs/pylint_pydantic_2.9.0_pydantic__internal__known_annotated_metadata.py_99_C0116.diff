@@ -1,0 +1,27 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index efdb8924c7a..78de89ecd77 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -96,22 +96,6 @@
+         CONSTRAINTS_TO_ALLOWED_SCHEMAS[c].update(schemas)
+ 
+ 
+-def add_js_update_schema(s: cs.CoreSchema, f: Callable[[], dict[str, Any]]) -> None:
+-    def update_js_schema(s: cs.CoreSchema, handler: GetJsonSchemaHandler) -> dict[str, Any]:
+-        js_schema = handler(s)
+-        js_schema.update(f())
+-        return js_schema
+-
+-    if 'metadata' in s:
+-        metadata = s['metadata']
+-        if 'pydantic_js_functions' in s:
+-            metadata['pydantic_js_functions'].append(update_js_schema)
+-        else:
+-            metadata['pydantic_js_functions'] = [update_js_schema]
+-    else:
+-        s['metadata'] = {'pydantic_js_functions': [update_js_schema]}
+-
+-
+ def as_jsonable_value(v: Any) -> Any:
+     if type(v) not in (int, str, float, bytes, bool, type(None)):
+         return to_jsonable_python(v)

@@ -1,0 +1,18 @@
+diff --git a/sklearn/preprocessing/_polynomial.py b/sklearn/preprocessing/_polynomial.py
+index f4c9fb032cfb0..de0308cda3b06 100644
+--- a/sklearn/preprocessing/_polynomial.py
++++ b/sklearn/preprocessing/_polynomial.py
+@@ -1161,13 +1176,3 @@ def transform(self, X):
+             # We chose the last one.
+             indices = [j for j in range(XBS.shape[1]) if (j + 1) % n_splines != 0]
+             return XBS[:, indices]
+-
+-    def _more_tags(self):
+-        return {
+-            "_xfail_checks": {
+-                "check_estimators_pickle": (
+-                    "Current Scipy implementation of _bsplines does not"
+-                    "support const memory views."
+-                ),
+-            }
+-        }

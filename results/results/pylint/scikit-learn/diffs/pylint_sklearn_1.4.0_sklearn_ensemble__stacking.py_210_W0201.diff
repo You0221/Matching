@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index 8e27facda11df..a18803d507ffa 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -208,7 +222,7 @@ def fit(self, X, y, sample_weight=None):
+             # base estimators will be used in transform, predict, and
+             # predict_proba. They are exposed publicly.
+             self.estimators_ = Parallel(n_jobs=self.n_jobs)(
+-                delayed(_fit_single_estimator)(clone(est), X, y, sample_weight)
++                delayed(_fit_single_estimator)(clone(est), X, y, fit_params)
+                 for est in all_estimators
+                 if est != "drop"
+             )

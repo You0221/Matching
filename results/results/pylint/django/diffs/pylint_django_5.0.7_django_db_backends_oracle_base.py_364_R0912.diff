@@ -1,0 +1,39 @@
+diff --git a/django/db/backends/oracle/base.py b/django/db/backends/oracle/base.py
+index 803c3a5baf09..3b37c38f9723 100644
+--- a/django/db/backends/oracle/base.py
++++ b/django/db/backends/oracle/base.py
+@@ -365,11 +427,15 @@ def __init__(self, param, cursor, strings_only=False):
+             param = Oracle_datetime.from_datetime(param)
+ 
+         string_size = 0
+-        # Oracle doesn't recognize True and False correctly.
+-        if param is True:
+-            param = 1
+-        elif param is False:
+-            param = 0
++        has_boolean_data_type = (
++            cursor.database.features.supports_boolean_expr_in_select_clause
++        )
++        if not has_boolean_data_type:
++            # Oracle < 23c doesn't recognize True and False correctly.
++            if param is True:
++                param = 1
++            elif param is False:
++                param = 0
+         if hasattr(param, "bind_parameter"):
+             self.force_bytes = param.bind_parameter(cursor)
+         elif isinstance(param, (Database.Binary, datetime.timedelta)):
+@@ -386,9 +452,11 @@ def __init__(self, param, cursor, strings_only=False):
+             self.input_size = param.input_size
+         elif string_size > 4000:
+             # Mark any string param greater than 4000 characters as a CLOB.
+-            self.input_size = Database.CLOB
++            self.input_size = Database.DB_TYPE_CLOB
+         elif isinstance(param, datetime.datetime):
+-            self.input_size = Database.TIMESTAMP
++            self.input_size = Database.DB_TYPE_TIMESTAMP
++        elif has_boolean_data_type and isinstance(param, bool):
++            self.input_size = Database.DB_TYPE_BOOLEAN
+         else:
+             self.input_size = None
+ 

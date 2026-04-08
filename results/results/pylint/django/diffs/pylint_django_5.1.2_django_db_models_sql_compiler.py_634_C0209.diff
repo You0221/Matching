@@ -1,0 +1,37 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -632,6 +629,32 @@ def get_combinator_sql(self, combinator, all):
+             params.extend(part)
+         return result, params
+ 
++    def _get_combinator_part_sql(self, compiler):
++        features = self.connection.features
++        # If the columns list is limited, then all combined queries
++        # must have the same columns list. Set the selects defined on
++        # the query on all combined queries, if not already set.
++        selected = self.query.selected
++        if selected is not None and compiler.query.selected is None:
++            compiler.query = compiler.query.clone()
++            compiler.query.set_values(selected)
++        part_sql, part_args = compiler.as_sql(with_col_aliases=True)
++        if compiler.query.combinator:
++            # Wrap in a subquery if wrapping in parentheses isn't
++            # supported.
++            if not features.supports_parentheses_in_compound:
++                part_sql = "SELECT * FROM ({})".format(part_sql)
++            # Add parentheses when combining with compound query if not
++            # already added for all compound queries.
++            elif (
++                self.query.subquery
++                or not features.supports_slicing_ordering_in_compound
++            ):
++                part_sql = "({})".format(part_sql)
++        elif self.query.subquery and features.supports_slicing_ordering_in_compound:
++            part_sql = "({})".format(part_sql)
++        return part_sql, part_args
++
+     def get_qualify_sql(self):
+         where_parts = []
+         if self.where:

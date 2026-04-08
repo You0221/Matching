@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 7d42d1ea38a1..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -929,7 +974,9 @@ class ForeignKey(ForeignObject):
+ 
+     empty_strings_allowed = False
+     default_error_messages = {
+-        "invalid": _("%(model)s instance with %(field)s %(value)r does not exist.")
++        "invalid": _(
++            "%(model)s instance with %(field)s %(value)r is not a valid choice."
++        )
+     }
+     description = _("Foreign Key (type determined by related field)")
+ 

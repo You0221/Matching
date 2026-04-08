@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -262,7 +288,7 @@ def _parallel_args(self):
+         # ExtraTreeRegressor releases the GIL, so it's more efficient to use
+         # a thread-based backend rather than a process-based backend so as
+         # to avoid suffering from communication overhead and extra memory
+-        # copies.
++        # copies. This is only used in the fit method.
+         return {"prefer": "threads"}
+ 
+     @_fit_context(prefer_skip_nested_validation=True)

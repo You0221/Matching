@@ -1,0 +1,18 @@
+diff --git a/sklearn/preprocessing/_function_transformer.py b/sklearn/preprocessing/_function_transformer.py
+index c49684d0ebfbc..3fc33c59e76bd 100644
+--- a/sklearn/preprocessing/_function_transformer.py
++++ b/sklearn/preprocessing/_function_transformer.py
+@@ -1,8 +1,13 @@
++# Authors: The scikit-learn developers
++# SPDX-License-Identifier: BSD-3-Clause
++
+ import warnings
++from functools import partial
+ 
+ import numpy as np
+ 
+ from ..base import BaseEstimator, TransformerMixin, _fit_context
++from ..utils._estimator_html_repr import _VisualBlock
+ from ..utils._param_validation import StrOptions
+ from ..utils._set_output import (
+     _get_adapter_from_container,

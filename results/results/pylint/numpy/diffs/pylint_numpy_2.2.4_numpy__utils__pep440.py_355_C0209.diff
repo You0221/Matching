@@ -1,0 +1,24 @@
+diff --git a/numpy/_utils/_pep440.py b/numpy/_utils/_pep440.py
+index 73d0afb5e95f..035a0695e5ee 100644
+--- a/numpy/_utils/_pep440.py
++++ b/numpy/_utils/_pep440.py
+@@ -343,16 +342,16 @@ def __str__(self):
+ 
+         # Post-release
+         if self._version.post is not None:
+-            parts.append(".post{0}".format(self._version.post[1]))
++            parts.append(f".post{self._version.post[1]}")
+ 
+         # Development release
+         if self._version.dev is not None:
+-            parts.append(".dev{0}".format(self._version.dev[1]))
++            parts.append(f".dev{self._version.dev[1]}")
+ 
+         # Local version segment
+         if self._version.local is not None:
+             parts.append(
+-                "+{0}".format(".".join(str(x) for x in self._version.local))
++                f"+{'.'.join(str(x) for x in self._version.local)}"
+             )
+ 
+         return "".join(parts)

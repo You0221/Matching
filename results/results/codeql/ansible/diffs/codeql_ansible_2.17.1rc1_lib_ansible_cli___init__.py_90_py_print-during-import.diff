@@ -1,0 +1,74 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index b8da2dbd50f596..0adc00c9bc9a4d 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -63,50 +75,51 @@ def initialize_locale():
+ initialize_locale()
+ 
+ 
+-from importlib.metadata import version
+-from ansible.module_utils.compat.version import LooseVersion
+-
+-# Used for determining if the system is running a new enough Jinja2 version
+-# and should only restrict on our documented minimum versions
+-jinja2_version = version('jinja2')
+-if jinja2_version < LooseVersion('3.0'):
+-    raise SystemExit(
+-        'ERROR: Ansible requires Jinja2 3.0 or newer on the controller. '
+-        'Current version: %s' % jinja2_version
+-    )
+-
+-import errno
+ import getpass
+ import subprocess
+ import traceback
+ from abc import ABC, abstractmethod
+ from pathlib import Path
+ 
++from ansible import _internal  # do not remove or defer; ensures controller-specific state is set early
++
++_internal.setup()
++
++from ansible.errors import AnsibleError, ExitCode
++
+ try:
+     from ansible import constants as C
+     from ansible.utils.display import Display
+     display = Display()
+-except Exception as e:
+-    print('ERROR: %s' % e, file=sys.stderr)
++except Exception as ex:
++    if isinstance(ex, AnsibleError):
++        ex_msg = ' '.join((ex.message, ex._help_text or '')).strip()
++    else:
++        ex_msg = str(ex)
++
++    print(f'ERROR: {ex_msg}\n\n{"".join(traceback.format_exception(ex))}', file=sys.stderr)
+     sys.exit(5)
+ 
++
+ from ansible import context
++from ansible.utils import display as _display
+ from ansible.cli.arguments import option_helpers as opt_help
+-from ansible.errors import AnsibleError, AnsibleOptionsError, AnsibleParserError
+ from ansible.inventory.manager import InventoryManager
+ from ansible.module_utils.six import string_types
+ from ansible.module_utils.common.text.converters import to_bytes, to_text
+ from ansible.module_utils.common.collections import is_sequence
+ from ansible.module_utils.common.file import is_executable
+ from ansible.parsing.dataloader import DataLoader
+-from ansible.parsing.vault import PromptVaultSecret, get_file_vault_secret
++from ansible.parsing.vault import PromptVaultSecret, get_file_vault_secret, VaultSecretsContext
+ from ansible.plugins.loader import add_all_plugin_dirs, init_plugin_loader
+ from ansible.release import __version__
+ from ansible.utils.collection_loader import AnsibleCollectionConfig
+ from ansible.utils.collection_loader._collection_finder import _get_collection_name_from_path
+ from ansible.utils.path import unfrackpath
+-from ansible.utils.unsafe_proxy import to_unsafe_text
+ from ansible.vars.manager import VariableManager
++from ansible.module_utils._internal import _deprecator
++from ansible._internal._ssh import _agent_launch
++
+ 
+ try:
+     import argcomplete

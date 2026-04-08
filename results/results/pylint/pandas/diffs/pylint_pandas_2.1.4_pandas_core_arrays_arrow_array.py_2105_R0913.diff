@@ -1,0 +1,66 @@
+diff --git a/pandas/core/arrays/arrow/array.py b/pandas/core/arrays/arrow/array.py
+index 88695f11fba59..5b2d3b7c065a8 100644
+--- a/pandas/core/arrays/arrow/array.py
++++ b/pandas/core/arrays/arrow/array.py
+@@ -2059,58 +2435,10 @@ def _str_repeat(self, repeats: int | Sequence[int]):
+         else:
+             return type(self)(pc.binary_repeat(self._pa_array, repeats))
+ 
+-    def _str_match(
+-        self, pat: str, case: bool = True, flags: int = 0, na: Scalar | None = None
+-    ):
+-        if not pat.startswith("^"):
+-            pat = f"^{pat}"
+-        return self._str_contains(pat, case, flags, na, regex=True)
+-
+-    def _str_fullmatch(
+-        self, pat, case: bool = True, flags: int = 0, na: Scalar | None = None
+-    ):
+-        if not pat.endswith("$") or pat.endswith("//$"):
+-            pat = f"{pat}$"
+-        return self._str_match(pat, case, flags, na)
+-
+-    def _str_find(self, sub: str, start: int = 0, end: int | None = None):
+-        if start != 0 and end is not None:
+-            slices = pc.utf8_slice_codeunits(self._pa_array, start, stop=end)
+-            result = pc.find_substring(slices, sub)
+-            not_found = pc.equal(result, -1)
+-            offset_result = pc.add(result, end - start)
+-            result = pc.if_else(not_found, result, offset_result)
+-        elif start == 0 and end is None:
+-            slices = self._pa_array
+-            result = pc.find_substring(slices, sub)
+-        else:
+-            raise NotImplementedError(
+-                f"find not implemented with {sub=}, {start=}, {end=}"
+-            )
+-        return type(self)(result)
+-
+-    def _str_get(self, i: int):
+-        lengths = pc.utf8_length(self._pa_array)
+-        if i >= 0:
+-            out_of_bounds = pc.greater_equal(i, lengths)
+-            start = i
+-            stop = i + 1
+-            step = 1
+-        else:
+-            out_of_bounds = pc.greater(-i, lengths)
+-            start = i
+-            stop = i - 1
+-            step = -1
+-        not_out_of_bounds = pc.invert(out_of_bounds.fill_null(True))
+-        selected = pc.utf8_slice_codeunits(
+-            self._pa_array, start=start, stop=stop, step=step
+-        )
+-        null_value = pa.scalar(None, type=self._pa_array.type)
+-        result = pc.if_else(not_out_of_bounds, selected, null_value)
+-        return type(self)(result)
+-
+     def _str_join(self, sep: str):
+-        if pa.types.is_string(self._pa_array.type):
++        if pa.types.is_string(self._pa_array.type) or pa.types.is_large_string(
++            self._pa_array.type
++        ):
+             result = self._apply_elementwise(list)
+             result = pa.chunked_array(result, type=pa.list_(pa.string()))
+         else:

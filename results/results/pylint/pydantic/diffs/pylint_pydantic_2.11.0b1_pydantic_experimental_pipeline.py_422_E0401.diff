@@ -1,0 +1,13 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index 9a3dbc4c4ff..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -419,8 +411,6 @@ def _apply_parse(
+ def _apply_transform(
+     s: cs.CoreSchema | None, func: Callable[[Any], Any], handler: GetCoreSchemaHandler
+ ) -> cs.CoreSchema:
+-    from pydantic_core import core_schema as cs
+-
+     if s is None:
+         return cs.no_info_plain_validator_function(func)
+ 

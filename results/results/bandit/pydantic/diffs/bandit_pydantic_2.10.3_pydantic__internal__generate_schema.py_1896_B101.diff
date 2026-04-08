@@ -1,0 +1,85 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1880,55 +1978,54 @@ def _call_schema(self, function: ValidateCallSupportedTypes) -> core_schema.Call
+                 var_args_schema=var_args_schema,
+                 var_kwargs_mode=var_kwargs_mode,
+                 var_kwargs_schema=var_kwargs_schema,
+-                populate_by_name=config_wrapper.populate_by_name,
++                validate_by_name=config_wrapper.validate_by_name,
+             ),
+             function,
+             return_schema=return_schema,
+         )
+ 
+     def _unsubstituted_typevar_schema(self, typevar: typing.TypeVar) -> core_schema.CoreSchema:
+-        assert isinstance(typevar, typing.TypeVar)
+-
+-        bound = typevar.__bound__
+-        constraints = typevar.__constraints__
+-
+         try:
+-            typevar_has_default = typevar.has_default()  # type: ignore
++            has_default = typevar.has_default()
+         except AttributeError:
+-            # could still have a default if it's an old version of typing_extensions.TypeVar
+-            typevar_has_default = getattr(typevar, '__default__', None) is not None
++            # Happens if using `typing.TypeVar` (and not `typing_extensions`) on Python < 3.13
++            pass
++        else:
++            if has_default:
++                return self.generate_schema(typevar.__default__)
+ 
+-        if (bound is not None) + (len(constraints) != 0) + typevar_has_default > 1:
+-            raise NotImplementedError(
+-                'Pydantic does not support mixing more than one of TypeVar bounds, constraints and defaults'
+-            )
++        if constraints := typevar.__constraints__:
++            return self._union_schema(typing.Union[constraints])
+ 
+-        if typevar_has_default:
+-            return self.generate_schema(typevar.__default__)  # type: ignore
+-        elif constraints:
+-            return self._union_schema(typing.Union[constraints])  # type: ignore
+-        elif bound:
++        if bound := typevar.__bound__:
+             schema = self.generate_schema(bound)
+             schema['serialization'] = core_schema.wrap_serializer_function_ser_schema(
+-                lambda x, h: h(x), schema=core_schema.any_schema()
++                lambda x, h: h(x),
++                schema=core_schema.any_schema(),
+             )
+             return schema
+-        else:
+-            return core_schema.any_schema()
++
++        return core_schema.any_schema()
+ 
+     def _computed_field_schema(
+         self,
+         d: Decorator[ComputedFieldInfo],
+         field_serializers: dict[str, Decorator[FieldSerializerDecoratorInfo]],
+     ) -> core_schema.ComputedField:
+-        try:
+-            return_type = _decorators.get_function_return_type(d.func, d.info.return_type, *self._types_namespace)
+-        except NameError as e:
+-            raise PydanticUndefinedAnnotation.from_name_error(e) from e
++        if d.info.return_type is not PydanticUndefined:
++            return_type = d.info.return_type
++        else:
++            try:
++                # Do not pass in globals as the function could be defined in a different module.
++                # Instead, let `get_callable_return_type` infer the globals to use, but still pass
++                # in locals that may contain a parent/rebuild namespace:
++                return_type = _decorators.get_callable_return_type(d.func, localns=self._types_namespace.locals)
++            except NameError as e:
++                raise PydanticUndefinedAnnotation.from_name_error(e) from e
+         if return_type is PydanticUndefined:
+             raise PydanticUserError(
+                 'Computed field is missing return type annotation or specifying `return_type`'
+-                ' to the `@computed_field` decorator (e.g. `@computed_field(return_type=int|str)`)',
++                ' to the `@computed_field` decorator (e.g. `@computed_field(return_type=int | str)`)',
+                 code='model-field-missing-annotation',
+             )
+ 

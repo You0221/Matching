@@ -1,0 +1,24 @@
+diff --git a/django/db/models/constraints.py b/django/db/models/constraints.py
+index 3e6c5205c696..1601fc993390 100644
+--- a/django/db/models/constraints.py
++++ b/django/db/models/constraints.py
+@@ -68,6 +70,19 @@ def create_sql(self, model, schema_editor):
+     def remove_sql(self, model, schema_editor):
+         raise NotImplementedError("This method must be implemented by a subclass.")
+ 
++    @classmethod
++    def _expression_refs_exclude(cls, model, expression, exclude):
++        get_field = model._meta.get_field
++        for field_name, *__ in model._get_expr_references(expression):
++            if field_name in exclude:
++                return True
++            field = get_field(field_name)
++            if field.generated and cls._expression_refs_exclude(
++                model, field.expression, exclude
++            ):
++                return True
++        return False
++
+     def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+         raise NotImplementedError("This method must be implemented by a subclass.")
+ 

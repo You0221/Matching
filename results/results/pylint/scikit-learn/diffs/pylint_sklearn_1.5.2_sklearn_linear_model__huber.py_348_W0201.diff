@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_huber.py b/sklearn/linear_model/_huber.py
+index 4c60a2de8cb86..598d208df535c 100644
+--- a/sklearn/linear_model/_huber.py
++++ b/sklearn/linear_model/_huber.py
+@@ -350,3 +351,8 @@ def fit(self, X, y, sample_weight=None):
+         residual = np.abs(y - safe_sparse_dot(X, self.coef_) - self.intercept_)
+         self.outliers_ = residual > self.scale_ * self.epsilon
+         return self
++
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags

@@ -1,0 +1,13 @@
+diff --git a/tornado/locks.py b/tornado/locks.py
+index 1bcec1b3af..9ee1f2f0f3 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -255,7 +255,7 @@ def wait(
+             return timeout_fut
+ 
+ 
+-class _ReleasingContextManager(object):
++class _ReleasingContextManager:
+     """Releases a Lock or Semaphore at the end of a "with" statement.
+ 
+     with (yield semaphore.acquire()):

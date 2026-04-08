@@ -1,0 +1,13 @@
+diff --git a/django/contrib/postgres/aggregates/general.py b/django/contrib/postgres/aggregates/general.py
+index 5de53676f6bc..48968b51b87e 100644
+--- a/django/contrib/postgres/aggregates/general.py
++++ b/django/contrib/postgres/aggregates/general.py
+@@ -17,7 +17,7 @@
+ 
+ class ArrayAgg(OrderableAggMixin, Aggregate):
+     function = "ARRAY_AGG"
+-    template = "%(function)s(%(distinct)s%(expressions)s %(ordering)s)"
++    template = "%(function)s(%(distinct)s%(expressions)s %(order_by)s)"
+     allow_distinct = True
+ 
+     @property

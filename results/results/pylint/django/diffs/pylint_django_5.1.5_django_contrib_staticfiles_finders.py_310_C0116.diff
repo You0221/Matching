@@ -1,0 +1,13 @@
+diff --git a/django/contrib/staticfiles/finders.py b/django/contrib/staticfiles/finders.py
+index 112a81d279d3..c2087569dbf3 100644
+--- a/django/contrib/staticfiles/finders.py
++++ b/django/contrib/staticfiles/finders.py
+@@ -304,7 +360,7 @@ def find(path, all=False):
+     if matches:
+         return matches
+     # No match.
+-    return [] if all else None
++    return [] if find_all else None
+ 
+ 
+ def get_finders():

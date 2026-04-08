@@ -1,0 +1,34 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index 59501f56b7..64428c59ea 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -270,7 +284,7 @@ def get_auth_http_client(self) -> httpclient.AsyncHTTPClient:
+         return httpclient.AsyncHTTPClient()
+ 
+ 
+-class OAuthMixin(object):
++class OAuthMixin:
+     """Abstract implementation of OAuth 1.0 and 1.0a.
+ 
+     See `TwitterMixin` below for an example implementation.
+@@ -361,9 +375,9 @@ async def get_authenticated_user(
+         if not request_cookie:
+             raise AuthError("Missing OAuth request token cookie")
+         handler.clear_cookie("_oauth_request_token")
+-        cookie_key, cookie_secret = [
++        cookie_key, cookie_secret = (
+             base64.b64decode(escape.utf8(i)) for i in request_cookie.split("|")
+-        ]
++        )
+         if cookie_key != request_key:
+             raise AuthError("Request token does not match cookie")
+         token = dict(
+@@ -538,7 +552,7 @@ def get_auth_http_client(self) -> httpclient.AsyncHTTPClient:
+         return httpclient.AsyncHTTPClient()
+ 
+ 
+-class OAuth2Mixin(object):
++class OAuth2Mixin:
+     """Abstract implementation of OAuth 2.0.
+ 
+     See `FacebookGraphMixin` or `GoogleOAuth2Mixin` below for example

@@ -1,0 +1,15 @@
+diff --git a/django/template/defaulttags.py b/django/template/defaulttags.py
+index 79c10232bbca..1152452081c8 100644
+--- a/django/template/defaulttags.py
++++ b/django/template/defaulttags.py
+@@ -1,8 +1,10 @@
+ """Default tags used by the template system, available to all templates."""
++
+ import re
+ import sys
+ import warnings
+ from collections import namedtuple
++from collections.abc import Iterable
+ from datetime import datetime
+ from itertools import cycle as itertools_cycle
+ from itertools import groupby

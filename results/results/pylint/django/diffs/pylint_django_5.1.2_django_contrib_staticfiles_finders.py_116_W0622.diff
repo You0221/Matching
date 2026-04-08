@@ -1,0 +1,29 @@
+diff --git a/django/contrib/staticfiles/finders.py b/django/contrib/staticfiles/finders.py
+index 112a81d279d3..c2087569dbf3 100644
+--- a/django/contrib/staticfiles/finders.py
++++ b/django/contrib/staticfiles/finders.py
+@@ -113,17 +149,22 @@ def check(self, **kwargs):
+                 )
+         return errors
+ 
+-    def find(self, path, all=False):
++    # RemovedInDjango61Warning: When the deprecation ends, replace with:
++    # def find(self, path, find_all=False):
++    def find(self, path, find_all=False, **kwargs):
+         """
+         Look for files in the extra locations as defined in STATICFILES_DIRS.
+         """
++        # RemovedInDjango61Warning.
++        if kwargs:
++            find_all = self._check_deprecated_find_param(find_all=find_all, **kwargs)
+         matches = []
+         for prefix, root in self.locations:
+             if root not in searched_locations:
+                 searched_locations.append(root)
+             matched_path = self.find_location(root, path, prefix)
+             if matched_path:
+-                if not all:
++                if not find_all:
+                     return matched_path
+                 matches.append(matched_path)
+         return matches

@@ -1,0 +1,19 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 3e854a612b591f..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -430,13 +441,12 @@
+     AnsibleError,
+     AnsibleFileNotFound,
+ )
+-from ansible.module_utils.six import text_type, binary_type
+ from ansible.module_utils.common.text.converters import to_bytes, to_native, to_text
+ from ansible.plugins.connection import ConnectionBase, BUFSIZE
+ from ansible.plugins.shell.powershell import _replace_stderr_clixml
+ from ansible.utils.display import Display
+ from ansible.utils.path import unfrackpath, makedirs_safe
+-from ansible.utils._ssh_agent import SshAgentClient, _key_data_into_crypto_objects
++from ansible._internal._ssh import _ssh_agent
+ 
+ try:
+     from cryptography.hazmat.primitives import serialization

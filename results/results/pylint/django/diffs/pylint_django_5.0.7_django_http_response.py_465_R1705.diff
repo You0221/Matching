@@ -1,0 +1,17 @@
+diff --git a/django/http/response.py b/django/http/response.py
+index eecd972cd688..4a0ea6701375 100644
+--- a/django/http/response.py
++++ b/django/http/response.py
+@@ -460,6 +466,12 @@ def content(self):
+             "`streaming_content` instead." % self.__class__.__name__
+         )
+ 
++    @property
++    def text(self):
++        raise AttributeError(
++            "This %s instance has no `text` attribute." % self.__class__.__name__
++        )
++
+     @property
+     def streaming_content(self):
+         if self.is_async:

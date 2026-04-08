@@ -1,0 +1,18 @@
+diff --git a/numpy/_core/src/umath/legacy_array_method.c b/numpy/_core/src/umath/legacy_array_method.c
+index 6e90d55225b5..705262fedd38 100644
+--- a/numpy/_core/src/umath/legacy_array_method.c
++++ b/numpy/_core/src/umath/legacy_array_method.c
+@@ -316,13 +323,6 @@ get_initial_from_ufunc(
+         return -1;
+     }
+ 
+-    if (PyTypeNum_ISNUMBER(context->descriptors[0]->type_num)) {
+-        /* For numbers we can cache to avoid going via Python ints */
+-        memcpy(context->method->legacy_initial, initial,
+-               context->descriptors[0]->elsize);
+-        context->method->get_reduction_initial = &copy_cached_initial;
+-    }
+-
+     /* Reduction can use the initial value */
+     return 1;
+ }

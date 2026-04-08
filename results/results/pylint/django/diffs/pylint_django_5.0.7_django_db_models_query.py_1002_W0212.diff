@@ -1,0 +1,25 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -997,9 +1001,10 @@ def update_or_create(self, defaults=None, create_defaults=None, **kwargs):
+                 # This is to maintain backward compatibility as these fields
+                 # are not updated unless explicitly specified in the
+                 # update_fields list.
++                pk_fields = self.model._meta.pk_fields
+                 for field in self.model._meta.local_concrete_fields:
+                     if not (
+-                        field.primary_key or field.__class__.pre_save is Field.pre_save
++                        field in pk_fields or field.__class__.pre_save is Field.pre_save
+                     ):
+                         update_fields.add(field.name)
+                         if field.name != field.attname:
+@@ -1009,6 +1014,8 @@ def update_or_create(self, defaults=None, create_defaults=None, **kwargs):
+                 obj.save(using=self.db)
+         return obj, False
+ 
++    update_or_create.alters_data = True
++
+     async def aupdate_or_create(self, defaults=None, create_defaults=None, **kwargs):
+         return await sync_to_async(self.update_or_create)(
+             defaults=defaults,

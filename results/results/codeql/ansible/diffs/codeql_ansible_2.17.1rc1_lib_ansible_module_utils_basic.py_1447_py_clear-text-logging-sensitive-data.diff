@@ -1,0 +1,82 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 7308bb7e8baf30..731f8ded7d1002 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -1444,28 +1449,66 @@ def _return_formatted(self, kwargs):
+         # return preserved
+         kwargs.update(preserved)
+ 
+-        print('\n%s' % self.jsonify(kwargs))
++        encoder = _json.get_module_encoder(_ANSIBLE_PROFILE, _json.Direction.MODULE_TO_CONTROLLER)
++        print('\n%s' % json.dumps(kwargs, cls=encoder))
+ 
+-    def exit_json(self, **kwargs):
+-        ''' return from the module, without error '''
++    def exit_json(self, **kwargs) -> t.NoReturn:
++        """ return from the module, without error """
+ 
+         self.do_cleanup_files()
+         self._return_formatted(kwargs)
+         sys.exit(0)
+ 
+-    def fail_json(self, msg, **kwargs):
+-        ''' return from the module, with an error message '''
++    def fail_json(self, msg: str, *, exception: BaseException | str | ellipsis | None = ..., **kwargs) -> t.NoReturn:
++        """
++        Return from the module with an error message and optional exception/traceback detail.
++        A traceback will only be included in the result if error traceback capturing has been enabled.
++
++        When `exception` is an exception object, its message chain will be automatically combined with `msg` to create the final error message.
++        The message chain includes the exception's message as well as messages from any __cause__ exceptions.
++        The traceback from `exception` will be used for the formatted traceback.
++
++        When `exception` is a string, it will be used as the formatted traceback.
++
++        When `exception` is set to `None`, the current call stack will be used for the formatted traceback.
++
++        When `exception` is not specified, a formatted traceback will be retrieved from the current exception.
++        If no exception is pending, the current call stack will be used instead.
++        """
++        msg = str(msg)  # coerce to str instead of raising an error due to an invalid type
++
++        kwargs.update(
++            failed=True,
++            msg=msg,
++        )
++
++        if isinstance(exception, BaseException):
++            # Include a `_messages.ErrorDetail` in the result.
++            # The `msg` is included in the list of errors to ensure it is not lost when looking only at `exception` from the result.
+ 
+-        kwargs['failed'] = True
+-        kwargs['msg'] = msg
++            error_summary = _errors.create_error_summary(exception)
++            error_summary = _dataclasses.replace(error_summary, details=(_messages.Detail(msg=msg),) + error_summary.details)
+ 
+-        # Add traceback if debug or high verbosity and it is missing
+-        # NOTE: Badly named as exception, it really always has been a traceback
+-        if 'exception' not in kwargs and sys.exc_info()[2] and (self._debug or self._verbosity >= 3):
+-            kwargs['exception'] = ''.join(traceback.format_tb(sys.exc_info()[2]))
++            kwargs.update(exception=error_summary)
++        elif _traceback.is_traceback_enabled(_traceback.TracebackEvent.ERROR):
++            # Include only a formatted traceback string in the result.
++            # The controller will combine this with `msg` to create an `_messages.ErrorDetail`.
++
++            formatted_traceback: str | None
++
++            if isinstance(exception, str):
++                formatted_traceback = exception
++            elif exception is ... and (current_exception := t.cast(t.Optional[BaseException], sys.exc_info()[1])):
++                formatted_traceback = _traceback.maybe_extract_traceback(current_exception, _traceback.TracebackEvent.ERROR)
++            else:
++                formatted_traceback = _traceback.maybe_capture_traceback(_traceback.TracebackEvent.ERROR)
++
++            if formatted_traceback:
++                kwargs.update(exception=formatted_traceback)
+ 
+         self.do_cleanup_files()
+         self._return_formatted(kwargs)
++
+         sys.exit(1)
+ 
+     def fail_on_missing_params(self, required_params=None):

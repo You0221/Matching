@@ -1,0 +1,39 @@
+diff --git a/django/contrib/sessions/backends/base.py b/django/contrib/sessions/backends/base.py
+index 050e7387bef2..69f756a22876 100644
+--- a/django/contrib/sessions/backends/base.py
++++ b/django/contrib/sessions/backends/base.py
+@@ -116,18 +146,34 @@ def update(self, dict_):
+         self._session.update(dict_)
+         self.modified = True
+ 
++    async def aupdate(self, dict_):
++        (await self._aget_session()).update(dict_)
++        self.modified = True
++
+     def has_key(self, key):
+         return key in self._session
+ 
++    async def ahas_key(self, key):
++        return key in (await self._aget_session())
++
+     def keys(self):
+         return self._session.keys()
+ 
++    async def akeys(self):
++        return (await self._aget_session()).keys()
++
+     def values(self):
+         return self._session.values()
+ 
++    async def avalues(self):
++        return (await self._aget_session()).values()
++
+     def items(self):
+         return self._session.items()
+ 
++    async def aitems(self):
++        return (await self._aget_session()).items()
++
+     def clear(self):
+         # To avoid unnecessary persistent storage accesses, we set up the
+         # internals directly (loading data wastes time, since we are going to

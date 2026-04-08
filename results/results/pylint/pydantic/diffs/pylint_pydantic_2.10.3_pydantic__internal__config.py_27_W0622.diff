@@ -1,0 +1,32 @@
+diff --git a/pydantic/_internal/_config.py b/pydantic/_internal/_config.py
+index 6d491c29027..43c856859c3 100644
+--- a/pydantic/_internal/_config.py
++++ b/pydantic/_internal/_config.py
+@@ -7,25 +7,18 @@
+     TYPE_CHECKING,
+     Any,
+     Callable,
++    Literal,
+     cast,
+ )
+ 
+ from pydantic_core import core_schema
+-from typing_extensions import (
+-    Literal,
+-    Self,
+-)
++from typing_extensions import Self
+ 
+ from ..aliases import AliasGenerator
+ from ..config import ConfigDict, ExtraValues, JsonDict, JsonEncoder, JsonSchemaExtraCallable
+ from ..errors import PydanticUserError
+ from ..warnings import PydanticDeprecatedSince20, PydanticDeprecatedSince210
+ 
+-if not TYPE_CHECKING:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
+-
+ if TYPE_CHECKING:
+     from .._internal._schema_generation_shared import GenerateSchema
+     from ..fields import ComputedFieldInfo, FieldInfo

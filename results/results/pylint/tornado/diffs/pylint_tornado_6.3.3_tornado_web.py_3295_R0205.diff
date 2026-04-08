@@ -1,0 +1,28 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 3b676e3c25..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -3303,7 +3388,7 @@ def __init__(self, handler: RequestHandler) -> None:
+     def current_user(self) -> Any:
+         return self.handler.current_user
+ 
+-    def render(self, *args: Any, **kwargs: Any) -> str:
++    def render(self, *args: Any, **kwargs: Any) -> Union[str, bytes]:
+         """Override in subclasses to return this module's output."""
+         raise NotImplementedError()
+ 
+@@ -3351,12 +3436,12 @@ def render_string(self, path: str, **kwargs: Any) -> bytes:
+ 
+ 
+ class _linkify(UIModule):
+-    def render(self, text: str, **kwargs: Any) -> str:  # type: ignore
++    def render(self, text: str, **kwargs: Any) -> str:
+         return escape.linkify(text, **kwargs)
+ 
+ 
+ class _xsrf_form_html(UIModule):
+-    def render(self) -> str:  # type: ignore
++    def render(self) -> str:
+         return self.handler.xsrf_form_html()
+ 
+ 

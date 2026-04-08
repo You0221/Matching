@@ -1,0 +1,29 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1642,22 +1676,9 @@ def _type_schema(self) -> core_schema.CoreSchema:
+ 
+     def _zoneinfo_schema(self) -> core_schema.CoreSchema:
+         """Generate schema for a zone_info.ZoneInfo object"""
+-        # we're def >=py3.9 if ZoneInfo was included in input
+-        if sys.version_info < (3, 9):
+-            assert False, 'Unreachable'
++        from ._validators import validate_str_is_valid_iana_tz
+ 
+-        # import in this path is safe
+-        from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+-
+-        def validate_str_is_valid_iana_tz(value: Any, /) -> ZoneInfo:
+-            if isinstance(value, ZoneInfo):
+-                return value
+-            try:
+-                return ZoneInfo(value)
+-            except (ZoneInfoNotFoundError, ValueError):
+-                raise PydanticCustomError('zoneinfo_str', 'invalid timezone: {value}', {'value': value})
+-
+-        metadata = build_metadata_dict(js_functions=[lambda _1, _2: {'type': 'string', 'format': 'zoneinfo'}])
++        metadata = {'pydantic_js_functions': [lambda _1, _2: {'type': 'string', 'format': 'zoneinfo'}]}
+         return core_schema.no_info_plain_validator_function(
+             validate_str_is_valid_iana_tz,
+             serialization=core_schema.to_string_ser_schema(),

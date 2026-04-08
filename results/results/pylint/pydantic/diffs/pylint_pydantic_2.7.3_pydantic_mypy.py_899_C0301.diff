@@ -1,0 +1,26 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 1a71bfe208b..0ce0a258d96 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -896,13 +953,19 @@ def add_model_construct_method(
+         fields_set_argument = Argument(Var('_fields_set', optional_set_str), optional_set_str, None, ARG_OPT)
+         with state.strict_optional_set(self._api.options.strict_optional):
+             args = self.get_field_arguments(
+-                fields, typed=True, requires_dynamic_aliases=False, use_alias=False, is_settings=is_settings
++                fields,
++                typed=True,
++                model_strict=bool(config.strict),
++                requires_dynamic_aliases=False,
++                use_alias=False,
++                is_settings=is_settings,
++                is_root_model=is_root_model,
+             )
+         if not self.should_init_forbid_extra(fields, config):
+             var = Var('kwargs')
+             args.append(Argument(var, AnyType(TypeOfAny.explicit), None, ARG_STAR2))
+ 
+-        args = [fields_set_argument] + args
++        args = args + [fields_set_argument] if is_root_model else [fields_set_argument] + args
+ 
+         add_method(
+             self._api,

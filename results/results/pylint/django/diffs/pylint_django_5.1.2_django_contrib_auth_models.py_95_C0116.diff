@@ -1,0 +1,14 @@
+diff --git a/django/contrib/auth/models.py b/django/contrib/auth/models.py
+index e5ef1bb52381..623b1698010f 100644
+--- a/django/contrib/auth/models.py
++++ b/django/contrib/auth/models.py
+@@ -95,6 +95,9 @@ class GroupManager(models.Manager):
+     def get_by_natural_key(self, name):
+         return self.get(name=name)
+ 
++    async def aget_by_natural_key(self, name):
++        return await self.aget(name=name)
++
+ 
+ class Group(models.Model):
+     """

@@ -1,0 +1,19 @@
+diff --git a/django/db/models/fields/files.py b/django/db/models/fields/files.py
+index 95985684ee12..0716d3599e94 100644
+--- a/django/db/models/fields/files.py
++++ b/django/db/models/fields/files.py
+@@ -88,10 +91,13 @@ def open(self, mode="rb"):
+     # to further manipulate the underlying file, as well as update the
+     # associated model instance.
+ 
++    def _set_instance_attribute(self, name, content):
++        setattr(self.instance, self.field.attname, name)
++
+     def save(self, name, content, save=True):
+         name = self.field.generate_filename(self.instance, name)
+         self.name = self.storage.save(name, content, max_length=self.field.max_length)
+-        setattr(self.instance, self.field.attname, self.name)
++        self._set_instance_attribute(self.name, content)
+         self._committed = True
+ 
+         # Save the object because it has changed, unless save is False

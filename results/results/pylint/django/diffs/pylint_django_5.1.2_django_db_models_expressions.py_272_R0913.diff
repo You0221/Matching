@@ -1,0 +1,37 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ee22420d964..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -288,16 +295,22 @@ def resolve_expression(
+         """
+         c = self.copy()
+         c.is_summary = summarize
+-        c.set_source_expressions(
+-            [
+-                (
+-                    expr.resolve_expression(query, allow_joins, reuse, summarize)
+-                    if expr
+-                    else None
+-                )
+-                for expr in c.get_source_expressions()
+-            ]
+-        )
++        source_expressions = [
++            (
++                expr.resolve_expression(query, allow_joins, reuse, summarize)
++                if expr is not None
++                else None
++            )
++            for expr in c.get_source_expressions()
++        ]
++        if not self.allows_composite_expressions and any(
++            isinstance(expr, ColPairs) for expr in source_expressions
++        ):
++            raise ValueError(
++                f"{self.__class__.__name__} expression does not support "
++                "composite primary keys."
++            )
++        c.set_source_expressions(source_expressions)
+         return c
+ 
+     @property

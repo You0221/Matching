@@ -1,0 +1,16 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -1594,11 +1637,6 @@ def _model_indexes_sql(self, model):
+         for field in model._meta.local_fields:
+             output.extend(self._field_indexes_sql(model, field))
+ 
+-        # RemovedInDjango51Warning.
+-        for field_names in model._meta.index_together:
+-            fields = [model._meta.get_field(field) for field in field_names]
+-            output.append(self._create_index_sql(model, fields=fields, suffix="_idx"))
+-
+         for index in model._meta.indexes:
+             if (
+                 not index.contains_expressions

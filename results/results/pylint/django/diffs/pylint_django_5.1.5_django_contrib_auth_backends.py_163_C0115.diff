@@ -1,0 +1,18 @@
+diff --git a/django/contrib/auth/backends.py b/django/contrib/auth/backends.py
+index dd3c2e527b97..83525306655b 100644
+--- a/django/contrib/auth/backends.py
++++ b/django/contrib/auth/backends.py
+@@ -159,6 +234,13 @@ def get_user(self, user_id):
+             return None
+         return user if self.user_can_authenticate(user) else None
+ 
++    async def aget_user(self, user_id):
++        try:
++            user = await UserModel._default_manager.aget(pk=user_id)
++        except UserModel.DoesNotExist:
++            return None
++        return user if self.user_can_authenticate(user) else None
++
+ 
+ class AllowAllUsersModelBackend(ModelBackend):
+     def user_can_authenticate(self, user):

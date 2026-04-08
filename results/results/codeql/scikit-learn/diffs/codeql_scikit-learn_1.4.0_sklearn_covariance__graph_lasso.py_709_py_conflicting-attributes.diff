@@ -1,0 +1,101 @@
+diff --git a/sklearn/covariance/_graph_lasso.py b/sklearn/covariance/_graph_lasso.py
+index 7ea5b1b562e3d..75bfc396340c9 100644
+--- a/sklearn/covariance/_graph_lasso.py
++++ b/sklearn/covariance/_graph_lasso.py
+@@ -706,7 +708,7 @@ def graphical_lasso_path(
+     return covariances_, precisions_
+ 
+ 
+-class GraphicalLassoCV(_RoutingNotSupportedMixin, BaseGraphicalLasso):
++class GraphicalLassoCV(BaseGraphicalLasso):
+     """Sparse inverse covariance w/ cross-validated choice of the l1 penalty.
+ 
+     See glossary entry for :term:`cross-validation estimator`.
+@@ -927,7 +929,7 @@ def __init__(
+         self.n_jobs = n_jobs
+ 
+     @_fit_context(prefer_skip_nested_validation=True)
+-    def fit(self, X, y=None):
++    def fit(self, X, y=None, **params):
+         """Fit the GraphicalLasso covariance model to X.
+ 
+         Parameters
+@@ -938,12 +940,25 @@ def fit(self, X, y=None):
+         y : Ignored
+             Not used, present for API consistency by convention.
+ 
++        **params : dict, default=None
++            Parameters to be passed to the CV splitter and the
++            cross_val_score function.
++
++            .. versionadded:: 1.5
++                Only available if `enable_metadata_routing=True`,
++                which can be set by using
++                ``sklearn.set_config(enable_metadata_routing=True)``.
++                See :ref:`Metadata Routing User Guide <metadata_routing>` for
++                more details.
++
+         Returns
+         -------
+         self : object
+             Returns the instance itself.
+         """
+         # Covariance does not make sense for a single feature
++        _raise_for_params(params, self, "fit")
++
+         X = self._validate_data(X, ensure_min_features=2)
+         if self.assume_centered:
+             self.location_ = np.zeros(X.shape[1])
+@@ -976,6 +991,11 @@ def fit(self, X, y=None):
+             alpha_0 = 1e-2 * alpha_1
+             alphas = np.logspace(np.log10(alpha_0), np.log10(alpha_1), n_alphas)[::-1]
+ 
++        if _routing_enabled():
++            routed_params = process_routing(self, "fit", **params)
++        else:
++            routed_params = Bunch(splitter=Bunch(split={}))
++
+         t0 = time.time()
+         for i in range(n_refinements):
+             with warnings.catch_warnings():
+@@ -1000,7 +1020,7 @@ def fit(self, X, y=None):
+                         verbose=inner_verbose,
+                         eps=self.eps,
+                     )
+-                    for train, test in cv.split(X, y)
++                    for train, test in cv.split(X, y, **routed_params.splitter.split)
+                 )
+ 
+             # Little danse to transform the list in what we need
+@@ -1066,6 +1086,7 @@ def fit(self, X, y=None):
+                 cv=cv,
+                 n_jobs=self.n_jobs,
+                 verbose=inner_verbose,
++                params=params,
+             )
+         )
+         grid_scores = np.array(grid_scores)
+@@ -1093,3 +1114,23 @@ def fit(self, X, y=None):
+             eps=self.eps,
+         )
+         return self
++
++    def get_metadata_routing(self):
++        """Get metadata routing of this object.
++
++        Please check :ref:`User Guide <metadata_routing>` on how the routing
++        mechanism works.
++
++        .. versionadded:: 1.5
++
++        Returns
++        -------
++        routing : MetadataRouter
++            A :class:`~sklearn.utils.metadata_routing.MetadataRouter` encapsulating
++            routing information.
++        """
++        router = MetadataRouter(owner=self.__class__.__name__).add(
++            splitter=check_cv(self.cv),
++            method_mapping=MethodMapping().add(callee="split", caller="fit"),
++        )
++        return router

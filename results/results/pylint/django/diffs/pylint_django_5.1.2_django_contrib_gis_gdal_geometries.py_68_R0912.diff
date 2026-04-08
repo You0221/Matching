@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index 44e1026e3ff8..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -64,6 +64,7 @@ class OGRGeometry(GDALBase):
+     """Encapsulate an OGR geometry."""
+ 
+     destructor = capi.destroy_geom
++    geos_support = True
+ 
+     def __init__(self, geom_input, srs=None):
+         """Initialize Geometry on either WKT or an OGR pointer as input."""

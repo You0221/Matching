@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/filters.py b/django/contrib/admin/filters.py
+index 06dedf872794..10a039af2a49 100644
+--- a/django/contrib/admin/filters.py
++++ b/django/contrib/admin/filters.py
+@@ -139,7 +140,7 @@ def get_facet_counts(self, pk_attname, filtered_qs):
+             if lookup_qs is not None:
+                 counts[f"{i}__c"] = models.Count(
+                     pk_attname,
+-                    filter=lookup_qs.query.where,
++                    filter=models.Q(pk__in=lookup_qs),
+                 )
+         self.used_parameters[self.parameter_name] = original_value
+         return counts

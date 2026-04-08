@@ -1,0 +1,22 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1459,7 +1511,7 @@ def _perform_unique_checks(self, unique_checks):
+             # allows single model to have effectively multiple primary keys.
+             # Refs #17615.
+             model_class_pk = self._get_pk_val(model_class._meta)
+-            if not self._state.adding and model_class_pk is not None:
++            if not self._state.adding and self._is_pk_set(model_class._meta):
+                 qs = qs.exclude(pk=model_class_pk)
+             if qs.exists():
+                 if len(unique_check) == 1:
+@@ -1494,7 +1546,7 @@ def _perform_date_checks(self, date_checks):
+             qs = model_class._default_manager.filter(**lookup_kwargs)
+             # Exclude the current object from the query if we are editing an
+             # instance (as opposed to creating a new one)
+-            if not self._state.adding and self.pk is not None:
++            if not self._state.adding and self._is_pk_set():
+                 qs = qs.exclude(pk=self.pk)
+ 
+             if qs.exists():

@@ -1,0 +1,30 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2417,12 +2456,23 @@ def set_annotation_mask(self, names):
+         if names is None:
+             self.annotation_select_mask = None
+         else:
+-            self.annotation_select_mask = list(dict.fromkeys(names))
++            self.annotation_select_mask = set(names)
++            if self.selected:
++                # Prune the masked annotations.
++                self.selected = {
++                    key: value
++                    for key, value in self.selected.items()
++                    if not isinstance(value, str)
++                    or value in self.annotation_select_mask
++                }
++                # Append the unmasked annotations.
++                for name in names:
++                    self.selected[name] = name
+         self._annotation_select_cache = None
+ 
+     def append_annotation_mask(self, names):
+         if self.annotation_select_mask is not None:
+-            self.set_annotation_mask((*self.annotation_select_mask, *names))
++            self.set_annotation_mask(self.annotation_select_mask.union(names))
+ 
+     def set_extra_mask(self, names):
+         """

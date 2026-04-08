@@ -1,0 +1,17 @@
+diff --git a/django/db/backends/ddl_references.py b/django/db/backends/ddl_references.py
+index 412d07a993db..cb8d2defd20c 100644
+--- a/django/db/backends/ddl_references.py
++++ b/django/db/backends/ddl_references.py
+@@ -20,6 +21,12 @@ def references_column(self, table, column):
+         """
+         return False
+ 
++    def references_index(self, table, index):
++        """
++        Return whether or not this instance references the specified index.
++        """
++        return False
++
+     def rename_table_references(self, old_table, new_table):
+         """
+         Rename all references to the old_name to the new_table.

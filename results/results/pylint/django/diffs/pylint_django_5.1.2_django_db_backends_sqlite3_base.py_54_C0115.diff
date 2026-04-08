@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/sqlite3/base.py b/django/db/backends/sqlite3/base.py
+index c7cf94780078..f7b65651b36a 100644
+--- a/django/db/backends/sqlite3/base.py
++++ b/django/db/backends/sqlite3/base.py
+@@ -62,7 +68,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
+         "BigAutoField": "integer",
+         "BinaryField": "BLOB",
+         "BooleanField": "bool",
+-        "CharField": "varchar(%(max_length)s)",
++        "CharField": _get_varchar_column,
+         "DateField": "date",
+         "DateTimeField": "datetime",
+         "DecimalField": "decimal",

@@ -1,0 +1,29 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -1,19 +1,20 @@
+ """Private logic for creating models."""
++
+ from __future__ import annotations as _annotations
+ 
+ import builtins
+ import operator
++import sys
+ import typing
+ import warnings
+ import weakref
+ from abc import ABCMeta
+-from functools import partial
++from functools import lru_cache, partial
+ from types import FunctionType
+-from typing import Any, Callable, Generic, NoReturn
++from typing import Any, Callable, Generic, Literal, NoReturn, TypeVar, cast
+ 
+-import typing_extensions
+ from pydantic_core import PydanticUndefined, SchemaSerializer
+-from typing_extensions import dataclass_transform, deprecated
++from typing_extensions import TypeAliasType, dataclass_transform, deprecated, get_args
+ 
+ from ..errors import PydanticUndefinedAnnotation, PydanticUserError
+ from ..plugin._schema_validator import create_schema_validator

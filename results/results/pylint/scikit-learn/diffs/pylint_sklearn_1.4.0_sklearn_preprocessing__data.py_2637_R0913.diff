@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 9120384588ef2..6dad8dc1c8c21 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2636,7 +2701,7 @@ def _sparse_fit(self, X, random_state):
+         self.quantiles_ = []
+         for feature_idx in range(n_features):
+             column_nnz_data = X.data[X.indptr[feature_idx] : X.indptr[feature_idx + 1]]
+-            if len(column_nnz_data) > self.subsample:
++            if self.subsample is not None and len(column_nnz_data) > self.subsample:
+                 column_subsample = self.subsample * len(column_nnz_data) // n_samples
+                 if self.ignore_implicit_zeros:
+                     column_data = np.zeros(shape=column_subsample, dtype=X.dtype)

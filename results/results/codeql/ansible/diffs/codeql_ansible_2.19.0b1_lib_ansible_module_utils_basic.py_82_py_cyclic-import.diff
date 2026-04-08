@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 731f8ded7d1002..a630e4bf026c3c 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -77,7 +85,7 @@
+ # Python2 & 3 way to get NoneType
+ NoneType = type(None)
+ 
+-from ._internal import _traceback, _errors, _debugging
++from ._internal import _traceback, _errors, _debugging, _deprecator, _messages
+ 
+ from .common.text.converters import (
+     to_native,

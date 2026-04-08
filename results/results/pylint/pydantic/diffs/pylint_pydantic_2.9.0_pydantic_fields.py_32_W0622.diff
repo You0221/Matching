@@ -1,0 +1,54 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index fb26f70b19d..b091710a861 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -4,34 +4,37 @@
+ 
+ import dataclasses
+ import inspect
++import re
+ import sys
+-import typing
++from collections.abc import Callable, Mapping
+ from copy import copy
+ from dataclasses import Field as DataclassField
+ from functools import cached_property
+-from typing import Any, ClassVar
++from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, TypeVar, cast, final, overload
+ from warnings import warn
+ 
+ import annotated_types
+ import typing_extensions
+-from pydantic_core import PydanticUndefined
+-from typing_extensions import Literal, TypeAlias, Unpack, deprecated
++from pydantic_core import MISSING, PydanticUndefined
++from typing_extensions import Self, TypeAlias, TypedDict, Unpack, deprecated
++from typing_inspection import typing_objects
++from typing_inspection.introspection import UNKNOWN, AnnotationSource, ForbiddenQualifier, Qualifier, inspect_annotation
+ 
+ from . import types
+ from ._internal import _decorators, _fields, _generics, _internal_dataclass, _repr, _typing_extra, _utils
+-from .aliases import AliasChoices, AliasPath
++from ._internal._namespace_utils import GlobalsNamespace, MappingNamespace
++from .aliases import AliasChoices, AliasGenerator, AliasPath
+ from .config import JsonDict
+-from .errors import PydanticUserError
++from .errors import PydanticForbiddenQualifier, PydanticUserError
++from .json_schema import PydanticJsonSchemaWarning
+ from .warnings import PydanticDeprecatedSince20
+ 
+-if typing.TYPE_CHECKING:
++if TYPE_CHECKING:
++    from ._internal._config import ConfigWrapper
+     from ._internal._repr import ReprArgs
+-else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
+ 
+-__all__ = 'Field', 'PrivateAttr', 'computed_field'
++
++__all__ = 'Field', 'FieldInfo', 'PrivateAttr', 'computed_field'
+ 
+ 
+ _Unset: Any = PydanticUndefined

@@ -1,0 +1,125 @@
+diff --git a/sklearn/linear_model/_linear_loss.py b/sklearn/linear_model/_linear_loss.py
+index e8c1466b30623..3bfd5fcd09491 100644
+--- a/sklearn/linear_model/_linear_loss.py
++++ b/sklearn/linear_model/_linear_loss.py
+@@ -514,7 +555,119 @@ def gradient_hessian(
+         else:
+             # Here we may safely assume HalfMultinomialLoss aka categorical
+             # cross-entropy.
+-            raise NotImplementedError
++            # HalfMultinomialLoss computes only the diagonal part of the hessian, i.e.
++            # diagonal in the classes. Here, we want the full hessian. Therefore, we
++            # call gradient_proba.
++            grad_pointwise, proba = self.base_loss.gradient_proba(
++                y_true=y,
++                raw_prediction=raw_prediction,
++                sample_weight=sample_weight,
++                n_threads=n_threads,
++            )
++            grad_pointwise /= sw_sum
++            grad = grad.reshape((n_classes, n_dof), order="F")
++            grad[:, :n_features] = grad_pointwise.T @ X + l2_reg_strength * weights
++            if self.fit_intercept:
++                grad[:, -1] = grad_pointwise.sum(axis=0)
++            if coef.ndim == 1:
++                grad = grad.ravel(order="F")
++
++            # The full hessian matrix, i.e. not only the diagonal part, dropping most
++            # indices, is given by:
++            #
++            #   hess = X' @ h @ X
++            #
++            # Here, h is a priori a 4-dimensional matrix of shape
++            # (n_samples, n_samples, n_classes, n_classes). It is diagonal its first
++            # two dimensions (the ones with n_samples), i.e. it is
++            # effectively a 3-dimensional matrix (n_samples, n_classes, n_classes).
++            #
++            #   h = diag(p) - p' p
++            #
++            # or with indices k and l for classes
++            #
++            #   h_kl = p_k * delta_kl - p_k * p_l
++            #
++            # with p_k the (predicted) probability for class k. Only the dimension in
++            # n_samples multiplies with X.
++            # For 3 classes and n_samples = 1, this looks like ("@" is a bit misused
++            # here):
++            #
++            #   hess = X' @ (h00 h10 h20) @ X
++            #               (h10 h11 h12)
++            #               (h20 h12 h22)
++            #        = (X' @ diag(h00) @ X, X' @ diag(h10), X' @ diag(h20))
++            #          (X' @ diag(h10) @ X, X' @ diag(h11), X' @ diag(h12))
++            #          (X' @ diag(h20) @ X, X' @ diag(h12), X' @ diag(h22))
++            #
++            # Now coef of shape (n_classes * n_dof) is contiguous in n_classes.
++            # Therefore, we want the hessian to follow this convention, too, i.e.
++            #     hess[:n_classes, :n_classes] = (x0' @ h00 @ x0, x0' @ h10 @ x0, ..)
++            #                                    (x0' @ h10 @ x0, x0' @ h11 @ x0, ..)
++            #                                    (x0' @ h20 @ x0, x0' @ h12 @ x0, ..)
++            # is the first feature, x0, for all classes. In our implementation, we
++            # still want to take advantage of BLAS "X.T @ X". Therefore, we have some
++            # index/slicing battle to fight.
++            if sample_weight is not None:
++                sw = sample_weight / sw_sum
++            else:
++                sw = 1.0 / sw_sum
++
++            for k in range(n_classes):
++                # Diagonal terms (in classes) hess_kk.
++                # Note that this also writes to some of the lower triangular part.
++                h = proba[:, k] * (1 - proba[:, k]) * sw
++                hess[
++                    k : n_classes * n_features : n_classes,
++                    k : n_classes * n_features : n_classes,
++                ] = sandwich_dot(X, h)
++                if self.fit_intercept:
++                    # See above in the non multiclass case.
++                    Xh = X.T @ h
++                    hess[
++                        k : n_classes * n_features : n_classes,
++                        n_classes * n_features + k,
++                    ] = Xh
++                    hess[
++                        n_classes * n_features + k,
++                        k : n_classes * n_features : n_classes,
++                    ] = Xh
++                    hess[n_classes * n_features + k, n_classes * n_features + k] = (
++                        h.sum()
++                    )
++                # Off diagonal terms (in classes) hess_kl.
++                for l in range(k + 1, n_classes):
++                    # Upper triangle (in classes).
++                    h = -proba[:, k] * proba[:, l] * sw
++                    hess[
++                        k : n_classes * n_features : n_classes,
++                        l : n_classes * n_features : n_classes,
++                    ] = sandwich_dot(X, h)
++                    if self.fit_intercept:
++                        Xh = X.T @ h
++                        hess[
++                            k : n_classes * n_features : n_classes,
++                            n_classes * n_features + l,
++                        ] = Xh
++                        hess[
++                            n_classes * n_features + k,
++                            l : n_classes * n_features : n_classes,
++                        ] = Xh
++                        hess[n_classes * n_features + k, n_classes * n_features + l] = (
++                            h.sum()
++                        )
++                    # Fill lower triangle (in classes).
++                    hess[l::n_classes, k::n_classes] = hess[k::n_classes, l::n_classes]
++
++            if l2_reg_strength > 0:
++                # See above in the non multiclass case.
++                order = "C" if hess.flags.c_contiguous else "F"
++                hess.reshape(-1, order=order)[
++                    : (n_classes**2 * n_features * n_dof) : (n_classes * n_dof + 1)
++                ] += l2_reg_strength
++
++            # The pointwise hessian is always non-negative for the multinomial loss.
++            hessian_warning = False
+ 
+         return grad, hess, hessian_warning
+ 

@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index b136cd373a03f..064391abab24d 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -2097,7 +2173,7 @@ def __init__(
+         random_state=None,
+         class_weight=None,
+     ):
+-        super(HistGradientBoostingClassifier, self).__init__(
++        super().__init__(
+             loss=loss,
+             learning_rate=learning_rate,
+             max_iter=max_iter,

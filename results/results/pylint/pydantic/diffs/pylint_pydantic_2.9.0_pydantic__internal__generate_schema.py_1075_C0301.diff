@@ -1,0 +1,38 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1066,22 +1121,25 @@ def _match_generic_type(self, obj: Any, origin: Any) -> CoreSchema:  # noqa: C90
+             return self._frozenset_schema(self._get_first_arg_or_any(obj))
+         elif origin in DICT_TYPES:
+             return self._dict_schema(*self._get_first_two_args_or_any(obj))
++        elif origin in PATH_TYPES:
++            return self._path_schema(origin, self._get_first_arg_or_any(obj))
++        elif origin in DEQUE_TYPES:
++            return self._deque_schema(self._get_first_arg_or_any(obj))
++        elif origin in MAPPING_TYPES:
++            return self._mapping_schema(origin, *self._get_first_two_args_or_any(obj))
++        elif origin in COUNTER_TYPES:
++            return self._mapping_schema(origin, self._get_first_arg_or_any(obj), int)
+         elif is_typeddict(origin):
+             return self._typed_dict_schema(obj, origin)
+-        elif origin in (typing.Type, type):
++        elif origin in TYPE_TYPES:
+             return self._subclass_schema(obj)
+         elif origin in SEQUENCE_TYPES:
+             return self._sequence_schema(self._get_first_arg_or_any(obj))
+-        elif origin in {typing.Iterable, collections.abc.Iterable, typing.Generator, collections.abc.Generator}:
++        elif origin in ITERABLE_TYPES:
+             return self._iterable_schema(obj)
+-        elif origin in (re.Pattern, typing.Pattern):
++        elif origin in PATTERN_TYPES:
+             return self._pattern_schema(obj)
+ 
+-        res = self._get_prepare_pydantic_annotations_for_known_type(obj, ())
+-        if res is not None:
+-            source_type, annotations = res
+-            return self._apply_annotations(source_type, annotations)
+-
+         if self._arbitrary_types:
+             return self._arbitrary_type_schema(origin)
+         return self._unknown_type_schema(obj)

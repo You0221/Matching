@@ -1,0 +1,17 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2163,10 +2200,12 @@ def clear_select_fields(self):
+         """
+         self.select = ()
+         self.values_select = ()
++        self.selected = None
+ 
+     def add_select_col(self, col, name):
+         self.select += (col,)
+         self.values_select += (name,)
++        self.selected[name] = len(self.select) - 1
+ 
+     def set_select(self, cols):
+         self.default_cols = False

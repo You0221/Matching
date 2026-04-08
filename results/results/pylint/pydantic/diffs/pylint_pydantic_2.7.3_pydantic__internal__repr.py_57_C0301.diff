@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_repr.py b/pydantic/_internal/_repr.py
+index 479b4479851..7e80a9c83db 100644
+--- a/pydantic/_internal/_repr.py
++++ b/pydantic/_internal/_repr.py
+@@ -41,20 +43,25 @@ def __repr_args__(self) -> ReprArgs:
+         * name - value pairs, e.g.: `[('foo_name', 'foo'), ('bar_name', ['b', 'a', 'r'])]`
+         * or, just values, e.g.: `[(None, 'foo'), (None, ['b', 'a', 'r'])]`
+         """
+-        attrs_names = self.__slots__
++        attrs_names = cast(Collection[str], self.__slots__)
+         if not attrs_names and hasattr(self, '__dict__'):
+             attrs_names = self.__dict__.keys()
+         attrs = ((s, getattr(self, s)) for s in attrs_names)
+-        return [(a, v) for a, v in attrs if v is not None]
++        return [(a, v if v is not self else self.__repr_recursion__(v)) for a, v in attrs if v is not None]
+ 
+     def __repr_name__(self) -> str:
+         """Name of the instance's class, used in __repr__."""
+         return self.__class__.__name__
+ 
++    def __repr_recursion__(self, object: Any) -> str:
++        """Returns the string representation of a recursive object."""
++        # This is copied over from the stdlib `pprint` module:
++        return f'<Recursion on {type(object).__name__} with id={id(object)}>'
++
+     def __repr_str__(self, join_str: str) -> str:
+         return join_str.join(repr(v) if a is None else f'{a}={v!r}' for a, v in self.__repr_args__())
+ 
+-    def __pretty__(self, fmt: typing.Callable[[Any], Any], **kwargs: Any) -> typing.Generator[Any, None, None]:
++    def __pretty__(self, fmt: Callable[[Any], Any], **kwargs: Any) -> Generator[Any]:
+         """Used by devtools (https://python-devtools.helpmanual.io/) to pretty print objects."""
+         yield self.__repr_name__() + '('
+         yield 1

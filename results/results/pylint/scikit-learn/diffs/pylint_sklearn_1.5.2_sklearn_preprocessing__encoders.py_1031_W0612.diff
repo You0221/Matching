@@ -1,0 +1,29 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -1017,14 +1032,18 @@ def transform(self, X):
+             )
+ 
+         # validation of X happens in _check_X called by _transform
+-        warn_on_unknown = self.drop is not None and self.handle_unknown in {
+-            "ignore",
+-            "infrequent_if_exist",
+-        }
++        if self.handle_unknown == "warn":
++            warn_on_unknown, handle_unknown = True, "infrequent_if_exist"
++        else:
++            warn_on_unknown = self.drop is not None and self.handle_unknown in {
++                "ignore",
++                "infrequent_if_exist",
++            }
++            handle_unknown = self.handle_unknown
+         X_int, X_mask = self._transform(
+             X,
+-            handle_unknown=self.handle_unknown,
+-            force_all_finite="allow-nan",
++            handle_unknown=handle_unknown,
++            ensure_all_finite="allow-nan",
+             warn_on_unknown=warn_on_unknown,
+         )
+ 

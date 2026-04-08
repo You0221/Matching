@@ -1,0 +1,23 @@
+diff --git a/numpy/_core/src/multiarray/nditer_api.c b/numpy/_core/src/multiarray/nditer_api.c
+index 28b7bf6e632f..da58489c6b9d 100644
+--- a/numpy/_core/src/multiarray/nditer_api.c
++++ b/numpy/_core/src/multiarray/nditer_api.c
+@@ -1567,14 +1536,16 @@ NpyIter_DebugPrint(NpyIter *iter)
+             printf("CAST ");
+         if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_BUFNEVER)
+             printf("BUFNEVER ");
+-        if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_ALIGNED)
+-            printf("ALIGNED ");
+         if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_REDUCE)
+             printf("REDUCE ");
+         if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_VIRTUAL)
+             printf("VIRTUAL ");
+         if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_WRITEMASKED)
+             printf("WRITEMASKED ");
++        if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_BUF_SINGLESTRIDE)
++            printf("BUF_SINGLESTRIDE ");
++        if ((NIT_OPITFLAGS(iter)[iop])&NPY_OP_ITFLAG_CONTIG)
++            printf("CONTIG ");
+         printf("\n");
+     }
+     printf("|\n");

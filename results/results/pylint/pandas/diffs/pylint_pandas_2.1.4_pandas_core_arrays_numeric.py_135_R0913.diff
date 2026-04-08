@@ -1,0 +1,27 @@
+diff --git a/pandas/core/arrays/numeric.py b/pandas/core/arrays/numeric.py
+index 0e86c1efba17a..210450e868698 100644
+--- a/pandas/core/arrays/numeric.py
++++ b/pandas/core/arrays/numeric.py
+@@ -132,9 +132,12 @@ def _safe_cast(cls, values: np.ndarray, dtype: np.dtype, copy: bool) -> np.ndarr
+         raise AbstractMethodError(cls)
+ 
+ 
+-def _coerce_to_data_and_mask(values, mask, dtype, copy, dtype_cls, default_dtype):
++def _coerce_to_data_and_mask(
++    values, dtype, copy: bool, dtype_cls: type[NumericDtype], default_dtype: np.dtype
++):
+     checker = dtype_cls._checker
+ 
++    mask = None
+     inferred_type = None
+ 
+     if dtype is None and hasattr(values, "dtype"):
+@@ -190,7 +193,7 @@ def _coerce_to_data_and_mask(values, mask, dtype, copy, dtype_cls, default_dtype
+     if dtype is None:
+         dtype = default_dtype
+     else:
+-        dtype = dtype.type
++        dtype = dtype.numpy_dtype
+ 
+     if is_integer_dtype(dtype) and values.dtype.kind == "f" and len(values) > 0:
+         if mask.all():

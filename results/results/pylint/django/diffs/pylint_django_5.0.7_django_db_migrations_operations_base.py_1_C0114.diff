@@ -1,0 +1,22 @@
+diff --git a/django/db/migrations/operations/base.py b/django/db/migrations/operations/base.py
+index 7d4dff259746..3bd9546bd72f 100644
+--- a/django/db/migrations/operations/base.py
++++ b/django/db/migrations/operations/base.py
+@@ -1,6 +1,17 @@
++import enum
++
+ from django.db import router
+ 
+ 
++class OperationCategory(str, enum.Enum):
++    ADDITION = "+"
++    REMOVAL = "-"
++    ALTERATION = "~"
++    PYTHON = "p"
++    SQL = "s"
++    MIXED = "?"
++
++
+ class Operation:
+     """
+     Base class for migration operations.

@@ -1,0 +1,20 @@
+diff --git a/numpy/_core/src/multiarray/nditer_api.c b/numpy/_core/src/multiarray/nditer_api.c
+index 28b7bf6e632f..da58489c6b9d 100644
+--- a/numpy/_core/src/multiarray/nditer_api.c
++++ b/numpy/_core/src/multiarray/nditer_api.c
+@@ -1659,14 +1628,9 @@ NpyIter_DebugPrint(NpyIter *iter)
+         if (itflags&NPY_ITFLAG_HASINDEX) {
+             printf("|   Index Stride: %d\n", (int)NAD_STRIDES(axisdata)[nop]);
+         }
+-        printf("|   Ptrs: ");
+-        for (iop = 0; iop < nop; ++iop) {
+-            printf("%p ", (void *)NAD_PTRS(axisdata)[iop]);
+-        }
+-        printf("\n");
+         if (itflags&NPY_ITFLAG_HASINDEX) {
+             printf("|   Index Value: %d\n",
+-                               (int)((npy_intp*)NAD_PTRS(axisdata))[nop]);
++                               (int)((npy_intp*)NIT_DATAPTRS(iter))[nop]);
+         }
+     }
+ 

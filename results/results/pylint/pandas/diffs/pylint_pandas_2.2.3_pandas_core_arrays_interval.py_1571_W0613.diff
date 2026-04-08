@@ -1,0 +1,23 @@
+diff --git a/pandas/core/arrays/interval.py b/pandas/core/arrays/interval.py
+index 91db7f11bcbe0..da57e4ceed87e 100644
+--- a/pandas/core/arrays/interval.py
++++ b/pandas/core/arrays/interval.py
+@@ -1574,6 +1575,18 @@ def __array__(
+         Return the IntervalArray's data as a numpy array of Interval
+         objects (with dtype='object')
+         """
++        if copy is False:
++            warnings.warn(
++                "Starting with NumPy 2.0, the behavior of the 'copy' keyword has "
++                "changed and passing 'copy=False' raises an error when returning "
++                "a zero-copy NumPy array is not possible. pandas will follow "
++                "this behavior starting with pandas 3.0.\nThis conversion to "
++                "NumPy requires a copy, but 'copy=False' was passed. Consider "
++                "using 'np.asarray(..)' instead.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++
+         left = self._left
+         right = self._right
+         mask = self.isna()

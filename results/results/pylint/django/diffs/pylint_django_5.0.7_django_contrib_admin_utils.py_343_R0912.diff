@@ -1,0 +1,43 @@
+diff --git a/django/contrib/admin/utils.py b/django/contrib/admin/utils.py
+index d6c54dd440d1..cc8ca5604dc8 100644
+--- a/django/contrib/admin/utils.py
++++ b/django/contrib/admin/utils.py
+@@ -344,9 +352,10 @@ def label_for_field(name, model, model_admin=None, return_attr=False, form=None)
+     """
+     Return a sensible label for a field name. The name can be a callable,
+     property (but not created with @property decorator), or the name of an
+-    object's attribute, as well as a model field. If return_attr is True, also
+-    return the resolved attribute (which could be a callable). This will be
+-    None if (and only if) the name refers to a field.
++    object's attribute, as well as a model field, including across related
++    objects. If return_attr is True, also return the resolved attribute
++    (which could be a callable). This will be None if (and only if) the name
++    refers to a field.
+     """
+     attr = None
+     try:
+@@ -370,15 +379,15 @@ def label_for_field(name, model, model_admin=None, return_attr=False, form=None)
+             elif form and name in form.fields:
+                 attr = form.fields[name]
+             else:
+-                message = "Unable to lookup '%s' on %s" % (
+-                    name,
+-                    model._meta.object_name,
+-                )
+-                if model_admin:
+-                    message += " or %s" % model_admin.__class__.__name__
+-                if form:
+-                    message += " or %s" % form.__class__.__name__
+-                raise AttributeError(message)
++                try:
++                    attr = get_fields_from_path(model, name)[-1]
++                except (FieldDoesNotExist, NotRelationField):
++                    message = f"Unable to lookup '{name}' on {model._meta.object_name}"
++                    if model_admin:
++                        message += f" or {model_admin.__class__.__name__}"
++                    if form:
++                        message += f" or {form.__class__.__name__}"
++                    raise AttributeError(message)
+ 
+             if hasattr(attr, "short_description"):
+                 label = attr.short_description

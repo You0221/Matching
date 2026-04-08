@@ -1,0 +1,34 @@
+diff --git a/django/forms/fields.py b/django/forms/fields.py
+index 3a0510ffc9ca..4bd9c352f270 100644
+--- a/django/forms/fields.py
++++ b/django/forms/fields.py
+@@ -94,6 +95,7 @@ class Field:
+         "required": _("This field is required."),
+     }
+     empty_values = list(validators.EMPTY_VALUES)
++    bound_field_class = None
+ 
+     def __init__(
+         self,
+@@ -110,6 +112,7 @@ def __init__(
+         disabled=False,
+         label_suffix=None,
+         template_name=None,
++        bound_field_class=None,
+     ):
+         # required -- Boolean that specifies whether the field is required.
+         #             True by default.
+@@ -134,11 +137,13 @@ def __init__(
+         #             is its widget is shown in the form but not editable.
+         # label_suffix -- Suffix to be added to the label. Overrides
+         #                 form's label_suffix.
++        # bound_field_class -- BoundField class to use in Field.get_bound_field.
+         self.required, self.label, self.initial = required, label, initial
+         self.show_hidden_initial = show_hidden_initial
+         self.help_text = help_text
+         self.disabled = disabled
+         self.label_suffix = label_suffix
++        self.bound_field_class = bound_field_class or self.bound_field_class
+         widget = widget or self.widget
+         if isinstance(widget, type):
+             widget = widget()

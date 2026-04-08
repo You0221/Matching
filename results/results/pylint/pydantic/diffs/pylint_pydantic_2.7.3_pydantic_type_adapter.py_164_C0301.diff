@@ -1,0 +1,249 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index e055a380ad3..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -157,81 +201,183 @@ def __init__(
+         _parent_depth: int = 2,
+         module: str | None = None,
+     ) -> None:
+-        """Initializes the TypeAdapter object.
+-
+-        Args:
+-            type: The type associated with the `TypeAdapter`.
+-            config: Configuration for the `TypeAdapter`, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+-            _parent_depth: depth at which to search the parent namespace to construct the local namespace.
+-            module: The module that passes to plugin if provided.
+-
+-        !!! note
+-            You cannot use the `config` argument when instantiating a `TypeAdapter` if the type you're using has its own
+-            config that cannot be overridden (ex: `BaseModel`, `TypedDict`, and `dataclass`). A
+-            [`type-adapter-config-unused`](../errors/usage_errors.md#type-adapter-config-unused) error will be raised in this case.
++        if _type_has_config(type) and config is not None:
++            raise PydanticUserError(
++                'Cannot use `config` when the type is a BaseModel, dataclass or TypedDict.'
++                ' These types can have their own config and setting the config via the `config`'
++                ' parameter to TypeAdapter will not override it, thus the `config` you passed to'
++                ' TypeAdapter becomes meaningless, which is probably not what you want.',
++                code='type-adapter-config-unused',
++            )
+ 
+-        !!! note
+-            The `_parent_depth` argument is named with an underscore to suggest its private nature and discourage use.
+-            It may be deprecated in a minor version, so we only recommend using it if you're
+-            comfortable with potential change in behavior / support.
++        self._type = type
++        self._config = config
++        self._parent_depth = _parent_depth
++        self.pydantic_complete = False
++
++        parent_frame = self._fetch_parent_frame()
++        if parent_frame is not None:
++            globalns = parent_frame.f_globals
++            # Do not provide a local ns if the type adapter happens to be instantiated at the module level:
++            localns = parent_frame.f_locals if parent_frame.f_locals is not globalns else {}
++        else:
++            globalns = {}
++            localns = {}
++
++        self._module_name = module or cast(str, globalns.get('__name__', ''))
++        self._init_core_attrs(
++            ns_resolver=_namespace_utils.NsResolver(
++                namespaces_tuple=_namespace_utils.NamespacesTuple(locals=localns, globals=globalns),
++                parent_namespace=localns,
++            ),
++            force=False,
++        )
+ 
+-        ??? tip "Compatibility with `mypy`"
+-            Depending on the type used, `mypy` might raise an error when instantiating a `TypeAdapter`. As a workaround, you can explicitly
+-            annotate your variable:
++    def _fetch_parent_frame(self) -> FrameType | None:
++        frame = sys._getframe(self._parent_depth)
++        if frame.f_globals.get('__name__') == 'typing':
++            # Because `TypeAdapter` is generic, explicitly parametrizing the class results
++            # in a `typing._GenericAlias` instance, which proxies instantiation calls to the
++            # "real" `TypeAdapter` class and thus adding an extra frame to the call. To avoid
++            # pulling anything from the `typing` module, use the correct frame (the one before):
++            return frame.f_back
+ 
+-            ```py
+-            from typing import Union
++        return frame
+ 
+-            from pydantic import TypeAdapter
++    def _init_core_attrs(
++        self, ns_resolver: _namespace_utils.NsResolver, force: bool, raise_errors: bool = False
++    ) -> bool:
++        """Initialize the core schema, validator, and serializer for the type.
+ 
+-            ta: TypeAdapter[Union[str, int]] = TypeAdapter(Union[str, int])  # type: ignore[arg-type]
+-            ```
++        Args:
++            ns_resolver: The namespace resolver to use when building the core schema for the adapted type.
++            force: Whether to force the construction of the core schema, validator, and serializer.
++                If `force` is set to `False` and `_defer_build` is `True`, the core schema, validator, and serializer will be set to mocks.
++            raise_errors: Whether to raise errors if initializing any of the core attrs fails.
+ 
+         Returns:
+-            A type adapter configured for the specified `type`.
++            `True` if the core schema, validator, and serializer were successfully initialized, otherwise `False`.
++
++        Raises:
++            PydanticUndefinedAnnotation: If `PydanticUndefinedAnnotation` occurs in`__get_pydantic_core_schema__`
++                and `raise_errors=True`.
+         """
+-        type_is_annotated: bool = _typing_extra.is_annotated(type)
+-        annotated_type: Any = get_args(type)[0] if type_is_annotated else None
+-        type_has_config: bool = _type_has_config(annotated_type if type_is_annotated else type)
++        if not force and self._defer_build:
++            _mock_val_ser.set_type_adapter_mocks(self, str(self._type))
++            self.pydantic_complete = False
++            return False
+ 
+-        if type_has_config and config is not None:
+-            raise PydanticUserError(
+-                'Cannot use `config` when the type is a BaseModel, dataclass or TypedDict.'
+-                ' These types can have their own config and setting the config via the `config`'
+-                ' parameter to TypeAdapter will not override it, thus the `config` you passed to'
+-                ' TypeAdapter becomes meaningless, which is probably not what you want.',
+-                code='type-adapter-config-unused',
++        try:
++            self.core_schema = _getattr_no_parents(self._type, '__pydantic_core_schema__')
++            self.validator = _getattr_no_parents(self._type, '__pydantic_validator__')
++            self.serializer = _getattr_no_parents(self._type, '__pydantic_serializer__')
++
++            # TODO: we don't go through the rebuild logic here directly because we don't want
++            # to repeat all of the namespace fetching logic that we've already done
++            # so we simply skip to the block below that does the actual schema generation
++            if (
++                isinstance(self.core_schema, _mock_val_ser.MockCoreSchema)
++                or isinstance(self.validator, _mock_val_ser.MockValSer)
++                or isinstance(self.serializer, _mock_val_ser.MockValSer)
++            ):
++                raise AttributeError()
++        except AttributeError:
++            config_wrapper = _config.ConfigWrapper(self._config)
++
++            schema_generator = _generate_schema.GenerateSchema(config_wrapper, ns_resolver=ns_resolver)
++
++            try:
++                core_schema = schema_generator.generate_schema(self._type)
++            except PydanticUndefinedAnnotation:
++                if raise_errors:
++                    raise
++                _mock_val_ser.set_type_adapter_mocks(self, str(self._type))
++                return False
++
++            try:
++                self.core_schema = schema_generator.clean_schema(core_schema)
++            except schema_generator.CollectedInvalid:
++                _mock_val_ser.set_type_adapter_mocks(self, str(self._type))
++                return False
++
++            core_config = config_wrapper.core_config(None)
++
++            self.validator = create_schema_validator(
++                schema=self.core_schema,
++                schema_type=self._type,
++                schema_type_module=self._module_name,
++                schema_type_name=str(self._type),
++                schema_kind='TypeAdapter',
++                config=core_config,
++                plugin_settings=config_wrapper.plugin_settings,
+             )
++            self.serializer = SchemaSerializer(self.core_schema, core_config)
+ 
+-        config_wrapper = _config.ConfigWrapper(config)
++        self.pydantic_complete = True
++        return True
+ 
+-        core_schema: CoreSchema
+-        try:
+-            core_schema = _getattr_no_parents(type, '__pydantic_core_schema__')
+-        except AttributeError:
+-            core_schema = _get_schema(type, config_wrapper, parent_depth=_parent_depth + 1)
++    @property
++    def _defer_build(self) -> bool:
++        config = self._config if self._config is not None else self._model_config
++        if config:
++            return config.get('defer_build') is True
++        return False
+ 
+-        core_config = config_wrapper.core_config(None)
+-        validator: SchemaValidator
+-        try:
+-            validator = _getattr_no_parents(type, '__pydantic_validator__')
+-        except AttributeError:
+-            if module is None:
+-                f = sys._getframe(1)
+-                module = cast(str, f.f_globals.get('__name__', ''))
+-            validator = create_schema_validator(
+-                core_schema, type, module, str(type), 'TypeAdapter', core_config, config_wrapper.plugin_settings
+-            )  # type: ignore
+-
+-        serializer: SchemaSerializer
+-        try:
+-            serializer = _getattr_no_parents(type, '__pydantic_serializer__')
+-        except AttributeError:
+-            serializer = SchemaSerializer(core_schema, core_config)
++    @property
++    def _model_config(self) -> ConfigDict | None:
++        type_: Any = _typing_extra.annotated_type(self._type) or self._type  # Eg FastAPI heavily uses Annotated
++        if _utils.lenient_issubclass(type_, BaseModel):
++            return type_.model_config
++        return getattr(type_, '__pydantic_config__', None)
++
++    def __repr__(self) -> str:
++        return f'TypeAdapter({_repr.display_as_type(self._type)})'
++
++    def rebuild(
++        self,
++        *,
++        force: bool = False,
++        raise_errors: bool = True,
++        _parent_namespace_depth: int = 2,
++        _types_namespace: _namespace_utils.MappingNamespace | None = None,
++    ) -> bool | None:
++        """Try to rebuild the pydantic-core schema for the adapter's type.
++
++        This may be necessary when one of the annotations is a ForwardRef which could not be resolved during
++        the initial attempt to build the schema, and automatic rebuilding fails.
+ 
+-        self.core_schema = core_schema
+-        self.validator = validator
+-        self.serializer = serializer
++        Args:
++            force: Whether to force the rebuilding of the type adapter's schema, defaults to `False`.
++            raise_errors: Whether to raise errors, defaults to `True`.
++            _parent_namespace_depth: Depth at which to search for the [parent frame][frame-objects]. This
++                frame is used when resolving forward annotations during schema rebuilding, by looking for
++                the locals of this frame. Defaults to 2, which will result in the frame where the method
++                was called.
++            _types_namespace: An explicit types namespace to use, instead of using the local namespace
++                from the parent frame. Defaults to `None`.
++
++        Returns:
++            Returns `None` if the schema is already "complete" and rebuilding was not required.
++            If rebuilding _was_ required, returns `True` if rebuilding was successful, otherwise `False`.
++        """
++        if not force and self.pydantic_complete:
++            return None
++
++        if _types_namespace is not None:
++            rebuild_ns = _types_namespace
++        elif _parent_namespace_depth > 0:
++            rebuild_ns = _typing_extra.parent_frame_namespace(parent_depth=_parent_namespace_depth, force=True) or {}
++        else:
++            rebuild_ns = {}
++
++        # we have to manually fetch globals here because there's no type on the stack of the NsResolver
++        # and so we skip the globalns = get_module_ns_of(typ) call that would normally happen
++        globalns = sys._getframe(max(_parent_namespace_depth - 1, 1)).f_globals
++        ns_resolver = _namespace_utils.NsResolver(
++            namespaces_tuple=_namespace_utils.NamespacesTuple(locals=rebuild_ns, globals=globalns),
++            parent_namespace=rebuild_ns,
++        )
++        return self._init_core_attrs(ns_resolver=ns_resolver, force=True, raise_errors=raise_errors)
+ 
+     def validate_python(
+         self,

@@ -1,0 +1,22 @@
+diff --git a/tornado/httpclient.py b/tornado/httpclient.py
+index 3011c371b8..3a45ffd041 100644
+--- a/tornado/httpclient.py
++++ b/tornado/httpclient.py
+@@ -571,7 +571,7 @@ def body(self, value: Union[bytes, str]) -> None:
+         self._body = utf8(value)
+ 
+ 
+-class HTTPResponse(object):
++class HTTPResponse:
+     """HTTP Response object.
+ 
+     Attributes:
+@@ -684,7 +684,7 @@ def rethrow(self) -> None:
+ 
+     def __repr__(self) -> str:
+         args = ",".join("%s=%r" % i for i in sorted(self.__dict__.items()))
+-        return "%s(%s)" % (self.__class__.__name__, args)
++        return f"{self.__class__.__name__}({args})"
+ 
+ 
+ class HTTPClientError(Exception):

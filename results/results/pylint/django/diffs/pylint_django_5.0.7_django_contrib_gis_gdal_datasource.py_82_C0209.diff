@@ -1,0 +1,14 @@
+diff --git a/django/contrib/gis/gdal/datasource.py b/django/contrib/gis/gdal/datasource.py
+index dfd043ab0c24..2c9d47918f3f 100644
+--- a/django/contrib/gis/gdal/datasource.py
++++ b/django/contrib/gis/gdal/datasource.py
+@@ -82,7 +84,8 @@ def __init__(self, ds_input, ds_driver=False, write=False, encoding="utf-8"):
+ 
+         if ds:
+             self.ptr = ds
+-            self.driver = Driver(ds_driver)
++            driver = capi.get_dataset_driver(ds)
++            self.driver = Driver(driver)
+         else:
+             # Raise an exception if the returned pointer is NULL
+             raise GDALException('Invalid data source file "%s"' % ds_input)

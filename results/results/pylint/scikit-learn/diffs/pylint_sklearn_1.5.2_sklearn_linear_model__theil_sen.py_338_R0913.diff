@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_theil_sen.py b/sklearn/linear_model/_theil_sen.py
+index cc774e8783762..e6a4fba57401d 100644
+--- a/sklearn/linear_model/_theil_sen.py
++++ b/sklearn/linear_model/_theil_sen.py
+@@ -339,7 +343,7 @@ def __init__(
+         self,
+         *,
+         fit_intercept=True,
+-        copy_X=True,
++        copy_X="deprecated",
+         max_subpopulation=1e4,
+         n_subsamples=None,
+         max_iter=300,

@@ -1,0 +1,13 @@
+diff --git a/tornado/gen.py b/tornado/gen.py
+index 4819b85715..3dab733c6a 100644
+--- a/tornado/gen.py
++++ b/tornado/gen.py
+@@ -675,7 +677,7 @@ def sleep(duration: float) -> "Future[None]":
+     return f
+ 
+ 
+-class _NullFuture(object):
++class _NullFuture:
+     """_NullFuture resembles a Future that finished with a result of None.
+ 
+     It's not actually a `Future` to avoid depending on a particular event loop.

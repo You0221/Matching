@@ -1,0 +1,36 @@
+diff --git a/django/contrib/auth/views.py b/django/contrib/auth/views.py
+index 0d1610465593..cd810a1edc72 100644
+--- a/django/contrib/auth/views.py
++++ b/django/contrib/auth/views.py
+@@ -244,11 +246,13 @@ def form_valid(self, form):
+ INTERNAL_RESET_SESSION_TOKEN = "_password_reset_token"
+ 
+ 
++@method_decorator(login_not_required, name="dispatch")
+ class PasswordResetDoneView(PasswordContextMixin, TemplateView):
+     template_name = "registration/password_reset_done.html"
+     title = _("Password reset sent")
+ 
+ 
++@method_decorator(login_not_required, name="dispatch")
+ class PasswordResetConfirmView(PasswordContextMixin, FormView):
+     form_class = SetPasswordForm
+     post_reset_login = False
+@@ -297,7 +301,8 @@ def get_user(self, uidb64):
+         try:
+             # urlsafe_base64_decode() decodes to bytestring
+             uid = urlsafe_base64_decode(uidb64).decode()
+-            user = UserModel._default_manager.get(pk=uid)
++            pk = UserModel._meta.pk.to_python(uid)
++            user = UserModel._default_manager.get(pk=pk)
+         except (
+             TypeError,
+             ValueError,
+@@ -335,6 +340,7 @@ def get_context_data(self, **kwargs):
+         return context
+ 
+ 
++@method_decorator(login_not_required, name="dispatch")
+ class PasswordResetCompleteView(PasswordContextMixin, TemplateView):
+     template_name = "registration/password_reset_complete.html"
+     title = _("Password reset complete")

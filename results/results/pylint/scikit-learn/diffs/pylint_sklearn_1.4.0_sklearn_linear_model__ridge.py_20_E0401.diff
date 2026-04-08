@@ -1,0 +1,38 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -25,18 +25,30 @@
+ from ..model_selection import GridSearchCV
+ from ..preprocessing import LabelBinarizer
+ from ..utils import (
++    Bunch,
+     check_array,
+     check_consistent_length,
+     check_scalar,
+     column_or_1d,
+     compute_sample_weight,
++    deprecated,
+ )
+-from ..utils._param_validation import Interval, StrOptions, validate_params
++from ..utils._array_api import (
++    _is_numpy_namespace,
++    _ravel,
++    device,
++    get_namespace,
++    get_namespace_and_device,
++)
++from ..utils._param_validation import Hidden, Interval, StrOptions, validate_params
+ from ..utils.extmath import row_norms, safe_sparse_dot
+ from ..utils.fixes import _sparse_linalg_cg
+ from ..utils.metadata_routing import (
+-    _raise_for_unsupported_routing,
+-    _RoutingNotSupportedMixin,
++    MetadataRouter,
++    MethodMapping,
++    _raise_for_params,
++    _routing_enabled,
++    process_routing,
+ )
+ from ..utils.sparsefuncs import mean_variance_axis
+ from ..utils.validation import _check_sample_weight, check_is_fitted

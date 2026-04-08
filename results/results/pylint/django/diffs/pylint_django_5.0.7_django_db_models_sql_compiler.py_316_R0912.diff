@@ -1,0 +1,44 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -387,18 +406,29 @@ def _order_by_pairs(self):
+                     True,
+                 )
+                 continue
+-            if col in self.query.annotations:
+-                # References to an expression which is masked out of the SELECT
+-                # clause.
++
++            if expr := self.query.annotations.get(col):
++                ref = col
++                transforms = []
++            else:
++                ref, *transforms = col.split(LOOKUP_SEP)
++                expr = self.query.annotations.get(ref)
++            if expr:
+                 if self.query.combinator and self.select:
++                    if transforms:
++                        raise NotImplementedError(
++                            "Ordering combined queries by transforms is not "
++                            "implemented."
++                        )
+                     # Don't use the resolved annotation because other
+-                    # combinated queries might define it differently.
+-                    expr = F(col)
+-                else:
+-                    expr = self.query.annotations[col]
+-                    if isinstance(expr, Value):
+-                        # output_field must be resolved for constants.
+-                        expr = Cast(expr, expr.output_field)
++                    # combined queries might define it differently.
++                    expr = F(ref)
++                if transforms:
++                    for name in transforms:
++                        expr = self.query.try_transform(expr, name)
++                if isinstance(expr, Value):
++                    # output_field must be resolved for constants.
++                    expr = Cast(expr, expr.output_field)
+                 yield OrderBy(expr, descending=descending), False
+                 continue
+ 

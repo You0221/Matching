@@ -1,0 +1,57 @@
+diff --git a/lib/ansible/galaxy/dependency_resolution/providers.py b/lib/ansible/galaxy/dependency_resolution/providers.py
+index 716f5423b37a96..8571c4bc91763b 100644
+--- a/lib/ansible/galaxy/dependency_resolution/providers.py
++++ b/lib/ansible/galaxy/dependency_resolution/providers.py
+@@ -457,52 +426,3 @@ def get_dependencies(self, candidate):
+             self._make_req_from_dict({'name': dep_name, 'version': dep_req})
+             for dep_name, dep_req in req_map.items()
+         ]
+-
+-
+-# Classes to handle resolvelib API changes between minor versions for 0.X
+-class CollectionDependencyProvider050(CollectionDependencyProviderBase):
+-    def find_matches(self, requirements):  # type: ignore[override]
+-        # type: (list[Requirement]) -> list[Candidate]
+-        return self._find_matches(requirements)
+-
+-    def get_preference(self, resolution, candidates, information):  # type: ignore[override]
+-        # type: (t.Optional[Candidate], list[Candidate], list[t.NamedTuple]) -> t.Union[float, int]
+-        return self._get_preference(candidates)
+-
+-
+-class CollectionDependencyProvider060(CollectionDependencyProviderBase):
+-    def find_matches(self, identifier, requirements, incompatibilities):  # type: ignore[override]
+-        # type: (str, t.Mapping[str, t.Iterator[Requirement]], t.Mapping[str, t.Iterator[Requirement]]) -> list[Candidate]
+-        return [
+-            match for match in self._find_matches(list(requirements[identifier]))
+-            if not any(match.ver == incompat.ver for incompat in incompatibilities[identifier])
+-        ]
+-
+-    def get_preference(self, resolution, candidates, information):  # type: ignore[override]
+-        # type: (t.Optional[Candidate], list[Candidate], list[t.NamedTuple]) -> t.Union[float, int]
+-        return self._get_preference(candidates)
+-
+-
+-class CollectionDependencyProvider070(CollectionDependencyProvider060):
+-    def get_preference(self, identifier, resolutions, candidates, information):  # type: ignore[override]
+-        # type: (str, t.Mapping[str, Candidate], t.Mapping[str, t.Iterator[Candidate]], t.Iterator[t.NamedTuple]) -> t.Union[float, int]
+-        return self._get_preference(list(candidates[identifier]))
+-
+-
+-class CollectionDependencyProvider080(CollectionDependencyProvider060):
+-    def get_preference(self, identifier, resolutions, candidates, information, backtrack_causes):  # type: ignore[override]
+-        # type: (str, t.Mapping[str, Candidate], t.Mapping[str, t.Iterator[Candidate]], t.Iterator[t.NamedTuple], t.Sequence) -> t.Union[float, int]
+-        return self._get_preference(list(candidates[identifier]))
+-
+-
+-def _get_provider():  # type () -> CollectionDependencyProviderBase
+-    if RESOLVELIB_VERSION >= SemanticVersion("0.8.0"):
+-        return CollectionDependencyProvider080
+-    if RESOLVELIB_VERSION >= SemanticVersion("0.7.0"):
+-        return CollectionDependencyProvider070
+-    if RESOLVELIB_VERSION >= SemanticVersion("0.6.0"):
+-        return CollectionDependencyProvider060
+-    return CollectionDependencyProvider050
+-
+-
+-CollectionDependencyProvider = _get_provider()

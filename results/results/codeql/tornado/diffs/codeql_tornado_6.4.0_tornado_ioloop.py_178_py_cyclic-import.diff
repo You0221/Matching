@@ -1,0 +1,13 @@
+diff --git a/tornado/ioloop.py b/tornado/ioloop.py
+index 3fb1359aae..647b8a7dfc 100644
+--- a/tornado/ioloop.py
++++ b/tornado/ioloop.py
+@@ -181,7 +178,7 @@ def configure(
+             impl = import_object(impl)
+         if isinstance(impl, type) and not issubclass(impl, BaseAsyncIOLoop):
+             raise RuntimeError("only AsyncIOLoop is allowed when asyncio is available")
+-        super(IOLoop, cls).configure(impl, **kwargs)
++        super().configure(impl, **kwargs)
+ 
+     @staticmethod
+     def instance() -> "IOLoop":

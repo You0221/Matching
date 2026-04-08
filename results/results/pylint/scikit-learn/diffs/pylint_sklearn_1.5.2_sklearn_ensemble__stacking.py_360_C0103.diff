@@ -1,0 +1,15 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -356,7 +346,9 @@ def get_feature_names_out(self, input_features=None):
+ 
+         return np.asarray(meta_names, dtype=object)
+ 
+-    @available_if(_estimator_has("predict"))
++    @available_if(
++        _estimator_has("predict", delegates=("final_estimator_", "final_estimator"))
++    )
+     def predict(self, X, **predict_params):
+         """Predict target for X.
+ 

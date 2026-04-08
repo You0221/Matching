@@ -1,0 +1,63 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -253,8 +255,8 @@ def _check_clashes(self):
+         # If the field doesn't install a backward relation on the target model
+         # (so `is_hidden` returns True), then there are no clashes to check
+         # and we can skip these fields.
+-        rel_is_hidden = self.remote_field.is_hidden()
+-        rel_name = self.remote_field.get_accessor_name()  # i. e. "model_set"
++        rel_is_hidden = self.remote_field.hidden
++        rel_name = self.remote_field.accessor_name  # i. e. "model_set"
+         rel_query_name = self.related_query_name()  # i. e. "model"
+         # i.e. "app_label.Model.field".
+         field_name = "%s.%s" % (opts.label, self.name)
+@@ -264,9 +266,8 @@ def _check_clashes(self):
+         # model_set and it clashes with Target.model_set.
+         potential_clashes = rel_opts.fields + rel_opts.many_to_many
+         for clash_field in potential_clashes:
+-            # i.e. "app_label.Target.model_set".
+-            clash_name = "%s.%s" % (rel_opts.label, clash_field.name)
+             if not rel_is_hidden and clash_field.name == rel_name:
++                clash_name = f"{rel_opts.label}.{clash_field.name}"
+                 errors.append(
+                     checks.Error(
+                         f"Reverse accessor '{rel_opts.object_name}.{rel_name}' "
+@@ -283,6 +284,7 @@ def _check_clashes(self):
+                 )
+ 
+             if clash_field.name == rel_query_name:
++                clash_name = f"{rel_opts.label}.{clash_field.name}"
+                 errors.append(
+                     checks.Error(
+                         "Reverse query name for '%s' clashes with field name '%s'."
+@@ -302,12 +304,10 @@ def _check_clashes(self):
+         # Model.m2m accessor.
+         potential_clashes = (r for r in rel_opts.related_objects if r.field is not self)
+         for clash_field in potential_clashes:
+-            # i.e. "app_label.Model.m2m".
+-            clash_name = "%s.%s" % (
+-                clash_field.related_model._meta.label,
+-                clash_field.field.name,
+-            )
+-            if not rel_is_hidden and clash_field.get_accessor_name() == rel_name:
++            if not rel_is_hidden and clash_field.accessor_name == rel_name:
++                clash_name = (
++                    f"{clash_field.related_model._meta.label}.{clash_field.field.name}"
++                )
+                 errors.append(
+                     checks.Error(
+                         f"Reverse accessor '{rel_opts.object_name}.{rel_name}' "
+@@ -323,7 +323,10 @@ def _check_clashes(self):
+                     )
+                 )
+ 
+-            if clash_field.get_accessor_name() == rel_query_name:
++            if clash_field.accessor_name == rel_query_name:
++                clash_name = (
++                    f"{clash_field.related_model._meta.label}.{clash_field.field.name}"
++                )
+                 errors.append(
+                     checks.Error(
+                         "Reverse query name for '%s' clashes with reverse query name "

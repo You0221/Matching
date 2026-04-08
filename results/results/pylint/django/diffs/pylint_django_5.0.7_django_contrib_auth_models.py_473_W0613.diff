@@ -1,0 +1,52 @@
+diff --git a/django/contrib/auth/models.py b/django/contrib/auth/models.py
+index 85330e2c0e6f..623b1698010f 100644
+--- a/django/contrib/auth/models.py
++++ b/django/contrib/auth/models.py
+@@ -470,23 +582,46 @@ def user_permissions(self):
+     def get_user_permissions(self, obj=None):
+         return _user_get_permissions(self, obj, "user")
+ 
++    async def aget_user_permissions(self, obj=None):
++        return await _auser_get_permissions(self, obj, "user")
++
+     def get_group_permissions(self, obj=None):
+         return set()
+ 
++    async def aget_group_permissions(self, obj=None):
++        return self.get_group_permissions(obj)
++
+     def get_all_permissions(self, obj=None):
+         return _user_get_permissions(self, obj, "all")
+ 
++    async def aget_all_permissions(self, obj=None):
++        return await _auser_get_permissions(self, obj, "all")
++
+     def has_perm(self, perm, obj=None):
+         return _user_has_perm(self, perm, obj=obj)
+ 
++    async def ahas_perm(self, perm, obj=None):
++        return await _auser_has_perm(self, perm, obj=obj)
++
+     def has_perms(self, perm_list, obj=None):
+-        if not is_iterable(perm_list) or isinstance(perm_list, str):
++        if not isinstance(perm_list, Iterable) or isinstance(perm_list, str):
+             raise ValueError("perm_list must be an iterable of permissions.")
+         return all(self.has_perm(perm, obj) for perm in perm_list)
+ 
++    async def ahas_perms(self, perm_list, obj=None):
++        if not isinstance(perm_list, Iterable) or isinstance(perm_list, str):
++            raise ValueError("perm_list must be an iterable of permissions.")
++        for perm in perm_list:
++            if not await self.ahas_perm(perm, obj):
++                return False
++        return True
++
+     def has_module_perms(self, module):
+         return _user_has_module_perms(self, module)
+ 
++    async def ahas_module_perms(self, module):
++        return await _auser_has_module_perms(self, module)
++
+     @property
+     def is_anonymous(self):
+         return True

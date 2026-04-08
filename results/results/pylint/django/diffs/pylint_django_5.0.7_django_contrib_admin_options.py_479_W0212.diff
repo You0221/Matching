@@ -1,0 +1,12 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -478,6 +484,7 @@ def lookup_allowed(self, lookup, value, request=None):
+                     model._meta.auto_field is None
+                     or part not in getattr(prev_field, "to_fields", [])
+                 )
++                and (field.is_relation or not field.primary_key)
+             ):
+                 relation_parts.append(part)
+             if not getattr(field, "path_infos", None):

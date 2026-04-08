@@ -1,0 +1,113 @@
+diff --git a/lib/ansible/plugins/callback/__init__.py b/lib/ansible/plugins/callback/__init__.py
+index f88055a4daab6b..2fc52c45c748c4 100644
+--- a/lib/ansible/plugins/callback/__init__.py
++++ b/lib/ansible/plugins/callback/__init__.py
+@@ -185,25 +244,30 @@ def set_options(self, task_keys=None, var_options=None, direct=None):
+         self._plugin_options = C.config.get_plugin_options(self.plugin_type, self._load_name, keys=task_keys, variables=var_options, direct=direct)
+ 
+     @staticmethod
+-    def host_label(result):
+-        """Return label for the hostname (& delegated hostname) of a task
+-        result.
+-        """
+-        label = "%s" % result._host.get_name()
+-        if result._task.delegate_to and result._task.delegate_to != result._host.get_name():
++    def host_label(result: CallbackTaskResult) -> str:
++        """Return label for the hostname (& delegated hostname) of a task result."""
++        label = result.host.get_name()
++        if result.task.delegate_to and result.task.delegate_to != result.host.get_name():
+             # show delegated host
+-            label += " -> %s" % result._task.delegate_to
++            label += " -> %s" % result.task.delegate_to
+             # in case we have 'extra resolution'
+-            ahost = result._result.get('_ansible_delegated_vars', {}).get('ansible_host', result._task.delegate_to)
+-            if result._task.delegate_to != ahost:
++            ahost = result.result.get('_ansible_delegated_vars', {}).get('ansible_host', result.task.delegate_to)
++            if result.task.delegate_to != ahost:
+                 label += "(%s)" % ahost
+         return label
+ 
+-    def _run_is_verbose(self, result, verbosity=0):
+-        return ((self._display.verbosity > verbosity or result._result.get('_ansible_verbose_always', False) is True)
+-                and result._result.get('_ansible_verbose_override', False) is False)
+-
+-    def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=False, serialize=True):
++    def _run_is_verbose(self, result: CallbackTaskResult, verbosity: int = 0) -> bool:
++        return ((self._display.verbosity > verbosity or result.result.get('_ansible_verbose_always', False) is True)
++                and result.result.get('_ansible_verbose_override', False) is False)
++
++    def _dump_results(
++        self,
++        result: _c.Mapping[str, t.Any],
++        indent: int | None = None,
++        sort_keys: bool = True,
++        keep_invocation: bool = False,
++        serialize: bool = True,
++    ) -> str:
+         try:
+             result_format = self.get_option('result_format')
+         except KeyError:
+@@ -256,7 +320,7 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+         if result_format == 'json':
+             return json.dumps(abridged_result, cls=_fallback_to_str.Encoder, indent=indent, ensure_ascii=False, sort_keys=sort_keys)
+ 
+-        elif result_format == 'yaml':
++        if result_format == 'yaml':
+             # None is a sentinel in this case that indicates default behavior
+             # default behavior for yaml is to prettify results
+             lossy = pretty_results in (None, True)
+@@ -281,31 +345,36 @@ def _dump_results(self, result, indent=None, sort_keys=True, keep_invocation=Fal
+                 ' ' * (indent or 4)
+             )
+ 
+-    def _handle_warnings(self, res: dict[str, t.Any]) -> None:
+-        """Display warnings and deprecation warnings sourced by task execution."""
+-        for warning in res.pop('warnings', []):
+-            # DTFIX-RELEASE: what to do about propagating wrap_text from the original display.warning call?
+-            self._display._warning(warning, wrap_text=False)
+-
+-        for warning in res.pop('deprecations', []):
+-            self._display._deprecated(warning)
+-
+-    def _handle_exception(self, result: dict[str, t.Any], use_stderr: bool = False) -> None:
+-        error_summary: ErrorSummary | None
+-
+-        if error_summary := result.pop('exception', None):
+-            self._display._error(error_summary, wrap_text=False, stderr=use_stderr)
++        # DTFIX5: add test to exercise this case
++        raise ValueError(f'Unsupported result_format {result_format!r}.')
+ 
+-    def _handle_warnings_and_exception(self, result: TaskResult) -> None:
++    def _handle_warnings(self, res: _c.MutableMapping[str, t.Any]) -> None:
++        """Display warnings and deprecation warnings sourced by task execution."""
++        if res.pop('warnings', None) and self._current_task_result and (warnings := self._current_task_result.warnings):
++            # display warnings from the current task result if `warnings` was not removed from `result` (or made falsey)
++            for warning in warnings:
++                self._display._warning(warning)
++
++        if res.pop('deprecations', None) and self._current_task_result and (deprecations := self._current_task_result.deprecations):
++            # display deprecations from the current task result if `deprecations` was not removed from `result` (or made falsey)
++            for deprecation in deprecations:
++                self._display._deprecated(deprecation)
++
++    def _handle_exception(self, result: _c.MutableMapping[str, t.Any], use_stderr: bool = False) -> None:
++        if result.pop('exception', None) and self._current_task_result and (exception := self._current_task_result.exception):
++            # display exception from the current task result if `exception` was not removed from `result` (or made falsey)
++            self._display._error(exception, stderr=use_stderr)
++
++    def _handle_warnings_and_exception(self, result: CallbackTaskResult) -> None:
+         """Standardized handling of warnings/deprecations and exceptions from a task/item result."""
+-        # DTFIX-RELEASE: make/doc/porting-guide a public version of this method?
++        # DTFIX5: make/doc/porting-guide a public version of this method?
+         try:
+             use_stderr = self.get_option('display_failed_stderr')
+         except KeyError:
+             use_stderr = False
+ 
+-        self._handle_warnings(result._result)
+-        self._handle_exception(result._result, use_stderr=use_stderr)
++        self._handle_warnings(result.result)
++        self._handle_exception(result.result, use_stderr=use_stderr)
+ 
+     def _serialize_diff(self, diff):
+         try:

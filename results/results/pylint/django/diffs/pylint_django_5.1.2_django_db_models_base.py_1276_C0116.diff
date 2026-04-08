@@ -1,0 +1,192 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1272,7 +1299,7 @@ def _get_FIELD_display(self, field):
+         )
+ 
+     def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
+-        if not self.pk:
++        if not self._is_pk_set():
+             raise ValueError("get_next/get_previous cannot be used on unsaved objects.")
+         op = "gt" if is_next else "lt"
+         order = "" if is_next else "-"
+@@ -1315,21 +1342,41 @@ def _get_next_or_previous_in_order(self, is_next):
+             setattr(self, cachename, obj)
+         return getattr(self, cachename)
+ 
+-    def _get_field_value_map(self, meta, exclude=None):
++    def _get_field_expression_map(self, meta, exclude=None):
+         if exclude is None:
+             exclude = set()
+         meta = meta or self._meta
+-        field_map = {
+-            field.name: Value(getattr(self, field.attname), field)
+-            for field in meta.local_concrete_fields
+-            if field.name not in exclude
+-        }
++        field_map = {}
++        generated_fields = []
++        for field in meta.local_concrete_fields:
++            if field.name in exclude:
++                continue
++            if field.generated:
++                if any(
++                    ref[0] in exclude
++                    for ref in self._get_expr_references(field.expression)
++                ):
++                    continue
++                generated_fields.append(field)
++                continue
++            value = getattr(self, field.attname)
++            if not value or not hasattr(value, "resolve_expression"):
++                value = Value(value, field)
++            field_map[field.name] = value
+         if "pk" not in exclude:
+             field_map["pk"] = Value(self.pk, meta.pk)
++        if generated_fields:
++            replacements = {F(name): value for name, value in field_map.items()}
++            for generated_field in generated_fields:
++                field_map[generated_field.name] = ExpressionWrapper(
++                    generated_field.expression.replace_expressions(replacements),
++                    generated_field.output_field,
++                )
++
+         return field_map
+ 
+     def prepare_database_save(self, field):
+-        if self.pk is None:
++        if not self._is_pk_set():
+             raise ValueError(
+                 "Unsaved model instance %r cannot be used in an ORM query." % self
+             )
+@@ -1413,6 +1460,11 @@ def _get_unique_checks(self, exclude=None, include_meta_constraints=False):
+                 name = f.name
+                 if name in exclude:
+                     continue
++                if isinstance(f, CompositePrimaryKey):
++                    names = tuple(field.name for field in f.fields)
++                    if exclude.isdisjoint(names):
++                        unique_checks.append((model_class, names))
++                    continue
+                 if f.unique:
+                     unique_checks.append((model_class, (name,)))
+                 if f.unique_for_date and f.unique_for_date not in exclude:
+@@ -1441,7 +1493,7 @@ def _perform_unique_checks(self, unique_checks):
+                 ):
+                     # no value, skip the lookup
+                     continue
+-                if f.primary_key and not self._state.adding:
++                if f in model_class._meta.pk_fields and not self._state.adding:
+                     # no need to check for unique primary key when editing
+                     continue
+                 lookup_kwargs[str(field_name)] = lookup_value
+@@ -1459,7 +1511,7 @@ def _perform_unique_checks(self, unique_checks):
+             # allows single model to have effectively multiple primary keys.
+             # Refs #17615.
+             model_class_pk = self._get_pk_val(model_class._meta)
+-            if not self._state.adding and model_class_pk is not None:
++            if not self._state.adding and self._is_pk_set(model_class._meta):
+                 qs = qs.exclude(pk=model_class_pk)
+             if qs.exists():
+                 if len(unique_check) == 1:
+@@ -1494,7 +1546,7 @@ def _perform_date_checks(self, date_checks):
+             qs = model_class._default_manager.filter(**lookup_kwargs)
+             # Exclude the current object from the query if we are editing an
+             # instance (as opposed to creating a new one)
+-            if not self._state.adding and self.pk is not None:
++            if not self._state.adding and self._is_pk_set():
+                 qs = qs.exclude(pk=self.pk)
+ 
+             if qs.exists():
+@@ -1687,6 +1739,7 @@ def check(cls, **kwargs):
+                 *cls._check_constraints(databases),
+                 *cls._check_default_pk(),
+                 *cls._check_db_table_comment(databases),
++                *cls._check_composite_pk(),
+             ]
+ 
+         return errors
+@@ -1723,6 +1776,65 @@ def _check_default_pk(cls):
+             ]
+         return []
+ 
++    @classmethod
++    def _check_composite_pk(cls):
++        errors = []
++        meta = cls._meta
++        pk = meta.pk
++
++        if not isinstance(pk, CompositePrimaryKey):
++            return errors
++
++        seen_columns = defaultdict(list)
++
++        for field_name in pk.field_names:
++            hint = None
++
++            try:
++                field = meta.get_field(field_name)
++            except FieldDoesNotExist:
++                field = None
++
++            if not field:
++                hint = f"{field_name!r} is not a valid field."
++            elif not field.column:
++                hint = f"{field_name!r} field has no column."
++            elif field.null:
++                hint = f"{field_name!r} field may not set 'null=True'."
++            elif field.generated:
++                hint = f"{field_name!r} field is a generated field."
++            elif field not in meta.local_fields:
++                hint = f"{field_name!r} field is not a local field."
++            else:
++                seen_columns[field.column].append(field_name)
++
++            if hint:
++                errors.append(
++                    checks.Error(
++                        f"{field_name!r} cannot be included in the composite primary "
++                        "key.",
++                        hint=hint,
++                        obj=cls,
++                        id="models.E042",
++                    )
++                )
++
++        for column, field_names in seen_columns.items():
++            if len(field_names) > 1:
++                field_name, *rest = field_names
++                duplicates = ", ".join(repr(field) for field in rest)
++                errors.append(
++                    checks.Error(
++                        f"{duplicates} cannot be included in the composite primary "
++                        "key.",
++                        hint=f"{duplicates} and {field_name!r} are the same fields.",
++                        obj=cls,
++                        id="models.E042",
++                    )
++                )
++
++        return errors
++
+     @classmethod
+     def _check_db_table_comment(cls, databases):
+         if not cls._meta.db_table_comment:
+@@ -2177,6 +2289,16 @@ def _check_local_fields(cls, fields, option):
+                             id="models.E013",
+                         )
+                     )
++                elif isinstance(field, models.CompositePrimaryKey):
++                    errors.append(
++                        checks.Error(
++                            f"{option!r} refers to a CompositePrimaryKey "
++                            f"{field_name!r}, but CompositePrimaryKeys are not "
++                            f"permitted in {option!r}.",
++                            obj=cls,
++                            id="models.E048",
++                        )
++                    )
+                 elif field not in cls._meta.local_fields:
+                     errors.append(
+                         checks.Error(

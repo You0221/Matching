@@ -1,0 +1,54 @@
+diff --git a/src/flask/cli.py b/src/flask/cli.py
+index dda266b30c..ffdcb182a7 100644
+--- a/src/flask/cli.py
++++ b/src/flask/cli.py
+@@ -214,13 +226,29 @@ def prepare_import(path):
+     return ".".join(module_name[::-1])
+ 
+ 
+-def locate_app(module_name, app_name, raise_if_not_found=True):
++@t.overload
++def locate_app(
++    module_name: str, app_name: str | None, raise_if_not_found: t.Literal[True] = True
++) -> Flask:
++    ...
++
++
++@t.overload
++def locate_app(
++    module_name: str, app_name: str | None, raise_if_not_found: t.Literal[False] = ...
++) -> Flask | None:
++    ...
++
++
++def locate_app(
++    module_name: str, app_name: str | None, raise_if_not_found: bool = True
++) -> Flask | None:
+     try:
+         __import__(module_name)
+     except ImportError:
+         # Reraise the ImportError if it occurred within the imported module.
+         # Determine this by checking whether the trace has a depth > 1.
+-        if sys.exc_info()[2].tb_next:
++        if sys.exc_info()[2].tb_next:  # type: ignore[union-attr]
+             raise NoAppException(
+                 f"While importing {module_name!r}, an ImportError was"
+                 f" raised:\n\n{traceback.format_exc()}"
+@@ -228,7 +256,7 @@ def locate_app(module_name, app_name, raise_if_not_found=True):
+         elif raise_if_not_found:
+             raise NoAppException(f"Could not import {module_name!r}.") from None
+         else:
+-            return
++            return None
+ 
+     module = sys.modules[module_name]
+ 
+@@ -238,7 +266,7 @@ def locate_app(module_name, app_name, raise_if_not_found=True):
+         return find_app_by_string(module, app_name)
+ 
+ 
+-def get_version(ctx, param, value):
++def get_version(ctx: click.Context, param: click.Parameter, value: t.Any) -> None:
+     if not value or ctx.resilient_parsing:
+         return
+ 

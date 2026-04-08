@@ -1,0 +1,81 @@
+diff --git a/django/contrib/auth/forms.py b/django/contrib/auth/forms.py
+index ab46caa12ecd..cd028870270a 100644
+--- a/django/contrib/auth/forms.py
++++ b/django/contrib/auth/forms.py
+@@ -148,48 +190,40 @@ def validate_passwords(
+             self.cleaned_data.pop(usable_password_field_name, None) != "false"
+         )
+         self.cleaned_data["set_usable_password"] = usable_password
+-        password1 = self.cleaned_data.get(password1_field_name)
+-        password2 = self.cleaned_data.get(password2_field_name)
+ 
+         if not usable_password:
+-            return self.cleaned_data
++            return
+ 
+-        if not password1:
++        password1 = self.cleaned_data.get(password1_field_name)
++        password2 = self.cleaned_data.get(password2_field_name)
++
++        if not password1 and password1_field_name not in self.errors:
+             error = ValidationError(
+                 self.fields[password1_field_name].error_messages["required"],
+                 code="required",
+             )
+             self.add_error(password1_field_name, error)
+ 
+-        if not password2:
++        if not password2 and password2_field_name not in self.errors:
+             error = ValidationError(
+                 self.fields[password2_field_name].error_messages["required"],
+                 code="required",
+             )
+             self.add_error(password2_field_name, error)
+ 
+-        if password1 and password2 and password1 != password2:
+-            error = ValidationError(
+-                self.error_messages["password_mismatch"],
+-                code="password_mismatch",
+-            )
+-            self.add_error(password2_field_name, error)
++        super().validate_passwords(password1_field_name, password2_field_name)
+ 
+-    def validate_password_for_user(self, user, password_field_name="password2"):
+-        password = self.cleaned_data.get(password_field_name)
+-        if password and self.cleaned_data["set_usable_password"]:
+-            try:
+-                password_validation.validate_password(password, user)
+-            except ValidationError as error:
+-                self.add_error(password_field_name, error)
++    def validate_password_for_user(self, user, **kwargs):
++        if self.cleaned_data["set_usable_password"]:
++            super().validate_password_for_user(user, **kwargs)
+ 
+-    def set_password_and_save(self, user, password_field_name="password1", commit=True):
++    def set_password_and_save(self, user, commit=True, **kwargs):
+         if self.cleaned_data["set_usable_password"]:
+-            user.set_password(self.cleaned_data[password_field_name])
++            user = super().set_password_and_save(user, **kwargs, commit=commit)
+         else:
+             user.set_unusable_password()
+-        if commit:
+-            user.save()
++            if commit:
++                user.save()
+         return user
+ 
+ 
+@@ -197,10 +231,12 @@ class BaseUserCreationForm(SetPasswordMixin, forms.ModelForm):
+     """
+     A form that creates a user, with no privileges, from the given username and
+     password.
++
++    This is the documented base class for customizing the user creation form.
++    It should be kept mostly unchanged to ensure consistency and compatibility.
+     """
+ 
+     password1, password2 = SetPasswordMixin.create_password_fields()
+-    usable_password = SetPasswordMixin.create_usable_password_field()
+ 
+     class Meta:
+         model = User

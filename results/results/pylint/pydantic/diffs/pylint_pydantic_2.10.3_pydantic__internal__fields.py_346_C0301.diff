@@ -1,0 +1,20 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 688b69d65b1..4540b8d83f1 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -340,9 +400,13 @@ def collect_dataclass_fields(
+ 
+                         # TODO: same note as above re validate_assignment
+                         continue
+-                    field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field.default)
++                    field_info = FieldInfo_.from_annotated_attribute(
++                        ann_type, dataclass_field.default, _source=AnnotationSource.DATACLASS
++                    )
+                 else:
+-                    field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field)
++                    field_info = FieldInfo_.from_annotated_attribute(
++                        ann_type, dataclass_field, _source=AnnotationSource.DATACLASS
++                    )
+ 
+                 fields[ann_name] = field_info
+ 

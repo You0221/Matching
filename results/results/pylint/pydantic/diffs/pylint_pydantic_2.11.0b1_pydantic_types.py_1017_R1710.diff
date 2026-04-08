@@ -1,0 +1,14 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index b5c4fd6060b..59160ab72b5 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -1028,8 +1028,7 @@ def _serialize(v: Any) -> str:
+                     return 'sys.stdin'
+                 elif v.name == '<stderr>':
+                     return 'sys.stderr'
+-            else:
+-                return v
++            return v
+ 
+         def __repr__(self) -> str:
+             return 'ImportString'

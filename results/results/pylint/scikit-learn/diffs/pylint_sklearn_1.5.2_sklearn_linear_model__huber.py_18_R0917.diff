@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_huber.py b/sklearn/linear_model/_huber.py
+index 4c60a2de8cb86..598d208df535c 100644
+--- a/sklearn/linear_model/_huber.py
++++ b/sklearn/linear_model/_huber.py
+@@ -11,7 +11,7 @@
+ from ..utils._param_validation import Interval
+ from ..utils.extmath import safe_sparse_dot
+ from ..utils.optimize import _check_optimize_result
+-from ..utils.validation import _check_sample_weight
++from ..utils.validation import _check_sample_weight, validate_data
+ from ._base import LinearModel
+ 
+ 

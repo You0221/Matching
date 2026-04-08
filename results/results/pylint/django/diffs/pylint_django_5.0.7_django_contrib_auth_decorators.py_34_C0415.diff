@@ -1,0 +1,42 @@
+diff --git a/django/contrib/auth/decorators.py b/django/contrib/auth/decorators.py
+index cfcc4a2d3a10..4d62aec93a03 100644
+--- a/django/contrib/auth/decorators.py
++++ b/django/contrib/auth/decorators.py
+@@ -35,7 +34,36 @@ def _wrapper_view(request, *args, **kwargs):
+ 
+             return redirect_to_login(path, resolved_login_url, redirect_field_name)
+ 
+-        return _wrapper_view
++        if iscoroutinefunction(view_func):
++
++            async def _view_wrapper(request, *args, **kwargs):
++                auser = await request.auser()
++                if iscoroutinefunction(test_func):
++                    test_pass = await test_func(auser)
++                else:
++                    test_pass = await sync_to_async(test_func)(auser)
++
++                if test_pass:
++                    return await view_func(request, *args, **kwargs)
++                return _redirect_to_login(request)
++
++        else:
++
++            def _view_wrapper(request, *args, **kwargs):
++                if iscoroutinefunction(test_func):
++                    test_pass = async_to_sync(test_func)(request.user)
++                else:
++                    test_pass = test_func(request.user)
++
++                if test_pass:
++                    return view_func(request, *args, **kwargs)
++                return _redirect_to_login(request)
++
++        # Attributes used by LoginRequiredMiddleware.
++        _view_wrapper.login_url = login_url
++        _view_wrapper.redirect_field_name = redirect_field_name
++
++        return wraps(view_func)(_view_wrapper)
+ 
+     return decorator
+ 

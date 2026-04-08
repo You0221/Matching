@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/parsing/utils/yaml.py b/lib/ansible/parsing/utils/yaml.py
+index f1cd142dc0ec1d..eca86412ed95b8 100644
+--- a/lib/ansible/parsing/utils/yaml.py
++++ b/lib/ansible/parsing/utils/yaml.py
+@@ -11,7 +11,7 @@
+ import yaml
+ 
+ from ansible.errors import AnsibleJSONParserError
+-from ansible._internal._errors import _utils
++from ansible._internal._errors import _error_utils
+ from ansible.parsing.vault import VaultSecret
+ from ansible.parsing.yaml.loader import AnsibleLoader
+ from ansible._internal._yaml._errors import AnsibleYAMLParserError

@@ -1,0 +1,12 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1687,6 +1739,7 @@ def check(cls, **kwargs):
+                 *cls._check_constraints(databases),
+                 *cls._check_default_pk(),
+                 *cls._check_db_table_comment(databases),
++                *cls._check_composite_pk(),
+             ]
+ 
+         return errors

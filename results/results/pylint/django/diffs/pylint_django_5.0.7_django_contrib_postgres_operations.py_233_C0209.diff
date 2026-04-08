@@ -1,0 +1,22 @@
+diff --git a/django/contrib/postgres/operations.py b/django/contrib/postgres/operations.py
+index 5ac396bedf38..84360febf90f 100644
+--- a/django/contrib/postgres/operations.py
++++ b/django/contrib/postgres/operations.py
+@@ -232,10 +237,17 @@ def describe(self):
+     def migration_name_fragment(self):
+         return "create_collation_%s" % self.name.lower()
+ 
++    def reduce(self, operation, app_label):
++        if isinstance(operation, RemoveCollation) and self.name == operation.name:
++            return []
++        return super().reduce(operation, app_label)
++
+ 
+ class RemoveCollation(CollationOperation):
+     """Remove a collation."""
+ 
++    category = OperationCategory.REMOVAL
++
+     def database_forwards(self, app_label, schema_editor, from_state, to_state):
+         if schema_editor.connection.vendor != "postgresql" or not router.allow_migrate(
+             schema_editor.connection.alias, app_label

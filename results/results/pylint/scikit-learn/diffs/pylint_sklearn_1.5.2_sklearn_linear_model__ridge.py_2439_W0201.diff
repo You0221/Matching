@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2428,7 +2478,7 @@ def fit(self, X, y, sample_weight=None, **params):
+                 estimator,
+                 parameters,
+                 cv=cv,
+-                scoring=self.scoring,
++                scoring=scorer,
+             )
+ 
+             grid_search.fit(X, y, **params)

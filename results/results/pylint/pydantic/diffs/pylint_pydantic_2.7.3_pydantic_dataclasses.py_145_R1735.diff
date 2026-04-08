@@ -1,0 +1,13 @@
+diff --git a/pydantic/dataclasses.py b/pydantic/dataclasses.py
+index c00de3216b8..1d30991f155 100644
+--- a/pydantic/dataclasses.py
++++ b/pydantic/dataclasses.py
+@@ -142,7 +143,7 @@ def dataclass(  # noqa: C901
+     assert validate_on_init is not False, 'validate_on_init=False is no longer supported'
+ 
+     if sys.version_info >= (3, 10):
+-        kwargs = dict(kw_only=kw_only, slots=slots)
++        kwargs = {'kw_only': kw_only, 'slots': slots}
+     else:
+         kwargs = {}
+ 

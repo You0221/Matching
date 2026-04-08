@@ -1,0 +1,14 @@
+diff --git a/lib/ansible/plugins/lookup/csvfile.py b/lib/ansible/plugins/lookup/csvfile.py
+index 9d199d821901d9..f170531887995f 100644
+--- a/lib/ansible/plugins/lookup/csvfile.py
++++ b/lib/ansible/plugins/lookup/csvfile.py
+@@ -150,6 +130,9 @@ def run(self, terms, variables=None, **kwargs):
+         # populate options
+         paramvals = self.get_options()
+ 
++        if not terms:
++            raise AnsibleError('Search key is required but was not found')
++
+         for term in terms:
+             kv = parse_kv(term)
+ 

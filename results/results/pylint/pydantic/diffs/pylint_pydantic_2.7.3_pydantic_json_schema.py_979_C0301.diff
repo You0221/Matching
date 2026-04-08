@@ -1,0 +1,25 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..64c659e8d22 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -971,20 +972,6 @@ def dict_schema(self, schema: core_schema.DictSchema) -> JsonSchemaValue:
+         self.update_with_validations(json_schema, schema, self.ValidationsMapping.object)
+         return json_schema
+ 
+-    def _function_schema(
+-        self,
+-        schema: _core_utils.AnyFunctionSchema,
+-    ) -> JsonSchemaValue:
+-        if _core_utils.is_function_with_inner_schema(schema):
+-            # This could be wrong if the function's mode is 'before', but in practice will often be right, and when it
+-            # isn't, I think it would be hard to automatically infer what the desired schema should be.
+-            return self.generate_inner(schema['schema'])
+-
+-        # function-plain
+-        return self.handle_invalid_for_json_schema(
+-            schema, f'core_schema.PlainValidatorFunctionSchema ({schema["function"]})'
+-        )
+-
+     def function_before_schema(self, schema: core_schema.BeforeValidatorFunctionSchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches a function-before schema.
+ 

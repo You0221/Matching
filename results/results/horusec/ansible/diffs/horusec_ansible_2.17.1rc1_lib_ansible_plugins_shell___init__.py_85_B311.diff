@@ -1,0 +1,17 @@
+diff --git a/lib/ansible/plugins/shell/__init__.py b/lib/ansible/plugins/shell/__init__.py
+index 5aa0a1b89ecdb2..1da3b1f6d102e3 100644
+--- a/lib/ansible/plugins/shell/__init__.py
++++ b/lib/ansible/plugins/shell/__init__.py
+@@ -82,10 +73,10 @@ def set_options(self, task_keys=None, var_options=None, direct=None):
+ 
+     @staticmethod
+     def _generate_temp_dir_name():
+-        return 'ansible-tmp-%s-%s-%s' % (time.time(), os.getpid(), random.randint(0, 2**48))
++        return 'ansible-tmp-%s-%s-%s' % (time.time(), os.getpid(), secrets.randbelow(2**48))
+ 
+     def env_prefix(self, **kwargs):
+-        return ' '.join(['%s=%s' % (k, shlex.quote(text_type(v))) for k, v in kwargs.items()])
++        return ' '.join(['%s=%s' % (k, self.quote(text_type(v))) for k, v in kwargs.items()])
+ 
+     def join_path(self, *args):
+         return os.path.join(*args)

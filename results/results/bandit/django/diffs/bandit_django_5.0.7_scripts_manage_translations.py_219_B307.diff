@@ -1,0 +1,67 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index 5b82011f2077..bc569fbd0a2e 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -214,6 +301,60 @@ def fetch(resources=None, languages=None):
+         action="append",
+         help="limit operation to the specified languages",
+     )
+-    options = parser.parse_args()
+ 
+-    eval(options.cmd[0])(options.resources, options.languages)
++
++if __name__ == "__main__":
++    parser = ArgumentParser()
++
++    subparsers = parser.add_subparsers(
++        dest="cmd", help="choose the operation to perform"
++    )
++
++    parser_update = subparsers.add_parser(
++        "update_catalogs",
++        help="update English django.po files with new/updated translatable strings",
++    )
++    add_common_arguments(parser_update)
++
++    parser_stats = subparsers.add_parser(
++        "lang_stats",
++        help="print the approximate number of changed/added strings in the en catalog",
++    )
++    add_common_arguments(parser_stats)
++
++    parser_fetch = subparsers.add_parser(
++        "fetch",
++        help="fetch translations from Transifex, wrap long lines, generate mo files",
++    )
++    add_common_arguments(parser_fetch)
++
++    parser_fetch = subparsers.add_parser(
++        "fetch_since",
++        help=(
++            "fetch translations from Transifex modified since a given date "
++            "(for all languages and all resources)"
++        ),
++    )
++    parser_fetch.add_argument("-v", "--verbose", action="store_true")
++    parser_fetch.add_argument(
++        "-s",
++        "--since",
++        required=True,
++        dest="date_since",
++        metavar="YYYY-MM-DD",
++        type=datetime.fromisoformat,
++        help="fetch new translations since this date (ISO format YYYY-MM-DD).",
++    )
++    parser_fetch.add_argument(
++        "--skip",
++        dest="date_skip",
++        metavar="YYYY-MM-DD",
++        type=datetime.fromisoformat,
++        help="skip changes from this date (ISO format YYYY-MM-DD).",
++    )
++    parser_fetch.add_argument("--dry-run", dest="dry_run", action="store_true")
++
++    options = parser.parse_args()
++    kwargs = options.__dict__
++    cmd = kwargs.pop("cmd")
++    eval(cmd)(**kwargs)

@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2203,9 +2250,6 @@ def fit(self, X, y, sample_weight=None, score_params=None):
+ 
+         return self
+ 
+-    def _get_scorer(self):
+-        return check_scoring(self, scoring=self.scoring, allow_none=True)
+-
+     def _score_without_scorer(self, squared_errors):
+         """Performs scoring using squared errors when the scorer is None."""
+         if self.alpha_per_target:

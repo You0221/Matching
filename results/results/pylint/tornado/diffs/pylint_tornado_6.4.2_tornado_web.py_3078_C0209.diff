@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 039396470f..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -3075,7 +3142,7 @@ def make_static_url(
+         if not version_hash:
+             return url
+ 
+-        return "%s?v=%s" % (url, version_hash)
++        return f"{url}?v={version_hash}"
+ 
+     def parse_url_path(self, url_path: str) -> str:
+         """Converts a static URL path into a filesystem path.

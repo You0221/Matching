@@ -1,0 +1,15 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index 8e27facda11df..a18803d507ffa 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -274,9 +285,7 @@ def fit(self, X, y, sample_weight=None):
+         ]
+ 
+         X_meta = self._concatenate_predictions(X, predictions)
+-        _fit_single_estimator(
+-            self.final_estimator_, X_meta, y, sample_weight=sample_weight
+-        )
++        _fit_single_estimator(self.final_estimator_, X_meta, y, fit_params=fit_params)
+ 
+         return self
+ 

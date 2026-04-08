@@ -1,0 +1,19 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1595,13 +1733,13 @@ def check(cls, **kwargs):
+             if not clash_errors:
+                 errors.extend(cls._check_column_name_clashes())
+             errors += [
+-                *cls._check_index_together(),
+                 *cls._check_unique_together(),
+                 *cls._check_indexes(databases),
+                 *cls._check_ordering(),
+                 *cls._check_constraints(databases),
+                 *cls._check_default_pk(),
+                 *cls._check_db_table_comment(databases),
++                *cls._check_composite_pk(),
+             ]
+ 
+         return errors

@@ -1,0 +1,29 @@
+diff --git a/pydantic/_internal/_signature.py b/pydantic/_internal/_signature.py
+index 0e3c8af814d..2273577ccb2 100644
+--- a/pydantic/_internal/_signature.py
++++ b/pydantic/_internal/_signature.py
+@@ -112,12 +122,21 @@ def _generate_signature_parameters(  # noqa: C901 (ignore complexity, could use
+                     use_var_kw = True
+                     continue
+ 
+-            kwargs = {} if field.is_required() else {'default': field.get_default(call_default_factory=False)}
++            if field.is_required():
++                default = Parameter.empty
++            elif field.default_factory is not None:
++                # Mimics stdlib dataclasses:
++                default = _HAS_DEFAULT_FACTORY
++            else:
++                default = field.default
+             merged_params[param_name] = Parameter(
+-                param_name, Parameter.KEYWORD_ONLY, annotation=field.rebuild_annotation(), **kwargs
++                param_name,
++                Parameter.KEYWORD_ONLY,
++                annotation=field.rebuild_annotation(),
++                default=default,
+             )
+ 
+-    if config_wrapper.extra == 'allow':
++    if extra == 'allow':
+         use_var_kw = True
+ 
+     if var_kw and use_var_kw:

@@ -1,0 +1,38 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2074,23 +2282,23 @@ def _apply_single_annotation(self, schema: core_schema.CoreSchema, metadata: Any
+             return schema
+ 
+         original_schema = schema
+-        ref = schema.get('ref', None)
++        ref = schema.get('ref')
+         if ref is not None:
+             schema = schema.copy()
+             new_ref = ref + f'_{repr(metadata)}'
+-            if new_ref in self.defs.definitions:
+-                return self.defs.definitions[new_ref]
+-            schema['ref'] = new_ref  # type: ignore
++            if (existing := self.defs.get_schema_from_ref(new_ref)) is not None:
++                return existing
++            schema['ref'] = new_ref  # pyright: ignore[reportGeneralTypeIssues]
+         elif schema['type'] == 'definition-ref':
+             ref = schema['schema_ref']
+-            if ref in self.defs.definitions:
+-                schema = self.defs.definitions[ref].copy()
++            if (referenced_schema := self.defs.get_schema_from_ref(ref)) is not None:
++                schema = referenced_schema.copy()
+                 new_ref = ref + f'_{repr(metadata)}'
+-                if new_ref in self.defs.definitions:
+-                    return self.defs.definitions[new_ref]
+-                schema['ref'] = new_ref  # type: ignore
++                if (existing := self.defs.get_schema_from_ref(new_ref)) is not None:
++                    return existing
++                schema['ref'] = new_ref  # pyright: ignore[reportGeneralTypeIssues]
+ 
+-        maybe_updated_schema = _known_annotated_metadata.apply_known_metadata(metadata, schema.copy())
++        maybe_updated_schema = _known_annotated_metadata.apply_known_metadata(metadata, schema)
+ 
+         if maybe_updated_schema is not None:
+             return maybe_updated_schema

@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 83ff03631e6e86..3e854a612b591f 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -697,7 +824,7 @@ def _build_command(self, binary: str, subsystem: str, *other_args: bytes | str)
+             password_prompt = self.get_option('sshpass_prompt')
+             if not password_prompt and pkcs11_provider:
+                 # Set default password prompt for pkcs11_provider to make it clear its a PIN
+-                password_prompt = 'Enter PIN for '
++                password_prompt = PKCS11_DEFAULT_PROMPT
+ 
+             if password_prompt:
+                 b_command += [b'-P', to_bytes(password_prompt, errors='surrogate_or_strict')]

@@ -1,0 +1,40 @@
+diff --git a/sklearn/base.py b/sklearn/base.py
+index 56a0ad3233a73..309b482357e12 100644
+--- a/sklearn/base.py
++++ b/sklearn/base.py
+@@ -16,24 +16,28 @@
+ from . import __version__
+ from ._config import config_context, get_config
+ from .exceptions import InconsistentVersionWarning
+-from .utils import _IS_32BIT
+-from .utils._estimator_html_repr import _HTMLDocumentationLinkMixin, estimator_html_repr
+ from .utils._metadata_requests import _MetadataRequester, _routing_enabled
++from .utils._missing import is_scalar_nan
+ from .utils._param_validation import validate_parameter_constraints
++from .utils._repr_html.base import ReprHTMLMixin, _HTMLDocumentationLinkMixin
++from .utils._repr_html.estimator import estimator_html_repr
++from .utils._repr_html.params import ParamsDict
+ from .utils._set_output import _SetOutputMixin
+ from .utils._tags import (
+-    _DEFAULT_TAGS,
++    ClassifierTags,
++    RegressorTags,
++    Tags,
++    TargetTags,
++    TransformerTags,
++    get_tags,
+ )
++from .utils.fixes import _IS_32BIT
+ from .utils.validation import (
+     _check_feature_names_in,
+-    _check_y,
+     _generate_get_feature_names_out,
+-    _get_feature_names,
+     _is_fitted,
+-    _num_features,
+     check_array,
+     check_is_fitted,
+-    check_X_y,
+ )
+ 
+ 

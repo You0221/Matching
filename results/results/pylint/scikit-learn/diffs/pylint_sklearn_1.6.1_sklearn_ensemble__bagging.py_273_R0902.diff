@@ -1,0 +1,27 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index dd39b8cb607a8..34b613b15281a 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -254,18 +263,18 @@ def _parallel_predict_log_proba(estimators, estimators_features, X, n_classes):
+     return log_proba
+ 
+ 
+-def _parallel_decision_function(estimators, estimators_features, X):
++def _parallel_decision_function(estimators, estimators_features, X, params):
+     """Private function used to compute decisions within a job."""
+     return sum(
+-        estimator.decision_function(X[:, features])
++        estimator.decision_function(X[:, features], **params)
+         for estimator, features in zip(estimators, estimators_features)
+     )
+ 
+ 
+-def _parallel_predict_regression(estimators, estimators_features, X):
++def _parallel_predict_regression(estimators, estimators_features, X, params):
+     """Private function used to compute predictions within a job."""
+     return sum(
+-        estimator.predict(X[:, features])
++        estimator.predict(X[:, features], **params)
+         for estimator, features in zip(estimators, estimators_features)
+     )
+ 

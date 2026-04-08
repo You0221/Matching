@@ -1,0 +1,19 @@
+diff --git a/django/contrib/postgres/search.py b/django/contrib/postgres/search.py
+index 936709c2f840..4d279857c662 100644
+--- a/django/contrib/postgres/search.py
++++ b/django/contrib/postgres/search.py
+@@ -116,9 +116,11 @@ def as_sql(self, compiler, connection, function=None, template=None):
+         clone.set_source_expressions(
+             [
+                 Coalesce(
+-                    expression
+-                    if isinstance(expression.output_field, (CharField, TextField))
+-                    else Cast(expression, TextField()),
++                    (
++                        expression
++                        if isinstance(expression.output_field, (CharField, TextField))
++                        else Cast(expression, TextField())
++                    ),
+                     Value(""),
+                 )
+                 for expression in clone.get_source_expressions()

@@ -1,0 +1,13 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -409,6 +434,8 @@ def replace_expressions(self, replacements):
+     def get_refs(self):
+         refs = set()
+         for expr in self.get_source_expressions():
++            if expr is None:
++                continue
+             refs |= expr.get_refs()
+         return refs
+ 

@@ -1,0 +1,17 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -1126,9 +1140,9 @@ def _remove_prefetched_objects(self):
+                 pass  # nothing to clear from cache
+ 
+         def get_queryset(self):
+-            try:
+-                return self.instance._prefetched_objects_cache[self.prefetch_cache_name]
+-            except (AttributeError, KeyError):
++            if (cache := self.get_prefetch_cache()) is not None:
++                return cache
++            else:
+                 queryset = super().get_queryset()
+                 return self._apply_rel_filters(queryset)
+ 

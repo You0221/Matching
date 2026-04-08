@@ -1,0 +1,18 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index 29da979e8ab..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -400,12 +396,8 @@ def _apply_parse(
+     handler: GetCoreSchemaHandler,
+     source_type: Any,
+ ) -> cs.CoreSchema:
+-    from pydantic_core import core_schema as cs
+-
+-    from pydantic import Strict
+-
+     if tp is _FieldTypeMarker:
+-        return handler(source_type)
++        return cs.chain_schema([s, handler(source_type)]) if s else handler(source_type)
+ 
+     if strict:
+         tp = Annotated[tp, Strict()]  # type: ignore

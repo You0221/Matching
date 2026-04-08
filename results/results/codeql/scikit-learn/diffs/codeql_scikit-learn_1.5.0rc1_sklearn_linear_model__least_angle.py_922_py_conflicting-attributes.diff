@@ -1,0 +1,15 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index 81e8abb8bc5d6..25f956e5fadda 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -1180,7 +1178,9 @@ def fit(self, X, y, Xy=None):
+         self : object
+             Returns an instance of self.
+         """
+-        X, y = self._validate_data(X, y, y_numeric=True, multi_output=True)
++        X, y = validate_data(
++            self, X, y, force_writeable=True, y_numeric=True, multi_output=True
++        )
+ 
+         alpha = getattr(self, "alpha", 0.0)
+         if hasattr(self, "n_nonzero_coefs"):

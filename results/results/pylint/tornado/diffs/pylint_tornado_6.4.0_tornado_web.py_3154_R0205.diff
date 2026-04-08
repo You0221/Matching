@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 039396470f..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -3151,7 +3218,7 @@ def prepare(self) -> None:
+         self.on_finish()
+ 
+ 
+-class OutputTransform(object):
++class OutputTransform:
+     """A transform modifies the result of an HTTP request (e.g., GZip encoding)
+ 
+     Applications are not expected to create their own OutputTransforms

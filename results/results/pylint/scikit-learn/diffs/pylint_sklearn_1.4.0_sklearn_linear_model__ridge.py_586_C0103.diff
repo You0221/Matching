@@ -1,0 +1,47 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -582,28 +609,29 @@ def _ridge_regression(
+     random_state=None,
+     return_n_iter=False,
+     return_intercept=False,
++    return_solver=False,
+     X_scale=None,
+     X_offset=None,
+     check_input=True,
+     fit_intercept=False,
+ ):
++    xp, is_array_api_compliant, device_ = get_namespace_and_device(
++        X, y, sample_weight, X_scale, X_offset
++    )
++    is_numpy_namespace = _is_numpy_namespace(xp)
++    X_is_sparse = sparse.issparse(X)
++
+     has_sw = sample_weight is not None
+ 
+-    if solver == "auto":
+-        if positive:
+-            solver = "lbfgs"
+-        elif return_intercept:
+-            # sag supports fitting intercept directly
+-            solver = "sag"
+-        elif not sparse.issparse(X):
+-            solver = "cholesky"
+-        else:
+-            solver = "sparse_cg"
++    solver = resolve_solver(solver, positive, return_intercept, X_is_sparse, xp)
+ 
+-    if solver not in ("sparse_cg", "cholesky", "svd", "lsqr", "sag", "saga", "lbfgs"):
++    if is_numpy_namespace and not X_is_sparse:
++        X = np.asarray(X)
++
++    if not is_numpy_namespace and solver != "svd":
+         raise ValueError(
+-            "Known solvers are 'sparse_cg', 'cholesky', 'svd'"
+-            " 'lsqr', 'sag', 'saga' or 'lbfgs'. Got %s." % solver
++            f"Array API dispatch to namespace {xp.__name__} only supports "
++            f"solver 'svd'. Got '{solver}'."
+         )
+ 
+     if positive and solver != "lbfgs":

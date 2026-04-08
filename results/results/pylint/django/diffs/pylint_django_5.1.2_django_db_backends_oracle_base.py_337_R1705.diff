@@ -1,0 +1,17 @@
+diff --git a/django/db/backends/oracle/base.py b/django/db/backends/oracle/base.py
+index 5606f90653ff..3b37c38f9723 100644
+--- a/django/db/backends/oracle/base.py
++++ b/django/db/backends/oracle/base.py
+@@ -341,6 +391,12 @@ def is_usable(self):
+         else:
+             return True
+ 
++    def close_if_health_check_failed(self):
++        if self.pool:
++            # The pool only returns healthy connections.
++            return
++        return super().close_if_health_check_failed()
++
+     @cached_property
+     def oracle_version(self):
+         with self.temporary_connection():

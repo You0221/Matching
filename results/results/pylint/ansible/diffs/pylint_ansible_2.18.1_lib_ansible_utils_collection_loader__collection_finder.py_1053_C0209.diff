@@ -1,0 +1,26 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index dfd7a67a546588..ece6fd7d44e028 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -1042,15 +1025,18 @@ def legacy_plugin_dir_to_plugin_type(legacy_plugin_dir_name):
+         :param legacy_plugin_dir_name: PluginLoader dir name (eg, 'action_plugins', 'library')
+         :return: the corresponding plugin ref_type (eg, 'action', 'role')
+         """
+-        legacy_plugin_dir_name = to_text(legacy_plugin_dir_name)
++        if legacy_plugin_dir_name is None:
++            plugin_type = None
++        else:
++            legacy_plugin_dir_name = _to_text(legacy_plugin_dir_name)
+ 
+-        plugin_type = legacy_plugin_dir_name.removesuffix(u'_plugins')
++            plugin_type = legacy_plugin_dir_name.removesuffix(u'_plugins')
+ 
+         if plugin_type == u'library':
+             plugin_type = u'modules'
+ 
+         if plugin_type not in AnsibleCollectionRef.VALID_REF_TYPES:
+-            raise ValueError('{0} cannot be mapped to a valid collection ref type'.format(to_native(legacy_plugin_dir_name)))
++            raise ValueError(f'{legacy_plugin_dir_name!r} cannot be mapped to a valid collection ref type')
+ 
+         return plugin_type
+ 

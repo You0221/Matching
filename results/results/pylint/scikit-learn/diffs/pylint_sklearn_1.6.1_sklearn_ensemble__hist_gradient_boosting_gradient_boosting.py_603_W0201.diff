@@ -1,0 +1,27 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index b136cd373a03f..064391abab24d 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -598,13 +648,19 @@ def fit(self, X, y, sample_weight=None):
+             self._loss = self.loss
+ 
+         if self.early_stopping == "auto":
+-            self.do_early_stopping_ = n_samples > 10000
++            self.do_early_stopping_ = n_samples > 10_000
+         else:
+             self.do_early_stopping_ = self.early_stopping
+ 
+         # create validation data if needed
+-        self._use_validation_data = self.validation_fraction is not None
+-        if self.do_early_stopping_ and self._use_validation_data:
++        self._use_validation_data = (
++            self.validation_fraction is not None or validation_data_provided
++        )
++        if (
++            self.do_early_stopping_
++            and self._use_validation_data
++            and not validation_data_provided
++        ):
+             # stratify for classification
+             # instead of checking predict_proba, loss.n_classes >= 2 would also work
+             stratify = y if hasattr(self._loss, "predict_proba") else None

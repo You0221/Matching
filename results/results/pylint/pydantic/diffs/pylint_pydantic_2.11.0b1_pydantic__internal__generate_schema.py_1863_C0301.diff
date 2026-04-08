@@ -1,0 +1,16 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 704af79e78a..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1860,7 +1888,10 @@ def _dataclass_schema(
+                                 code='dataclass-init-false-extra-allow',
+                             )
+ 
+-                decorators = dataclass.__dict__.get('__pydantic_decorators__') or DecoratorInfos.build(dataclass)
++                decorators = dataclass.__dict__.get('__pydantic_decorators__')
++                if decorators is None:
++                    decorators = DecoratorInfos.build(dataclass)
++                    decorators.update_from_config(self._config_wrapper)
+                 # Move kw_only=False args to the start of the list, as this is how vanilla dataclasses work.
+                 # Note that when kw_only is missing or None, it is treated as equivalent to kw_only=True
+                 args = sorted(

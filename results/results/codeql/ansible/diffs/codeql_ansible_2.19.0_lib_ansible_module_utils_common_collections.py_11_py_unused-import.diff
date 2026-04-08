@@ -1,0 +1,17 @@
+diff --git a/lib/ansible/module_utils/common/collections.py b/lib/ansible/module_utils/common/collections.py
+index f5fae55aa8dc1f..4fdc874269b63f 100644
+--- a/lib/ansible/module_utils/common/collections.py
++++ b/lib/ansible/module_utils/common/collections.py
+@@ -6,8 +6,10 @@
+ from __future__ import annotations
+ 
+ 
+-from ansible.module_utils.six import binary_type, text_type
+-from ansible.module_utils.six.moves.collections_abc import Hashable, Mapping, MutableMapping, Sequence  # pylint: disable=unused-import
++from collections.abc import Hashable, Mapping, MutableMapping, Sequence  # pylint: disable=unused-import
++
++from ansible.module_utils._internal import _no_six
++from ansible.module_utils.common import warnings as _warnings
+ 
+ 
+ class ImmutableDict(Hashable, Mapping):

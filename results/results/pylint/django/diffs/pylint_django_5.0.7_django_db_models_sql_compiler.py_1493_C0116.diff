@@ -1,0 +1,57 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1481,13 +1509,25 @@ def _get_field_choices():
+         return result
+ 
+     def get_converters(self, expressions):
++        i = 0
+         converters = {}
+-        for i, expression in enumerate(expressions):
+-            if expression:
++
++        for expression in expressions:
++            if isinstance(expression, ColPairs):
++                cols = expression.get_source_expressions()
++                cols_converters = self.get_converters(cols)
++                for j, (convs, col) in cols_converters.items():
++                    converters[i + j] = (convs, col)
++                i += len(expression)
++            elif expression:
+                 backend_converters = self.connection.ops.get_db_converters(expression)
+                 field_converters = expression.get_db_converters(self.connection)
+                 if backend_converters or field_converters:
+                     converters[i] = (backend_converters + field_converters, expression)
++                i += 1
++            else:
++                i += 1
++
+         return converters
+ 
+     def apply_converters(self, rows, converters):
+@@ -1501,6 +1541,24 @@ def apply_converters(self, rows, converters):
+                 row[pos] = value
+             yield row
+ 
++    def has_composite_fields(self, expressions):
++        # Check for composite fields before calling the relatively costly
++        # composite_fields_to_tuples.
++        return any(isinstance(expression, ColPairs) for expression in expressions)
++
++    def composite_fields_to_tuples(self, rows, expressions):
++        col_pair_slices = [
++            slice(i, i + len(expression))
++            for i, expression in enumerate(expressions)
++            if isinstance(expression, ColPairs)
++        ]
++
++        for row in map(list, rows):
++            for pos in col_pair_slices:
++                row[pos] = (tuple(row[pos]),)
++
++            yield row
++
+     def results_iter(
+         self,
+         results=None,

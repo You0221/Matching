@@ -1,0 +1,25 @@
+diff --git a/django/contrib/gis/forms/widgets.py b/django/contrib/gis/forms/widgets.py
+index 49ca48794b4a..55895ae9f362 100644
+--- a/django/contrib/gis/forms/widgets.py
++++ b/django/contrib/gis/forms/widgets.py
+@@ -29,19 +25,8 @@ class BaseGeometryWidget(Widget):
+ 
+     def __init__(self, attrs=None):
+         self.attrs = {}
+-        for key in ("geom_type", "map_srid", "map_width", "map_height", "display_raw"):
++        for key in ("geom_type", "map_srid", "display_raw"):
+             self.attrs[key] = getattr(self, key)
+-        if (
+-            (attrs and ("map_width" in attrs or "map_height" in attrs))
+-            or self.map_width != 600
+-            or self.map_height != 400
+-        ):
+-            warnings.warn(
+-                "The map_height and map_width widget attributes are deprecated. Please "
+-                "use CSS to size map widgets.",
+-                category=RemovedInDjango51Warning,
+-                stacklevel=2,
+-            )
+         if attrs:
+             self.attrs.update(attrs)
+ 

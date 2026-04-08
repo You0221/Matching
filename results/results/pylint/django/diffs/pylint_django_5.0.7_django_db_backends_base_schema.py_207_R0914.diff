@@ -1,0 +1,46 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -264,16 +267,34 @@ def table_sql(self, model):
+                 )
+                 if autoinc_sql:
+                     self.deferred_sql.extend(autoinc_sql)
+-        constraints = [
+-            constraint.constraint_sql(model, self)
+-            for constraint in model._meta.constraints
+-        ]
++        # The BaseConstraint DDL creation methods such as constraint_sql(),
++        # create_sql(), and delete_sql(), were not designed in a way that
++        # separate SQL from parameters which make their generated SQL unfit to
++        # be used in a context where parametrization is delegated to the
++        # backend.
++        constraint_sqls = []
++        if params:
++            # If parameters are present (e.g. a DEFAULT clause on backends that
++            # allow parametrization) defer constraint creation so they are not
++            # mixed with SQL meant to be parametrized.
++            for constraint in model._meta.constraints:
++                self.deferred_sql.append(constraint.create_sql(model, self))
++        else:
++            constraint_sqls.extend(
++                constraint.constraint_sql(model, self)
++                for constraint in model._meta.constraints
++            )
++
++        pk = model._meta.pk
++        if isinstance(pk, CompositePrimaryKey):
++            constraint_sqls.append(self._pk_constraint_sql(pk.columns))
++
+         sql = self.sql_create_table % {
+             "table": self.quote_name(model._meta.db_table),
+             "definition": ", ".join(
+-                str(constraint)
+-                for constraint in (*column_sqls, *constraints)
+-                if constraint
++                str(statement)
++                for statement in (*column_sqls, *constraint_sqls)
++                if statement
+             ),
+         }
+         if model._meta.db_tablespace:

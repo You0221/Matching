@@ -1,0 +1,15 @@
+diff --git a/django/utils/feedgenerator.py b/django/utils/feedgenerator.py
+index 3bd456ca687a..fae327143086 100644
+--- a/django/utils/feedgenerator.py
++++ b/django/utils/feedgenerator.py
+@@ -247,6 +317,10 @@ def write_items(self, handler):
+             self.add_item_elements(handler, item)
+             handler.endElement("item")
+ 
++    def add_stylesheets(self, handler):
++        for stylesheet in self.feed["stylesheets"] or []:
++            handler.processingInstruction("xml-stylesheet", stylesheet)
++
+     def add_root_elements(self, handler):
+         handler.addQuickElement("title", self.feed["title"])
+         handler.addQuickElement("link", self.feed["link"])

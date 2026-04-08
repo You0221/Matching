@@ -1,0 +1,84 @@
+diff --git a/lib/ansible/playbook/task.py b/lib/ansible/playbook/task.py
+index ee7c9fce0000da..0876c0fa0d6623 100644
+--- a/lib/ansible/playbook/task.py
++++ b/lib/ansible/playbook/task.py
+@@ -390,64 +498,17 @@ def copy(self, exclude_parent=False, exclude_tasks=False):
+             new_me._role = self._role
+ 
+         new_me.implicit = self.implicit
+-        new_me.resolved_action = self.resolved_action
++        new_me._resolved_action = self._resolved_action
+         new_me._uuid = self._uuid
+ 
+         return new_me
+ 
+-    def serialize(self):
+-        data = super(Task, self).serialize()
+-
+-        if not self._squashed and not self._finalized:
+-            if self._parent:
+-                data['parent'] = self._parent.serialize()
+-                data['parent_type'] = self._parent.__class__.__name__
+-
+-            if self._role:
+-                data['role'] = self._role.serialize()
+-
+-            data['implicit'] = self.implicit
+-            data['resolved_action'] = self.resolved_action
+-
+-        return data
+-
+-    def deserialize(self, data):
+-
+-        # import is here to avoid import loops
+-        from ansible.playbook.task_include import TaskInclude
+-        from ansible.playbook.handler_task_include import HandlerTaskInclude
+-
+-        parent_data = data.get('parent', None)
+-        if parent_data:
+-            parent_type = data.get('parent_type')
+-            if parent_type == 'Block':
+-                p = Block()
+-            elif parent_type == 'TaskInclude':
+-                p = TaskInclude()
+-            elif parent_type == 'HandlerTaskInclude':
+-                p = HandlerTaskInclude()
+-            p.deserialize(parent_data)
+-            self._parent = p
+-            del data['parent']
+-
+-        role_data = data.get('role')
+-        if role_data:
+-            r = Role()
+-            r.deserialize(role_data)
+-            self._role = r
+-            del data['role']
+-
+-        self.implicit = data.get('implicit', False)
+-        self.resolved_action = data.get('resolved_action')
+-
+-        super(Task, self).deserialize(data)
+-
+     def set_loader(self, loader):
+-        '''
++        """
+         Sets the loader on this object and recursively on parent, child objects.
+         This is used primarily after the Task has been serialized/deserialized, which
+         does not preserve the loader.
+-        '''
++        """
+ 
+         self._loader = loader
+ 
+@@ -455,9 +516,9 @@ def set_loader(self, loader):
+             self._parent.set_loader(loader)
+ 
+     def _get_parent_attribute(self, attr, omit=False):
+-        '''
++        """
+         Generic logic to get the attribute or parent attribute for a task value.
+-        '''
++        """
+         fattr = self.fattributes[attr]
+ 
+         extend = fattr.extend

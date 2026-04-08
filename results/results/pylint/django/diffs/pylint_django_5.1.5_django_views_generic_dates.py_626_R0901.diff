@@ -1,0 +1,16 @@
+diff --git a/django/views/generic/dates.py b/django/views/generic/dates.py
+index d2b776c1223d..12ec4104cd67 100644
+--- a/django/views/generic/dates.py
++++ b/django/views/generic/dates.py
+@@ -625,8 +651,10 @@ class TodayArchiveView(MultipleObjectTemplateResponseMixin, BaseTodayArchiveView
+ 
+ class BaseDateDetailView(YearMixin, MonthMixin, DayMixin, DateMixin, BaseDetailView):
+     """
+-    Detail view of a single object on a single date; this differs from the
++    Base detail view for a single object on a single date; this differs from the
+     standard DetailView by accepting a year/month/day in the URL.
++
++    This requires subclassing to provide a response mixin.
+     """
+ 
+     def get_object(self, queryset=None):

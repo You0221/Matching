@@ -1,0 +1,22 @@
+diff --git a/tornado/httpclient.py b/tornado/httpclient.py
+index 3011c371b8..3a45ffd041 100644
+--- a/tornado/httpclient.py
++++ b/tornado/httpclient.py
+@@ -56,7 +56,7 @@
+ from typing import Type, Any, Union, Dict, Callable, Optional, cast
+ 
+ 
+-class HTTPClient(object):
++class HTTPClient:
+     """A blocking HTTP client.
+ 
+     This interface is provided to make it easier to share code between
+@@ -89,7 +89,7 @@ class HTTPClient(object):
+     def __init__(
+         self,
+         async_client_class: "Optional[Type[AsyncHTTPClient]]" = None,
+-        **kwargs: Any
++        **kwargs: Any,
+     ) -> None:
+         # Initialize self._closed at the beginning of the constructor
+         # so that an exception raised here doesn't lead to confusing

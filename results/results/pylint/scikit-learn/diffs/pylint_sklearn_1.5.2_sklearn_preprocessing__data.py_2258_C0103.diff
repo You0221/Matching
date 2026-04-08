@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2263,7 +2310,7 @@ def fit(self, X, y=None):
+         self : object
+             Fitted transformer.
+         """
+-        self._validate_data(X, accept_sparse="csr")
++        validate_data(self, X, accept_sparse="csr")
+         return self
+ 
+     def transform(self, X, copy=None):

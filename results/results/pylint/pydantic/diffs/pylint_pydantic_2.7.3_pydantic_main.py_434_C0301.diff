@@ -1,0 +1,18 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -431,7 +574,12 @@ def model_json_schema(
+             The JSON schema for the given model class.
+         """
+         return model_json_schema(
+-            cls, by_alias=by_alias, ref_template=ref_template, schema_generator=schema_generator, mode=mode
++            cls,
++            by_alias=by_alias,
++            ref_template=ref_template,
++            union_format=union_format,
++            schema_generator=schema_generator,
++            mode=mode,
+         )
+ 
+     @classmethod

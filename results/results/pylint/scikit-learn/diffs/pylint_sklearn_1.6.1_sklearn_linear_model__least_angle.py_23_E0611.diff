@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index 25f956e5fadda..4bffe5f6e8c0d 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -20,7 +20,7 @@
+ from ..model_selection import check_cv
+ 
+ # mypy error: Module 'sklearn.utils' has no attribute 'arrayfuncs'
+-from ..utils import (  # type: ignore
++from ..utils import (
+     Bunch,
+     arrayfuncs,
+     as_float_array,

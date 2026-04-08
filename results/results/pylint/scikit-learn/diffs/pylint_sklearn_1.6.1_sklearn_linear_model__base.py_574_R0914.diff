@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index 3bb3b8b7626d8..c059e3fa84310 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -562,11 +577,13 @@ def __init__(
+         *,
+         fit_intercept=True,
+         copy_X=True,
++        tol=1e-6,
+         n_jobs=None,
+         positive=False,
+     ):
+         self.fit_intercept = fit_intercept
+         self.copy_X = copy_X
++        self.tol = tol
+         self.n_jobs = n_jobs
+         self.positive = positive
+ 

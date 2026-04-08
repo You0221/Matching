@@ -1,0 +1,23 @@
+diff --git a/pandas/core/computation/expr.py b/pandas/core/computation/expr.py
+index b5861fbaebe9c..d642c37cea129 100644
+--- a/pandas/core/computation/expr.py
++++ b/pandas/core/computation/expr.py
+@@ -370,7 +369,7 @@ class BaseExprVisitor(ast.NodeVisitor):
+         "Add",
+         "Sub",
+         "Mult",
+-        None,
++        "Div",
+         "Pow",
+         "FloorDiv",
+         "Mod",
+@@ -533,9 +532,6 @@ def visit_BinOp(self, node, **kwargs):
+         left, right = self._maybe_downcast_constants(left, right)
+         return self._maybe_evaluate_binop(op, op_class, left, right)
+ 
+-    def visit_Div(self, node, **kwargs):
+-        return lambda lhs, rhs: Div(lhs, rhs)
+-
+     def visit_UnaryOp(self, node, **kwargs):
+         op = self.visit(node.op)
+         operand = self.visit(node.operand)

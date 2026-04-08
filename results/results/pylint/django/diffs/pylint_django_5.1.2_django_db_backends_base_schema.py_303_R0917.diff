@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 38136e7213cc..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -298,7 +318,7 @@ def _iter_column_sql(
+         # Work out nullability.
+         null = field.null
+         # Add database default.
+-        if field.db_default is not NOT_PROVIDED:
++        if field.has_db_default():
+             default_sql, default_params = self.db_default_sql(field)
+             yield f"DEFAULT {default_sql}"
+             params.extend(default_params)

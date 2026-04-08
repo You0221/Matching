@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -1287,12 +1291,14 @@ def _prepare_data(self, X, y, sample_weight, solver):
+             The binarized version of `y`.
+         """
+         accept_sparse = _get_valid_accept_sparse(sparse.issparse(X), solver)
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse=accept_sparse,
+             multi_output=True,
+             y_numeric=False,
++            force_writeable=True,
+         )
+ 
+         self._label_binarizer = LabelBinarizer(pos_label=1, neg_label=-1)

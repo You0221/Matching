@@ -1,0 +1,38 @@
+diff --git a/django/core/files/storage/filesystem.py b/django/core/files/storage/filesystem.py
+index 85fc4eff9f3a..bf2b9caad4d1 100644
+--- a/django/core/files/storage/filesystem.py
++++ b/django/core/files/storage/filesystem.py
+@@ -98,12 +111,30 @@ def _save(self, name, content):
+             try:
+                 # This file has a file path that we can move.
+                 if hasattr(content, "temporary_file_path"):
+-                    file_move_safe(content.temporary_file_path(), full_path)
++                    file_move_safe(
++                        content.temporary_file_path(),
++                        full_path,
++                        allow_overwrite=self._allow_overwrite,
++                    )
+ 
+                 # This is a normal uploadedfile that we can stream.
+                 else:
+-                    # The current umask value is masked out by os.open!
+-                    fd = os.open(full_path, self.OS_OPEN_FLAGS, 0o666)
++                    # The combination of O_CREAT and O_EXCL makes os.open() raises an
++                    # OSError if the file already exists before it's opened.
++                    open_flags = (
++                        os.O_WRONLY
++                        | os.O_CREAT
++                        | os.O_EXCL
++                        | getattr(os, "O_BINARY", 0)
++                    )
++                    # RemovedInDjango60Warning: when the deprecation ends, replace with:
++                    # if self._allow_overwrite:
++                    #     open_flags = open_flags & ~os.O_EXCL
++                    if self.OS_OPEN_FLAGS != open_flags:
++                        open_flags = self.OS_OPEN_FLAGS
++                    elif self._allow_overwrite:
++                        open_flags = open_flags & ~os.O_EXCL
++                    fd = os.open(full_path, open_flags, 0o666)
+                     _file = None
+                     try:
+                         locks.lock(fd, locks.LOCK_EX)

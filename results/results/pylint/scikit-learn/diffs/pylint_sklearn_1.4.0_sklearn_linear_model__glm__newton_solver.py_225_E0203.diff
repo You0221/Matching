@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index fa9b431fd2377..20df35e6b48c2 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -230,7 +230,7 @@ def line_search(self, X, y, sample_weight):
+         is_verbose = self.verbose >= 2
+         if is_verbose:
+             print("  Backtracking Line Search")
+-            print(f"    eps=10 * finfo.eps={eps}")
++            print(f"    eps=16 * finfo.eps={eps}")
+ 
+         for i in range(21):  # until and including t = beta**20 ~ 1e-6
+             self.coef = self.coef_old + t * self.coef_newton

@@ -1,0 +1,25 @@
+diff --git a/django/forms/widgets.py b/django/forms/widgets.py
+index 2c734052d5bd..9b5ad1b2b954 100644
+--- a/django/forms/widgets.py
++++ b/django/forms/widgets.py
+@@ -113,12 +166,14 @@ def render_css(self):
+         media = sorted(self._css)
+         return chain.from_iterable(
+             [
+-                path.__html__()
+-                if hasattr(path, "__html__")
+-                else format_html(
+-                    '<link href="{}" media="{}" rel="stylesheet">',
+-                    self.absolute_path(path),
+-                    medium,
++                (
++                    path.__html__()
++                    if hasattr(path, "__html__")
++                    else format_html(
++                        '<link href="{}" media="{}" rel="stylesheet">',
++                        self.absolute_path(path),
++                        medium,
++                    )
+                 )
+                 for path in self._css[medium]
+             ]

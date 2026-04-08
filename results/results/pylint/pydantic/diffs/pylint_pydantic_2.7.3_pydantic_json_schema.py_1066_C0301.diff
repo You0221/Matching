@@ -1,0 +1,19 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..64c659e8d22 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1062,12 +1089,8 @@ def default_schema(self, schema: core_schema.WithDefaultSchema) -> JsonSchemaVal
+             # Return the inner schema, as though there was no default
+             return json_schema
+ 
+-        if '$ref' in json_schema:
+-            # Since reference schemas do not support child keys, we wrap the reference schema in a single-case allOf:
+-            return {'allOf': [json_schema], 'default': encoded_default}
+-        else:
+-            json_schema['default'] = encoded_default
+-            return json_schema
++        json_schema['default'] = encoded_default
++        return json_schema
+ 
+     def nullable_schema(self, schema: core_schema.NullableSchema) -> JsonSchemaValue:
+         """Generates a JSON schema that matches a schema that allows null values.

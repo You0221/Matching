@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/lint.yml b/.github/workflows/lint.yml
+index 52ce1c4906765..fdc993c1b3fdd 100644
+--- a/.github/workflows/lint.yml
++++ b/.github/workflows/lint.yml
+@@ -25,7 +25,7 @@ jobs:
+           ref: ${{ github.event.pull_request.head.sha }}
+ 
+       - name: Set up Python
+-        uses: actions/setup-python@v3
++        uses: actions/setup-python@v5
+         with:
+           python-version: 3.11
+ 

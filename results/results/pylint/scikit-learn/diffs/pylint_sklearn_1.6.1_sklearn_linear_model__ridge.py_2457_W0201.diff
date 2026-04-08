@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index 56bb9fbc50570..0a55291a70ace 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2454,7 +2418,7 @@ def fit(self, X, y, sample_weight=None, **params):
+                 fit_intercept=self.fit_intercept,
+                 scoring=scorer,
+                 gcv_mode=self.gcv_mode,
+-                store_cv_results=self._store_cv_results,
++                store_cv_results=self.store_cv_results,
+                 is_clf=is_classifier(self),
+                 alpha_per_target=self.alpha_per_target,
+             )

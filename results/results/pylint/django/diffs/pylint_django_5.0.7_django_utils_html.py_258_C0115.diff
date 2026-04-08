@@ -1,0 +1,21 @@
+diff --git a/django/utils/html.py b/django/utils/html.py
+index 06e8824f5632..5ac07ba0eef4 100644
+--- a/django/utils/html.py
++++ b/django/utils/html.py
+@@ -255,6 +270,16 @@ def unquote_quote(segment):
+     return urlunsplit((scheme, netloc, path, query, fragment))
+ 
+ 
++class CountsDict(dict):
++    def __init__(self, *args, word, **kwargs):
++        super().__init__(*args, *kwargs)
++        self.word = word
++
++    def __missing__(self, key):
++        self[key] = self.word.count(key)
++        return self[key]
++
++
+ class Urlizer:
+     """
+     Convert any URLs in text into clickable links.

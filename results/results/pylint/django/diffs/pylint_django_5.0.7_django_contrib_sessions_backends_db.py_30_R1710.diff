@@ -1,0 +1,36 @@
+diff --git a/django/contrib/sessions/backends/db.py b/django/contrib/sessions/backends/db.py
+index e1f6b69c5582..6d6247d6c94b 100644
+--- a/django/contrib/sessions/backends/db.py
++++ b/django/contrib/sessions/backends/db.py
+@@ -38,13 +40,31 @@ def _get_session_from_db(self):
+                 logger.warning(str(e))
+             self._session_key = None
+ 
++    async def _aget_session_from_db(self):
++        try:
++            return await self.model.objects.aget(
++                session_key=self.session_key, expire_date__gt=timezone.now()
++            )
++        except (self.model.DoesNotExist, SuspiciousOperation) as e:
++            if isinstance(e, SuspiciousOperation):
++                logger = logging.getLogger("django.security.%s" % e.__class__.__name__)
++                logger.warning(str(e))
++            self._session_key = None
++
+     def load(self):
+         s = self._get_session_from_db()
+         return self.decode(s.session_data) if s else {}
+ 
++    async def aload(self):
++        s = await self._aget_session_from_db()
++        return self.decode(s.session_data) if s else {}
++
+     def exists(self, session_key):
+         return self.model.objects.filter(session_key=session_key).exists()
+ 
++    async def aexists(self, session_key):
++        return await self.model.objects.filter(session_key=session_key).aexists()
++
+     def create(self):
+         while True:
+             self._session_key = self._get_new_session_key()

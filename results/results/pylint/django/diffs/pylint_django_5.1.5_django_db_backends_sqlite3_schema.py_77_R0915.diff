@@ -1,0 +1,36 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index c5b428fc678c..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -104,6 +104,13 @@ def is_self_referential(f):
+             f.name: f.clone() if is_self_referential(f) else f
+             for f in model._meta.local_concrete_fields
+         }
++
++        # Since CompositePrimaryKey is not a concrete field (column is None),
++        # it's not copied by default.
++        pk = model._meta.pk
++        if isinstance(pk, CompositePrimaryKey):
++            body[pk.name] = pk.clone()
++
+         # Since mapping might mix column names and default values,
+         # its values must be already quoted.
+         mapping = {
+@@ -137,7 +144,7 @@ def is_self_referential(f):
+             body[create_field.name] = create_field
+             # Choose a default and insert it into the copy map
+             if (
+-                create_field.db_default is NOT_PROVIDED
++                not create_field.has_db_default()
+                 and not (create_field.many_to_many or create_field.generated)
+                 and create_field.concrete
+             ):
+@@ -154,7 +161,7 @@ def is_self_referential(f):
+             if new_field.generated:
+                 continue
+             if old_field.null and not new_field.null:
+-                if new_field.db_default is NOT_PROVIDED:
++                if not new_field.has_db_default():
+                     default = self.prepare_default(self.effective_default(new_field))
+                 else:
+                     default, _ = self.db_default_sql(new_field)

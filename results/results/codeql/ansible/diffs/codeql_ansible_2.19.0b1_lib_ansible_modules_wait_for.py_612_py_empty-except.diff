@@ -1,0 +1,35 @@
+diff --git a/lib/ansible/modules/wait_for.py b/lib/ansible/modules/wait_for.py
+index 49bc7cde63c9c3..a076bb14b65324 100644
+--- a/lib/ansible/modules/wait_for.py
++++ b/lib/ansible/modules/wait_for.py
+@@ -609,7 +614,7 @@ def main():
+                                     break
+                             except Exception as e:
+                                 module.warn('wait_for failed on "%s", unexpected exception(%s): %s.).' % (path, to_native(e.__class__), to_native(e)))
+-                    except IOError:
++                    except OSError:
+                         pass
+             elif port:
+                 alt_connect_timeout = math.ceil(
+@@ -648,8 +653,8 @@ def main():
+                         # Shutdown the client socket
+                         try:
+                             s.shutdown(socket.SHUT_RDWR)
+-                        except socket.error as e:
+-                            if e.errno != errno.ENOTCONN:
++                        except OSError as ex:
++                            if ex.errno != errno.ENOTCONN:
+                                 raise
+                         # else, the server broke the connection on its end, assume it's not ready
+                         else:
+@@ -661,8 +666,8 @@ def main():
+                         # Connection established, success!
+                         try:
+                             s.shutdown(socket.SHUT_RDWR)
+-                        except socket.error as e:
+-                            if e.errno != errno.ENOTCONN:
++                        except OSError as ex:
++                            if ex.errno != errno.ENOTCONN:
+                                 raise
+                         # else, the server broke the connection on its end, assume it's not ready
+                         else:

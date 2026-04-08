@@ -1,0 +1,37 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index f1025a5102a..58b7899645f 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -755,7 +774,12 @@ class Foo(BaseModel):
+             from pydantic import BaseModel, StringConstraints
+ 
+             class Foo(BaseModel):
+-                bar: Annotated[str, StringConstraints(strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$')]
++                bar: Annotated[
++                    str,
++                    StringConstraints(
++                        strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$'
++                    ),
++                ]
+             ```
+ 
+     A wrapper around `str` that allows for additional constraints.
+@@ -764,8 +788,7 @@ class Foo(BaseModel):
+     from pydantic import BaseModel, constr
+ 
+     class Foo(BaseModel):
+-        bar: constr(strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$')
+-
++        bar: constr(strip_whitespace=True, to_upper=True)
+ 
+     foo = Foo(bar='  hello  ')
+     print(foo)
+@@ -784,7 +807,7 @@ class Foo(BaseModel):
+     Returns:
+         The wrapped string type.
+     """  # noqa: D212
+-    return Annotated[
++    return Annotated[  # pyright: ignore[reportReturnType]
+         str,
+         StringConstraints(
+             strip_whitespace=strip_whitespace,

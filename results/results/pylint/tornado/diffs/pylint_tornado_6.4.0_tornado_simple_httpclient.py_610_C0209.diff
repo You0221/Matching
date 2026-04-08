@@ -1,0 +1,13 @@
+diff --git a/tornado/simple_httpclient.py b/tornado/simple_httpclient.py
+index 2460863fc1..cc16376133 100644
+--- a/tornado/simple_httpclient.py
++++ b/tornado/simple_httpclient.py
+@@ -607,7 +605,7 @@ async def headers_received(
+             # Reassemble the start line.
+             self.request.header_callback("%s %s %s\r\n" % first_line)
+             for k, v in self.headers.get_all():
+-                self.request.header_callback("%s: %s\r\n" % (k, v))
++                self.request.header_callback(f"{k}: {v}\r\n")
+             self.request.header_callback("\r\n")
+ 
+     def _should_follow_redirect(self) -> bool:

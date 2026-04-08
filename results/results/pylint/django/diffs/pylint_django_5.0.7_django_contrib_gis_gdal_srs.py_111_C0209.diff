@@ -1,0 +1,16 @@
+diff --git a/django/contrib/gis/gdal/srs.py b/django/contrib/gis/gdal/srs.py
+index cd0554eb1201..0a8d95c1fcbd 100644
+--- a/django/contrib/gis/gdal/srs.py
++++ b/django/contrib/gis/gdal/srs.py
+@@ -104,10 +102,8 @@ def __init__(self, srs_input="", srs_type="user", axis_order=None):
+         else:
+             self.ptr = srs
+ 
+-        if self.axis_order == AxisOrder.TRADITIONAL and GDAL_VERSION >= (3, 0):
++        if self.axis_order == AxisOrder.TRADITIONAL:
+             capi.set_axis_strategy(self.ptr, self.axis_order)
+-        elif self.axis_order != AxisOrder.TRADITIONAL and GDAL_VERSION < (3, 0):
+-            raise ValueError("%s is not supported in GDAL < 3.0." % self.axis_order)
+         # Importing from either the user input string or an integer SRID.
+         if srs_type == "user":
+             self.import_user_input(srs_input)

@@ -1,0 +1,38 @@
+diff --git a/lib/ansible/playbook/base.py b/lib/ansible/playbook/base.py
+index f93fb5ef5f9aed..890401654d50c7 100644
+--- a/lib/ansible/playbook/base.py
++++ b/lib/ansible/playbook/base.py
+@@ -9,24 +9,27 @@
+ import operator
+ import os
+ 
++import typing as t
++
+ from copy import copy as shallowcopy
+ from functools import cache
+ 
+-from jinja2.exceptions import UndefinedError
+-
+ from ansible import constants as C
+ from ansible import context
+-from ansible.errors import AnsibleError, AnsibleParserError, AnsibleUndefinedVariable, AnsibleAssertionError
++from ansible.errors import AnsibleError, AnsibleParserError, AnsibleAssertionError, AnsibleValueOmittedError, AnsibleFieldAttributeError
++from ansible.module_utils.datatag import native_type_name
++from ansible._internal._datatag._tags import Origin
+ from ansible.module_utils.six import string_types
+ from ansible.module_utils.parsing.convert_bool import boolean
+-from ansible.module_utils.common.text.converters import to_text, to_native
++from ansible.module_utils.common.sentinel import Sentinel
++from ansible.module_utils.common.text.converters import to_text
+ from ansible.parsing.dataloader import DataLoader
+ from ansible.playbook.attribute import Attribute, FieldAttribute, ConnectionFieldAttribute, NonInheritableFieldAttribute
+ from ansible.plugins.loader import module_loader, action_loader
+ from ansible.utils.collection_loader._collection_finder import _get_collection_metadata, AnsibleCollectionRef
+ from ansible.utils.display import Display
+-from ansible.utils.sentinel import Sentinel
+-from ansible.utils.vars import combine_vars, isidentifier, get_unique_id
++from ansible.utils.vars import combine_vars, get_unique_id, validate_variable_name
++from ansible._internal._templating._engine import TemplateEngine
+ 
+ display = Display()
+ 

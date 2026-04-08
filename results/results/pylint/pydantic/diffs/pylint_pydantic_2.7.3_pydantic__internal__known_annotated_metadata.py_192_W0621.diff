@@ -1,0 +1,27 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index 83d85b3b12a..efdb8924c7a 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -185,11 +201,21 @@ def apply_known_metadata(annotation: Any, schema: CoreSchema) -> CoreSchema | No
+     """
+     import annotated_types as at
+ 
+-    from . import _validators
++    from ._validators import forbid_inf_nan_check, get_constraint_validator
+ 
+     schema = schema.copy()
+     schema_update, other_metadata = collect_known_metadata([annotation])
+     schema_type = schema['type']
++
++    chain_schema_constraints: set[str] = {
++        'pattern',
++        'strip_whitespace',
++        'to_lower',
++        'to_upper',
++        'coerce_numbers_to_str',
++    }
++    chain_schema_steps: list[CoreSchema] = []
++
+     for constraint, value in schema_update.items():
+         if constraint not in CONSTRAINTS_TO_ALLOWED_SCHEMAS:
+             raise ValueError(f'Unknown constraint {constraint}')

@@ -1,0 +1,25 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 91257dd3da56..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -177,7 +260,19 @@ def logout(request):
+ 
+ async def alogout(request):
+     """See logout()."""
+-    return await sync_to_async(logout)(request)
++    # Dispatch the signal before the user is logged out so the receivers have a
++    # chance to find out *who* logged out.
++    user = getattr(request, "auser", None)
++    if user is not None:
++        user = await user()
++    if not getattr(user, "is_authenticated", True):
++        user = None
++    await user_logged_out.asend(sender=user.__class__, request=request, user=user)
++    await request.session.aflush()
++    if hasattr(request, "user"):
++        from django.contrib.auth.models import AnonymousUser
++
++        request.user = AnonymousUser()
+ 
+ 
+ def get_user_model():

@@ -1,0 +1,24 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -2070,18 +2073,8 @@ def __init__(
+             average=average,
+         )
+ 
+-    def _more_tags(self):
+-        return {
+-            "_xfail_checks": {
+-                "check_sample_weights_invariance": (
+-                    "zero sample_weight is not equivalent to removing samples"
+-                ),
+-            },
+-            "preserves_dtype": [np.float64, np.float32],
+-        }
+-
+ 
+-class SGDOneClassSVM(BaseSGD, OutlierMixin):
++class SGDOneClassSVM(OutlierMixin, BaseSGD):
+     """Solves linear One-Class SVM using Stochastic Gradient Descent.
+ 
+     This implementation is meant to be used with a kernel approximation

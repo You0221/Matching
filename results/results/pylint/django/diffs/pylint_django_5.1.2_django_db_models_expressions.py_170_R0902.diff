@@ -1,0 +1,94 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ee22420d964..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -167,13 +167,16 @@ def __invert__(self):
+         return NegatedExpression(self)
+ 
+ 
++class OutputFieldIsNoneError(FieldError):
++    pass
++
++
+ class BaseExpression:
+     """Base class for all query expressions."""
+ 
+     empty_result_set_value = NotImplemented
+     # aggregate specific fields
+     is_summary = False
+-    _output_field_resolved_to_none = False
+     # Can the expression be used in a WHERE clause?
+     filterable = True
+     # Can the expression be used as a source expression in Window?
+@@ -182,6 +185,10 @@ class BaseExpression:
+     allowed_default = False
+     # Can the expression be used during a constraint validation?
+     constraint_validation_compatible = True
++    # Does the expression possibly return more than one row?
++    set_returning = False
++    # Does the expression allow composite expressions?
++    allows_composite_expressions = False
+ 
+     def __init__(self, output_field=None):
+         if output_field is not None:
+@@ -288,16 +295,22 @@ def resolve_expression(
+         """
+         c = self.copy()
+         c.is_summary = summarize
+-        c.set_source_expressions(
+-            [
+-                (
+-                    expr.resolve_expression(query, allow_joins, reuse, summarize)
+-                    if expr
+-                    else None
+-                )
+-                for expr in c.get_source_expressions()
+-            ]
+-        )
++        source_expressions = [
++            (
++                expr.resolve_expression(query, allow_joins, reuse, summarize)
++                if expr is not None
++                else None
++            )
++            for expr in c.get_source_expressions()
++        ]
++        if not self.allows_composite_expressions and any(
++            isinstance(expr, ColPairs) for expr in source_expressions
++        ):
++            raise ValueError(
++                f"{self.__class__.__name__} expression does not support "
++                "composite primary keys."
++            )
++        c.set_source_expressions(source_expressions)
+         return c
+ 
+     @property
+@@ -313,11 +326,12 @@ def output_field(self):
+         """Return the output type of this expressions."""
+         output_field = self._resolve_output_field()
+         if output_field is None:
+-            self._output_field_resolved_to_none = True
+-            raise FieldError("Cannot resolve expression type, unknown output_field")
++            raise OutputFieldIsNoneError(
++                "Cannot resolve expression type, unknown output_field"
++            )
+         return output_field
+ 
+-    @cached_property
++    @property
+     def _output_field_or_none(self):
+         """
+         Return the output field of this expression, or None if
+@@ -325,9 +339,8 @@ def _output_field_or_none(self):
+         """
+         try:
+             return self.output_field
+-        except FieldError:
+-            if not self._output_field_resolved_to_none:
+-                raise
++        except OutputFieldIsNoneError:
++            return
+ 
+     def _resolve_output_field(self):
+         """

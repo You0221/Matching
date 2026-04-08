@@ -1,0 +1,32 @@
+diff --git a/lib/ansible/vars/reserved.py b/lib/ansible/vars/reserved.py
+index aece04d652d2eb..e97a6d102fec29 100644
+--- a/lib/ansible/vars/reserved.py
++++ b/lib/ansible/vars/reserved.py
+@@ -17,21 +17,23 @@
+ 
+ from __future__ import annotations
+ 
++import collections.abc as c
++
+ from ansible.playbook import Play
+ from ansible.playbook.block import Block
+ from ansible.playbook.role import Role
+ from ansible.playbook.task import Task
++from ansible._internal._templating._engine import TemplateEngine
+ from ansible.utils.display import Display
+ 
+ display = Display()
+ 
+ 
+-def get_reserved_names(include_private=True):
+-    ''' this function returns the list of reserved names associated with play objects'''
++def get_reserved_names(include_private: bool = True) -> set[str]:
++    """ this function returns the list of reserved names associated with play objects"""
+ 
+-    public = set()
++    public = set(TemplateEngine().environment.globals.keys())
+     private = set()
+-    result = set()
+ 
+     # FIXME: find a way to 'not hardcode', possibly need role deps/includes
+     class_list = [Play, Role, Block, Task]

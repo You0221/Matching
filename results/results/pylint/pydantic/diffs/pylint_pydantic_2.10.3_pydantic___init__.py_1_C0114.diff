@@ -1,0 +1,22 @@
+diff --git a/pydantic/__init__.py b/pydantic/__init__.py
+index 3c3c130f0fb..01212849e73 100644
+--- a/pydantic/__init__.py
++++ b/pydantic/__init__.py
+@@ -1,11 +1,14 @@
+-import typing
+ from importlib import import_module
++from typing import TYPE_CHECKING
+ from warnings import warn
+ 
+ from ._migration import getattr_migration
+-from .version import VERSION
++from .version import VERSION, _ensure_pydantic_core_version
+ 
+-if typing.TYPE_CHECKING:
++_ensure_pydantic_core_version()
++del _ensure_pydantic_core_version
++
++if TYPE_CHECKING:
+     # import of virtually everything is supported via `__getattr__` below,
+     # but we need them here for type checking and IDE support
+     import pydantic_core

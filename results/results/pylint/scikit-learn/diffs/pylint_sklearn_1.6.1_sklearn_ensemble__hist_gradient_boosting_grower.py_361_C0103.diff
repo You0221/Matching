@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/grower.py b/sklearn/ensemble/_hist_gradient_boosting/grower.py
+index a71e564056f8f..c3dbbe7d82948 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/grower.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/grower.py
+@@ -353,7 +352,7 @@ def __init__(
+         self.total_compute_hist_time = 0.0  # time spent computing histograms
+         self.total_apply_split_time = 0.0  # time spent splitting nodes
+         self.n_categorical_splits = 0
+-        self._initialize_root(gradients, hessians)
++        self._initialize_root()
+         self.n_nodes = 1
+ 
+     def _validate_parameters(

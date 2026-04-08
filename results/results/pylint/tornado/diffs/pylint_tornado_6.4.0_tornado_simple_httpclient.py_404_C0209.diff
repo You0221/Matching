@@ -1,0 +1,13 @@
+diff --git a/tornado/simple_httpclient.py b/tornado/simple_httpclient.py
+index 2460863fc1..cc16376133 100644
+--- a/tornado/simple_httpclient.py
++++ b/tornado/simple_httpclient.py
+@@ -401,7 +399,7 @@ async def run(self) -> None:
+             if self.request.user_agent:
+                 self.request.headers["User-Agent"] = self.request.user_agent
+             elif self.request.headers.get("User-Agent") is None:
+-                self.request.headers["User-Agent"] = "Tornado/{}".format(version)
++                self.request.headers["User-Agent"] = f"Tornado/{version}"
+             if not self.request.allow_nonstandard_methods:
+                 # Some HTTP methods nearly always have bodies while others
+                 # almost never do. Fail in this case unless the user has

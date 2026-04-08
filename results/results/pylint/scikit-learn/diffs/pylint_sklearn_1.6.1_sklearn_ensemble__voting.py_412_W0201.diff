@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index bcf2d749725ff..369d3f0f5553e 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -413,9 +402,6 @@ def fit(self, X, y, *, sample_weight=None, **fit_params):
+         self.classes_ = self.le_.classes_
+         transformed_y = self.le_.transform(y)
+ 
+-        if sample_weight is not None:
+-            fit_params["sample_weight"] = sample_weight
+-
+         return super().fit(X, transformed_y, **fit_params)
+ 
+     def predict(self, X):

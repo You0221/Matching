@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/oracle/features.py b/django/db/backends/oracle/features.py
+index aa657b3ba459..7ebe69c6ddf2 100644
+--- a/django/db/backends/oracle/features.py
++++ b/django/db/backends/oracle/features.py
+@@ -204,10 +225,6 @@ def supports_comparing_boolean_expr(self):
+     def supports_aggregation_over_interval_types(self):
+         return self.connection.oracle_version >= (23,)
+ 
+-    @cached_property
+-    def supports_bulk_insert_with_multiple_rows(self):
+-        return self.connection.oracle_version >= (23,)
+-
+     @cached_property
+     def bare_select_suffix(self):
+         return "" if self.connection.oracle_version >= (23,) else " FROM DUAL"

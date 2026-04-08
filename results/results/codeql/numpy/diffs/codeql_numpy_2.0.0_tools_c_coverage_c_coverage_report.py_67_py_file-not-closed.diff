@@ -1,0 +1,45 @@
+diff --git a/tools/c_coverage/c_coverage_report.py b/tools/c_coverage/c_coverage_report.py
+index bd3eeaee9776..2e5a4c270376 100755
+--- a/tools/c_coverage/c_coverage_report.py
++++ b/tools/c_coverage/c_coverage_report.py
+@@ -54,25 +54,23 @@ def mark_line(self, lineno, as_func=None):
+             line.add(as_func)
+ 
+     def write_text(self, fd):
+-        source = open(self.path, "r")
+-        for i, line in enumerate(source):
+-            if i + 1 in self.lines:
+-                fd.write("> ")
+-            else:
+-                fd.write("! ")
+-            fd.write(line)
+-        source.close()
++        with open(self.path, "r") as source:
++            for i, line in enumerate(source):
++                if i + 1 in self.lines:
++                    fd.write("> ")
++                else:
++                    fd.write("! ")
++                fd.write(line)
+ 
+     def write_html(self, fd):
+-        source = open(self.path, 'r')
+-        code = source.read()
+-        lexer = CLexer()
+-        formatter = FunctionHtmlFormatter(
+-            self.lines,
+-            full=True,
+-            linenos='inline')
+-        fd.write(highlight(code, lexer, formatter))
+-        source.close()
++        with open(self.path, 'r') as source:
++            code = source.read()
++            lexer = CLexer()
++            formatter = FunctionHtmlFormatter(
++                self.lines,
++                full=True,
++                linenos='inline')
++            fd.write(highlight(code, lexer, formatter))
+ 
+ 
+ class SourceFiles:

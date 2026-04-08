@@ -1,0 +1,11 @@
+diff --git a/pydantic/_internal/_validate_call.py b/pydantic/_internal/_validate_call.py
+index 664c0630133..f04da826d93 100644
+--- a/pydantic/_internal/_validate_call.py
++++ b/pydantic/_internal/_validate_call.py
+@@ -81,4 +111,5 @@ def __call__(self, *args: Any, **kwargs: Any) -> Any:
+         res = self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(args, kwargs))
+         if self.__return_pydantic_validator__:
+             return self.__return_pydantic_validator__(res)
+-        return res
++        else:
++            return res

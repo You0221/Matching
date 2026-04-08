@@ -1,0 +1,202 @@
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 25f1c2ec6ce4f..9c8dc2054106a 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -202,18 +359,22 @@ def __from_arrow__(
+                 # pyarrow.ChunkedArray
+                 chunks = array.chunks
+ 
++            results = []
++            for arr in chunks:
++                # convert chunk by chunk to numpy and concatenate then, to avoid
++                # overflow for large string data when concatenating the pyarrow arrays
++                arr = arr.to_numpy(zero_copy_only=False)
++                arr = ensure_string_array(arr, na_value=self.na_value)
++                results.append(arr)
++
+         if len(chunks) == 0:
+             arr = np.array([], dtype=object)
+         else:
+-            arr = pyarrow.concat_arrays(chunks).to_numpy(zero_copy_only=False)
+-            arr = lib.convert_nans_to_NA(arr)
++            arr = np.concatenate(results)
++
+         # Bypass validation inside StringArray constructor, see GH#47781
+         new_string_array = StringArray.__new__(StringArray)
+-        NDArrayBacked.__init__(
+-            new_string_array,
+-            arr,
+-            StringDtype(storage="python"),
+-        )
++        NDArrayBacked.__init__(new_string_array, arr, self)
+         return new_string_array
+ 
+ 
+@@ -222,12 +383,167 @@ class BaseStringArray(ExtensionArray):
+     Mixin class for StringArray, ArrowStringArray.
+     """
+ 
++    dtype: StringDtype
++
+     @doc(ExtensionArray.tolist)
+     def tolist(self):
+         if self.ndim > 1:
+             return [x.tolist() for x in self]
+         return list(self.to_numpy())
+ 
++    @classmethod
++    def _from_scalars(cls, scalars, dtype: DtypeObj) -> Self:
++        if lib.infer_dtype(scalars, skipna=True) not in ["string", "empty"]:
++            # TODO: require any NAs be valid-for-string
++            raise ValueError
++        return cls._from_sequence(scalars, dtype=dtype)
++
++    def _formatter(self, boxed: bool = False):
++        formatter = partial(
++            printing.pprint_thing,
++            escape_chars=("\t", "\r", "\n"),
++            quote_strings=not boxed,
++        )
++        return formatter
++
++    def _str_map(
++        self,
++        f,
++        na_value=lib.no_default,
++        dtype: Dtype | None = None,
++        convert: bool = True,
++    ):
++        if self.dtype.na_value is np.nan:
++            return self._str_map_nan_semantics(
++                f, na_value=na_value, dtype=dtype, convert=convert
++            )
++
++        from pandas.arrays import BooleanArray
++
++        if dtype is None:
++            dtype = self.dtype
++        if na_value is lib.no_default:
++            na_value = self.dtype.na_value
++
++        mask = isna(self)
++        arr = np.asarray(self)
++
++        if is_integer_dtype(dtype) or is_bool_dtype(dtype):
++            constructor: type[IntegerArray | BooleanArray]
++            if is_integer_dtype(dtype):
++                constructor = IntegerArray
++            else:
++                constructor = BooleanArray
++
++            na_value_is_na = isna(na_value)
++            if na_value_is_na:
++                na_value = 1
++            elif dtype == np.dtype("bool"):
++                # GH#55736
++                na_value = bool(na_value)
++            result = lib.map_infer_mask(
++                arr,
++                f,
++                mask.view("uint8"),
++                convert=False,
++                na_value=na_value,
++                # error: Argument 1 to "dtype" has incompatible type
++                # "Union[ExtensionDtype, str, dtype[Any], Type[object]]"; expected
++                # "Type[object]"
++                dtype=np.dtype(cast(type, dtype)),
++            )
++
++            if not na_value_is_na:
++                mask[:] = False
++
++            return constructor(result, mask)
++
++        else:
++            return self._str_map_str_or_object(dtype, na_value, arr, f, mask)
++
++    def _str_map_str_or_object(
++        self,
++        dtype,
++        na_value,
++        arr: np.ndarray,
++        f,
++        mask: npt.NDArray[np.bool_],
++    ):
++        # _str_map helper for case where dtype is either string dtype or object
++        if is_string_dtype(dtype) and not is_object_dtype(dtype):
++            # i.e. StringDtype
++            result = lib.map_infer_mask(
++                arr, f, mask.view("uint8"), convert=False, na_value=na_value
++            )
++            if self.dtype.storage == "pyarrow":
++                import pyarrow as pa
++
++                result = pa.array(
++                    result, mask=mask, type=pa.large_string(), from_pandas=True
++                )
++            # error: Too many arguments for "BaseStringArray"
++            return type(self)(result)  # type: ignore[call-arg]
++
++        else:
++            # This is when the result type is object. We reach this when
++            # -> We know the result type is truly object (e.g. .encode returns bytes
++            #    or .findall returns a list).
++            # -> We don't know the result type. E.g. `.get` can return anything.
++            return lib.map_infer_mask(arr, f, mask.view("uint8"))
++
++    def _str_map_nan_semantics(
++        self,
++        f,
++        na_value=lib.no_default,
++        dtype: Dtype | None = None,
++        convert: bool = True,
++    ):
++        if dtype is None:
++            dtype = self.dtype
++        if na_value is lib.no_default:
++            if is_bool_dtype(dtype):
++                # NaN propagates as False
++                na_value = False
++            else:
++                na_value = self.dtype.na_value
++
++        mask = isna(self)
++        arr = np.asarray(self)
++
++        if is_integer_dtype(dtype) or is_bool_dtype(dtype):
++            na_value_is_na = isna(na_value)
++            if na_value_is_na:
++                if is_integer_dtype(dtype):
++                    na_value = 0
++                else:
++                    # NaN propagates as False
++                    na_value = False
++
++            result = lib.map_infer_mask(
++                arr,
++                f,
++                mask.view("uint8"),
++                convert=False,
++                na_value=na_value,
++                dtype=np.dtype(cast(type, dtype)),
++            )
++            if na_value_is_na and is_integer_dtype(dtype) and mask.any():
++                # TODO: we could alternatively do this check before map_infer_mask
++                #  and adjust the dtype/na_value we pass there. Which is more
++                #  performant?
++                result = result.astype("float64")
++                result[mask] = np.nan
++
++            return result
++
++        else:
++            return self._str_map_str_or_object(dtype, na_value, arr, f, mask)
++
++    def view(self, dtype: Dtype | None = None) -> ArrayLike:
++        if dtype is not None:
++            raise TypeError("Cannot change data-type for string array.")
++        return super().view(dtype=dtype)
++
+ 
+ # error: Definition of "_concat_same_type" in base class "NDArrayBacked" is
+ # incompatible with definition in base class "ExtensionArray"

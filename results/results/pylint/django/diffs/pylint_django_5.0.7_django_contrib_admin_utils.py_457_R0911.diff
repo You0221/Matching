@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/utils.py b/django/contrib/admin/utils.py
+index d6c54dd440d1..cc8ca5604dc8 100644
+--- a/django/contrib/admin/utils.py
++++ b/django/contrib/admin/utils.py
+@@ -459,7 +470,7 @@ def display_for_value(value, empty_value_display, boolean=False):
+ 
+     if boolean:
+         return _boolean_icon(value)
+-    elif value is None:
++    elif value in EMPTY_VALUES:
+         return empty_value_display
+     elif isinstance(value, bool):
+         return str(value)

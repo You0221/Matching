@@ -1,0 +1,42 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ee22420d964..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -1585,20 +1659,6 @@ def get_source_expressions(self):
+     def set_source_expressions(self, exprs):
+         *self.cases, self.default = exprs
+ 
+-    def resolve_expression(
+-        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+-    ):
+-        c = self.copy()
+-        c.is_summary = summarize
+-        for pos, case in enumerate(c.cases):
+-            c.cases[pos] = case.resolve_expression(
+-                query, allow_joins, reuse, summarize, for_save
+-            )
+-        c.default = c.default.resolve_expression(
+-            query, allow_joins, reuse, summarize, for_save
+-        )
+-        return c
+-
+     def copy(self):
+         c = super().copy()
+         c.cases = c.cases[:]
+@@ -1613,7 +1673,6 @@ def as_sql(
+         template_params = {**self.extra, **extra_context}
+         case_parts = []
+         sql_params = []
+-        default_sql, default_params = compiler.compile(self.default)
+         for case in self.cases:
+             try:
+                 case_sql, case_params = compiler.compile(case)
+@@ -1624,6 +1683,8 @@ def as_sql(
+                 break
+             case_parts.append(case_sql)
+             sql_params.extend(case_params)
++        else:
++            default_sql, default_params = compiler.compile(self.default)
+         if not case_parts:
+             return default_sql, default_params
+         case_joiner = case_joiner or self.case_joiner

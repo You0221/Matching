@@ -1,0 +1,72 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 0929b0935d9..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -64,25 +64,60 @@
+     from ._internal._utils import AbstractSetIntStr, MappingIntStrAny
+     from .deprecated.parse import Protocol as DeprecatedParseProtocol
+     from .fields import ComputedFieldInfo, FieldInfo, ModelPrivateAttr
+-else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
++
+ 
+ __all__ = 'BaseModel', 'create_model'
+ 
+ # Keep these type aliases available at runtime:
+-TupleGenerator: TypeAlias = Generator[Tuple[str, Any], None, None]
++TupleGenerator: TypeAlias = Generator[tuple[str, Any], None, None]
+ # NOTE: In reality, `bool` should be replaced by `Literal[True]` but mypy fails to correctly apply bidirectional
+ # type inference (e.g. when using `{'a': {'b': True}}`):
+ # NOTE: Keep this type alias in sync with the stub definition in `pydantic-core`:
+-IncEx: TypeAlias = Union[Set[int], Set[str], Mapping[int, Union['IncEx', bool]], Mapping[str, Union['IncEx', bool]]]
++IncEx: TypeAlias = Union[set[int], set[str], Mapping[int, Union['IncEx', bool]], Mapping[str, Union['IncEx', bool]]]
+ 
+ _object_setattr = _model_construction.object_setattr
+ 
+ 
++def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -> None:
++    if model_cls.model_config.get('frozen'):
++        error_type = 'frozen_instance'
++    elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
++        error_type = 'frozen_field'
++    else:
++        return
++
++    raise ValidationError.from_exception_data(
++        model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
++    )
++
++
++def _model_field_setattr_handler(model: BaseModel, name: str, val: Any) -> None:
++    model.__dict__[name] = val
++    model.__pydantic_fields_set__.add(name)
++
++
++def _private_setattr_handler(model: BaseModel, name: str, val: Any) -> None:
++    if getattr(model, '__pydantic_private__', None) is None:
++        # While the attribute should be present at this point, this may not be the case if
++        # users do unusual stuff with `model_post_init()` (which is where the  `__pydantic_private__`
++        # is initialized, by wrapping the user-defined `model_post_init()`), e.g. if they mock
++        # the `model_post_init()` call. Ideally we should find a better way to init private attrs.
++        object.__setattr__(model, '__pydantic_private__', {})
++    model.__pydantic_private__[name] = val  # pyright: ignore[reportOptionalSubscript]
++
++
++_SIMPLE_SETATTR_HANDLERS: Mapping[str, Callable[[BaseModel, str, Any], None]] = {
++    'model_field': _model_field_setattr_handler,
++    'validate_assignment': lambda model, name, val: model.__pydantic_validator__.validate_assignment(model, name, val),  # pyright: ignore[reportAssignmentType]
++    'private': _private_setattr_handler,
++    'cached_property': lambda model, name, val: model.__dict__.__setitem__(name, val),
++    'extra_known': lambda model, name, val: _object_setattr(model, name, val),
++}
++
++
+ class BaseModel(metaclass=_model_construction.ModelMetaclass):
+-    """Usage docs: https://docs.pydantic.dev/2.10/concepts/models/
++    """!!! abstract "Usage Documentation"
++        [Models](../concepts/models.md)
+ 
+     A base class for creating Pydantic models.
+ 

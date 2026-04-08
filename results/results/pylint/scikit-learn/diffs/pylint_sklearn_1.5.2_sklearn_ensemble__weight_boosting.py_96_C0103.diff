@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_weight_boosting.py b/sklearn/ensemble/_weight_boosting.py
+index 0461a397983be..8503c4fdb8ae7 100644
+--- a/sklearn/ensemble/_weight_boosting.py
++++ b/sklearn/ensemble/_weight_boosting.py
+@@ -95,7 +91,8 @@ def __init__(
+ 
+     def _check_X(self, X):
+         # Only called to validate X in non-fit methods, therefore reset=False
+-        return self._validate_data(
++        return validate_data(
++            self,
+             X,
+             accept_sparse=["csr", "csc"],
+             ensure_2d=True,

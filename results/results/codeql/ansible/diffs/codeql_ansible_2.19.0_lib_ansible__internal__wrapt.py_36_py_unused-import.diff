@@ -1,0 +1,19 @@
+diff --git a/lib/ansible/_internal/_wrapt.py b/lib/ansible/_internal/_wrapt.py
+index d493baaa71704a..b2fcefef016aad 100644
+--- a/lib/ansible/_internal/_wrapt.py
++++ b/lib/ansible/_internal/_wrapt.py
+@@ -31,13 +31,10 @@
+ from __future__ import annotations
+ 
+ # The following makes it easier for us to script updates of the bundled code
+-_BUNDLED_METADATA = {"pypi_name": "wrapt", "version": "1.15.0"}
++_BUNDLED_METADATA = {"pypi_name": "wrapt", "version": "1.17.2"}
+ 
+-import os
+ import sys
+-import functools
+ import operator
+-import weakref
+ import inspect
+ 
+ PY2 = sys.version_info[0] == 2

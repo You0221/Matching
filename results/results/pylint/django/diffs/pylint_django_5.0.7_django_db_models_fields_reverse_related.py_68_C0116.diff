@@ -1,0 +1,14 @@
+diff --git a/django/db/models/fields/reverse_related.py b/django/db/models/fields/reverse_related.py
+index c74e92ba89f1..a39bfd07daaa 100644
+--- a/django/db/models/fields/reverse_related.py
++++ b/django/db/models/fields/reverse_related.py
+@@ -65,7 +66,8 @@ def __init__(
+     # AttributeError
+     @cached_property
+     def hidden(self):
+-        return self.is_hidden()
++        """Should the related object be hidden?"""
++        return bool(self.related_name) and self.related_name[-1] == "+"
+ 
+     @cached_property
+     def name(self):

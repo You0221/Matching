@@ -1,0 +1,30 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -31,13 +31,21 @@
+ from ..utils._estimator_html_repr import _VisualBlock
+ from ..utils._param_validation import StrOptions
+ from ..utils.metadata_routing import (
+-    _raise_for_unsupported_routing,
+-    _RoutingNotSupportedMixin,
++    MetadataRouter,
++    MethodMapping,
++    _raise_for_params,
++    _routing_enabled,
++    process_routing,
+ )
+ from ..utils.metaestimators import available_if
+-from ..utils.multiclass import check_classification_targets
++from ..utils.multiclass import type_of_target
+ from ..utils.parallel import Parallel, delayed
+-from ..utils.validation import _check_feature_names_in, check_is_fitted, column_or_1d
++from ..utils.validation import (
++    _check_feature_names_in,
++    _deprecate_positional_args,
++    check_is_fitted,
++    column_or_1d,
++)
+ from ._base import _BaseHeterogeneousEnsemble, _fit_single_estimator
+ 
+ 

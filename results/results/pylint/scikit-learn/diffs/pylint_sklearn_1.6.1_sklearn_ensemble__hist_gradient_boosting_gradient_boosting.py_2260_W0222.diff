@@ -1,0 +1,24 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index b136cd373a03f..064391abab24d 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -2264,13 +2340,16 @@ def staged_decision_function(self, X):
+             yield staged_decision
+ 
+     def _encode_y(self, y):
++        """Create self._label_encoder and encode y correspondingly."""
+         # encode classes into 0 ... n_classes - 1 and sets attributes classes_
+         # and n_trees_per_iteration_
+         check_classification_targets(y)
+ 
+-        label_encoder = LabelEncoder()
+-        encoded_y = label_encoder.fit_transform(y)
+-        self.classes_ = label_encoder.classes_
++        # We need to store the label encoder in case y_val needs to be label encoded,
++        # too.
++        self._label_encoder = LabelEncoder()
++        encoded_y = self._label_encoder.fit_transform(y)
++        self.classes_ = self._label_encoder.classes_
+         n_classes = self.classes_.shape[0]
+         # only 1 tree for binary classification. For multiclass classification,
+         # we build 1 tree per class.

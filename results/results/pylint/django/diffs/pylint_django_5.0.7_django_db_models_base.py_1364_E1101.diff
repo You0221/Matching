@@ -1,0 +1,13 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1358,7 +1493,7 @@ def _perform_unique_checks(self, unique_checks):
+                 ):
+                     # no value, skip the lookup
+                     continue
+-                if f.primary_key and not self._state.adding:
++                if f in model_class._meta.pk_fields and not self._state.adding:
+                     # no need to check for unique primary key when editing
+                     continue
+                 lookup_kwargs[str(field_name)] = lookup_value

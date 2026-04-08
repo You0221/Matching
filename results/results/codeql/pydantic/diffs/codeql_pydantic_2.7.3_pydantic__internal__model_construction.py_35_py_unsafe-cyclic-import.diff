@@ -1,0 +1,41 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -23,22 +24,31 @@
+ from ._fields import collect_model_fields, is_valid_field_name, is_valid_privateattr_name
+ from ._generate_schema import GenerateSchema
+ from ._generics import PydanticGenericMetadata, get_model_typevars_map
+-from ._mock_val_ser import MockValSer, set_model_mocks
++from ._import_utils import import_cached_base_model, import_cached_field_info
++from ._mock_val_ser import set_model_mocks
++from ._namespace_utils import NsResolver
+ from ._schema_generation_shared import CallbackGetCoreSchemaHandler
+ from ._signature import generate_pydantic_signature
+-from ._typing_extra import get_cls_types_namespace, is_annotated, is_classvar, parent_frame_namespace
+-from ._utils import ClassAttribute, SafeGetItemProxy
+-from ._validate_call import ValidateCallWrapper
++from ._typing_extra import (
++    _make_forward_ref,
++    eval_type_backport,
++    is_annotated,
++    is_classvar_annotation,
++    parent_frame_namespace,
++)
++from ._utils import LazyClassAttribute, SafeGetItemProxy
+ 
+ if typing.TYPE_CHECKING:
++    from ..fields import ComputedFieldInfo, FieldInfo, ModelPrivateAttr
+     from ..fields import Field as PydanticModelField
+-    from ..fields import FieldInfo, ModelPrivateAttr
++    from ..fields import PrivateAttr as PydanticModelPrivateAttr
+     from ..main import BaseModel
+ else:
+     # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+     # and https://youtrack.jetbrains.com/issue/PY-51428
+     DeprecationWarning = PydanticDeprecatedSince20
+     PydanticModelField = object()
++    PydanticModelPrivateAttr = object()
+ 
+ object_setattr = object.__setattr__
+ 

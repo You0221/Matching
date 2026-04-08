@@ -1,0 +1,27 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index 7f278cb06f2ba..20013e1f6d000 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -268,22 +270,6 @@ def _parallel_predict_regression(estimators, estimators_features, X):
+     )
+ 
+ 
+-def _estimator_has(attr):
+-    """Check if we can delegate a method to the underlying estimator.
+-
+-    First, we check the first fitted estimator if available, otherwise we
+-    check the estimator attribute.
+-    """
+-
+-    def check(self):
+-        if hasattr(self, "estimators_"):
+-            return hasattr(self.estimators_[0], attr)
+-        else:  # self.estimator is not None
+-            return hasattr(self.estimator, attr)
+-
+-    return check
+-
+-
+ class BaseBagging(BaseEnsemble, metaclass=ABCMeta):
+     """Base class for Bagging meta-estimator.
+ 

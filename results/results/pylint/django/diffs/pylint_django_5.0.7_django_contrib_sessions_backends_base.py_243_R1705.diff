@@ -1,0 +1,54 @@
+diff --git a/django/contrib/sessions/backends/base.py b/django/contrib/sessions/backends/base.py
+index 050e7387bef2..69f756a22876 100644
+--- a/django/contrib/sessions/backends/base.py
++++ b/django/contrib/sessions/backends/base.py
+@@ -224,6 +292,25 @@ def get_expiry_age(self, **kwargs):
+         delta = expiry - modification
+         return delta.days * 86400 + delta.seconds
+ 
++    async def aget_expiry_age(self, **kwargs):
++        try:
++            modification = kwargs["modification"]
++        except KeyError:
++            modification = timezone.now()
++        try:
++            expiry = kwargs["expiry"]
++        except KeyError:
++            expiry = await self.aget("_session_expiry")
++
++        if not expiry:  # Checks both None and 0 cases
++            return self.get_session_cookie_age()
++        if not isinstance(expiry, (datetime, str)):
++            return expiry
++        if isinstance(expiry, str):
++            expiry = datetime.fromisoformat(expiry)
++        delta = expiry - modification
++        return delta.days * 86400 + delta.seconds
++
+     def get_expiry_date(self, **kwargs):
+         """Get session the expiry date (as a datetime object).
+ 
+@@ -247,6 +334,23 @@ def get_expiry_date(self, **kwargs):
+         expiry = expiry or self.get_session_cookie_age()
+         return modification + timedelta(seconds=expiry)
+ 
++    async def aget_expiry_date(self, **kwargs):
++        try:
++            modification = kwargs["modification"]
++        except KeyError:
++            modification = timezone.now()
++        try:
++            expiry = kwargs["expiry"]
++        except KeyError:
++            expiry = await self.aget("_session_expiry")
++
++        if isinstance(expiry, datetime):
++            return expiry
++        elif isinstance(expiry, str):
++            return datetime.fromisoformat(expiry)
++        expiry = expiry or self.get_session_cookie_age()
++        return modification + timedelta(seconds=expiry)
++
+     def set_expiry(self, value):
+         """
+         Set a custom expiration for the session. ``value`` can be an integer,

@@ -1,0 +1,18 @@
+diff --git a/lib/ansible/module_utils/basic.py b/lib/ansible/module_utils/basic.py
+index 19dbb1d15415ae..a630e4bf026c3c 100644
+--- a/lib/ansible/module_utils/basic.py
++++ b/lib/ansible/module_utils/basic.py
+@@ -110,12 +131,7 @@ def _get_available_hash_algorithms():
+ 
+ AVAILABLE_HASH_ALGORITHMS = _get_available_hash_algorithms()
+ 
+-from ansible.module_utils.six.moves.collections_abc import (
+-    KeysView,
+-    Mapping, MutableMapping,
+-    Sequence, MutableSequence,
+-    Set, MutableSet,
+-)
++from ansible.module_utils.common import json as _json
+ from ansible.module_utils.common.locale import get_best_parsable_locale
+ from ansible.module_utils.common.process import get_bin_path
+ from ansible.module_utils.common.file import (

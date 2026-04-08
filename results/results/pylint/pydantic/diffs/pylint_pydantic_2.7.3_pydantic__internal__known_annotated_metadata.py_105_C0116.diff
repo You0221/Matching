@@ -1,0 +1,92 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index 83d85b3b12a..78de89ecd77 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -62,60 +67,33 @@
+ NUMERIC_SCHEMA_TYPES = ('float', 'int', 'date', 'time', 'timedelta', 'datetime')
+ 
+ CONSTRAINTS_TO_ALLOWED_SCHEMAS: dict[str, set[str]] = defaultdict(set)
+-for constraint in STR_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(TEXT_SCHEMA_TYPES)
+-for constraint in BYTES_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('bytes',))
+-for constraint in LIST_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('list',))
+-for constraint in TUPLE_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('tuple',))
+-for constraint in SET_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('set', 'frozenset'))
+-for constraint in DICT_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('dict',))
+-for constraint in GENERATOR_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('generator',))
+-for constraint in FLOAT_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('float',))
+-for constraint in INT_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('int',))
+-for constraint in DATE_TIME_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('date', 'time', 'datetime'))
+-for constraint in TIMEDELTA_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('timedelta',))
+-for constraint in TIME_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('time',))
+-for schema_type in (*TEXT_SCHEMA_TYPES, *SEQUENCE_SCHEMA_TYPES, *NUMERIC_SCHEMA_TYPES, 'typed-dict', 'model'):
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS['strict'].add(schema_type)
+-for constraint in UNION_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('union',))
+-for constraint in URL_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('url', 'multi-host-url'))
+-for constraint in BOOL_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('bool',))
+-for constraint in UUID_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('uuid',))
+-for constraint in LAX_OR_STRICT_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('lax-or-strict',))
+-for constraint in ENUM_CONSTRAINTS:
+-    CONSTRAINTS_TO_ALLOWED_SCHEMAS[constraint].update(('enum',))
+-
+-
+-def add_js_update_schema(s: cs.CoreSchema, f: Callable[[], dict[str, Any]]) -> None:
+-    def update_js_schema(s: cs.CoreSchema, handler: GetJsonSchemaHandler) -> dict[str, Any]:
+-        js_schema = handler(s)
+-        js_schema.update(f())
+-        return js_schema
+-
+-    if 'metadata' in s:
+-        metadata = s['metadata']
+-        if 'pydantic_js_functions' in s:
+-            metadata['pydantic_js_functions'].append(update_js_schema)
+-        else:
+-            metadata['pydantic_js_functions'] = [update_js_schema]
+-    else:
+-        s['metadata'] = {'pydantic_js_functions': [update_js_schema]}
++
++constraint_schema_pairings: list[tuple[set[str], tuple[str, ...]]] = [
++    (STR_CONSTRAINTS, TEXT_SCHEMA_TYPES),
++    (BYTES_CONSTRAINTS, ('bytes',)),
++    (LIST_CONSTRAINTS, ('list',)),
++    (TUPLE_CONSTRAINTS, ('tuple',)),
++    (SET_CONSTRAINTS, ('set', 'frozenset')),
++    (DICT_CONSTRAINTS, ('dict',)),
++    (GENERATOR_CONSTRAINTS, ('generator',)),
++    (FLOAT_CONSTRAINTS, ('float',)),
++    (INT_CONSTRAINTS, ('int',)),
++    (DATE_TIME_CONSTRAINTS, ('date', 'time', 'datetime', 'timedelta')),
++    # TODO: this is a bit redundant, we could probably avoid some of these
++    (STRICT, (*TEXT_SCHEMA_TYPES, *SEQUENCE_SCHEMA_TYPES, *NUMERIC_SCHEMA_TYPES, 'typed-dict', 'model')),
++    (UNION_CONSTRAINTS, ('union',)),
++    (URL_CONSTRAINTS, ('url', 'multi-host-url')),
++    (BOOL_CONSTRAINTS, ('bool',)),
++    (UUID_CONSTRAINTS, ('uuid',)),
++    (LAX_OR_STRICT_CONSTRAINTS, ('lax-or-strict',)),
++    (ENUM_CONSTRAINTS, ('enum',)),
++    (DECIMAL_CONSTRAINTS, ('decimal',)),
++    (COMPLEX_CONSTRAINTS, ('complex',)),
++]
++
++for constraints, schemas in constraint_schema_pairings:
++    for c in constraints:
++        CONSTRAINTS_TO_ALLOWED_SCHEMAS[c].update(schemas)
+ 
+ 
+ def as_jsonable_value(v: Any) -> Any:

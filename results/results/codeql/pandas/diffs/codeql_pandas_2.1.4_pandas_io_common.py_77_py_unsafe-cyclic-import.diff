@@ -1,0 +1,14 @@
+diff --git a/pandas/io/common.py b/pandas/io/common.py
+index 6be6f3f4300e4..72c9deeb54fc7 100644
+--- a/pandas/io/common.py
++++ b/pandas/io/common.py
+@@ -73,8 +68,8 @@
+     is_integer,
+     is_list_like,
+ )
++from pandas.core.dtypes.generic import ABCMultiIndex
+ 
+-from pandas.core.indexes.api import MultiIndex
+ from pandas.core.shared_docs import _shared_docs
+ 
+ _VALID_URLS = set(uses_relative + uses_netloc + uses_params)

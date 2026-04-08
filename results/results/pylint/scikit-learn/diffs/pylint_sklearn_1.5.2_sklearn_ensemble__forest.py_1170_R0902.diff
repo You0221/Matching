@@ -1,0 +1,26 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index 6b1b842f5367b..5c2152f34e93d 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -1163,8 +1166,10 @@ def _compute_partial_dependence_recursion(self, grid, target_features):
+ 
+         return averaged_predictions
+ 
+-    def _more_tags(self):
+-        return {"multilabel": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
+ 
+ 
+ class RandomForestClassifier(ForestClassifier):
+@@ -1175,7 +1180,7 @@ class RandomForestClassifier(ForestClassifier):
+     classifiers on various sub-samples of the dataset and uses averaging to
+     improve the predictive accuracy and control over-fitting.
+     Trees in the forest use the best split strategy, i.e. equivalent to passing
+-    `splitter="best"` to the underlying :class:`~sklearn.tree.DecisionTreeRegressor`.
++    `splitter="best"` to the underlying :class:`~sklearn.tree.DecisionTreeClassifier`.
+     The sub-sample size is controlled with the `max_samples` parameter if
+     `bootstrap=True` (default), otherwise the whole dataset is used to build
+     each tree.

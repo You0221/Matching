@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index 85660b41d743b1..ece6fd7d44e028 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -780,7 +731,7 @@ def _load_module(self, module):
+                 routing_dict = _meta_yml_to_dict(raw_routing, (collection_name, 'runtime.yml'))
+                 module._collection_meta = self._canonicalize_meta(routing_dict)
+         except Exception as ex:
+-            raise ValueError('error parsing collection metadata: {0}'.format(to_native(ex)))
++            raise ValueError(f'error parsing collection metadata: {ex}')
+ 
+         AnsibleCollectionConfig.on_collection_load.fire(collection_name=collection_name, collection_path=os.path.dirname(module.__file__))
+ 

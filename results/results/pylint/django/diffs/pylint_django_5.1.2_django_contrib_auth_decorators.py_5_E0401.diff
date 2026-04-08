@@ -1,0 +1,15 @@
+diff --git a/django/contrib/auth/decorators.py b/django/contrib/auth/decorators.py
+index ea1cef079514..4d62aec93a03 100644
+--- a/django/contrib/auth/decorators.py
++++ b/django/contrib/auth/decorators.py
+@@ -1,8 +1,7 @@
+-import asyncio
+ from functools import wraps
+-from urllib.parse import urlparse
++from urllib.parse import urlsplit
+ 
+-from asgiref.sync import async_to_sync, sync_to_async
++from asgiref.sync import async_to_sync, iscoroutinefunction, sync_to_async
+ 
+ from django.conf import settings
+ from django.contrib.auth import REDIRECT_FIELD_NAME

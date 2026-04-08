@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index d5f2247e2af34..8f7c814000614 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -462,7 +471,7 @@ def fit_binary(
+         penalty_type,
+         alpha,
+         C,
+-        est.l1_ratio,
++        est._get_l1_ratio(),
+         dataset,
+         validation_mask,
+         est.early_stopping,

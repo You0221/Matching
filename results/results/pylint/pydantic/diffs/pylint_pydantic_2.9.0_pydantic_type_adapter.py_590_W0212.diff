@@ -1,0 +1,20 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index 3619fdff3c7..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -587,8 +655,13 @@ def json_schemas(
+ 
+         inputs_ = []
+         for key, mode, adapter in inputs:
+-            with adapter._with_frame_depth(1):  # +1 for json_schemas staticmethod
+-                inputs_.append((key, mode, adapter.core_schema))
++            # This is the same pattern we follow for model json schemas - we attempt a core schema rebuild if we detect a mock
++            if isinstance(adapter.core_schema, _mock_val_ser.MockCoreSchema):
++                adapter.core_schema.rebuild()
++                assert not isinstance(
++                    adapter.core_schema, _mock_val_ser.MockCoreSchema
++                ), 'this is a bug! please report it'
++            inputs_.append((key, mode, adapter.core_schema))
+ 
+         json_schemas_map, definitions = schema_generator_instance.generate_definitions(inputs_)
+ 

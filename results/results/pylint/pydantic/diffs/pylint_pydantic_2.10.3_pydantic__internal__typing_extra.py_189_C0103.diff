@@ -1,0 +1,65 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 6b6fd82e822..4be1a09cb32 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -182,60 +91,6 @@ def is_callable(tp: Any, /) -> bool:
+     return tp is collections.abc.Callable or get_origin(tp) is collections.abc.Callable
+ 
+ 
+-_PARAMSPEC_TYPES: tuple[type[typing_extensions.ParamSpec], ...] = (typing_extensions.ParamSpec,)
+-if sys.version_info >= (3, 10):
+-    _PARAMSPEC_TYPES = (*_PARAMSPEC_TYPES, typing.ParamSpec)  # pyright: ignore[reportAssignmentType]
+-
+-
+-def is_paramspec(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `ParamSpec`.
+-
+-    ```python test="skip" lint="skip"
+-    P = ParamSpec('P')
+-    is_paramspec(P)
+-    #> True
+-    ```
+-    """
+-    return isinstance(tp, _PARAMSPEC_TYPES)
+-
+-
+-_TYPE_ALIAS_TYPES: tuple[type[typing_extensions.TypeAliasType], ...] = (typing_extensions.TypeAliasType,)
+-if sys.version_info >= (3, 12):
+-    _TYPE_ALIAS_TYPES = (*_TYPE_ALIAS_TYPES, typing.TypeAliasType)
+-
+-
+-def is_type_alias_type(tp: Any, /) -> TypeIs[typing_extensions.TypeAliasType]:
+-    """Return whether the provided argument is an instance of `TypeAliasType`.
+-
+-    ```python test="skip" lint="skip"
+-    type Int = int
+-    is_type_alias_type(Int)
+-    #> True
+-    Str = TypeAliasType('Str', str)
+-    is_type_alias_type(Str)
+-    #> True
+-    ```
+-    """
+-    return isinstance(tp, _TYPE_ALIAS_TYPES)
+-
+-
+-def is_classvar(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `ClassVar` special form, parametrized or not.
+-
+-    Note that in most cases, you will want to use the `is_classvar_annotation` function,
+-    which is used to check if an annotation (in the context of a Pydantic model or dataclass)
+-    should be treated as being a class variable.
+-
+-    ```python test="skip" lint="skip"
+-    is_classvar(ClassVar[int])
+-    #> True
+-    is_classvar(ClassVar)
+-    #> True
+-    """
+-    # ClassVar is not necessarily parametrized:
+-    return _is_typing_name(tp, name='ClassVar') or _is_typing_name(get_origin(tp), name='ClassVar')
+-
+-
+ _classvar_re = re.compile(r'((\w+\.)?Annotated\[)?(\w+\.)?ClassVar\[')
+ 
+ 

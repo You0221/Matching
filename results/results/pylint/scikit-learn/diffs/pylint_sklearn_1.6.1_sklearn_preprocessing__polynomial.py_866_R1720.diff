@@ -1,0 +1,17 @@
+diff --git a/sklearn/preprocessing/_polynomial.py b/sklearn/preprocessing/_polynomial.py
+index 5a3239f113024..69bfe7b212bba 100644
+--- a/sklearn/preprocessing/_polynomial.py
++++ b/sklearn/preprocessing/_polynomial.py
+@@ -865,12 +851,6 @@ def fit(self, X, y=None, sample_weight=None):
+             elif not np.all(np.diff(base_knots, axis=0) > 0):
+                 raise ValueError("knots must be sorted without duplicates.")
+ 
+-        if self.sparse_output and sp_version < parse_version("1.8.0"):
+-            raise ValueError(
+-                "Option sparse_output=True is only available with scipy>=1.8.0, "
+-                f"but here scipy=={sp_version} is used."
+-            )
+-
+         # number of knots for base interval
+         n_knots = base_knots.shape[0]
+ 

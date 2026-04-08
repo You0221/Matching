@@ -1,0 +1,23 @@
+diff --git a/django/contrib/gis/geoip2.py b/django/contrib/gis/geoip2.py
+index f5058c1c05dc..5b510dee7f96 100644
+--- a/django/contrib/gis/geoip2.py
++++ b/django/contrib/gis/geoip2.py
+@@ -34,6 +34,18 @@
+     __all__ += ["GeoIP2", "GeoIP2Exception"]
+ 
+ 
++# These are the values stored in the `database_type` field of the metadata.
++# See https://maxmind.github.io/MaxMind-DB/#database_type for details.
++SUPPORTED_DATABASE_TYPES = {
++    "DBIP-City-Lite",
++    "DBIP-Country-Lite",
++    "GeoIP2-City",
++    "GeoIP2-Country",
++    "GeoLite2-City",
++    "GeoLite2-Country",
++}
++
++
+ class GeoIP2Exception(Exception):
+     pass
+ 

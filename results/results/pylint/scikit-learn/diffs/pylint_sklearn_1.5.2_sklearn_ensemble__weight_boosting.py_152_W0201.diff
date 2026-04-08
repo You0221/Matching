@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_weight_boosting.py b/sklearn/ensemble/_weight_boosting.py
+index 0461a397983be..8503c4fdb8ae7 100644
+--- a/sklearn/ensemble/_weight_boosting.py
++++ b/sklearn/ensemble/_weight_boosting.py
+@@ -141,7 +139,7 @@ def fit(self, X, y, sample_weight=None):
+         )
+ 
+         sample_weight = _check_sample_weight(
+-            sample_weight, X, np.float64, copy=True, only_non_negative=True
++            sample_weight, X, np.float64, copy=True, ensure_non_negative=True
+         )
+         sample_weight /= sample_weight.sum()
+ 

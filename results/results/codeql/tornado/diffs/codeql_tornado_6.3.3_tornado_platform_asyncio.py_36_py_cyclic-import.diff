@@ -1,0 +1,50 @@
+diff --git a/tornado/platform/asyncio.py b/tornado/platform/asyncio.py
+index a15a74df4d..4635fecb26 100644
+--- a/tornado/platform/asyncio.py
++++ b/tornado/platform/asyncio.py
+@@ -36,23 +36,37 @@
+ from tornado.gen import convert_yielded
+ from tornado.ioloop import IOLoop, _Selectable
+ 
+-from typing import Any, TypeVar, Awaitable, Callable, Union, Optional, List, Dict
++from typing import (
++    Any,
++    Callable,
++    Dict,
++    List,
++    Optional,
++    Protocol,
++    Set,
++    Tuple,
++    TypeVar,
++    Union,
++)
+ 
+ if typing.TYPE_CHECKING:
+-    from typing import Set, Tuple  # noqa: F401
+-    from typing_extensions import Protocol
++    from typing_extensions import TypeVarTuple, Unpack
+ 
+-    class _HasFileno(Protocol):
+-        def fileno(self) -> int:
+-            pass
+ 
+-    _FileDescriptorLike = Union[int, _HasFileno]
++class _HasFileno(Protocol):
++    def fileno(self) -> int:
++        pass
++
++
++_FileDescriptorLike = Union[int, _HasFileno]
+ 
+ _T = TypeVar("_T")
+ 
++if typing.TYPE_CHECKING:
++    _Ts = TypeVarTuple("_Ts")
+ 
+ # Collection of selector thread event loops to shut down on exit.
+-_selector_loops = set()  # type: Set[AddThreadSelectorEventLoop]
++_selector_loops: Set["SelectorThread"] = set()
+ 
+ 
+ def _atexit_callback() -> None:

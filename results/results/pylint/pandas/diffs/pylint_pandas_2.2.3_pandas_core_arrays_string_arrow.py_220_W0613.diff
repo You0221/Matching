@@ -1,0 +1,46 @@
+diff --git a/pandas/core/arrays/string_arrow.py b/pandas/core/arrays/string_arrow.py
+index 50527dace0b82..a57ada5a5b3b3 100644
+--- a/pandas/core/arrays/string_arrow.py
++++ b/pandas/core/arrays/string_arrow.py
+@@ -212,12 +213,38 @@ def dtype(self) -> StringDtype:  # type: ignore[override]
+         return self._dtype
+ 
+     def insert(self, loc: int, item) -> ArrowStringArray:
++        if self.dtype.na_value is np.nan and item is np.nan:
++            item = libmissing.NA
+         if not isinstance(item, str) and item is not libmissing.NA:
+-            raise TypeError("Scalar must be NA or str")
++            raise TypeError(
++                f"Invalid value '{item}' for dtype 'str'. Value should be a "
++                f"string or missing value, got '{type(item).__name__}' instead."
++            )
+         return super().insert(loc, item)
+ 
+-    @classmethod
+-    def _result_converter(cls, values, na=None):
++    def _convert_bool_result(self, values, na=lib.no_default, method_name=None):
++        if na is not lib.no_default and not isna(na) and not isinstance(na, bool):
++            # GH#59561
++            warnings.warn(
++                f"Allowing a non-bool 'na' in obj.str.{method_name} is deprecated "
++                "and will raise in a future version.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++            na = bool(na)
++
++        if self.dtype.na_value is np.nan:
++            if na is lib.no_default or isna(na):
++                # NaN propagates as False
++                values = values.fill_null(False)
++            else:
++                values = values.fill_null(na)
++            return values.to_numpy()
++        else:
++            if na is not lib.no_default and not isna(
++                na
++            ):  # pyright: ignore [reportGeneralTypeIssues]
++                values = values.fill_null(na)
+         return BooleanDtype().__from_arrow__(values)
+ 
+     def _maybe_convert_setitem_value(self, value):

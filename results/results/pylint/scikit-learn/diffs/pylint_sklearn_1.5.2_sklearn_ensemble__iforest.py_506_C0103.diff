@@ -1,0 +1,49 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -500,18 +594,33 @@ def _compute_score_samples(self, X, subsample_features):
+ 
+         average_path_length_max_samples = _average_path_length([self._max_samples])
+ 
+-        for tree_idx, (tree, features) in enumerate(
+-            zip(self.estimators_, self.estimators_features_)
+-        ):
+-            X_subset = X[:, features] if subsample_features else X
+-
+-            leaves_index = tree.apply(X_subset, check_input=False)
+-
+-            depths += (
+-                self._decision_path_lengths[tree_idx][leaves_index]
+-                + self._average_path_length_per_tree[tree_idx][leaves_index]
+-                - 1.0
++        # Note: we use default n_jobs value, i.e. sequential computation, which
++        # we expect to be more performant that parallelizing for small number
++        # of samples, e.g. < 1k samples. Default n_jobs value can be overriden
++        # by using joblib.parallel_backend context manager around
++        # ._compute_score_samples. Using a higher n_jobs may speed up the
++        # computation of the scores, e.g. for > 1k samples. See
++        # https://github.com/scikit-learn/scikit-learn/pull/28622 for more
++        # details.
++        lock = threading.Lock()
++        Parallel(
++            verbose=self.verbose,
++            require="sharedmem",
++        )(
++            delayed(_parallel_compute_tree_depths)(
++                tree,
++                X,
++                features if subsample_features else None,
++                self._decision_path_lengths[tree_idx],
++                self._average_path_length_per_tree[tree_idx],
++                depths,
++                lock,
+             )
++            for tree_idx, (tree, features) in enumerate(
++                zip(self.estimators_, self.estimators_features_)
++            )
++        )
++
+         denominator = len(self.estimators_) * average_path_length_max_samples
+         scores = 2 ** (
+             # For a single training sample, denominator and depth are 0.

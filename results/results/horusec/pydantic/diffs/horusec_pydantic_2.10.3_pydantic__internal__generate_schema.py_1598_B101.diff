@@ -1,0 +1,87 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1590,20 +1676,7 @@ def _type_schema(self) -> core_schema.CoreSchema:
+ 
+     def _zoneinfo_schema(self) -> core_schema.CoreSchema:
+         """Generate schema for a zone_info.ZoneInfo object"""
+-        # we're def >=py3.9 if ZoneInfo was included in input
+-        if sys.version_info < (3, 9):
+-            assert False, 'Unreachable'
+-
+-        # import in this path is safe
+-        from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+-
+-        def validate_str_is_valid_iana_tz(value: Any, /) -> ZoneInfo:
+-            if isinstance(value, ZoneInfo):
+-                return value
+-            try:
+-                return ZoneInfo(value)
+-            except (ZoneInfoNotFoundError, ValueError, TypeError):
+-                raise PydanticCustomError('zoneinfo_str', 'invalid timezone: {value}', {'value': value})
++        from ._validators import validate_str_is_valid_iana_tz
+ 
+         metadata = {'pydantic_js_functions': [lambda _1, _2: {'type': 'string', 'format': 'zoneinfo'}]}
+         return core_schema.no_info_plain_validator_function(
+@@ -1613,39 +1686,46 @@ def validate_str_is_valid_iana_tz(value: Any, /) -> ZoneInfo:
+         )
+ 
+     def _union_is_subclass_schema(self, union_type: Any) -> core_schema.CoreSchema:
+-        """Generate schema for `Type[Union[X, ...]]`."""
++        """Generate schema for `type[Union[X, ...]]`."""
+         args = self._get_args_resolving_forward_refs(union_type, required=True)
+-        return core_schema.union_schema([self.generate_schema(typing.Type[args]) for args in args])
++        return core_schema.union_schema([self.generate_schema(type[args]) for args in args])
+ 
+     def _subclass_schema(self, type_: Any) -> core_schema.CoreSchema:
+-        """Generate schema for a Type, e.g. `Type[int]`."""
++        """Generate schema for a type, e.g. `type[int]`."""
+         type_param = self._get_first_arg_or_any(type_)
+ 
+         # Assume `type[Annotated[<typ>, ...]]` is equivalent to `type[<typ>]`:
+         type_param = _typing_extra.annotated_type(type_param) or type_param
+ 
+-        if _typing_extra.is_any(type_param):
++        if typing_objects.is_any(type_param):
+             return self._type_schema()
+-        elif _typing_extra.is_type_alias_type(type_param):
+-            return self.generate_schema(typing.Type[type_param.__value__])
+-        elif isinstance(type_param, typing.TypeVar):
++        elif typing_objects.is_typealiastype(type_param):
++            return self.generate_schema(type[type_param.__value__])
++        elif typing_objects.is_typevar(type_param):
+             if type_param.__bound__:
+-                if _typing_extra.origin_is_union(get_origin(type_param.__bound__)):
++                if is_union_origin(get_origin(type_param.__bound__)):
+                     return self._union_is_subclass_schema(type_param.__bound__)
+                 return core_schema.is_subclass_schema(type_param.__bound__)
+             elif type_param.__constraints__:
+-                return core_schema.union_schema(
+-                    [self.generate_schema(typing.Type[c]) for c in type_param.__constraints__]
+-                )
++                return core_schema.union_schema([self.generate_schema(type[c]) for c in type_param.__constraints__])
+             else:
+                 return self._type_schema()
+-        elif _typing_extra.origin_is_union(get_origin(type_param)):
++        elif is_union_origin(get_origin(type_param)):
+             return self._union_is_subclass_schema(type_param)
+         else:
+-            if _typing_extra.is_self(type_param):
++            if typing_objects.is_self(type_param):
+                 type_param = self._resolve_self_type(type_param)
+-
++            if _typing_extra.is_generic_alias(type_param):
++                raise PydanticUserError(
++                    'Subscripting `type[]` with an already parametrized type is not supported. '
++                    f'Instead of using type[{type_param!r}], use type[{_repr.display_as_type(get_origin(type_param))}].',
++                    code=None,
++                )
+             if not inspect.isclass(type_param):
++                # when using type[None], this doesn't type convert to type[NoneType], and None isn't a class
++                # so we handle it manually here
++                if type_param is None:
++                    return core_schema.is_subclass_schema(_typing_extra.NoneType)
+                 raise TypeError(f'Expected a class, got {type_param!r}')
+             return core_schema.is_subclass_schema(type_param)
+ 

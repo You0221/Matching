@@ -1,0 +1,40 @@
+diff --git a/pydantic/functional_serializers.py b/pydantic/functional_serializers.py
+index d1579bbd8ae..0c1522f1bba 100644
+--- a/pydantic/functional_serializers.py
++++ b/pydantic/functional_serializers.py
+@@ -410,15 +421,19 @@ def dec(f: ModelSerializer) -> _decorators.PydanticDescriptorProxy[Any]:
+ 
+ if TYPE_CHECKING:
+     SerializeAsAny = Annotated[AnyType, ...]  # SerializeAsAny[list[str]] will be treated by type checkers as list[str]
+-    """Force serialization to ignore whatever is defined in the schema and instead ask the object
+-    itself how it should be serialized.
+-    In particular, this means that when model subclasses are serialized, fields present in the subclass
+-    but not in the original schema will be included.
++    """Annotation used to mark a type as having duck-typing serialization behavior.
++
++    See [usage documentation](../concepts/serialization.md#serializing-with-duck-typing) for more details.
+     """
+ else:
+ 
+     @dataclasses.dataclass(**_internal_dataclass.slots_true)
+-    class SerializeAsAny:  # noqa: D101
++    class SerializeAsAny:
++        """Annotation used to mark a type as having duck-typing serialization behavior.
++
++        See [usage documentation](../concepts/serialization.md#serializing-with-duck-typing) for more details.
++        """
++
+         def __class_getitem__(cls, item: Any) -> Any:
+             return Annotated[item, SerializeAsAny()]
+ 
+@@ -430,9 +445,7 @@ def __get_pydantic_core_schema__(
+             while schema_to_update['type'] == 'definitions':
+                 schema_to_update = schema_to_update.copy()
+                 schema_to_update = schema_to_update['schema']
+-            schema_to_update['serialization'] = core_schema.wrap_serializer_function_ser_schema(
+-                lambda x, h: h(x), schema=core_schema.any_schema()
+-            )
++            schema_to_update['serialization'] = core_schema.simple_ser_schema('any')
+             return schema
+ 
+         __hash__ = object.__hash__

@@ -1,0 +1,19 @@
+diff --git a/django/core/management/base.py b/django/core/management/base.py
+index 4c47e1c6e513..12b4b42f6147 100644
+--- a/django/core/management/base.py
++++ b/django/core/management/base.py
+@@ -672,7 +678,13 @@ class LabelCommand(BaseCommand):
+     """
+ 
+     label = "label"
+-    missing_args_message = "Enter at least one %s." % label
++    missing_args_message = "Enter at least one %s."
++
++    def __init__(self, *args, **kwargs):
++        super().__init__(*args, **kwargs)
++
++        if self.missing_args_message == LabelCommand.missing_args_message:
++            self.missing_args_message = self.missing_args_message % self.label
+ 
+     def add_arguments(self, parser):
+         parser.add_argument("args", metavar=self.label, nargs="+")

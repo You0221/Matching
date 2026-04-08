@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -28,7 +32,7 @@ class _BaseEncoder(TransformerMixin, BaseEstimator):
+ 
+     """
+ 
+-    def _check_X(self, X, force_all_finite=True):
++    def _check_X(self, X, ensure_all_finite=True):
+         """
+         Perform custom check_array:
+         - convert list of strings to object dtype

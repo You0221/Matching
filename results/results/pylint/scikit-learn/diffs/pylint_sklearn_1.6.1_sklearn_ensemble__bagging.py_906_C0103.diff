@@ -1,0 +1,35 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index dd39b8cb607a8..34b613b15281a 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -900,15 +947,28 @@ def predict(self, X):
+             The training input samples. Sparse matrices are accepted only if
+             they are supported by the base estimator.
+ 
++        **params : dict
++            Parameters routed to the `predict_proba` (if available) or the `predict`
++            method (otherwise) of the sub-estimators via the metadata routing API.
++
++            .. versionadded:: 1.7
++
++                Only available if
++                `sklearn.set_config(enable_metadata_routing=True)` is set. See
++                :ref:`Metadata Routing User Guide <metadata_routing>` for more
++                details.
++
+         Returns
+         -------
+         y : ndarray of shape (n_samples,)
+             The predicted classes.
+         """
+-        predicted_probabilitiy = self.predict_proba(X)
++        _raise_for_params(params, self, "predict")
++
++        predicted_probabilitiy = self.predict_proba(X, **params)
+         return self.classes_.take((np.argmax(predicted_probabilitiy, axis=1)), axis=0)
+ 
+-    def predict_proba(self, X):
++    def predict_proba(self, X, **params):
+         """Predict class probabilities for X.
+ 
+         The predicted class probabilities of an input sample is computed as

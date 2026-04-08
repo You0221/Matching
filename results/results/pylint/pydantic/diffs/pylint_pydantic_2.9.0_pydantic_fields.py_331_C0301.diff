@@ -1,0 +1,96 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index fb26f70b19d..5149d3127df 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -301,44 +321,61 @@ class MyModel(pydantic.BaseModel):
+         Returns:
+             An instance of the field metadata.
+         """
+-        final = False
+-        if _typing_extra.is_finalvar(annotation):
+-            final = True
+-            if annotation is not typing_extensions.Final:
+-                annotation = typing_extensions.get_args(annotation)[0]
+-
+-        if _typing_extra.is_annotated(annotation):
+-            first_arg, *extra_args = typing_extensions.get_args(annotation)
+-            if _typing_extra.is_finalvar(first_arg):
+-                final = True
+-            field_info_annotations = [a for a in extra_args if isinstance(a, FieldInfo)]
+-            field_info = FieldInfo.merge_field_infos(*field_info_annotations, annotation=first_arg)
+-            if field_info:
+-                new_field_info = copy(field_info)
+-                new_field_info.annotation = first_arg
+-                new_field_info.frozen = final or field_info.frozen
+-                metadata: list[Any] = []
+-                for a in extra_args:
+-                    if _typing_extra.is_deprecated_instance(a):
+-                        new_field_info.deprecated = a.message
+-                    elif not isinstance(a, FieldInfo):
+-                        metadata.append(a)
+-                    else:
+-                        metadata.extend(a.metadata)
+-                new_field_info.metadata = metadata
+-                return new_field_info
+-
+-        return FieldInfo(annotation=annotation, frozen=final or None)  # pyright: ignore[reportArgumentType]
++        try:
++            inspected_ann = inspect_annotation(
++                annotation,
++                annotation_source=_source,
++                unpack_type_aliases='skip',
++            )
++        except ForbiddenQualifier as e:
++            raise PydanticForbiddenQualifier(e.qualifier, annotation)
++
++        # TODO check for classvar and error?
++
++        # No assigned value, this happens when using a bare `Final` qualifier (also for other
++        # qualifiers, but they shouldn't appear here). In this case we infer the type as `Any`
++        # because we don't have any assigned value.
++        type_expr: Any = Any if inspected_ann.type is UNKNOWN else inspected_ann.type
++        final = 'final' in inspected_ann.qualifiers
++        metadata = inspected_ann.metadata
++
++        if not metadata:
++            # No metadata, e.g. `field: int`, or `field: Final[str]`:
++            field_info = FieldInfo(annotation=type_expr, frozen=final or None)
++            field_info._qualifiers = inspected_ann.qualifiers
++            return field_info
++
++        # With metadata, e.g. `field: Annotated[int, Field(...), Gt(1)]`:
++        field_info_annotations = [a for a in metadata if isinstance(a, FieldInfo)]
++        field_info = FieldInfo.merge_field_infos(*field_info_annotations, annotation=type_expr)
++
++        new_field_info = copy(field_info)
++        new_field_info.annotation = type_expr
++        new_field_info.frozen = final or field_info.frozen
++        field_metadata: list[Any] = []
++        for a in metadata:
++            if typing_objects.is_deprecated(a):
++                new_field_info.deprecated = a.message
++            elif not isinstance(a, FieldInfo):
++                field_metadata.append(a)
++            else:
++                field_metadata.extend(a.metadata)
++            new_field_info.metadata = field_metadata
++        new_field_info._qualifiers = inspected_ann.qualifiers
++        return new_field_info
+ 
+     @staticmethod
+-    def from_annotated_attribute(annotation: type[Any], default: Any) -> FieldInfo:
++    def from_annotated_attribute(
++        annotation: type[Any], default: Any, *, _source: AnnotationSource = AnnotationSource.ANY
++    ) -> FieldInfo:
+         """Create `FieldInfo` from an annotation with a default value.
+ 
+         This is used in cases like the following:
+ 
+         ```python
++        from typing import Annotated
++
+         import annotated_types
+-        from typing_extensions import Annotated
+ 
+         import pydantic
+ 

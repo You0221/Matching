@@ -1,0 +1,29 @@
+diff --git a/examples/miscellaneous/plot_metadata_routing.py b/examples/miscellaneous/plot_metadata_routing.py
+index 9984bb6183348..634ca304d125d 100644
+--- a/examples/miscellaneous/plot_metadata_routing.py
++++ b/examples/miscellaneous/plot_metadata_routing.py
+@@ -543,18 +609,20 @@ def __init__(self, estimator):
+         self.estimator = estimator
+ 
+     def fit(self, X, y, **fit_params):
+-        params = process_routing(self, "fit", **fit_params)
+-        self.estimator_ = clone(self.estimator).fit(X, y, **params.estimator.fit)
++        routed_params = process_routing(self, "fit", **fit_params)
++        self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+ 
+     def get_metadata_routing(self):
+         router = MetadataRouter(owner=self.__class__.__name__).add(
+-            estimator=self.estimator, method_mapping="one-to-one"
++            estimator=self.estimator,
++            method_mapping=MethodMapping().add(caller="fit", callee="fit"),
+         )
+         return router
+ 
+ 
+ # %%
+-# As explained above, this is now a valid usage:
++# As explained above, this is a valid usage if `my_weights` aren't supposed
++# to be passed as `sample_weight` to `MetaRegressor`:
+ 
+ reg = MetaRegressor(estimator=LinearRegression().set_fit_request(sample_weight=True))
+ reg.fit(X, y, sample_weight=my_weights)

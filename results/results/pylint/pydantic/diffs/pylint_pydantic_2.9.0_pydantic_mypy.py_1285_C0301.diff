@@ -1,0 +1,16 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 0ce0a258d96..9ad3a3ff179 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -1280,11 +1209,6 @@ def error_extra_fields_on_root_model(api: CheckerPluginInterface, context: Conte
+     api.fail('Only `root` is allowed as a field of a `RootModel`', context, code=ERROR_EXTRA_FIELD_ROOT_MODEL)
+ 
+ 
+-def error_default_and_default_factory_specified(api: CheckerPluginInterface, context: Context) -> None:
+-    """Emits an error when `Field` has both `default` and `default_factory` together."""
+-    api.fail('Field default and default_factory cannot be specified together', context, code=ERROR_FIELD_DEFAULTS)
+-
+-
+ def add_method(
+     api: SemanticAnalyzerPluginInterface | CheckerPluginInterface,
+     cls: ClassDef,

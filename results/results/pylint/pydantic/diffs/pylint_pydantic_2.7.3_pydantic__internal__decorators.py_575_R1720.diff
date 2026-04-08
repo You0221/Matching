@@ -1,0 +1,56 @@
+diff --git a/pydantic/_internal/_decorators.py b/pydantic/_internal/_decorators.py
+index 8507e4a2434..bb0f7207eae 100644
+--- a/pydantic/_internal/_decorators.py
++++ b/pydantic/_internal/_decorators.py
+@@ -538,9 +550,7 @@ def inspect_validator(validator: Callable[..., Any], mode: FieldValidatorModes)
+     )
+ 
+ 
+-def inspect_field_serializer(
+-    serializer: Callable[..., Any], mode: Literal['plain', 'wrap'], computed_field: bool = False
+-) -> tuple[bool, bool]:
++def inspect_field_serializer(serializer: Callable[..., Any], mode: Literal['plain', 'wrap']) -> tuple[bool, bool]:
+     """Look at a field serializer function and determine if it is a field serializer,
+     and whether it takes an info argument.
+ 
+@@ -549,18 +559,21 @@ def inspect_field_serializer(
+     Args:
+         serializer: The serializer function to inspect.
+         mode: The serializer mode, either 'plain' or 'wrap'.
+-        computed_field: When serializer is applied on computed_field. It doesn't require
+-            info signature.
+ 
+     Returns:
+         Tuple of (is_field_serializer, info_arg).
+     """
+-    sig = signature(serializer)
++    try:
++        sig = signature(serializer)
++    except (ValueError, TypeError):
++        # `inspect.signature` might not be able to infer a signature, e.g. with C objects.
++        # In this case, we assume no info argument is present and this is not a method:
++        return (False, False)
+ 
+     first = next(iter(sig.parameters.values()), None)
+     is_field_serializer = first is not None and first.name == 'self'
+ 
+-    n_positional = count_positional_params(sig)
++    n_positional = count_positional_required_params(sig)
+     if is_field_serializer:
+         # -1 to correct for self parameter
+         info_arg = _serializer_info_arg(mode, n_positional - 1)
+@@ -572,13 +585,8 @@ def inspect_field_serializer(
+             f'Unrecognized field_serializer function signature for {serializer} with `mode={mode}`:{sig}',
+             code='field-serializer-signature',
+         )
+-    if info_arg and computed_field:
+-        raise PydanticUserError(
+-            'field_serializer on computed_field does not use info signature', code='field-serializer-signature'
+-        )
+ 
+-    else:
+-        return is_field_serializer, info_arg
++    return is_field_serializer, info_arg
+ 
+ 
+ def inspect_annotated_serializer(serializer: Callable[..., Any], mode: Literal['plain', 'wrap']) -> bool:

@@ -1,0 +1,26 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 5c4c28d525798e..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -1380,18 +1569,18 @@ def reset(self) -> None:
+         # only run the reset if the ControlPath already exists or if it isn't configured and ControlPersist is set
+         # 'check' will determine this.
+         cmd = self._build_command(self.get_option('ssh_executable'), 'ssh', '-O', 'check', self.host)
+-        display.vvv(u'sending connection check: %s' % to_text(cmd))
++        display.vvv(u'sending connection check: %s' % to_text(cmd), host=self.host)
+         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+         stdout, stderr = p.communicate()
+         status_code = p.wait()
+         if status_code != 0:
+-            display.vvv(u"No connection to reset: %s" % to_text(stderr))
++            display.vvv(u"No connection to reset: %s" % to_text(stderr), host=self.host)
+         else:
+             run_reset = True
+ 
+         if run_reset:
+             cmd = self._build_command(self.get_option('ssh_executable'), 'ssh', '-O', 'stop', self.host)
+-            display.vvv(u'sending connection stop: %s' % to_text(cmd))
++            display.vvv(u'sending connection stop: %s' % to_text(cmd), host=self.host)
+             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+             stdout, stderr = p.communicate()
+             status_code = p.wait()

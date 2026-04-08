@@ -1,0 +1,51 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 96559a67350daf..36e9402a94dafb 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -94,41 +115,12 @@ def __init__(self, loader=None, inventory=None, version_info=None):
+ 
+         # load fact cache
+         try:
+-            self._fact_cache = FactCache()
+-        except AnsibleError as e:
++            self._fact_cache = cache_loader.get(C.CACHE_PLUGIN)
++        except Exception as ex:
+             # bad cache plugin is not fatal error
+-            # fallback to a dict as in memory cache
+-            display.warning(to_text(e))
+-            self._fact_cache = {}
+-
+-    def __getstate__(self):
+-        data = dict(
+-            fact_cache=self._fact_cache,
+-            np_fact_cache=self._nonpersistent_fact_cache,
+-            vars_cache=self._vars_cache,
+-            extra_vars=self._extra_vars,
+-            host_vars_files=self._host_vars_files,
+-            group_vars_files=self._group_vars_files,
+-            omit_token=self._omit_token,
+-            options_vars=self._options_vars,
+-            inventory=self._inventory,
+-            safe_basedir=self.safe_basedir,
+-        )
+-        return data
+-
+-    def __setstate__(self, data):
+-        self._fact_cache = data.get('fact_cache', defaultdict(dict))
+-        self._nonpersistent_fact_cache = data.get('np_fact_cache', defaultdict(dict))
+-        self._vars_cache = data.get('vars_cache', defaultdict(dict))
+-        self._extra_vars = data.get('extra_vars', dict())
+-        self._host_vars_files = data.get('host_vars_files', defaultdict(dict))
+-        self._group_vars_files = data.get('group_vars_files', defaultdict(dict))
+-        self._omit_token = data.get('omit_token', '__omit_place_holder__%s' % sha1(os.urandom(64)).hexdigest())
+-        self._inventory = data.get('inventory', None)
+-        self._options_vars = data.get('options_vars', dict())
+-        self.safe_basedir = data.get('safe_basedir', False)
+-        self._loader = None
+-        self._hostvars = None
++            # fallback to builtin memory cache plugin
++            display.error_as_warning(None, ex)
++            self._fact_cache = cache_loader.get('ansible.builtin.memory')  # use FQCN to ensure the builtin version is used
+ 
+     @property
+     def extra_vars(self):

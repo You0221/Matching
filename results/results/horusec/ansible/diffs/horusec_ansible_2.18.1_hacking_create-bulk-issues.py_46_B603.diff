@@ -1,0 +1,25 @@
+diff --git a/hacking/create-bulk-issues.py b/hacking/create-bulk-issues.py
+index d2651415df17fd..09c79590e2250c 100755
+--- a/hacking/create-bulk-issues.py
++++ b/hacking/create-bulk-issues.py
+@@ -43,8 +44,18 @@ def create(self) -> str:
+             for label in self.labels:
+                 cmd.extend(('--label', label))
+ 
+-        process = subprocess.run(cmd, capture_output=True, check=True)
+-        url = process.stdout.decode().strip()
++        if self.assignee:
++            cmd.extend(('--assignee', self.assignee))
++
++        try:
++            process = subprocess.run(cmd, capture_output=True, check=True, text=True)
++        except subprocess.CalledProcessError as ex:
++            print('>>> Note')
++            print(f"You may need to run 'gh auth refresh -s project' if 'gh' reports it cannot find the project {self.project!r} when it exists.")
++            print(f'>>> Standard Output\n{ex.stdout.strip()}\n>>> Standard Error\n{ex.stderr.strip()}\n>>> Exception')
++            raise
++
++        url = process.stdout.strip()
+         return url
+ 
+ 

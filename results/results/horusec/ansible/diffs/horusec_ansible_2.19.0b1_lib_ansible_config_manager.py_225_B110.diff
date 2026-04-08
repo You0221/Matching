@@ -1,0 +1,23 @@
+diff --git a/lib/ansible/config/manager.py b/lib/ansible/config/manager.py
+index f4a308d58e471b..c4b0ffbc3624f9 100644
+--- a/lib/ansible/config/manager.py
++++ b/lib/ansible/config/manager.py
+@@ -215,18 +249,6 @@ def get_config_type(cfile):
+     return ftype
+ 
+ 
+-# FIXME: can move to module_utils for use for ini plugins also?
+-def get_ini_config_value(p, entry):
+-    """ returns the value of last ini entry found """
+-    value = None
+-    if p is not None:
+-        try:
+-            value = p.get(entry.get('section', 'defaults'), entry.get('key', ''), raw=True)
+-        except Exception:  # FIXME: actually report issues here
+-            pass
+-    return value
+-
+-
+ def find_ini_config_file(warnings=None):
+     """ Load INI Config File order(first found is used): ENV, CWD, HOME, /etc/ansible """
+     # FIXME: eventually deprecate ini configs

@@ -1,0 +1,82 @@
+diff --git a/lib/ansible/plugins/loader.py b/lib/ansible/plugins/loader.py
+index 266b67d11b97cc..b1f380558ebdc5 100644
+--- a/lib/ansible/plugins/loader.py
++++ b/lib/ansible/plugins/loader.py
+@@ -793,8 +907,8 @@ def _find_plugin_legacy(self, name, plugin_load_context, ignore_deprecated=False
+ 
+         return plugin_load_context.nope('{0} is not eligible for last-chance resolution'.format(name))
+ 
+-    def has_plugin(self, name, collection_list=None):
+-        ''' Checks if a plugin named name exists '''
++    def has_plugin(self, name: str, collection_list: list[str] | None = None) -> bool:
++        """ Checks if a plugin named name exists """
+ 
+         try:
+             return self.find_plugin(name, collection_list=collection_list) is not None
+@@ -804,45 +918,49 @@ def has_plugin(self, name, collection_list=None):
+             # log and continue, likely an innocuous type/package loading failure in collections import
+             display.debug('has_plugin error: {0}'.format(to_text(ex)))
+ 
+-    __contains__ = has_plugin
+-
+-    def _load_module_source(self, name, path):
++            return False
+ 
+-        # avoid collisions across plugins
+-        if name.startswith('ansible_collections.'):
+-            full_name = name
+-        else:
+-            full_name = '.'.join([self.package, name])
++    __contains__ = has_plugin
+ 
+-        if full_name in sys.modules:
++    def _load_module_source(self, *, python_module_name: str, path: str) -> types.ModuleType:
++        if python_module_name in sys.modules:
+             # Avoids double loading, See https://github.com/ansible/ansible/issues/13110
+-            return sys.modules[full_name]
++            return sys.modules[python_module_name]
+ 
+         with warnings.catch_warnings():
+             # FIXME: this still has issues if the module was previously imported but not "cached",
+             #  we should bypass this entire codepath for things that are directly importable
+             warnings.simplefilter("ignore", RuntimeWarning)
+-            spec = importlib.util.spec_from_file_location(to_native(full_name), to_native(path))
++            spec = importlib.util.spec_from_file_location(to_native(python_module_name), to_native(path))
+             module = importlib.util.module_from_spec(spec)
+ 
+             # mimic import machinery; make the module-being-loaded available in sys.modules during import
+             # and remove if there's a failure...
+-            sys.modules[full_name] = module
++            sys.modules[python_module_name] = module
+ 
+             try:
+                 spec.loader.exec_module(module)
+             except Exception:
+-                del sys.modules[full_name]
++                del sys.modules[python_module_name]
+                 raise
+ 
+         return module
+ 
+-    def _update_object(self, obj, name, path, redirected_names=None, resolved=None):
++    def _update_object(
++        self,
++        *,
++        obj: _AnsiblePluginInfoMixin,
++        name: str,
++        path: str,
++        redirected_names: list[str] | None = None,
++        resolved: str | None = None,
++    ) -> None:
++        # DTFIX-FUTURE: clean this up- standardize types, document, split/remove redundant bits
+ 
+         # set extra info on the module, in case we want it later
+-        setattr(obj, '_original_path', path)
+-        setattr(obj, '_load_name', name)
+-        setattr(obj, '_redirected_names', redirected_names or [])
++        obj._original_path = path
++        obj._load_name = name
++        obj._redirected_names = redirected_names or []
+ 
+         names = []
+         if resolved:

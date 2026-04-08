@@ -1,0 +1,42 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index bd63d98c1a3..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -585,24 +575,21 @@ def check_tz_naive(v: object) -> bool:
+         assert s is not None
+     elif isinstance(constraint, annotated_types.Predicate):
+         func = constraint.func
++        # Same logic as in `_known_annotated_metadata.apply_known_metadata()`:
++        predicate_name = f'{func.__qualname__!r} ' if hasattr(func, '__qualname__') else ''
++
++        def predicate_func(v: Any) -> Any:
++            if not func(v):
++                raise PydanticCustomError(
++                    'predicate_failed',
++                    f'Predicate {predicate_name}failed',  # pyright: ignore[reportArgumentType]
++                )
++            return v
+ 
+-        if func.__name__ == '<lambda>':
+-            # attempt to extract the source code for a lambda function
+-            # to use as the function name in error messages
+-            # TODO: is there a better way? should we just not do this?
+-            import inspect
+-
+-            try:
+-                source = inspect.getsource(func).strip()
+-                source = source.removesuffix(')')
+-                lambda_source_code = '`' + ''.join(''.join(source.split('lambda ')[1:]).split(':')[1:]).strip() + '`'
+-            except OSError:
+-                # stringified annotations
+-                lambda_source_code = 'lambda'
+-
+-            s = _check_func(func, lambda_source_code, s)
++        if s is None:
++            s = cs.no_info_plain_validator_function(predicate_func)
+         else:
+-            s = _check_func(func, func.__name__, s)
++            s = cs.no_info_after_validator_function(predicate_func, s)
+     elif isinstance(constraint, _NotEq):
+         value = constraint.value
+ 

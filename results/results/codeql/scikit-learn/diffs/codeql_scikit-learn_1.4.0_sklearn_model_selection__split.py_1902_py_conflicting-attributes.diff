@@ -1,0 +1,31 @@
+diff --git a/sklearn/model_selection/_split.py b/sklearn/model_selection/_split.py
+index 8bb06356e245e..53c11a665ccf4 100644
+--- a/sklearn/model_selection/_split.py
++++ b/sklearn/model_selection/_split.py
+@@ -1881,25 +1987,8 @@ def __init__(
+         )
+         self._default_test_size = 0.1
+ 
+-    def _iter_indices(self, X, y=None, groups=None):
+-        n_samples = _num_samples(X)
+-        n_train, n_test = _validate_shuffle_split(
+-            n_samples,
+-            self.test_size,
+-            self.train_size,
+-            default_test_size=self._default_test_size,
+-        )
+-
+-        rng = check_random_state(self.random_state)
+-        for i in range(self.n_splits):
+-            # random partition
+-            permutation = rng.permutation(n_samples)
+-            ind_test = permutation[:n_test]
+-            ind_train = permutation[n_test : (n_test + n_train)]
+-            yield ind_train, ind_test
+-
+ 
+-class GroupShuffleSplit(GroupsConsumerMixin, ShuffleSplit):
++class GroupShuffleSplit(GroupsConsumerMixin, BaseShuffleSplit):
+     """Shuffle-Group(s)-Out cross-validation iterator.
+ 
+     Provides randomized train/test indices to split data according to a

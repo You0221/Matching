@@ -1,0 +1,13 @@
+diff --git a/bandit/plugins/general_bind_all_interfaces.py b/bandit/plugins/general_bind_all_interfaces.py
+index 4659167af..58b840e86 100644
+--- a/bandit/plugins/general_bind_all_interfaces.py
++++ b/bandit/plugins/general_bind_all_interfaces.py
+@@ -43,7 +43,7 @@
+ @test.checks("Str")
+ @test.test_id("B104")
+ def hardcoded_bind_all_interfaces(context):
+-    if context.string_val == "0.0.0.0":
++    if context.string_val == "0.0.0.0":  # nosec: B104
+         return bandit.Issue(
+             severity=bandit.MEDIUM,
+             confidence=bandit.MEDIUM,

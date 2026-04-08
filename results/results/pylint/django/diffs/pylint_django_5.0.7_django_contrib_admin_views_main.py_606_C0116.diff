@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/views/main.py b/django/contrib/admin/views/main.py
+index 44001f00f92f..ada8ce39fc38 100644
+--- a/django/contrib/admin/views/main.py
++++ b/django/contrib/admin/views/main.py
+@@ -612,7 +618,7 @@ def has_related_field_in_list_display(self):
+             else:
+                 if isinstance(field.remote_field, ManyToOneRel):
+                     # <FK>_id field names don't require a join.
+-                    if field_name != field.get_attname():
++                    if field_name != field.attname:
+                         return True
+         return False
+ 

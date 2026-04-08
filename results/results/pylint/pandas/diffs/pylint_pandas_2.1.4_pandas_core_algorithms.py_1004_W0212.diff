@@ -1,0 +1,25 @@
+diff --git a/pandas/core/algorithms.py b/pandas/core/algorithms.py
+index 14dee202a9d8d..15a07da76d2f7 100644
+--- a/pandas/core/algorithms.py
++++ b/pandas/core/algorithms.py
+@@ -991,17 +1009,15 @@ def duplicated(
+         - ``last`` : Mark duplicates as ``True`` except for the last
+           occurrence.
+         - False : Mark all duplicates as ``True``.
++    mask : ndarray[bool], optional
++        array indicating which elements to exclude from checking
+ 
+     Returns
+     -------
+     duplicated : ndarray[bool]
+     """
+-    if hasattr(values, "dtype") and isinstance(values.dtype, BaseMaskedDtype):
+-        values = cast("BaseMaskedArray", values)
+-        return htable.duplicated(values._data, keep=keep, mask=values._mask)
+-
+     values = _ensure_data(values)
+-    return htable.duplicated(values, keep=keep)
++    return htable.duplicated(values, keep=keep, mask=mask)
+ 
+ 
+ def mode(

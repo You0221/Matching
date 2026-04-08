@@ -1,0 +1,22 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 9120384588ef2..6dad8dc1c8c21 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -1859,6 +1903,17 @@ def normalize(X, norm="l2", *, axis=1, copy=True, return_norm=False):
+     -----
+     For a comparison of the different scalers, transformers, and normalizers,
+     see: :ref:`sphx_glr_auto_examples_preprocessing_plot_all_scaling.py`.
++
++    Examples
++    --------
++    >>> from sklearn.preprocessing import normalize
++    >>> X = [[-2, 1, 2], [-1, 0, 1]]
++    >>> normalize(X, norm="l1")  # L1 normalization each row independently
++    array([[-0.4,  0.2,  0.4],
++           [-0.5,  0. ,  0.5]])
++    >>> normalize(X, norm="l2")  # L2 normalization each row independently
++    array([[-0.66...,  0.33...,  0.66...],
++           [-0.70...,  0.     ,  0.70...]])
+     """
+     if axis == 0:
+         sparse_format = "csc"

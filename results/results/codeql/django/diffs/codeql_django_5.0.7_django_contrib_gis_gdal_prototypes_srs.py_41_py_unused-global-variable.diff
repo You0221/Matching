@@ -1,0 +1,19 @@
+diff --git a/django/contrib/gis/gdal/prototypes/srs.py b/django/contrib/gis/gdal/prototypes/srs.py
+index 721eba86223f..82d91bd3119e 100644
+--- a/django/contrib/gis/gdal/prototypes/srs.py
++++ b/django/contrib/gis/gdal/prototypes/srs.py
+@@ -36,11 +36,9 @@ def units_func(f):
+     std_call("OSRDestroySpatialReference"), [c_void_p], errcheck=False
+ )
+ srs_validate = void_output(lgdal.OSRValidate, [c_void_p])
+-
+-if GDAL_VERSION >= (3, 0):
+-    set_axis_strategy = void_output(
+-        lgdal.OSRSetAxisMappingStrategy, [c_void_p, c_int], errcheck=False
+-    )
++set_axis_strategy = void_output(
++    lgdal.OSRSetAxisMappingStrategy, [c_void_p, c_int], errcheck=False
++)
+ 
+ # Getting the semi_major, semi_minor, and flattening functions.
+ semi_major = srs_double(lgdal.OSRGetSemiMajor)

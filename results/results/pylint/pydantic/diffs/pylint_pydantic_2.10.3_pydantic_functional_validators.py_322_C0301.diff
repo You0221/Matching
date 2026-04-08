@@ -1,0 +1,19 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index be96df045a8..2eed4ef8fc5 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -312,14 +300,6 @@ def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaH
+             if self.json_schema_input_type is PydanticUndefined
+             else handler.generate_schema(self.json_schema_input_type)
+         )
+-        # Try to resolve the original schema if required, because schema cleaning
+-        # won't inline references in metadata:
+-        if input_schema is not None:
+-            try:
+-                input_schema = handler.resolve_ref_schema(input_schema)
+-            except LookupError:
+-                pass
+-        metadata = {'pydantic_js_input_core_schema': input_schema} if input_schema is not None else {}
+ 
+         info_arg = _inspect_validator(self.func, 'wrap')
+         if info_arg:

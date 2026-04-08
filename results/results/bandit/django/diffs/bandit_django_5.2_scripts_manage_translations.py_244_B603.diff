@@ -1,0 +1,26 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index bc569fbd0a2e..302a4f6473e0 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -233,16 +290,16 @@ def fetch(resources=None, languages=None):
+             "-f",
+             "--minimum-perc=5",
+         ]
++        per_resource_langs = resource_lang_mapping.get(name, languages)
+         # Transifex pull
+-        if languages is None:
+-            run(cmd + ["--all"])
++        if per_resource_langs is None:
++            run([*cmd, "--all"], verbosity=verbosity)
+             target_langs = sorted(
+                 d for d in os.listdir(dir_) if not d.startswith("_") and d != "en"
+             )
+         else:
+-            for lang in languages:
+-                run(cmd + ["-l", lang])
+-            target_langs = languages
++            run([*cmd, "-l", ",".join(per_resource_langs)], verbosity=verbosity)
++            target_langs = per_resource_langs
+ 
+         target_langs = [LANG_OVERRIDES.get(d, d) for d in target_langs]
+ 

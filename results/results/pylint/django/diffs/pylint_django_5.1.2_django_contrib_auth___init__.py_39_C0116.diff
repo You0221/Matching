@@ -1,0 +1,44 @@
+diff --git a/django/contrib/auth/__init__.py b/django/contrib/auth/__init__.py
+index 3db1445d9ea9..8e359ec7ffe4 100644
+--- a/django/contrib/auth/__init__.py
++++ b/django/contrib/auth/__init__.py
+@@ -40,6 +40,39 @@ def get_backends():
+     return _get_backends(return_tuples=False)
+ 
+ 
++def _get_compatible_backends(request, **credentials):
++    for backend, backend_path in _get_backends(return_tuples=True):
++        backend_signature = inspect.signature(backend.authenticate)
++        try:
++            backend_signature.bind(request, **credentials)
++        except TypeError:
++            # This backend doesn't accept these credentials as arguments. Try
++            # the next one.
++            continue
++        yield backend, backend_path
++
++
++def _get_backend_from_user(user, backend=None):
++    try:
++        backend = backend or user.backend
++    except AttributeError:
++        backends = _get_backends(return_tuples=True)
++        if len(backends) == 1:
++            _, backend = backends[0]
++        else:
++            raise ValueError(
++                "You have multiple authentication backends configured and "
++                "therefore must provide the `backend` argument or set the "
++                "`backend` attribute on the user."
++            )
++    else:
++        if not isinstance(backend, str):
++            raise TypeError(
++                "backend must be a dotted import path string (got %r)." % backend
++            )
++    return backend
++
++
+ @sensitive_variables("credentials")
+ def _clean_credentials(credentials):
+     """

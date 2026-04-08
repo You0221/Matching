@@ -1,0 +1,32 @@
+diff --git a/django/contrib/sessions/backends/cached_db.py b/django/contrib/sessions/backends/cached_db.py
+index 3125a71cd0ea..2195f57acccd 100644
+--- a/django/contrib/sessions/backends/cached_db.py
++++ b/django/contrib/sessions/backends/cached_db.py
+@@ -43,6 +50,27 @@ def load(self):
+                 data = {}
+         return data
+ 
++    async def aload(self):
++        try:
++            data = await self._cache.aget(await self.acache_key())
++        except Exception:
++            # Some backends (e.g. memcache) raise an exception on invalid
++            # cache keys. If this happens, reset the session. See #17810.
++            data = None
++
++        if data is None:
++            s = await self._aget_session_from_db()
++            if s:
++                data = self.decode(s.session_data)
++                await self._cache.aset(
++                    await self.acache_key(),
++                    data,
++                    await self.aget_expiry_age(expiry=s.expire_date),
++                )
++            else:
++                data = {}
++        return data
++
+     def exists(self, session_key):
+         return (
+             session_key

@@ -1,0 +1,22 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7bc0610c81b..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1369,7 +1396,7 @@ def build_lookup(self, lookups, lhs, rhs):
+         # __exact is the default lookup if one isn't given.
+         *transforms, lookup_name = lookups or ["exact"]
+         for name in transforms:
+-            lhs = self.try_transform(lhs, name)
++            lhs = self.try_transform(lhs, name, lookups)
+         # First try get_lookup() so that the lookup takes precedence if the lhs
+         # supports both transform and lookup for the name.
+         lookup_class = lhs.get_lookup(lookup_name)
+@@ -1403,7 +1430,7 @@ def build_lookup(self, lookups, lhs, rhs):
+ 
+         return lookup
+ 
+-    def try_transform(self, lhs, name):
++    def try_transform(self, lhs, name, lookups=None):
+         """
+         Helper method for build_lookup(). Try to fetch and initialize
+         a transform for name parameter from lhs.

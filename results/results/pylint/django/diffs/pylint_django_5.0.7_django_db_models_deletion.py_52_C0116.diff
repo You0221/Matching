@@ -1,0 +1,15 @@
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index bc26d82e934c..da2e934c960a 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -60,8 +60,9 @@ def set_on_delete(collector, field, sub_objs, using):
+         def set_on_delete(collector, field, sub_objs, using):
+             collector.add_field_update(field, value, sub_objs)
+ 
++        set_on_delete.lazy_sub_objs = True
++
+     set_on_delete.deconstruct = lambda: ("django.db.models.SET", (value,), {})
+-    set_on_delete.lazy_sub_objs = True
+     return set_on_delete
+ 
+ 

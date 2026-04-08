@@ -1,0 +1,19 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2398,12 +2667,11 @@ def fit(self, X, y, sample_weight=None):
+         cross-validation takes the sample weights into account when computing
+         the validation score.
+         """
+-        _raise_for_unsupported_routing(self, "fit", sample_weight=sample_weight)
+-        super().fit(X, y, sample_weight=sample_weight)
++        super().fit(X, y, sample_weight=sample_weight, **params)
+         return self
+ 
+ 
+-class RidgeClassifierCV(_RoutingNotSupportedMixin, _RidgeClassifierMixin, _BaseRidgeCV):
++class RidgeClassifierCV(_RidgeClassifierMixin, _BaseRidgeCV):
+     """Ridge classifier with built-in cross-validation.
+ 
+     See glossary entry for :term:`cross-validation estimator`.

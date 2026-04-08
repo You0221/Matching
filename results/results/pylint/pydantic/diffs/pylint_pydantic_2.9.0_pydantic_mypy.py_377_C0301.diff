@@ -1,0 +1,55 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 0ce0a258d96..8fcb54dd934 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -374,10 +304,13 @@ def to_argument(
+         )
+ 
+     def expand_type(
+-        self, current_info: TypeInfo, api: SemanticAnalyzerPluginInterface, force_typevars_invariant: bool = False
++        self,
++        current_info: TypeInfo,
++        api: SemanticAnalyzerPluginInterface,
++        force_typevars_invariant: bool = False,
++        include_root_type: bool = False,
+     ) -> Type | None:
+         """Based on mypy.plugins.dataclasses.DataclassAttribute.expand_type."""
+-        # The getattr in the next line is used to prevent errors in legacy versions of mypy without this attribute
+         if force_typevars_invariant:
+             # In some cases, mypy will emit an error "Cannot use a covariant type variable as a parameter"
+             # To prevent that, we add an option to replace typevars with invariant ones while building certain
+@@ -388,18 +321,31 @@ def expand_type(
+                 modified_type.variance = INVARIANT
+                 self.type = modified_type
+ 
+-        if self.type is not None and getattr(self.info, 'self_type', None) is not None:
+-            # In general, it is not safe to call `expand_type()` during semantic analyzis,
++        if self.type is not None and self.info.self_type is not None:
++            # In general, it is not safe to call `expand_type()` during semantic analysis,
+             # however this plugin is called very late, so all types should be fully ready.
+             # Also, it is tricky to avoid eager expansion of Self types here (e.g. because
+             # we serialize attributes).
+             with state.strict_optional_set(api.options.strict_optional):
+                 filled_with_typevars = fill_typevars(current_info)
++                # Cannot be TupleType as current_info represents a Pydantic model:
++                assert isinstance(filled_with_typevars, Instance)
+                 if force_typevars_invariant:
+                     for arg in filled_with_typevars.args:
+                         if isinstance(arg, TypeVarType):
+                             arg.variance = INVARIANT
+-                return expand_type(self.type, {self.info.self_type.id: filled_with_typevars})
++
++                expanded_type = expand_type(self.type, {self.info.self_type.id: filled_with_typevars})
++                if include_root_type and isinstance(expanded_type, Instance) and is_root_model(expanded_type.type):
++                    # When a root model is used as a field, Pydantic allows both an instance of the root model
++                    # as well as instances of the `root` field type:
++                    root_type = expanded_type.type['root'].type
++                    if root_type is None:
++                        # Happens if the hint for 'root' has unsolved forward references
++                        return expanded_type
++                    expanded_root_type = expand_type_by_instance(root_type, expanded_type)
++                    expanded_type = UnionType([expanded_type, expanded_root_type])
++                return expanded_type
+         return self.type
+ 
+     def to_var(

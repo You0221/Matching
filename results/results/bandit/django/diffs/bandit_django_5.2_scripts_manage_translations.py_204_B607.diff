@@ -1,0 +1,12 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index bc569fbd0a2e..302a4f6473e0 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -206,6 +250,7 @@ def lang_stats(resources=None, languages=None):
+                 capture_output=True,
+                 env={"LANG": "C"},
+                 encoding="utf-8",
++                verbosity=verbosity,
+             )
+             if p.returncode == 0:
+                 # msgfmt output stats on stderr

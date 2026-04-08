@@ -1,0 +1,32 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index e055a380ad3..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -257,12 +409,24 @@ def validate_python(
+         Returns:
+             The validated object.
+         """
+-        return self.validator.validate_python(object, strict=strict, from_attributes=from_attributes, context=context)
++        return self.validator.validate_python(
++            object,
++            strict=strict,
++            from_attributes=from_attributes,
++            context=context,
++            allow_partial=experimental_allow_partial,
++        )
+ 
+     def validate_json(
+-        self, data: str | bytes, /, *, strict: bool | None = None, context: dict[str, Any] | None = None
++        self,
++        data: str | bytes | bytearray,
++        /,
++        *,
++        strict: bool | None = None,
++        context: dict[str, Any] | None = None,
++        experimental_allow_partial: bool | Literal['off', 'on', 'trailing-strings'] = False,
+     ) -> T:
+-        """Usage docs: https://docs.pydantic.dev/2.7/concepts/json/#json-parsing
++        """Usage docs: https://docs.pydantic.dev/2.10/concepts/json/#json-parsing
+ 
+         Validate a JSON string or bytes against the model.
+ 

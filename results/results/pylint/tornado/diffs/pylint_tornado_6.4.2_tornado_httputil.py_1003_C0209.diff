@@ -1,0 +1,13 @@
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index 9ce992d82b..7044aca02b 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -1000,7 +1122,7 @@ def _encode_header(key: str, pdict: Dict[str, str]) -> str:
+             out.append(k)
+         else:
+             # TODO: quote if necessary.
+-            out.append("%s=%s" % (k, v))
++            out.append(f"{k}={v}")
+     return "; ".join(out)
+ 
+ 

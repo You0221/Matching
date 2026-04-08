@@ -1,0 +1,14 @@
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index 8b5dea5c4f6c3..ef5081080bda1 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -10,8 +10,7 @@
+ from ..base import BaseEstimator, TransformerMixin, _fit_context
+ from ..utils import resample
+ from ..utils._param_validation import Interval, Options, StrOptions
+-from ..utils.deprecation import _deprecate_Xt_in_inverse_transform
+-from ..utils.stats import _weighted_percentile
++from ..utils.stats import _averaged_weighted_percentile, _weighted_percentile
+ from ..utils.validation import (
+     _check_feature_names_in,
+     _check_sample_weight,

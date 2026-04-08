@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index bf5ff39c13165..2894d8f174c13 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -1020,11 +1009,7 @@ def _validate_final_estimator(self):
+                 )
+             )
+ 
+-    # TODO(1.7): remove `sample_weight` from the signature after deprecation
+-    # cycle; pop it from `fit_params` before the `_raise_for_params` check and
+-    # reinsert afterwards, for backwards compatibility
+-    @_deprecate_positional_args(version="1.7")
+-    def fit(self, X, y, *, sample_weight=None, **fit_params):
++    def fit(self, X, y, **fit_params):
+         """Fit the estimators.
+ 
+         Parameters

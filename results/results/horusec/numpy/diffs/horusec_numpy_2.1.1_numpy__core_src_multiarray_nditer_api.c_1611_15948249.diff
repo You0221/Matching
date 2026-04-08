@@ -1,0 +1,15 @@
+diff --git a/numpy/_core/src/multiarray/nditer_api.c b/numpy/_core/src/multiarray/nditer_api.c
+index 28b7bf6e632f..da58489c6b9d 100644
+--- a/numpy/_core/src/multiarray/nditer_api.c
++++ b/numpy/_core/src/multiarray/nditer_api.c
+@@ -1608,10 +1581,6 @@ NpyIter_DebugPrint(NpyIter *iter)
+                 printf("%d ", (int)fixedstrides[iop]);
+             printf("\n");
+         }
+-        printf("|   Ptrs: ");
+-        for (iop = 0; iop < nop; ++iop)
+-            printf("%p ", (void *)NBF_PTRS(bufferdata)[iop]);
+-        printf("\n");
+         if (itflags&NPY_ITFLAG_REDUCE) {
+             printf("|   REDUCE Outer Strides: ");
+             for (iop = 0; iop < nop; ++iop)

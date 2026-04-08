@@ -1,0 +1,29 @@
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index d0abd42595..fbfd700887 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -1356,7 +1357,7 @@ def __init__(
+         ping_interval: Optional[float] = None,
+         ping_timeout: Optional[float] = None,
+         max_message_size: int = _default_max_message_size,
+-        subprotocols: Optional[List[str]] = [],
++        subprotocols: Optional[List[str]] = None,
+         resolver: Optional[Resolver] = None,
+     ) -> None:
+         self.connect_future = Future()  # type: Future[WebSocketClientConnection]
+@@ -1410,6 +1411,15 @@ def __init__(
+             104857600,
+         )
+ 
++    def __del__(self) -> None:
++        if self.protocol is not None:
++            # Unclosed client connections can sometimes log "task was destroyed but
++            # was pending" warnings if shutdown strikes at the wrong time (such as
++            # while a ping is being processed due to ping_interval). Log our own
++            # warning to make it a little more deterministic (although it's still
++            # dependent on GC timing).
++            warnings.warn("Unclosed WebSocketClientConnection", ResourceWarning)
++
+     def close(self, code: Optional[int] = None, reason: Optional[str] = None) -> None:
+         """Closes the websocket connection.
+ 

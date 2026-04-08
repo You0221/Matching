@@ -1,0 +1,27 @@
+diff --git a/pandas/core/interchange/buffer.py b/pandas/core/interchange/buffer.py
+index b31a2526a063d..a54e4428bd836 100644
+--- a/pandas/core/interchange/buffer.py
++++ b/pandas/core/interchange/buffer.py
+@@ -1,16 +1,17 @@
+ from __future__ import annotations
+ 
+-from typing import Any
+-
+-import numpy as np
++from typing import (
++    TYPE_CHECKING,
++    Any,
++)
+ 
+ from pandas.core.interchange.dataframe_protocol import (
+     Buffer,
+     DlpackDeviceType,
+ )
+-from pandas.util.version import Version
+ 
+-_NUMPY_HAS_DLPACK = Version(np.__version__) >= Version("1.22.0")
++if TYPE_CHECKING:
++    import numpy as np
+ 
+ 
+ class PandasBuffer(Buffer):

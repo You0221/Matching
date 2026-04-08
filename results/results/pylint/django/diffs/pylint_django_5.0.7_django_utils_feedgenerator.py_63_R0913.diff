@@ -1,0 +1,37 @@
+diff --git a/django/utils/feedgenerator.py b/django/utils/feedgenerator.py
+index 31ca9a2db9af..fae327143086 100644
+--- a/django/utils/feedgenerator.py
++++ b/django/utils/feedgenerator.py
+@@ -74,12 +123,24 @@ def __init__(
+         feed_copyright=None,
+         feed_guid=None,
+         ttl=None,
++        stylesheets=None,
+         **kwargs,
+     ):
+         def to_str(s):
+             return str(s) if s is not None else s
+ 
++        def to_stylesheet(s):
++            return s if isinstance(s, Stylesheet) else Stylesheet(s)
++
+         categories = categories and [str(c) for c in categories]
++
++        if stylesheets is not None:
++            if isinstance(stylesheets, (Stylesheet, str)):
++                raise TypeError(
++                    f"stylesheets should be a list, not {stylesheets.__class__}"
++                )
++            stylesheets = [to_stylesheet(s) for s in stylesheets]
++
+         self.feed = {
+             "title": to_str(title),
+             "link": iri_to_uri(link),
+@@ -94,6 +155,7 @@ def to_str(s):
+             "feed_copyright": to_str(feed_copyright),
+             "id": feed_guid or link,
+             "ttl": to_str(ttl),
++            "stylesheets": stylesheets,
+             **kwargs,
+         }
+         self.items = []

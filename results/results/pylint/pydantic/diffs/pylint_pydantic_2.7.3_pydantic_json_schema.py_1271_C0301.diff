@@ -1,0 +1,28 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1256,20 +1359,15 @@ def typed_dict_schema(self, schema: core_schema.TypedDictSchema) -> JsonSchemaVa
+         ]
+         if self.mode == 'serialization':
+             named_required_fields.extend(self._name_required_computed_fields(schema.get('computed_fields', [])))
+-        cls = _get_typed_dict_cls(schema)
++        cls = schema.get('cls')
+         config = _get_typed_dict_config(cls)
+         with self._config_wrapper_stack.push(config):
+             json_schema = self._named_required_fields_schema(named_required_fields)
+ 
+-        json_schema_extra = config.get('json_schema_extra')
+-        extra = schema.get('extra_behavior')
+-        if extra is None:
+-            extra = config.get('extra', 'ignore')
+-
+         if cls is not None:
+-            title = config.get('title') or cls.__name__
+-            json_schema = self._update_class_schema(json_schema, title, extra, cls, json_schema_extra)
++            self._update_class_schema(json_schema, cls, config)
+         else:
++            extra = config.get('extra')
+             if extra == 'forbid':
+                 json_schema['additionalProperties'] = False
+             elif extra == 'allow':

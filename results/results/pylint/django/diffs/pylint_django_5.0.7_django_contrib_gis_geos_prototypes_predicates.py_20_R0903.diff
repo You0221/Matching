@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/predicates.py b/django/contrib/gis/geos/prototypes/predicates.py
+index 32b790173a67..71cfd8d94b59 100644
+--- a/django/contrib/gis/geos/prototypes/predicates.py
++++ b/django/contrib/gis/geos/prototypes/predicates.py
+@@ -18,6 +20,7 @@ class UnaryPredicate(GEOSFuncFactory):
+ 
+ class BinaryPredicate(UnaryPredicate):
+     "For GEOS binary predicate functions."
++
+     argtypes = [GEOM_PTR, GEOM_PTR]
+ 
+ 

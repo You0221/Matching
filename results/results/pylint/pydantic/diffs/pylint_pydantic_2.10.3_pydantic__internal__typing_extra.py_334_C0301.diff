@@ -1,0 +1,84 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 6b6fd82e822..4be1a09cb32 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -267,70 +132,25 @@ def is_classvar_annotation(tp: Any, /) -> bool:
+     return False
+ 
+ 
++_t_final = typing.Final
++_te_final = typing_extensions.Final
++
++
+ # TODO implement `is_finalvar_annotation` as Final can be wrapped with other special forms:
+ def is_finalvar(tp: Any, /) -> bool:
+     """Return whether the provided argument is a `Final` special form, parametrized or not.
+ 
+-    ```python test="skip" lint="skip"
++    ```python {test="skip" lint="skip"}
+     is_finalvar(Final[int])
+     #> True
+     is_finalvar(Final)
+     #> True
+     """
+     # Final is not necessarily parametrized:
+-    return _is_typing_name(tp, name='Final') or _is_typing_name(get_origin(tp), name='Final')
+-
+-
+-def is_required(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `Required` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_required(Required[int])
+-    #> True
+-    """
+-    return _is_typing_name(get_origin(tp), name='Required')
+-
+-
+-def is_not_required(tp: Any, /) -> bool:
+-    """Return whether the provided argument is a `NotRequired` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_required(Required[int])
+-    #> True
+-    """
+-    return _is_typing_name(get_origin(tp), name='NotRequired')
+-
+-
+-def is_no_return(tp: Any, /) -> bool:
+-    """Return whether the provided argument is the `NoReturn` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_no_return(NoReturn)
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(tp, name='NoReturn')
+-
+-
+-def is_never(tp: Any, /) -> bool:
+-    """Return whether the provided argument is the `Never` special form.
+-
+-    ```python test="skip" lint="skip"
+-    is_never(Never)
+-    #> True
+-    ```
+-    """
+-    return _is_typing_name(tp, name='Never')
+-
+-
+-_DEPRECATED_TYPES: tuple[type[typing_extensions.deprecated], ...] = (typing_extensions.deprecated,)
+-if hasattr(warnings, 'deprecated'):
+-    _DEPRECATED_TYPES = (*_DEPRECATED_TYPES, warnings.deprecated)  # pyright: ignore[reportAttributeAccessIssue]
+-
+-
+-def is_deprecated_instance(obj: Any, /) -> TypeIs[deprecated]:
+-    """Return whether the argument is an instance of the `warnings.deprecated` class or the `typing_extensions` backport."""
+-    return isinstance(obj, _DEPRECATED_TYPES)
++    if tp is _t_final or tp is _te_final:
++        return True
++    origin = get_origin(tp)
++    return origin is _t_final or origin is _te_final
+ 
+ 
+ _NONE_TYPES: tuple[Any, ...] = (None, NoneType, typing.Literal[None], typing_extensions.Literal[None])

@@ -1,0 +1,23 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -468,6 +473,9 @@ def get_prefetch_querysets(self, instances, querysets=None):
+         instances_dict = {instance_attr(inst): inst for inst in instances}
+         query = {"%s__in" % self.related.field.name: instances}
+         queryset = queryset.filter(**query)
++        # There can be only one object prefetched for each instance so clear
++        # ordering if the query allows it without side effects.
++        queryset.query.clear_ordering()
+ 
+         # Since we're going to assign directly in the cache,
+         # we must manage the reverse relation cache manually.
+@@ -479,7 +487,7 @@ def get_prefetch_querysets(self, instances, querysets=None):
+             rel_obj_attr,
+             instance_attr,
+             True,
+-            self.related.get_cache_name(),
++            self.related.cache_name,
+             False,
+         )
+ 

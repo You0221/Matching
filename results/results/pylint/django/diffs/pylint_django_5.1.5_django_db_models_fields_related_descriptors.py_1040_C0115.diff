@@ -1,0 +1,31 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index bc288c47ecec..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -1081,7 +1081,7 @@ def __init__(self, instance=None):
+             # Even if this relation is not to pk, we require still pk value.
+             # The wish is that the instance has been already saved to DB,
+             # although having a pk value isn't a guarantee of that.
+-            if instance.pk is None:
++            if not instance._is_pk_set():
+                 raise ValueError(
+                     "%r instance needs to have a primary key value before "
+                     "a many-to-many relationship can be used."
+@@ -1167,7 +1167,7 @@ def get_prefetch_querysets(self, instances, querysets=None):
+             queryset._add_hints(instance=instances[0])
+             queryset = queryset.using(queryset._db or self._db)
+             queryset = _filter_prefetch_queryset(
+-                queryset._next_is_sticky(), self.query_field_name, instances
++                queryset, self.query_field_name, instances
+             )
+ 
+             # M2M: need to annotate the query in order to get the primary model
+@@ -1219,7 +1219,7 @@ def constrained_target(self):
+                 return None
+             hints = {"instance": self.instance}
+             manager = self.through._base_manager.db_manager(db, hints=hints)
+-            filters = {self.source_field_name: self.instance.pk}
++            filters = {self.source_field_name: self.related_val[0]}
+             # Nullable target rows must be excluded as well as they would have
+             # been filtered out from an INNER JOIN.
+             if self.target_field.null:

@@ -1,0 +1,22 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -1649,13 +1683,15 @@ def transform(self, X):
+             Transformed array.
+         """
+         check_is_fitted(self)
+-        X = self._validate_data(
++        X = validate_data(
++            self,
+             X,
+             accept_sparse=("csr", "csc"),
+             copy=self.copy,
+             dtype=FLOAT_DTYPES,
++            force_writeable=True,
+             reset=False,
+-            force_all_finite="allow-nan",
++            ensure_all_finite="allow-nan",
+         )
+ 
+         if sparse.issparse(X):

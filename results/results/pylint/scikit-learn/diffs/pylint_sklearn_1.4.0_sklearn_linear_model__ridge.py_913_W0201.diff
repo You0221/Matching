@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -910,7 +991,7 @@ def fit(self, X, y, sample_weight=None):
+                 # for dense matrices or when intercept is set to 0
+                 params = {}
+ 
+-            self.coef_, self.n_iter_ = _ridge_regression(
++            self.coef_, self.n_iter_, self.solver_ = _ridge_regression(
+                 X,
+                 y,
+                 alpha=self.alpha,

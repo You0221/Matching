@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index 2967b91225fdb..c5c940bed6c39 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -300,7 +301,7 @@ def line_search(self, X, y, sample_weight):
+         self.raw_prediction = raw
+         if is_verbose:
+             print(
+-                f"    line search successful after {i+1} iterations with "
++                f"    line search successful after {i + 1} iterations with "
+                 f"loss={self.loss_value}."
+             )
+ 

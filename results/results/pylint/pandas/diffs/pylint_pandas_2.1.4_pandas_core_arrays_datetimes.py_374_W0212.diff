@@ -1,0 +1,46 @@
+diff --git a/pandas/core/arrays/datetimes.py b/pandas/core/arrays/datetimes.py
+index 8ad51e4a90027..02656b655a0c6 100644
+--- a/pandas/core/arrays/datetimes.py
++++ b/pandas/core/arrays/datetimes.py
+@@ -353,36 +383,23 @@ def _from_sequence_not_strict(
+                 "Use obj.tz_localize(None) instead."
+             )
+ 
+-        freq, freq_infer = dtl.validate_inferred_freq(freq, inferred_freq, freq_infer)
+-        if explicit_none:
+-            freq = None
+-
+         data_unit = np.datetime_data(subarr.dtype)[0]
+         data_dtype = tz_to_dtype(tz, data_unit)
+-        result = cls._simple_new(subarr, freq=freq, dtype=data_dtype)
++        result = cls._simple_new(subarr, freq=inferred_freq, dtype=data_dtype)
+         if unit is not None and unit != result.unit:
+             # If unit was specified in user-passed dtype, cast to it here
+             result = result.as_unit(unit)
+ 
+-        if inferred_freq is None and freq is not None:
+-            # this condition precludes `freq_infer`
+-            cls._validate_frequency(result, freq, ambiguous=ambiguous)
+-
+-        elif freq_infer:
+-            # Set _freq directly to bypass duplicative _validate_frequency
+-            # check.
+-            result._freq = to_offset(result.inferred_freq)
+-
++        validate_kwds = {"ambiguous": ambiguous}
++        result._maybe_pin_freq(freq, validate_kwds)
+         return result
+ 
+-    # error: Signature of "_generate_range" incompatible with supertype
+-    # "DatetimeLikeArrayMixin"
+     @classmethod
+-    def _generate_range(  # type: ignore[override]
++    def _generate_range(
+         cls,
+         start,
+         end,
+-        periods,
++        periods: int | None,
+         freq,
+         tz=None,
+         normalize: bool = False,

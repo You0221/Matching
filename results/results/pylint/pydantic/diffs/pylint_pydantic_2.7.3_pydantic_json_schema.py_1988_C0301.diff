@@ -1,0 +1,24 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..64c659e8d22 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -1980,14 +2024,13 @@ def get_cache_defs_ref_schema(self, core_ref: CoreRef) -> tuple[DefsRef, JsonSch
+         return defs_ref, ref_json_schema
+ 
+     def handle_ref_overrides(self, json_schema: JsonSchemaValue) -> JsonSchemaValue:
+-        """It is not valid for a schema with a top-level $ref to have sibling keys.
++        """Remove any sibling keys that are redundant with the referenced schema.
+ 
+-        During our own schema generation, we treat sibling keys as overrides to the referenced schema,
+-        but this is not how the official JSON schema spec works.
++        Args:
++            json_schema: The schema to remove redundant sibling keys from.
+ 
+-        Because of this, we first remove any sibling keys that are redundant with the referenced schema, then if
+-        any remain, we transform the schema from a top-level '$ref' to use allOf to move the $ref out of the top level.
+-        (See bottom of https://swagger.io/docs/specification/using-ref/ for a reference about this behavior)
++        Returns:
++            The schema with redundant sibling keys removed.
+         """
+         if '$ref' in json_schema:
+             # prevent modifications to the input; this copy may be safe to drop if there is significant overhead

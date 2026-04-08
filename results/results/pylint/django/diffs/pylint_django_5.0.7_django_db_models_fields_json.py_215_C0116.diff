@@ -1,0 +1,28 @@
+diff --git a/django/db/models/fields/json.py b/django/db/models/fields/json.py
+index b7cde157c4fa..188fcf520c48 100644
+--- a/django/db/models/fields/json.py
++++ b/django/db/models/fields/json.py
+@@ -216,20 +198,18 @@ def compile_json_path_final_key(self, key_transform):
+         # Compile the final key without interpreting ints as array elements.
+         return ".%s" % json.dumps(key_transform)
+ 
+-    def as_sql(self, compiler, connection, template=None):
++    def _as_sql_parts(self, compiler, connection):
+         # Process JSON path from the left-hand side.
+         if isinstance(self.lhs, KeyTransform):
+-            lhs, lhs_params, lhs_key_transforms = self.lhs.preprocess_lhs(
++            lhs_sql, lhs_params, lhs_key_transforms = self.lhs.preprocess_lhs(
+                 compiler, connection
+             )
+             lhs_json_path = compile_json_path(lhs_key_transforms)
+         else:
+-            lhs, lhs_params = self.process_lhs(compiler, connection)
++            lhs_sql, lhs_params = self.process_lhs(compiler, connection)
+             lhs_json_path = "$"
+-        sql = template % lhs
+         # Process JSON path from the right-hand side.
+         rhs = self.rhs
+-        rhs_params = []
+         if not isinstance(rhs, (list, tuple)):
+             rhs = [rhs]
+         for key in rhs:

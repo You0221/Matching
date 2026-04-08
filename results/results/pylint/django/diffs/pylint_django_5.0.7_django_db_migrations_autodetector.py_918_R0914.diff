@@ -1,0 +1,17 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -971,9 +1060,9 @@ def create_renamed_fields(self):
+                                 (rem_app_label, rem_model_name, rem_field_name)
+                             )
+                             old_field_keys.add((app_label, model_name, field_name))
+-                            self.renamed_fields[
+-                                app_label, model_name, field_name
+-                            ] = rem_field_name
++                            self.renamed_fields[app_label, model_name, field_name] = (
++                                rem_field_name
++                            )
+                             break
+ 
+     def generate_renamed_fields(self):

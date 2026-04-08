@@ -1,0 +1,41 @@
+diff --git a/django/contrib/auth/models.py b/django/contrib/auth/models.py
+index 85330e2c0e6f..623b1698010f 100644
+--- a/django/contrib/auth/models.py
++++ b/django/contrib/auth/models.py
+@@ -152,14 +153,36 @@ def _create_user(self, username, email, password, **extra_fields):
+         username = GlobalUserModel.normalize_username(username)
+         user = self.model(username=username, email=email, **extra_fields)
+         user.password = make_password(password)
++        return user
++
++    def _create_user(self, username, email, password, **extra_fields):
++        """
++        Create and save a user with the given username, email, and password.
++        """
++        user = self._create_user_object(username, email, password, **extra_fields)
+         user.save(using=self._db)
+         return user
+ 
++    async def _acreate_user(self, username, email, password, **extra_fields):
++        """See _create_user()"""
++        user = self._create_user_object(username, email, password, **extra_fields)
++        await user.asave(using=self._db)
++        return user
++
+     def create_user(self, username, email=None, password=None, **extra_fields):
+         extra_fields.setdefault("is_staff", False)
+         extra_fields.setdefault("is_superuser", False)
+         return self._create_user(username, email, password, **extra_fields)
+ 
++    create_user.alters_data = True
++
++    async def acreate_user(self, username, email=None, password=None, **extra_fields):
++        extra_fields.setdefault("is_staff", False)
++        extra_fields.setdefault("is_superuser", False)
++        return await self._acreate_user(username, email, password, **extra_fields)
++
++    acreate_user.alters_data = True
++
+     def create_superuser(self, username, email=None, password=None, **extra_fields):
+         extra_fields.setdefault("is_staff", True)
+         extra_fields.setdefault("is_superuser", True)

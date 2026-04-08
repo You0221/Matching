@@ -1,0 +1,12 @@
+diff --git a/django/db/backends/mysql/compiler.py b/django/db/backends/mysql/compiler.py
+index 2ec6bea2f116..0291b76c7062 100644
+--- a/django/db/backends/mysql/compiler.py
++++ b/django/db/backends/mysql/compiler.py
+@@ -78,7 +70,3 @@ def as_sql(self):
+                 # removed in .update() and cannot be resolved.
+                 pass
+         return update_query, update_params
+-
+-
+-class SQLAggregateCompiler(compiler.SQLAggregateCompiler, SQLCompiler):
+-    pass

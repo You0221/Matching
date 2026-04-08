@@ -1,0 +1,21 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index cd300e47bce7..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1236,14 +1263,14 @@ def _prepare_related_fields_for_save(self, operation_name, fields=None):
+                 and hasattr(field, "fk_field")
+             ):
+                 obj = field.get_cached_value(self, default=None)
+-                if obj and obj.pk is None:
++                if obj and not obj._is_pk_set():
+                     raise ValueError(
+                         f"{operation_name}() prohibited to prevent data loss due to "
+                         f"unsaved related object '{field.name}'."
+                     )
+ 
+     def delete(self, using=None, keep_parents=False):
+-        if self.pk is None:
++        if not self._is_pk_set():
+             raise ValueError(
+                 "%s object can't be deleted because its %s attribute is set "
+                 "to None." % (self._meta.object_name, self._meta.pk.attname)

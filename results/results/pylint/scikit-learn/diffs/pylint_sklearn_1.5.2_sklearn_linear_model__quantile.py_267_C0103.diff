@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_quantile.py b/sklearn/linear_model/_quantile.py
+index 33451d8640bff..446d232958e8d 100644
+--- a/sklearn/linear_model/_quantile.py
++++ b/sklearn/linear_model/_quantile.py
+@@ -272,7 +260,7 @@ def fit(self, X, y, sample_weight=None):
+             c=c,
+             A_eq=A_eq,
+             b_eq=b_eq,
+-            method=solver,
++            method=self.solver,
+             options=solver_options,
+         )
+         solution = result.x

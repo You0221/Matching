@@ -1,0 +1,13 @@
+diff --git a/tornado/template.py b/tornado/template.py
+index d53e977c5e..0064c6fbd1 100644
+--- a/tornado/template.py
++++ b/tornado/template.py
+@@ -500,7 +500,7 @@ def _create_template(self, name: str) -> Template:
+         return Template(self.dict[name], name=name, loader=self)
+ 
+ 
+-class _Node(object):
++class _Node:
+     def each_child(self) -> Iterable["_Node"]:
+         return ()
+ 

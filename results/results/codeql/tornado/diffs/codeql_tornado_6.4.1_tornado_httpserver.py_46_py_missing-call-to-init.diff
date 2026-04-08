@@ -1,0 +1,13 @@
+diff --git a/tornado/httpserver.py b/tornado/httpserver.py
+index 757f711b24..68c6301b1d 100644
+--- a/tornado/httpserver.py
++++ b/tornado/httpserver.py
+@@ -89,7 +89,7 @@ class HTTPServer(TCPServer, Configurable, httputil.HTTPServerConnectionDelegate)
+             async def main():
+                 server = HTTPServer()
+                 server.listen(8888)
+-                await asyncio.Event.wait()
++                await asyncio.Event().wait()
+ 
+             asyncio.run(main())
+ 

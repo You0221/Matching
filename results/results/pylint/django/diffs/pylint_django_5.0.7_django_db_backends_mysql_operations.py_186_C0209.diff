@@ -1,0 +1,14 @@
+diff --git a/django/db/backends/mysql/operations.py b/django/db/backends/mysql/operations.py
+index 76ca8157656c..980630353934 100644
+--- a/django/db/backends/mysql/operations.py
++++ b/django/db/backends/mysql/operations.py
+@@ -186,8 +183,7 @@ def quote_name(self, name):
+         return "`%s`" % name
+ 
+     def return_insert_columns(self, fields):
+-        # MySQL and MariaDB < 10.5.0 don't support an INSERT...RETURNING
+-        # statement.
++        # MySQL doesn't support an INSERT...RETURNING statement.
+         if not fields:
+             return "", ()
+         columns = [

@@ -1,0 +1,35 @@
+diff --git a/django/utils/text.py b/django/utils/text.py
+index 082673a0cc70..05b781b0114f 100644
+--- a/django/utils/text.py
++++ b/django/utils/text.py
+@@ -98,21 +196,20 @@ def chars(self, num, truncate=None, html=False):
+         """
+         self._setup()
+         length = int(num)
++        if length <= 0:
++            return ""
+         text = unicodedata.normalize("NFC", self._wrapped)
+ 
+-        # Calculate the length to truncate to (max length - end_text length)
+-        truncate_len = length
+-        for char in add_truncation_text("", truncate):
+-            if not unicodedata.combining(char):
+-                truncate_len -= 1
+-                if truncate_len == 0:
+-                    break
+         if html:
+-            return self._truncate_html(length, truncate, text, truncate_len, False)
+-        return self._text_chars(length, truncate, text, truncate_len)
++            parser = TruncateCharsHTMLParser(length=length, replacement=truncate)
++            parser.feed(text)
++            parser.close()
++            return parser.output
++        return self._text_chars(length, truncate, text)
+ 
+-    def _text_chars(self, length, truncate, text, truncate_len):
++    def _text_chars(self, length, truncate, text):
+         """Truncate a string after a certain number of chars."""
++        truncate_len = calculate_truncate_chars_length(length, truncate)
+         s_len = 0
+         end_index = None
+         for i, char in enumerate(text):

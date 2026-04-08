@@ -1,0 +1,19 @@
+diff --git a/django/db/models/functions/math.py b/django/db/models/functions/math.py
+index 460143ba5af0..5fa4654a843d 100644
+--- a/django/db/models/functions/math.py
++++ b/django/db/models/functions/math.py
+@@ -47,9 +47,11 @@ def as_sqlite(self, compiler, connection, **extra_context):
+         clone = self.copy()
+         clone.set_source_expressions(
+             [
+-                Cast(expression, FloatField())
+-                if isinstance(expression.output_field, IntegerField)
+-                else expression
++                (
++                    Cast(expression, FloatField())
++                    if isinstance(expression.output_field, IntegerField)
++                    else expression
++                )
+                 for expression in self.get_source_expressions()[::-1]
+             ]
+         )

@@ -1,0 +1,17 @@
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index 34b14107a7eb..266a3efadcc4 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -1198,6 +1242,12 @@ def reduce(self, operation, app_label):
+             and self.constraint.name == operation.name
+         ):
+             return []
++        if (
++            isinstance(operation, AlterConstraint)
++            and self.model_name_lower == operation.model_name_lower
++            and self.constraint.name == operation.name
++        ):
++            return [AddConstraint(self.model_name, operation.constraint)]
+         return super().reduce(operation, app_label)
+ 
+ 

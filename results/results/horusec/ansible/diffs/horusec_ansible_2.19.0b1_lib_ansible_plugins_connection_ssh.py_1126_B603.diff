@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 3e854a612b591f..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -1126,7 +1138,7 @@ def _bare_run(self, cmd: list[bytes], in_data: bytes | None, sudoable: bool = Tr
+                 p = subprocess.Popen(cmd, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **popen_kwargs)
+                 stdin = os.fdopen(master, 'wb', 0)
+                 os.close(slave)
+-            except (OSError, IOError):
++            except OSError:
+                 p = None
+ 
+         if not p:

@@ -1,0 +1,85 @@
+diff --git a/tornado/options.py b/tornado/options.py
+index b82966910b..b6578bb901 100644
+--- a/tornado/options.py
++++ b/tornado/options.py
+@@ -130,7 +130,7 @@ class Error(Exception):
+     pass
+ 
+ 
+-class OptionParser(object):
++class OptionParser:
+     """A collection of options, a dictionary with object-like access.
+ 
+     Normally accessed via static functions in the `tornado.options` module,
+@@ -188,7 +188,7 @@ def groups(self) -> Set[str]:
+ 
+         .. versionadded:: 3.1
+         """
+-        return set(opt.group_name for opt in self._options.values())
++        return {opt.group_name for opt in self._options.values()}
+ 
+     def group_dict(self, group: str) -> Dict[str, Any]:
+         """The names and values of options in a group.
+@@ -207,18 +207,18 @@ def group_dict(self, group: str) -> Dict[str, Any]:
+ 
+         .. versionadded:: 3.1
+         """
+-        return dict(
+-            (opt.name, opt.value())
++        return {
++            opt.name: opt.value()
+             for name, opt in self._options.items()
+             if not group or group == opt.group_name
+-        )
++        }
+ 
+     def as_dict(self) -> Dict[str, Any]:
+         """The names and values of all options.
+ 
+         .. versionadded:: 3.1
+         """
+-        return dict((opt.name, opt.value()) for name, opt in self._options.items())
++        return {opt.name: opt.value() for name, opt in self._options.items()}
+ 
+     def define(
+         self,
+@@ -427,8 +427,8 @@ def parse_config_file(self, path: str, final: bool = True) -> None:
+                             % (option.name, option.type.__name__)
+                         )
+ 
+-                if type(config[name]) == str and (
+-                    option.type != str or option.multiple
++                if type(config[name]) is str and (
++                    option.type is not str or option.multiple
+                 ):
+                     option.parse(config[name])
+                 else:
+@@ -482,15 +482,11 @@ def run_parse_callbacks(self) -> None:
+ 
+     def mockable(self) -> "_Mockable":
+         """Returns a wrapper around self that is compatible with
+-        `mock.patch <unittest.mock.patch>`.
++        `unittest.mock.patch`.
+ 
+-        The `mock.patch <unittest.mock.patch>` function (included in
+-        the standard library `unittest.mock` package since Python 3.3,
+-        or in the third-party ``mock`` package for older versions of
+-        Python) is incompatible with objects like ``options`` that
+-        override ``__getattr__`` and ``__setattr__``.  This function
+-        returns an object that can be used with `mock.patch.object
+-        <unittest.mock.patch.object>` to modify option values::
++        The `unittest.mock.patch` function is incompatible with objects like ``options`` that
++        override ``__getattr__`` and ``__setattr__``.  This function returns an object that can be
++        used with `mock.patch.object <unittest.mock.patch.object>` to modify option values::
+ 
+             with mock.patch.object(options.mockable(), 'name', value):
+                 assert options.name == value
+@@ -498,7 +494,7 @@ def mockable(self) -> "_Mockable":
+         return _Mockable(self)
+ 
+ 
+-class _Mockable(object):
++class _Mockable:
+     """`mock.patch` compatible wrapper for `OptionParser`.
+ 
+     As of ``mock`` version 1.0.1, when an object uses ``__getattr__``

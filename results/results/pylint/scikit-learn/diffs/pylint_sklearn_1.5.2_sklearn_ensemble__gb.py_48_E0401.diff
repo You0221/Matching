@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index 960e469a090cd..fded8a535413d 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -50,7 +49,7 @@
+ from ..utils._param_validation import HasMethods, Interval, StrOptions
+ from ..utils.multiclass import check_classification_targets
+ from ..utils.stats import _weighted_percentile
+-from ..utils.validation import _check_sample_weight, check_is_fitted
++from ..utils.validation import _check_sample_weight, check_is_fitted, validate_data
+ from ._base import BaseEnsemble
+ from ._gradient_boosting import _random_sample_mask, predict_stage, predict_stages
+ 

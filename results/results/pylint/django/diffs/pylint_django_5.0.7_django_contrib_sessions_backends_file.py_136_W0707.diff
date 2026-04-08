@@ -1,0 +1,20 @@
+diff --git a/django/contrib/sessions/backends/file.py b/django/contrib/sessions/backends/file.py
+index d3ba8b11dddd..e15b3f0141ec 100644
+--- a/django/contrib/sessions/backends/file.py
++++ b/django/contrib/sessions/backends/file.py
+@@ -177,9 +183,15 @@ def save(self, must_create=False):
+         except (EOFError, OSError):
+             pass
+ 
++    async def asave(self, must_create=False):
++        return self.save(must_create=must_create)
++
+     def exists(self, session_key):
+         return os.path.exists(self._key_to_file(session_key))
+ 
++    async def aexists(self, session_key):
++        return self.exists(session_key)
++
+     def delete(self, session_key=None):
+         if session_key is None:
+             if self.session_key is None:

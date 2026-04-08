@@ -1,0 +1,29 @@
+diff --git a/django/db/backends/sqlite3/schema.py b/django/db/backends/sqlite3/schema.py
+index c5b428fc678c..3617d17fac84 100644
+--- a/django/db/backends/sqlite3/schema.py
++++ b/django/db/backends/sqlite3/schema.py
+@@ -296,6 +303,12 @@ def add_field(self, model, field):
+         # Special-case implicit M2M tables.
+         if field.many_to_many and field.remote_field.through._meta.auto_created:
+             self.create_model(field.remote_field.through)
++        elif isinstance(field, CompositePrimaryKey):
++            # If a CompositePrimaryKey field was added, the existing primary key field
++            # had to be altered too, resulting in an AddField, AlterField migration.
++            # The table cannot be re-created on AddField, it would result in a
++            # duplicate primary key error.
++            return
+         elif (
+             # Primary keys and unique fields are not supported in ALTER TABLE
+             # ADD COLUMN.
+@@ -308,10 +321,7 @@ def add_field(self, model, field):
+             or self.effective_default(field) is not None
+             # Fields with non-constant defaults cannot by handled by ALTER
+             # TABLE ADD COLUMN statement.
+-            or (
+-                field.db_default is not NOT_PROVIDED
+-                and not isinstance(field.db_default, Value)
+-            )
++            or (field.has_db_default() and not isinstance(field.db_default, Value))
+         ):
+             self._remake_table(model, create_field=field)
+         else:

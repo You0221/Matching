@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 45cdb8bdf2ebb..b98cf08925910 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -16,6 +12,8 @@
+ from joblib import effective_n_jobs
+ from scipy import sparse
+ 
++from sklearn.utils import metadata_routing
++
+ from ..base import MultiOutputMixin, RegressorMixin, _fit_context
+ from ..model_selection import check_cv
+ from ..utils import Bunch, check_array, check_scalar

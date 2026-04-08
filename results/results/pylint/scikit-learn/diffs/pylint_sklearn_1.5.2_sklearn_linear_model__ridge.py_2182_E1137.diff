@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2187,6 +2232,8 @@ def fit(self, X, y, sample_weight=None, score_params=None):
+         self.best_score_ = best_score
+         self.dual_coef_ = best_coef
+         self.coef_ = safe_sparse_dot(self.dual_coef_.T, X)
++        if y.ndim == 1 or y.shape[1] == 1:
++            self.coef_ = self.coef_.ravel()
+ 
+         if sparse.issparse(X):
+             X_offset = X_mean * X_scale

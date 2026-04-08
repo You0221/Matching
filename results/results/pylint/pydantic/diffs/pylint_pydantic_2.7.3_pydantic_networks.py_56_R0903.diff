@@ -1,0 +1,739 @@
+diff --git a/pydantic/networks.py b/pydantic/networks.py
+index d037a721714..755835199ce 100644
+--- a/pydantic/networks.py
++++ b/pydantic/networks.py
+@@ -49,11 +57,12 @@
+     'MySQLDsn',
+     'MariaDBDsn',
+     'ClickHouseDsn',
++    'SnowflakeDsn',
+ ]
+ 
+ 
+ @_dataclasses.dataclass
+-class UrlConstraints(_fields.PydanticMetadata):
++class UrlConstraints:
+     """Url constraints.
+ 
+     Attributes:
+@@ -84,136 +93,599 @@ def __hash__(self) -> int:
+             )
+         )
+ 
++    @property
++    def defined_constraints(self) -> dict[str, Any]:
++        """Fetch a key / value mapping of constraints to values that are not None. Used for core schema updates."""
++        return {field.name: value for field in fields(self) if (value := getattr(self, field.name)) is not None}
++
++    def __get_pydantic_core_schema__(self, source: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
++        schema = handler(source)
++
++        # for function-wrap schemas, url constraints is applied to the inner schema
++        # because when we generate schemas for urls, we wrap a core_schema.url_schema() with a function-wrap schema
++        # that helps with validation on initialization, see _BaseUrl and _BaseMultiHostUrl below.
++        schema_to_mutate = schema['schema'] if schema['type'] == 'function-wrap' else schema
++        if annotated_type := schema_to_mutate['type'] not in ('url', 'multi-host-url'):
++            raise PydanticUserError(
++                f"'UrlConstraints' cannot annotate '{annotated_type}'.", code='invalid-annotated-type'
++            )
++        for constraint_key, constraint_value in self.defined_constraints.items():
++            schema_to_mutate[constraint_key] = constraint_value
++        return schema
+ 
+-AnyUrl = Url
+-"""Base type for all URLs.
+ 
+-* Any scheme allowed
+-* Top-level domain (TLD) not required
+-* Host required
++class _BaseUrl:
++    _constraints: ClassVar[UrlConstraints] = UrlConstraints()
++    _url: _CoreUrl
+ 
+-Assuming an input URL of `http://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`,
+-the types export the following properties:
++    def __init__(self, url: str | _CoreUrl | _BaseUrl) -> None:
++        self._url = _build_type_adapter(self.__class__).validate_python(url)._url
+ 
+-- `scheme`: the URL scheme (`http`), always set.
+-- `host`: the URL host (`example.com`), always set.
+-- `username`: optional username if included (`samuel`).
+-- `password`: optional password if included (`pass`).
+-- `port`: optional port (`8000`).
+-- `path`: optional path (`/the/path/`).
+-- `query`: optional URL query (for example, `GET` arguments or "search string", such as `query=here`).
+-- `fragment`: optional fragment (`fragment=is;this=bit`).
+-"""
+-AnyHttpUrl = Annotated[Url, UrlConstraints(allowed_schemes=['http', 'https'])]
+-"""A type that will accept any http or https URL.
++    @property
++    def scheme(self) -> str:
++        """The scheme part of the URL.
+ 
+-* TLD not required
+-* Host required
+-"""
+-HttpUrl = Annotated[Url, UrlConstraints(max_length=2083, allowed_schemes=['http', 'https'])]
+-"""A type that will accept any http or https URL.
+-
+-* TLD required
+-* Host required
+-* Max length 2083
+-
+-```py
+-from pydantic import BaseModel, HttpUrl, ValidationError
+-
+-class MyModel(BaseModel):
+-    url: HttpUrl
+-
+-m = MyModel(url='http://www.example.com')  # (1)!
+-print(m.url)
+-#> http://www.example.com/
+-
+-try:
+-    MyModel(url='ftp://invalid.url')
+-except ValidationError as e:
+-    print(e)
+-    '''
+-    1 validation error for MyModel
+-    url
+-      URL scheme should be 'http' or 'https' [type=url_scheme, input_value='ftp://invalid.url', input_type=str]
+-    '''
+-
+-try:
+-    MyModel(url='not a url')
+-except ValidationError as e:
+-    print(e)
+-    '''
+-    1 validation error for MyModel
+-    url
+-      Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='not a url', input_type=str]
+-    '''
+-```
+-
+-1. Note: mypy would prefer `m = MyModel(url=HttpUrl('http://www.example.com'))`, but Pydantic will convert the string to an HttpUrl instance anyway.
+-
+-"International domains" (e.g. a URL where the host or TLD includes non-ascii characters) will be encoded via
+-[punycode](https://en.wikipedia.org/wiki/Punycode) (see
+-[this article](https://www.xudongz.com/blog/2017/idn-phishing/) for a good description of why this is important):
+-
+-```py
+-from pydantic import BaseModel, HttpUrl
+-
+-class MyModel(BaseModel):
+-    url: HttpUrl
+-
+-m1 = MyModel(url='http://puny£code.com')
+-print(m1.url)
+-#> http://xn--punycode-eja.com/
+-m2 = MyModel(url='https://www.аррӏе.com/')
+-print(m2.url)
+-#> https://www.xn--80ak6aa92e.com/
+-m3 = MyModel(url='https://www.example.珠宝/')
+-print(m3.url)
+-#> https://www.example.xn--pbt977c/
+-```
+-
+-
+-!!! warning "Underscores in Hostnames"
+-    In Pydantic, underscores are allowed in all parts of a domain except the TLD.
+-    Technically this might be wrong - in theory the hostname cannot have underscores, but subdomains can.
+-
+-    To explain this; consider the following two cases:
+-
+-    - `exam_ple.co.uk`: the hostname is `exam_ple`, which should not be allowed since it contains an underscore.
+-    - `foo_bar.example.com` the hostname is `example`, which should be allowed since the underscore is in the subdomain.
+-
+-    Without having an exhaustive list of TLDs, it would be impossible to differentiate between these two. Therefore
+-    underscores are allowed, but you can always do further validation in a validator if desired.
+-
+-    Also, Chrome, Firefox, and Safari all currently accept `http://exam_ple.com` as a URL, so we're in good
+-    (or at least big) company.
+-"""
+-AnyWebsocketUrl = Annotated[Url, UrlConstraints(allowed_schemes=['ws', 'wss'])]
+-"""A type that will accept any ws or wss URL.
++        e.g. `https` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.scheme
+ 
+-* TLD not required
+-* Host required
+-"""
+-WebsocketUrl = Annotated[Url, UrlConstraints(max_length=2083, allowed_schemes=['ws', 'wss'])]
+-"""A type that will accept any ws or wss URL.
++    @property
++    def username(self) -> str | None:
++        """The username part of the URL, or `None`.
+ 
+-* TLD required
+-* Host required
+-* Max length 2083
+-"""
+-FileUrl = Annotated[Url, UrlConstraints(allowed_schemes=['file'])]
+-"""A type that will accept any file URL.
++        e.g. `user` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.username
+ 
+-* Host not required
+-"""
+-FtpUrl = Annotated[Url, UrlConstraints(allowed_schemes=['ftp'])]
+-"""A type that will accept ftp URL.
++    @property
++    def password(self) -> str | None:
++        """The password part of the URL, or `None`.
+ 
+-* TLD not required
+-* Host required
+-"""
+-PostgresDsn = Annotated[
+-    MultiHostUrl,
+-    UrlConstraints(
++        e.g. `pass` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.password
++
++    @property
++    def host(self) -> str | None:
++        """The host part of the URL, or `None`.
++
++        If the URL must be punycode encoded, this is the encoded host, e.g if the input URL is `https://£££.com`,
++        `host` will be `xn--9aaa.com`
++        """
++        return self._url.host
++
++    def unicode_host(self) -> str | None:
++        """The host part of the URL as a unicode string, or `None`.
++
++        e.g. `host` in `https://user:pass@host:port/path?query#fragment`
++
++        If the URL must be punycode encoded, this is the decoded host, e.g if the input URL is `https://£££.com`,
++        `unicode_host()` will be `£££.com`
++        """
++        return self._url.unicode_host()
++
++    @property
++    def port(self) -> int | None:
++        """The port part of the URL, or `None`.
++
++        e.g. `port` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.port
++
++    @property
++    def path(self) -> str | None:
++        """The path part of the URL, or `None`.
++
++        e.g. `/path` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.path
++
++    @property
++    def query(self) -> str | None:
++        """The query part of the URL, or `None`.
++
++        e.g. `query` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.query
++
++    def query_params(self) -> list[tuple[str, str]]:
++        """The query part of the URL as a list of key-value pairs.
++
++        e.g. `[('foo', 'bar')]` in `https://user:pass@host:port/path?foo=bar#fragment`
++        """
++        return self._url.query_params()
++
++    @property
++    def fragment(self) -> str | None:
++        """The fragment part of the URL, or `None`.
++
++        e.g. `fragment` in `https://user:pass@host:port/path?query#fragment`
++        """
++        return self._url.fragment
++
++    def unicode_string(self) -> str:
++        """The URL as a unicode string, unlike `__str__()` this will not punycode encode the host.
++
++        If the URL must be punycode encoded, this is the decoded string, e.g if the input URL is `https://£££.com`,
++        `unicode_string()` will be `https://£££.com`
++        """
++        return self._url.unicode_string()
++
++    def __str__(self) -> str:
++        """The URL as a string, this will punycode encode the host if required."""
++        return str(self._url)
++
++    def __repr__(self) -> str:
++        return f'{self.__class__.__name__}({str(self._url)!r})'
++
++    def __deepcopy__(self, memo: dict) -> Self:
++        return self.__class__(self._url)
++
++    def __eq__(self, other: Any) -> bool:
++        return self.__class__ is other.__class__ and self._url == other._url
++
++    def __hash__(self) -> int:
++        return hash(self._url)
++
++    @classmethod
++    def build(
++        cls,
++        *,
++        scheme: str,
++        username: str | None = None,
++        password: str | None = None,
++        host: str,
++        port: int | None = None,
++        path: str | None = None,
++        query: str | None = None,
++        fragment: str | None = None,
++    ) -> Self:
++        """Build a new `Url` instance from its component parts.
++
++        Args:
++            scheme: The scheme part of the URL.
++            username: The username part of the URL, or omit for no username.
++            password: The password part of the URL, or omit for no password.
++            host: The host part of the URL.
++            port: The port part of the URL, or omit for no port.
++            path: The path part of the URL, or omit for no path.
++            query: The query part of the URL, or omit for no query.
++            fragment: The fragment part of the URL, or omit for no fragment.
++
++        Returns:
++            An instance of URL
++        """
++        return cls(
++            _CoreUrl.build(
++                scheme=scheme,
++                username=username,
++                password=password,
++                host=host,
++                port=port,
++                path=path,
++                query=query,
++                fragment=fragment,
++            )
++        )
++
++    @classmethod
++    def __get_pydantic_core_schema__(
++        cls, source: type[_BaseUrl], handler: GetCoreSchemaHandler
++    ) -> core_schema.CoreSchema:
++        def wrap_val(v, h):
++            if isinstance(v, source):
++                return v
++            if isinstance(v, _BaseUrl):
++                v = str(v)
++            core_url = h(v)
++            instance = source.__new__(source)
++            instance._url = core_url
++            return instance
++
++        return core_schema.no_info_wrap_validator_function(
++            wrap_val,
++            schema=core_schema.url_schema(**cls._constraints.defined_constraints),
++            serialization=core_schema.to_string_ser_schema(),
++        )
++
++    @classmethod
++    def __get_pydantic_json_schema__(
++        cls, core_schema: core_schema.CoreSchema, handler: _schema_generation_shared.GetJsonSchemaHandler
++    ) -> JsonSchemaValue:
++        # we use the url schema for json schema generation, but we might have to extract it from
++        # the function-wrap schema we use as a tool for validation on initialization
++        inner_schema = core_schema['schema'] if core_schema['type'] == 'function-wrap' else core_schema
++        return handler(inner_schema)
++
++    __pydantic_serializer__ = SchemaSerializer(core_schema.any_schema(serialization=core_schema.to_string_ser_schema()))
++
++
++class _BaseMultiHostUrl:
++    _constraints: ClassVar[UrlConstraints] = UrlConstraints()
++    _url: _CoreMultiHostUrl
++
++    def __init__(self, url: str | _CoreMultiHostUrl | _BaseMultiHostUrl) -> None:
++        self._url = _build_type_adapter(self.__class__).validate_python(url)._url
++
++    @property
++    def scheme(self) -> str:
++        """The scheme part of the URL.
++
++        e.g. `https` in `https://foo.com,bar.com/path?query#fragment`
++        """
++        return self._url.scheme
++
++    @property
++    def path(self) -> str | None:
++        """The path part of the URL, or `None`.
++
++        e.g. `/path` in `https://foo.com,bar.com/path?query#fragment`
++        """
++        return self._url.path
++
++    @property
++    def query(self) -> str | None:
++        """The query part of the URL, or `None`.
++
++        e.g. `query` in `https://foo.com,bar.com/path?query#fragment`
++        """
++        return self._url.query
++
++    def query_params(self) -> list[tuple[str, str]]:
++        """The query part of the URL as a list of key-value pairs.
++
++        e.g. `[('foo', 'bar')]` in `https://foo.com,bar.com/path?query#fragment`
++        """
++        return self._url.query_params()
++
++    @property
++    def fragment(self) -> str | None:
++        """The fragment part of the URL, or `None`.
++
++        e.g. `fragment` in `https://foo.com,bar.com/path?query#fragment`
++        """
++        return self._url.fragment
++
++    def hosts(self) -> list[MultiHostHost]:
++        '''The hosts of the `MultiHostUrl` as [`MultiHostHost`][pydantic_core.MultiHostHost] typed dicts.
++
++        ```python
++        from pydantic_core import MultiHostUrl
++
++        mhu = MultiHostUrl('https://foo.com:123,foo:bar@bar.com/path')
++        print(mhu.hosts())
++        """
++        [
++            {'username': None, 'password': None, 'host': 'foo.com', 'port': 123},
++            {'username': 'foo', 'password': 'bar', 'host': 'bar.com', 'port': 443}
++        ]
++        ```
++        Returns:
++            A list of dicts, each representing a host.
++        '''
++        return self._url.hosts()
++
++    def unicode_string(self) -> str:
++        """The URL as a unicode string, unlike `__str__()` this will not punycode encode the hosts."""
++        return self._url.unicode_string()
++
++    def __str__(self) -> str:
++        """The URL as a string, this will punycode encode the host if required."""
++        return str(self._url)
++
++    def __repr__(self) -> str:
++        return f'{self.__class__.__name__}({str(self._url)!r})'
++
++    def __deepcopy__(self, memo: dict) -> Self:
++        return self.__class__(self._url)
++
++    def __eq__(self, other: Any) -> bool:
++        return self.__class__ is other.__class__ and self._url == other._url
++
++    def __hash__(self) -> int:
++        return hash(self._url)
++
++    @classmethod
++    def build(
++        cls,
++        *,
++        scheme: str,
++        hosts: list[MultiHostHost] | None = None,
++        username: str | None = None,
++        password: str | None = None,
++        host: str | None = None,
++        port: int | None = None,
++        path: str | None = None,
++        query: str | None = None,
++        fragment: str | None = None,
++    ) -> Self:
++        """Build a new `MultiHostUrl` instance from its component parts.
++
++        This method takes either `hosts` - a list of `MultiHostHost` typed dicts, or the individual components
++        `username`, `password`, `host` and `port`.
++
++        Args:
++            scheme: The scheme part of the URL.
++            hosts: Multiple hosts to build the URL from.
++            username: The username part of the URL.
++            password: The password part of the URL.
++            host: The host part of the URL.
++            port: The port part of the URL.
++            path: The path part of the URL.
++            query: The query part of the URL, or omit for no query.
++            fragment: The fragment part of the URL, or omit for no fragment.
++
++        Returns:
++            An instance of `MultiHostUrl`
++        """
++        return cls(
++            _CoreMultiHostUrl.build(
++                scheme=scheme,
++                hosts=hosts,
++                username=username,
++                password=password,
++                host=host,
++                port=port,
++                path=path,
++                query=query,
++                fragment=fragment,
++            )
++        )
++
++    @classmethod
++    def __get_pydantic_core_schema__(
++        cls, source: type[_BaseMultiHostUrl], handler: GetCoreSchemaHandler
++    ) -> core_schema.CoreSchema:
++        def wrap_val(v, h):
++            if isinstance(v, source):
++                return v
++            if isinstance(v, _BaseMultiHostUrl):
++                v = str(v)
++            core_url = h(v)
++            instance = source.__new__(source)
++            instance._url = core_url
++            return instance
++
++        return core_schema.no_info_wrap_validator_function(
++            wrap_val,
++            schema=core_schema.multi_host_url_schema(**cls._constraints.defined_constraints),
++            serialization=core_schema.to_string_ser_schema(),
++        )
++
++    @classmethod
++    def __get_pydantic_json_schema__(
++        cls, core_schema: core_schema.CoreSchema, handler: _schema_generation_shared.GetJsonSchemaHandler
++    ) -> JsonSchemaValue:
++        # we use the url schema for json schema generation, but we might have to extract it from
++        # the function-wrap schema we use as a tool for validation on initialization
++        inner_schema = core_schema['schema'] if core_schema['type'] == 'function-wrap' else core_schema
++        return handler(inner_schema)
++
++    __pydantic_serializer__ = SchemaSerializer(core_schema.any_schema(serialization=core_schema.to_string_ser_schema()))
++
++
++@lru_cache
++def _build_type_adapter(cls: type[_BaseUrl | _BaseMultiHostUrl]) -> TypeAdapter:
++    return TypeAdapter(cls)
++
++
++class AnyUrl(_BaseUrl):
++    """Base type for all URLs.
++
++    * Any scheme allowed
++    * Top-level domain (TLD) not required
++    * Host not required
++
++    Assuming an input URL of `http://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`,
++    the types export the following properties:
++
++    - `scheme`: the URL scheme (`http`), always set.
++    - `host`: the URL host (`example.com`).
++    - `username`: optional username if included (`samuel`).
++    - `password`: optional password if included (`pass`).
++    - `port`: optional port (`8000`).
++    - `path`: optional path (`/the/path/`).
++    - `query`: optional URL query (for example, `GET` arguments or "search string", such as `query=here`).
++    - `fragment`: optional fragment (`fragment=is;this=bit`).
++    """
++
++
++# Note: all single host urls inherit from `AnyUrl` to preserve compatibility with pre-v2.10 code
++# Where urls were annotated variants of `AnyUrl`, which was an alias to `pydantic_core.Url`
++
++
++class AnyHttpUrl(AnyUrl):
++    """A type that will accept any http or https URL.
++
++    * TLD not required
++    * Host not required
++    """
++
++    _constraints = UrlConstraints(allowed_schemes=['http', 'https'])
++
++
++class HttpUrl(AnyUrl):
++    """A type that will accept any http or https URL.
++
++    * TLD not required
++    * Host not required
++    * Max length 2083
++
++    ```python
++    from pydantic import BaseModel, HttpUrl, ValidationError
++
++    class MyModel(BaseModel):
++        url: HttpUrl
++
++    m = MyModel(url='http://www.example.com')  # (1)!
++    print(m.url)
++    #> http://www.example.com/
++
++    try:
++        MyModel(url='ftp://invalid.url')
++    except ValidationError as e:
++        print(e)
++        '''
++        1 validation error for MyModel
++        url
++          URL scheme should be 'http' or 'https' [type=url_scheme, input_value='ftp://invalid.url', input_type=str]
++        '''
++
++    try:
++        MyModel(url='not a url')
++    except ValidationError as e:
++        print(e)
++        '''
++        1 validation error for MyModel
++        url
++          Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='not a url', input_type=str]
++        '''
++    ```
++
++    1. Note: mypy would prefer `m = MyModel(url=HttpUrl('http://www.example.com'))`, but Pydantic will convert the string to an HttpUrl instance anyway.
++
++    "International domains" (e.g. a URL where the host or TLD includes non-ascii characters) will be encoded via
++    [punycode](https://en.wikipedia.org/wiki/Punycode) (see
++    [this article](https://www.xudongz.com/blog/2017/idn-phishing/) for a good description of why this is important):
++
++    ```python
++    from pydantic import BaseModel, HttpUrl
++
++    class MyModel(BaseModel):
++        url: HttpUrl
++
++    m1 = MyModel(url='http://puny£code.com')
++    print(m1.url)
++    #> http://xn--punycode-eja.com/
++    m2 = MyModel(url='https://www.аррӏе.com/')
++    print(m2.url)
++    #> https://www.xn--80ak6aa92e.com/
++    m3 = MyModel(url='https://www.example.珠宝/')
++    print(m3.url)
++    #> https://www.example.xn--pbt977c/
++    ```
++
++
++    !!! warning "Underscores in Hostnames"
++        In Pydantic, underscores are allowed in all parts of a domain except the TLD.
++        Technically this might be wrong - in theory the hostname cannot have underscores, but subdomains can.
++
++        To explain this; consider the following two cases:
++
++        - `exam_ple.co.uk`: the hostname is `exam_ple`, which should not be allowed since it contains an underscore.
++        - `foo_bar.example.com` the hostname is `example`, which should be allowed since the underscore is in the subdomain.
++
++        Without having an exhaustive list of TLDs, it would be impossible to differentiate between these two. Therefore
++        underscores are allowed, but you can always do further validation in a validator if desired.
++
++        Also, Chrome, Firefox, and Safari all currently accept `http://exam_ple.com` as a URL, so we're in good
++        (or at least big) company.
++    """
++
++    _constraints = UrlConstraints(max_length=2083, allowed_schemes=['http', 'https'])
++
++
++class AnyWebsocketUrl(AnyUrl):
++    """A type that will accept any ws or wss URL.
++
++    * TLD not required
++    * Host not required
++    """
++
++    _constraints = UrlConstraints(allowed_schemes=['ws', 'wss'])
++
++
++class WebsocketUrl(AnyUrl):
++    """A type that will accept any ws or wss URL.
++
++    * TLD not required
++    * Host not required
++    * Max length 2083
++    """
++
++    _constraints = UrlConstraints(max_length=2083, allowed_schemes=['ws', 'wss'])
++
++
++class FileUrl(AnyUrl):
++    """A type that will accept any file URL.
++
++    * Host not required
++    """
++
++    _constraints = UrlConstraints(allowed_schemes=['file'])
++
++
++class FtpUrl(AnyUrl):
++    """A type that will accept ftp URL.
++
++    * TLD not required
++    * Host not required
++    """
++
++    _constraints = UrlConstraints(allowed_schemes=['ftp'])
++
++
++class PostgresDsn(_BaseMultiHostUrl):
++    """A type that will accept any Postgres DSN.
++
++    * User info required
++    * TLD not required
++    * Host required
++    * Supports multiple hosts
++
++    If further validation is required, these properties can be used by validators to enforce specific behaviour:
++
++    ```python
++    from pydantic import (
++        BaseModel,
++        HttpUrl,
++        PostgresDsn,
++        ValidationError,
++        field_validator,
++    )
++
++    class MyModel(BaseModel):
++        url: HttpUrl
++
++    m = MyModel(url='http://www.example.com')
++
++    # the repr() method for a url will display all properties of the url
++    print(repr(m.url))
++    #> HttpUrl('http://www.example.com/')
++    print(m.url.scheme)
++    #> http
++    print(m.url.host)
++    #> www.example.com
++    print(m.url.port)
++    #> 80
++
++    class MyDatabaseModel(BaseModel):
++        db: PostgresDsn
++
++        @field_validator('db')
++        def check_db_name(cls, v):
++            assert v.path and len(v.path) > 1, 'database must be provided'
++            return v
++
++    m = MyDatabaseModel(db='postgres://user:pass@localhost:5432/foobar')
++    print(m.db)
++    #> postgres://user:pass@localhost:5432/foobar
++
++    try:
++        MyDatabaseModel(db='postgres://user:pass@localhost:5432')
++    except ValidationError as e:
++        print(e)
++        '''
++        1 validation error for MyDatabaseModel
++        db
++          Assertion failed, database must be provided
++        assert (None)
++         +  where None = PostgresDsn('postgres://user:pass@localhost:5432').path [type=assertion_error, input_value='postgres://user:pass@localhost:5432', input_type=str]
++        '''
++    ```
++    """
++
++    _constraints = UrlConstraints(
+         host_required=True,
+         allowed_schemes=[
+             'postgres',

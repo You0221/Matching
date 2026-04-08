@@ -1,0 +1,22 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -1383,7 +1411,7 @@ def get_select_for_update_of_arguments(self):
+         def _get_parent_klass_info(klass_info):
+             concrete_model = klass_info["model"]._meta.concrete_model
+             for parent_model, parent_link in concrete_model._meta.parents.items():
+-                parent_list = parent_model._meta.get_parent_list()
++                all_parents = parent_model._meta.all_parents
+                 yield {
+                     "model": parent_model,
+                     "field": parent_link,
+@@ -1394,7 +1422,7 @@ def _get_parent_klass_info(klass_info):
+                         # Selected columns from a model or its parents.
+                         if (
+                             self.select[select_index][0].target.model == parent_model
+-                            or self.select[select_index][0].target.model in parent_list
++                            or self.select[select_index][0].target.model in all_parents
+                         )
+                     ],
+                 }

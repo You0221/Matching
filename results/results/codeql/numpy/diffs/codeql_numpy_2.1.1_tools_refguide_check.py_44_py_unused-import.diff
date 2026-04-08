@@ -1,0 +1,23 @@
+diff --git a/tools/refguide_check.py b/tools/refguide_check.py
+index 8de816715bdb..f3e548dedda2 100644
+--- a/tools/refguide_check.py
++++ b/tools/refguide_check.py
+@@ -31,18 +31,13 @@
+ import io
+ import os
+ import re
+-import shutil
+ import sys
+-import tempfile
+ import warnings
+ import docutils.core
+ from argparse import ArgumentParser
+-from contextlib import contextmanager, redirect_stderr
+ 
+ from docutils.parsers.rst import directives
+ 
+-import sphinx
+-import numpy as np
+ 
+ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'doc', 'sphinxext'))
+ from numpydoc.docscrape_sphinx import get_doc_object

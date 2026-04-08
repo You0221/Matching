@@ -1,0 +1,25 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index a7839ccb4df4..0d1fe5fb434e 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -2425,13 +2485,19 @@ def set_extra_mask(self, names):
+             self.extra_select_mask = set(names)
+         self._extra_select_cache = None
+ 
++    @property
++    def has_select_fields(self):
++        return self.selected is not None
++
+     def set_values(self, fields):
+         self.select_related = False
+         self.clear_deferred_loading()
+         self.clear_select_fields()
+-        self.has_select_fields = True
+ 
++        selected = {}
+         if fields:
++            for field in fields:
++                self.check_alias(field)
+             field_names = []
+             extra_names = []
+             annotation_names = []

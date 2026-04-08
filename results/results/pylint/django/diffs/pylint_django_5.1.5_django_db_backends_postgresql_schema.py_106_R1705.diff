@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/postgresql/schema.py b/django/db/backends/postgresql/schema.py
+index 0c8548a5d663..964009988cbb 100644
+--- a/django/db/backends/postgresql/schema.py
++++ b/django/db/backends/postgresql/schema.py
+@@ -120,6 +120,8 @@ def _create_like_index_sql(self, model, field):
+         return None
+ 
+     def _using_sql(self, new_field, old_field):
++        if new_field.generated:
++            return ""
+         using_sql = " USING %(column)s::%(type)s"
+         new_internal_type = new_field.get_internal_type()
+         old_internal_type = old_field.get_internal_type()

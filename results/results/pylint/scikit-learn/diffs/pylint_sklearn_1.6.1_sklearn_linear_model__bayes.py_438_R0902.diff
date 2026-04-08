@@ -1,0 +1,33 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -421,25 +451,15 @@ def _log_marginal_likelihood(
+         score += alpha_1 * log(alpha_) - alpha_2 * alpha_
+         score += 0.5 * (
+             n_features * log(lambda_)
+-            + n_samples * log(alpha_)
+-            - alpha_ * rmse
++            + sw_sum * log(alpha_)
++            - alpha_ * sse
+             - lambda_ * np.sum(coef**2)
+             + logdet_sigma
+-            - n_samples * log(2 * np.pi)
++            - sw_sum * log(2 * np.pi)
+         )
+ 
+         return score
+ 
+-    def __sklearn_tags__(self):
+-        tags = super().__sklearn_tags__()
+-        # TODO: fix sample_weight handling of this estimator, see meta-issue #16298
+-        tags._xfail_checks = {
+-            "check_sample_weight_equivalence": (
+-                "sample_weight is not equivalent to removing/repeating samples."
+-            ),
+-        }
+-        return tags
+-
+ 
+ ###############################################################################
+ # ARD (Automatic Relevance Determination) regression

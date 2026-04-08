@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 2dbb83c82fbaa..62096133ada2f 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -3024,7 +3106,6 @@ def _is_multitask(self):
+ 
+     def __sklearn_tags__(self):
+         tags = super().__sklearn_tags__()
+-        tags.target_tags.multi_output = True
+         tags.target_tags.single_output = False
+         return tags
+ 

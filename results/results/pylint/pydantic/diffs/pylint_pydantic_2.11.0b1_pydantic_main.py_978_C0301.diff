@@ -1,0 +1,18 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 03cb511eb30..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -971,11 +1016,8 @@ def __getattr__(self, item: str) -> Any:
+                 except AttributeError:
+                     pydantic_extra = None
+ 
+-                if pydantic_extra:
+-                    try:
+-                        return pydantic_extra[item]
+-                    except KeyError as exc:
+-                        raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
++                if pydantic_extra and item in pydantic_extra:
++                    return pydantic_extra[item]
+                 else:
+                     if hasattr(self.__class__, item):
+                         return super().__getattribute__(item)  # Raises AttributeError if appropriate

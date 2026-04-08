@@ -1,0 +1,31 @@
+diff --git a/django/db/models/options.py b/django/db/models/options.py
+index 76017fc8b523..11b2742f7d10 100644
+--- a/django/db/models/options.py
++++ b/django/db/models/options.py
+@@ -1,17 +1,22 @@
+ import bisect
+ import copy
+-import inspect
+-import warnings
+ from collections import defaultdict
+ 
+ from django.apps import apps
+ from django.conf import settings
+ from django.core.exceptions import FieldDoesNotExist, ImproperlyConfigured
++from django.core.signals import setting_changed
+ from django.db import connections
+-from django.db.models import AutoField, Manager, OrderWrt, UniqueConstraint
++from django.db.models import (
++    AutoField,
++    CompositePrimaryKey,
++    Manager,
++    OrderWrt,
++    UniqueConstraint,
++)
++from django.db.models.fields import composite
+ from django.db.models.query_utils import PathInfo
+ from django.utils.datastructures import ImmutableList, OrderedSet
+-from django.utils.deprecation import RemovedInDjango51Warning
+ from django.utils.functional import cached_property
+ from django.utils.module_loading import import_string
+ from django.utils.text import camel_case_to_spaces, format_lazy

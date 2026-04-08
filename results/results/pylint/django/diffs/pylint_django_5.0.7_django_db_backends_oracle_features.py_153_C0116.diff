@@ -1,0 +1,52 @@
+diff --git a/django/db/backends/oracle/features.py b/django/db/backends/oracle/features.py
+index 9b894d0df679..7ebe69c6ddf2 100644
+--- a/django/db/backends/oracle/features.py
++++ b/django/db/backends/oracle/features.py
+@@ -148,11 +183,22 @@ def introspected_field_types(self):
+             "TimeField": "DateTimeField",
+         }
+ 
++    @cached_property
++    def test_collations(self):
++        return {
++            "ci": "BINARY_CI",
++            "cs": "BINARY",
++            "non_default": "SWEDISH_CI",
++            "swedish_ci": "SWEDISH_CI",
++            "virtual": "SWEDISH_CI" if self.supports_collation_on_charfield else None,
++        }
++
+     @cached_property
+     def supports_collation_on_charfield(self):
++        sql = "SELECT CAST('a' AS VARCHAR2(4001))" + self.bare_select_suffix
+         with self.connection.cursor() as cursor:
+             try:
+-                cursor.execute("SELECT CAST('a' AS VARCHAR2(4001)) FROM dual")
++                cursor.execute(sql)
+             except DatabaseError as e:
+                 if e.args[0].code == 910:
+                     return False
+@@ -162,3 +208,23 @@ def supports_collation_on_charfield(self):
+     @cached_property
+     def supports_primitives_in_json_field(self):
+         return self.connection.oracle_version >= (21,)
++
++    @cached_property
++    def supports_frame_exclusion(self):
++        return self.connection.oracle_version >= (21,)
++
++    @cached_property
++    def supports_boolean_expr_in_select_clause(self):
++        return self.connection.oracle_version >= (23,)
++
++    @cached_property
++    def supports_comparing_boolean_expr(self):
++        return self.connection.oracle_version >= (23,)
++
++    @cached_property
++    def supports_aggregation_over_interval_types(self):
++        return self.connection.oracle_version >= (23,)
++
++    @cached_property
++    def bare_select_suffix(self):
++        return "" if self.connection.oracle_version >= (23,) else " FROM DUAL"

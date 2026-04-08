@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -1578,7 +1597,7 @@ def transform(self, X):
+         X_int, X_mask = self._transform(
+             X,
+             handle_unknown=self.handle_unknown,
+-            force_all_finite="allow-nan",
++            ensure_all_finite="allow-nan",
+             ignore_category_indices=self._missing_indices,
+         )
+         X_trans = X_int.astype(self.dtype, copy=False)

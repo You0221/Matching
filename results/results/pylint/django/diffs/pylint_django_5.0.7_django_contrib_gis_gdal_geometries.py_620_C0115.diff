@@ -1,0 +1,29 @@
+diff --git a/django/contrib/gis/gdal/geometries.py b/django/contrib/gis/gdal/geometries.py
+index f74dc688b3d7..33e7de0a9688 100644
+--- a/django/contrib/gis/gdal/geometries.py
++++ b/django/contrib/gis/gdal/geometries.py
+@@ -653,13 +745,17 @@ def point_count(self):
+         # Summing up the number of points in each ring of the Polygon.
+         return sum(self[i].point_count for i in range(self.geom_count))
+ 
+-    @property
+-    def centroid(self):
+-        "Return the centroid (a Point) of this Polygon."
+-        # The centroid is a Point, create a geometry for this.
+-        p = OGRGeometry(OGRGeomType("Point"))
+-        capi.get_centroid(self.ptr, p.ptr)
+-        return p
++
++class CircularString(LineString):
++    geos_support = False
++
++
++class CurvePolygon(Polygon):
++    geos_support = False
++
++
++class CompoundCurve(OGRGeometry):
++    geos_support = False
+ 
+ 
+ # Geometry Collection base class.

@@ -1,0 +1,115 @@
+diff --git a/lib/ansible/executor/process/worker.py b/lib/ansible/executor/process/worker.py
+index 6c26aed164caf7..96fb2c687cf704 100644
+--- a/lib/ansible/executor/process/worker.py
++++ b/lib/ansible/executor/process/worker.py
+@@ -125,8 +148,37 @@ def _hard_exit(self, e):
+ 
+         os._exit(1)
+ 
+-    def run(self):
+-        '''
++    def _detach(self) -> None:
++        """
++        The intent here is to detach the child process from the inherited stdio fds,
++        including /dev/tty. Children should use Display instead of direct interactions
++        with stdio fds.
++        """
++        try:
++            os.setsid()
++            # Create new fds for stdin/stdout/stderr, but also capture python uses of sys.stdout/stderr
++            for fds, mode in (
++                    ((STDIN_FILENO,), os.O_RDWR | os.O_NONBLOCK),
++                    ((STDOUT_FILENO, STDERR_FILENO), os.O_WRONLY),
++            ):
++                stdio = os.open(os.devnull, mode)
++                for fd in fds:
++                    os.dup2(stdio, fd)
++                os.close(stdio)
++            sys.stdout = io.StringIO()
++            sys.stderr = io.StringIO()
++            sys.stdin = os.fdopen(STDIN_FILENO, 'r', closefd=False)
++            # Close stdin so we don't get hanging workers
++            # We use sys.stdin.close() for places where sys.stdin is used,
++            # to give better errors, and to prevent fd 0 reuse
++            sys.stdin.close()
++        except Exception as e:
++            display.debug(f'Could not detach from stdio: {traceback.format_exc()}')
++            display.error(f'Could not detach from stdio: {e}')
++            os._exit(1)
++
++    def run(self) -> None:
++        """
+         Wrap _run() to ensure no possibility an errant exception can cause
+         control to return to the StrategyBase task loop, or any other code
+         higher in the stack.
+@@ -134,43 +186,45 @@ def run(self):
+         As multiprocessing in Python 2.x provides no protection, it is possible
+         a try/except added in far-away code can cause a crashed child process
+         to suddenly assume the role and prior state of its parent.
+-        '''
++        """
++        # Set the queue on Display so calls to Display.display are proxied over the queue
++        display.set_queue(self._final_q)
++        self._detach()
+         try:
+-            return self._run()
+-        except BaseException as e:
+-            self._hard_exit(e)
+-        finally:
+-            # This is a hack, pure and simple, to work around a potential deadlock
+-            # in ``multiprocessing.Process`` when flushing stdout/stderr during process
+-            # shutdown.
+-            #
+-            # We should no longer have a problem with ``Display``, as it now proxies over
+-            # the queue from a fork. However, to avoid any issues with plugins that may
+-            # be doing their own printing, this has been kept.
+-            #
+-            # This happens at the very end to avoid that deadlock, by simply side
+-            # stepping it. This should not be treated as a long term fix.
+-            #
+-            # TODO: Evaluate migrating away from the ``fork`` multiprocessing start method.
+-            sys.stdout = sys.stderr = open(os.devnull, 'w')
+-
+-    def _run(self):
+-        '''
++            with _task.TaskContext(self._task):
++                return self._run()
++        except BaseException:
++            self._hard_exit(traceback.format_exc())
++
++    def _run(self) -> None:
++        """
+         Called when the process is started.  Pushes the result onto the
+         results queue. We also remove the host from the blocked hosts list, to
+         signify that they are ready for their next task.
+-        '''
++        """
+ 
+         # import cProfile, pstats, StringIO
+         # pr = cProfile.Profile()
+         # pr.enable()
+ 
+-        # Set the queue on Display so calls to Display.display are proxied over the queue
+-        display.set_queue(self._final_q)
+-
+         global current_worker
+         current_worker = self
+ 
++        if multiprocessing_context.get_start_method() != 'fork':
++            # This branch is unused currently, as we hardcode fork
++            # TODO
++            # * move into a setup func run in `run`, before `_detach`
++            # * playbook relative content
++            # * display verbosity
++            # * ???
++            context.CLIARGS = self._cliargs
++            # Initialize plugin loader after parse, so that the init code can utilize parsed arguments
++            cli_collections_path = context.CLIARGS.get('collections_path') or []
++            if not is_sequence(cli_collections_path):
++                # In some contexts ``collections_path`` is singular
++                cli_collections_path = [cli_collections_path]
++            init_plugin_loader(cli_collections_path)
++
+         try:
+             # execute the task and build a TaskResult from the result
+             display.debug("running TaskExecutor() for %s/%s" % (self._host, self._task))

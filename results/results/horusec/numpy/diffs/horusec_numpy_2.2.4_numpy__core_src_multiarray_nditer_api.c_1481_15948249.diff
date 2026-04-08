@@ -1,0 +1,13 @@
+diff --git a/numpy/_core/src/multiarray/nditer_api.c b/numpy/_core/src/multiarray/nditer_api.c
+index 28b7bf6e632f..da58489c6b9d 100644
+--- a/numpy/_core/src/multiarray/nditer_api.c
++++ b/numpy/_core/src/multiarray/nditer_api.c
+@@ -1477,8 +1436,6 @@ NpyIter_DebugPrint(NpyIter *iter)
+         printf("ONEITERATION ");
+     if (itflags&NPY_ITFLAG_DELAYBUF)
+         printf("DELAYBUF ");
+-    if (itflags&NPY_ITFLAG_NEEDSAPI)
+-        printf("NEEDSAPI ");
+     if (itflags&NPY_ITFLAG_REDUCE)
+         printf("REDUCE ");
+     if (itflags&NPY_ITFLAG_REUSE_REDUCE_LOOPS)

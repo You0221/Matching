@@ -1,0 +1,14 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -2184,8 +2189,7 @@ def model_fields(self):
+         converter = connections[self.db].introspection.identifier_converter
+         model_fields = {}
+         for field in self.model._meta.fields:
+-            name, column = field.get_attname_column()
+-            model_fields[converter(column)] = field
++            model_fields[converter(field.column)] = field
+         return model_fields
+ 
+ 

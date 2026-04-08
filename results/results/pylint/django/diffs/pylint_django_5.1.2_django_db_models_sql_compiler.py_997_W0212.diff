@@ -1,0 +1,13 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index 7377e555c3ac..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -998,7 +1022,7 @@ def get_default_columns(
+                 # parent model data is already present in the SELECT clause,
+                 # and we want to avoid reloading the same data again.
+                 continue
+-            if select_mask and field not in select_mask:
++            if select_mask and field not in select_mask_fields:
+                 continue
+             alias = self.query.join_parent_model(opts, model, start_alias, seen_models)
+             column = field.get_col(alias)

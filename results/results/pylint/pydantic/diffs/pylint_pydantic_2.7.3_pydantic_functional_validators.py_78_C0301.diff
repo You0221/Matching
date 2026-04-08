@@ -1,0 +1,47 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index fc3ad717401..fc4bbba6841 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -70,29 +72,36 @@ class Model(BaseModel):
+ 
+     func: core_schema.NoInfoValidatorFunction | core_schema.WithInfoValidatorFunction
+ 
+-    def __get_pydantic_core_schema__(self, source_type: Any, handler: _GetCoreSchemaHandler) -> core_schema.CoreSchema:
++    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+         schema = handler(source_type)
+-        info_arg = _inspect_validator(self.func, 'after')
++        info_arg = _inspect_validator(self.func, mode='after', type='field')
+         if info_arg:
+             func = cast(core_schema.WithInfoValidatorFunction, self.func)
+-            return core_schema.with_info_after_validator_function(func, schema=schema, field_name=handler.field_name)
++            return core_schema.with_info_after_validator_function(func, schema=schema)
+         else:
+             func = cast(core_schema.NoInfoValidatorFunction, self.func)
+             return core_schema.no_info_after_validator_function(func, schema=schema)
+ 
++    @classmethod
++    def _from_decorator(cls, decorator: _decorators.Decorator[_decorators.FieldValidatorDecoratorInfo]) -> Self:
++        return cls(func=decorator.func)
++
+ 
+ @dataclasses.dataclass(frozen=True, **_internal_dataclass.slots_true)
+ class BeforeValidator:
+-    """Usage docs: https://docs.pydantic.dev/2.7/concepts/validators/#annotated-validators
++    """!!! abstract "Usage Documentation"
++        [field *before* validators](../concepts/validators.md#field-before-validator)
+ 
+     A metadata class that indicates that a validation should be applied **before** the inner validation logic.
+ 
+     Attributes:
+         func: The validator function.
++        json_schema_input_type: The input type used to generate the appropriate
++            JSON Schema (in validation mode). The actual input type is `Any`.
+ 
+     Example:
+-        ```py
+-        from typing_extensions import Annotated
++        ```python
++        from typing import Annotated
+ 
+         from pydantic import BaseModel, BeforeValidator
+ 

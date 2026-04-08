@@ -1,0 +1,13 @@
+diff --git a/tornado/template.py b/tornado/template.py
+index d53e977c5e..0064c6fbd1 100644
+--- a/tornado/template.py
++++ b/tornado/template.py
+@@ -610,7 +610,7 @@ def generate(self, writer: "_CodeWriter") -> None:
+             self.body.generate(writer)
+             writer.write_line("return _tt_utf8('').join(_tt_buffer)", self.line)
+         writer.write_line(
+-            "_tt_append(_tt_utf8(%s(%s())))" % (self.method, method_name), self.line
++            f"_tt_append(_tt_utf8({self.method}({method_name}())))", self.line
+         )
+ 
+ 

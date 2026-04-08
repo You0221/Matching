@@ -1,0 +1,24 @@
+diff --git a/maint/benchmark/benchmark.py b/maint/benchmark/benchmark.py
+index d1f32d33ef..845c3ff2e8 100755
+--- a/maint/benchmark/benchmark.py
++++ b/maint/benchmark/benchmark.py
+@@ -14,18 +14,11 @@
+ # % sort time
+ # % stats 20
+ 
+-from tornado.ioloop import IOLoop
+ from tornado.options import define, options, parse_command_line
+ from tornado.web import RequestHandler, Application
+ 
++import asyncio
+ import random
+-import signal
+-import subprocess
+-
+-try:
+-    xrange
+-except NameError:
+-    xrange = range
+ 
+ # choose a random port to avoid colliding with TIME_WAIT sockets left over
+ # from previous runs.

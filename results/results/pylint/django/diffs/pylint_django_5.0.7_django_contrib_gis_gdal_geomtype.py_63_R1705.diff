@@ -1,0 +1,14 @@
+diff --git a/django/contrib/gis/gdal/geomtype.py b/django/contrib/gis/gdal/geomtype.py
+index 8b77cafa342e..c8c4703a8265 100644
+--- a/django/contrib/gis/gdal/geomtype.py
++++ b/django/contrib/gis/gdal/geomtype.py
+@@ -55,6 +103,9 @@ def __str__(self):
+         "Return the value of the name property."
+         return self.name
+ 
++    def __repr__(self):
++        return f"<{self.__class__.__qualname__}: {self.name}>"
++
+     def __eq__(self, other):
+         """
+         Do an equivalence test on the OGR type with the given

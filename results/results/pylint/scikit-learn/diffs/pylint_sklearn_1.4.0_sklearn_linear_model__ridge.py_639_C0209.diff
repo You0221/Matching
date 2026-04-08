@@ -1,0 +1,24 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -627,8 +655,8 @@ def _ridge_regression(
+         )
+ 
+     if check_input:
+-        _dtype = [np.float64, np.float32]
+-        _accept_sparse = _get_valid_accept_sparse(sparse.issparse(X), solver)
++        _dtype = [xp.float64, xp.float32]
++        _accept_sparse = _get_valid_accept_sparse(X_is_sparse, solver)
+         X = check_array(X, accept_sparse=_accept_sparse, dtype=_dtype, order="C")
+         y = check_array(y, dtype=X.dtype, ensure_2d=False, order=None)
+     check_consistent_length(X, y)
+@@ -640,7 +668,7 @@ def _ridge_regression(
+ 
+     ravel = False
+     if y.ndim == 1:
+-        y = y.reshape(-1, 1)
++        y = xp.reshape(y, (-1, 1))
+         ravel = True
+ 
+     n_samples_, n_targets = y.shape

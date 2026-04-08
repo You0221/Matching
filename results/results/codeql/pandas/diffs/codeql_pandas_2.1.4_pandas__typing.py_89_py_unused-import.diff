@@ -1,0 +1,13 @@
+diff --git a/pandas/_typing.py b/pandas/_typing.py
+index 743815b91210d..3df9a47a35fca 100644
+--- a/pandas/_typing.py
++++ b/pandas/_typing.py
+@@ -85,6 +87,8 @@
+     # Name "npt._ArrayLikeInt_co" is not defined  [name-defined]
+     NumpySorter = Optional[npt._ArrayLikeInt_co]  # type: ignore[name-defined]
+ 
++    from typing import SupportsIndex
++
+     if sys.version_info >= (3, 10):
+         from typing import TypeGuard  # pyright: ignore[reportUnusedImport]
+     else:

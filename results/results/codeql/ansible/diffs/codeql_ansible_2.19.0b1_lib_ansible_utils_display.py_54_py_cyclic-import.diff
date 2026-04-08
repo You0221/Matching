@@ -1,0 +1,25 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -50,14 +49,16 @@
+ from struct import unpack, pack
+ 
+ from ansible import constants as C
++from ansible.constants import config
+ from ansible.errors import AnsibleAssertionError, AnsiblePromptInterrupt, AnsiblePromptNoninteractive, AnsibleError
+-from ansible._internal._errors import _utils
+-from ansible.module_utils._internal import _ambient_context, _plugin_exec_context
++from ansible._internal._errors import _error_utils, _error_factory
++from ansible._internal import _event_formatting
++from ansible.module_utils._internal import _ambient_context, _deprecator, _messages
+ from ansible.module_utils.common.text.converters import to_bytes, to_text
++from ansible.module_utils.datatag import deprecator_from_collection_name
+ from ansible._internal._datatag._tags import TrustedAsTemplate
+-from ansible.module_utils.common.messages import ErrorSummary, WarningSummary, DeprecationSummary, Detail, SummaryBase, PluginInfo
+ from ansible.module_utils.six import text_type
+-from ansible.module_utils._internal import _traceback
++from ansible.module_utils._internal import _traceback, _errors
+ from ansible.utils.color import stringc
+ from ansible.utils.multiprocessing import context as multiprocessing_context
+ from ansible.utils.singleton import Singleton

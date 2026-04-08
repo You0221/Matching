@@ -1,0 +1,23 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -264,9 +266,8 @@ def _check_clashes(self):
+         # model_set and it clashes with Target.model_set.
+         potential_clashes = rel_opts.fields + rel_opts.many_to_many
+         for clash_field in potential_clashes:
+-            # i.e. "app_label.Target.model_set".
+-            clash_name = "%s.%s" % (rel_opts.label, clash_field.name)
+             if not rel_is_hidden and clash_field.name == rel_name:
++                clash_name = f"{rel_opts.label}.{clash_field.name}"
+                 errors.append(
+                     checks.Error(
+                         f"Reverse accessor '{rel_opts.object_name}.{rel_name}' "
+@@ -283,6 +284,7 @@ def _check_clashes(self):
+                 )
+ 
+             if clash_field.name == rel_query_name:
++                clash_name = f"{rel_opts.label}.{clash_field.name}"
+                 errors.append(
+                     checks.Error(
+                         "Reverse query name for '%s' clashes with field name '%s'."

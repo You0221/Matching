@@ -1,0 +1,14 @@
+diff --git a/django/db/models/functions/comparison.py b/django/db/models/functions/comparison.py
+index eec2ab752d19..11af0c0750e4 100644
+--- a/django/db/models/functions/comparison.py
++++ b/django/db/models/functions/comparison.py
+@@ -1,8 +1,6 @@
+ """Database functions that do comparisons or type conversions."""
+-from django.db import NotSupportedError
++
+ from django.db.models.expressions import Func, Value
+-from django.db.models.fields import TextField
+-from django.db.models.fields.json import JSONField
+ from django.utils.regex_helper import _lazy_re_compile
+ 
+ 

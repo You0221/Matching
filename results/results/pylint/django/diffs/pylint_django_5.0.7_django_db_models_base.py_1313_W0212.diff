@@ -1,0 +1,25 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -1322,7 +1452,7 @@ def _get_unique_checks(self, exclude=None, include_meta_constraints=False):
+         # the list of checks.
+ 
+         fields_with_class = [(self.__class__, self._meta.local_fields)]
+-        for parent_class in self._meta.get_parent_list():
++        for parent_class in self._meta.all_parents:
+             fields_with_class.append((parent_class, parent_class._meta.local_fields))
+ 
+         for model_class, fields in fields_with_class:
+@@ -1330,6 +1460,11 @@ def _get_unique_checks(self, exclude=None, include_meta_constraints=False):
+                 name = f.name
+                 if name in exclude:
+                     continue
++                if isinstance(f, CompositePrimaryKey):
++                    names = tuple(field.name for field in f.fields)
++                    if exclude.isdisjoint(names):
++                        unique_checks.append((model_class, names))
++                    continue
+                 if f.unique:
+                     unique_checks.append((model_class, (name,)))
+                 if f.unique_for_date and f.unique_for_date not in exclude:

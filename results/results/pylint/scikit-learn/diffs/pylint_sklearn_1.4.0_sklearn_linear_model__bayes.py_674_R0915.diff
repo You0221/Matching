@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index d289aa29cbefc..a572c82e6e158 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -668,7 +599,6 @@ def __init__(
+         self.threshold_lambda = threshold_lambda
+         self.copy_X = copy_X
+         self.verbose = verbose
+-        self.n_iter = n_iter
+ 
+     @_fit_context(prefer_skip_nested_validation=True)
+     def fit(self, X, y):

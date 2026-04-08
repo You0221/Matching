@@ -1,0 +1,21 @@
+diff --git a/django/contrib/staticfiles/finders.py b/django/contrib/staticfiles/finders.py
+index 112a81d279d3..c2087569dbf3 100644
+--- a/django/contrib/staticfiles/finders.py
++++ b/django/contrib/staticfiles/finders.py
+@@ -241,10 +287,15 @@ def __init__(self, storage=None, *args, **kwargs):
+             self.storage = self.storage()
+         super().__init__(*args, **kwargs)
+ 
+-    def find(self, path, all=False):
++    # RemovedInDjango61Warning: When the deprecation ends, replace with:
++    # def find(self, path, find_all=False):
++    def find(self, path, find_all=False, **kwargs):
+         """
+         Look for files in the default file storage, if it's local.
+         """
++        # RemovedInDjango61Warning.
++        if kwargs:
++            find_all = self._check_deprecated_find_param(find_all=find_all, **kwargs)
+         try:
+             self.storage.path("")
+         except NotImplementedError:

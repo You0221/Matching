@@ -1,0 +1,178 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e514155e16ddeb..8650dcb91af23e 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -577,35 +683,155 @@ def deprecated(
+         removed: bool = False,
+         date: str | None = None,
+         collection_name: str | None = None,
++        *,
++        deprecator: _messages.PluginInfo | None = None,
++        help_text: str | None = None,
++        obj: t.Any = None,
+     ) -> None:
+-        if not removed and not C.DEPRECATION_WARNINGS:
+-            return
++        """
++        Display a deprecation warning message, if enabled.
++        Most callers do not need to provide `collection_name` or `deprecator` -- but provide only one if needed.
++        Specify `version` or `date`, but not both.
++        If `date` is a string, it must be in the form `YYYY-MM-DD`.
++        """
++        # DTFIX3: are there any deprecation calls where the feature is switching from enabled to disabled, rather than being removed entirely?
++        # DTFIX3: are there deprecated features which should going through deferred deprecation instead?
++
++        _skip_stackwalk = True
++
++        self._deprecated_with_plugin_info(
++            msg=msg,
++            version=version,
++            removed=removed,
++            date=date,
++            help_text=help_text,
++            obj=obj,
++            deprecator=_deprecator.get_best_deprecator(deprecator=deprecator, collection_name=collection_name),
++            formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.DEPRECATED),
++        )
+ 
+-        message_text = self.get_deprecation_message(msg, version=version, removed=removed, date=date, collection_name=collection_name)
++    def _deprecated_with_plugin_info(
++        self,
++        *,
++        msg: str,
++        version: str | None,
++        removed: bool = False,
++        date: str | None,
++        help_text: str | None,
++        obj: t.Any,
++        deprecator: _messages.PluginInfo | None,
++        formatted_traceback: str | None = None,
++    ) -> None:
++        """
++        This is the internal pre-proxy half of the `deprecated` implementation.
++        Any logic that must occur on workers needs to be implemented here.
++        """
++        _skip_stackwalk = True
+ 
+         if removed:
+-            raise AnsibleError(message_text)
++            formatted_msg = self._get_deprecation_message_with_plugin_info(
++                msg=msg,
++                version=version,
++                removed=removed,
++                date=date,
++                deprecator=deprecator,
++            )
+ 
+-        wrapped = textwrap.wrap(message_text, self.columns, drop_whitespace=False)
+-        message_text = "\n".join(wrapped) + "\n"
++            raise AnsibleError(formatted_msg)
+ 
+-        if message_text not in self._deprecations:
+-            self.display(message_text.strip(), color=C.COLOR_DEPRECATE, stderr=True)
+-            self._deprecations[message_text] = 1
++        if source_context := _error_utils.SourceContext.from_value(obj):
++            formatted_source_context = str(source_context)
++        else:
++            formatted_source_context = None
++
++        deprecation = _messages.DeprecationSummary(
++            event=_messages.Event(
++                msg=msg,
++                formatted_source_context=formatted_source_context,
++                help_text=help_text,
++                formatted_traceback=formatted_traceback,
++            ),
++            version=version,
++            date=date,
++            deprecator=deprecator,
++        )
++
++        if warning_ctx := _DeferredWarningContext.current(optional=True):
++            warning_ctx.capture(deprecation)
++            return
++
++        self._deprecated(deprecation)
+ 
+     @_proxy
+-    def warning(self, msg: str, formatted: bool = False) -> None:
++    def _deprecated(self, warning: _messages.DeprecationSummary) -> None:
++        """Internal implementation detail, use `deprecated` instead."""
++
++        # This is the post-proxy half of the `deprecated` implementation.
++        # Any logic that must occur in the primary controller process needs to be implemented here.
++
++        if not _DeferredWarningContext.deprecation_warnings_enabled():
++            return
++
++        self.warning('Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.')
++
++        msg = _format_message(warning, _traceback.is_traceback_enabled(_traceback.TracebackEvent.DEPRECATED))
++        msg = f'[DEPRECATION WARNING]: {msg}'
++
++        if self._deduplicate(msg, self._deprecations):
++            return
++
++        self.display(msg, color=C.config.get_config_value('COLOR_DEPRECATE'), stderr=True)
++
++    def warning(
++        self,
++        msg: str,
++        formatted: bool = False,
++        *,
++        help_text: str | None = None,
++        obj: t.Any = None
++    ) -> None:
++        """Display a warning message."""
++        _skip_stackwalk = True
++
++        # deprecated: description='The formatted argument has no effect.' core_version='2.23'
++
++        # This is the pre-proxy half of the `warning` implementation.
++        # Any logic that must occur on workers needs to be implemented here.
+ 
+-        if not formatted:
+-            new_msg = "[WARNING]: %s" % msg
+-            wrapped = textwrap.wrap(new_msg, self.columns)
+-            new_msg = "\n".join(wrapped) + "\n"
++        if source_context := _error_utils.SourceContext.from_value(obj):
++            formatted_source_context = str(source_context)
+         else:
+-            new_msg = "\n[WARNING]: \n%s" % msg
++            formatted_source_context = None
++
++        warning = _messages.WarningSummary(
++            event=_messages.Event(
++                msg=msg,
++                help_text=help_text,
++                formatted_source_context=formatted_source_context,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.WARNING),
++            ),
++        )
++
++        if warning_ctx := _DeferredWarningContext.current(optional=True):
++            warning_ctx.capture(warning)
++            return
++
++        self._warning(warning)
++
++    @_proxy
++    def _warning(self, warning: _messages.WarningSummary) -> None:
++        """Internal implementation detail, use `warning` instead."""
++
++        # This is the post-proxy half of the `warning` implementation.
++        # Any logic that must occur in the primary controller process needs to be implemented here.
++
++        msg = _format_message(warning, _traceback.is_traceback_enabled(_traceback.TracebackEvent.WARNING))
++        msg = f"[WARNING]: {msg}"
++
++        if self._deduplicate(msg, self._warns):
++            return
+ 
+-        if new_msg not in self._warns:
+-            self.display(new_msg, color=C.COLOR_WARN, stderr=True, caplevel=-2)
+-            self._warns[new_msg] = 1
++        self.display(msg, color=C.config.get_config_value('COLOR_WARN'), stderr=True, caplevel=-2)
+ 
+     @_proxy
+     def system_warning(self, msg: str) -> None:

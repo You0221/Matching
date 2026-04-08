@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -171,7 +157,7 @@ def _method_name(name, estimator, method):
+         # estimators in Stacking*.estimators are not validated yet
+         prefer_skip_nested_validation=False
+     )
+-    def fit(self, X, y, sample_weight=None):
++    def fit(self, X, y, **fit_params):
+         """Fit the estimators.
+ 
+         Parameters

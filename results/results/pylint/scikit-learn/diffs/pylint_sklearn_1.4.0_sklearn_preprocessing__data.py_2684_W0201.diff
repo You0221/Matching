@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 9120384588ef2..6dad8dc1c8c21 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2685,7 +2750,7 @@ def fit(self, X, y=None):
+         self : object
+            Fitted transformer.
+         """
+-        if self.n_quantiles > self.subsample:
++        if self.subsample is not None and self.n_quantiles > self.subsample:
+             raise ValueError(
+                 "The number of quantiles cannot be greater than"
+                 " the number of samples used. Got {} quantiles"

@@ -1,0 +1,17 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e425a867dc9e03..717703b840a0d0 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -33,11 +35,10 @@
+ import io
+ import logging
+ import os
+-import random
++import secrets
+ import subprocess
+ import sys
+ import termios
+-import textwrap
+ import threading
+ import time
+ import tty

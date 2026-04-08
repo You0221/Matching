@@ -1,0 +1,24 @@
+diff --git a/numpy/_core/overrides.py b/numpy/_core/overrides.py
+index 6bb57c3dbf9a..6414710ae900 100644
+--- a/numpy/_core/overrides.py
++++ b/numpy/_core/overrides.py
+@@ -1,13 +1,14 @@
+ """Implementation of __array_function__ overrides from NEP-18."""
+ import collections
+ import functools
+-import os
+ 
+-from .._utils import set_module
+-from .._utils._inspect import getargspec
+ from numpy._core._multiarray_umath import (
+-    add_docstring,  _get_implementing_args, _ArrayFunctionDispatcher)
+-
++    _ArrayFunctionDispatcher,
++    _get_implementing_args,
++    add_docstring,
++)
++from numpy._utils import set_module  # noqa: F401
++from numpy._utils._inspect import getargspec
+ 
+ ARRAY_FUNCTIONS = set()
+ 

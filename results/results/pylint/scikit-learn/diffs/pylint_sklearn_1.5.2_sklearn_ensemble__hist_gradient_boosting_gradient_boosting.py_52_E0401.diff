@@ -1,0 +1,12 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -46,6 +46,7 @@
+     check_array,
+     check_consistent_length,
+     check_is_fitted,
++    validate_data,
+ )
+ from ._gradient_boosting import _update_raw_predictions
+ from .binning import _BinMapper

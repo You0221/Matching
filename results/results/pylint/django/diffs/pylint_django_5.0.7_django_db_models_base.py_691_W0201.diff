@@ -1,0 +1,14 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -691,7 +700,8 @@ def refresh_from_db(self, using=None, fields=None):
+             self._prefetched_objects_cache = {}
+         else:
+             prefetched_objects_cache = getattr(self, "_prefetched_objects_cache", ())
+-            for field in fields:
++            fields = set(fields)
++            for field in fields.copy():
+                 if field in prefetched_objects_cache:
+                     del prefetched_objects_cache[field]
+                     fields.remove(field)

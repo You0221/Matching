@@ -1,0 +1,34 @@
+diff --git a/lib/ansible/modules/dnf.py b/lib/ansible/modules/dnf.py
+index 593f006eb86c0b..c9ddbb5ae5e837 100644
+--- a/lib/ansible/modules/dnf.py
++++ b/lib/ansible/modules/dnf.py
+@@ -642,22 +635,14 @@ def _base(self, conf_file, disable_gpg_check, disablerepo, enablerepo, installro
+         """Return a fully configured dnf Base object."""
+         base = dnf.Base()
+         self._configure_base(base, conf_file, disable_gpg_check, installroot, sslverify)
+-        try:
+-            # this method has been supported in dnf-4.2.17-6 or later
+-            # https://bugzilla.redhat.com/show_bug.cgi?id=1788212
+-            base.setup_loggers()
+-        except AttributeError:
+-            pass
+-        try:
+-            base.init_plugins(set(self.disable_plugin), set(self.enable_plugin))
+-            base.pre_configure_plugins()
+-        except AttributeError:
+-            pass  # older versions of dnf didn't require this and don't have these methods
++
++        base.setup_loggers()
++        base.init_plugins(set(self.disable_plugin), set(self.enable_plugin))
++        base.pre_configure_plugins()
++
+         self._specify_repositories(base, disablerepo, enablerepo)
+-        try:
+-            base.configure_plugins()
+-        except AttributeError:
+-            pass  # older versions of dnf didn't require this and don't have these methods
++
++        base.configure_plugins()
+ 
+         try:
+             if self.update_cache:

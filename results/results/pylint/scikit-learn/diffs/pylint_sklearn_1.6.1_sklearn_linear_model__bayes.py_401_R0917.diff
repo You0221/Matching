@@ -1,0 +1,22 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -394,12 +422,14 @@ def _update_coef_(
+                 [X.T, U / (eigen_vals_ + lambda_ / alpha_)[None, :], U.T, y]
+             )
+ 
+-        rmse_ = np.sum((y - np.dot(X, coef_)) ** 2)
++        # Note: we do not need to explicitly use the weights in this sum because
++        # y and X were preprocessed by _rescale_data to handle the weights.
++        sse_ = np.sum((y - np.dot(X, coef_)) ** 2)
+ 
+-        return coef_, rmse_
++        return coef_, sse_
+ 
+     def _log_marginal_likelihood(
+-        self, n_samples, n_features, eigen_vals, alpha_, lambda_, coef, rmse
++        self, n_samples, n_features, sw_sum, eigen_vals, alpha_, lambda_, coef, sse
+     ):
+         """Log marginal likelihood."""
+         alpha_1 = self.alpha_1

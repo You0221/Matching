@@ -1,0 +1,18 @@
+diff --git a/sklearn/preprocessing/_encoders.py b/sklearn/preprocessing/_encoders.py
+index d8796f7fa42c3..86e0c991ab2a3 100644
+--- a/sklearn/preprocessing/_encoders.py
++++ b/sklearn/preprocessing/_encoders.py
+@@ -451,8 +455,11 @@ def _map_infrequent_categories(self, X_int, X_mask, ignore_category_indices):
+ 
+             X_int[rows_to_update, i] = np.take(mapping, X_int[rows_to_update, i])
+ 
+-    def _more_tags(self):
+-        return {"X_types": ["2darray", "categorical"], "allow_nan": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.categorical = True
++        tags.input_tags.allow_nan = True
++        return tags
+ 
+ 
+ class OneHotEncoder(_BaseEncoder):

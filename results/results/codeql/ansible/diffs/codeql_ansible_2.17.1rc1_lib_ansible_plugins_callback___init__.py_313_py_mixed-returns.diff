@@ -1,0 +1,33 @@
+diff --git a/lib/ansible/plugins/callback/__init__.py b/lib/ansible/plugins/callback/__init__.py
+index 5659887b7318ee..2fc52c45c748c4 100644
+--- a/lib/ansible/plugins/callback/__init__.py
++++ b/lib/ansible/plugins/callback/__init__.py
+@@ -323,7 +391,8 @@ def _serialize_diff(self, diff):
+ 
+         if result_format == 'json':
+             return json.dumps(diff, sort_keys=True, indent=4, separators=(u',', u': ')) + u'\n'
+-        elif result_format == 'yaml':
++
++        if result_format == 'yaml':
+             # None is a sentinel in this case that indicates default behavior
+             # default behavior for yaml is to prettify results
+             lossy = pretty_results in (None, True)
+@@ -331,7 +400,7 @@ def _serialize_diff(self, diff):
+                 yaml.dump(
+                     diff,
+                     allow_unicode=True,
+-                    Dumper=_AnsibleCallbackDumper(lossy=lossy),
++                    Dumper=functools.partial(_AnsibleCallbackDumper, lossy=lossy),
+                     default_flow_style=False,
+                     indent=4,
+                     # sort_keys=sort_keys  # This requires PyYAML>=5.1
+@@ -339,6 +408,9 @@ def _serialize_diff(self, diff):
+                 '    '
+             )
+ 
++        # DTFIX5: add test to exercise this case
++        raise ValueError(f'Unsupported result_format {result_format!r}.')
++
+     def _get_diff(self, difflist):
+ 
+         if not isinstance(difflist, list):

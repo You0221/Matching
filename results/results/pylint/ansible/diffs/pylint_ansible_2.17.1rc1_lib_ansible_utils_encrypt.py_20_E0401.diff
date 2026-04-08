@@ -1,0 +1,44 @@
+diff --git a/lib/ansible/utils/encrypt.py b/lib/ansible/utils/encrypt.py
+index 3a279b7cc00a16..9f44394403a4d8 100644
+--- a/lib/ansible/utils/encrypt.py
++++ b/lib/ansible/utils/encrypt.py
+@@ -5,25 +5,31 @@
+ 
+ import random
+ import string
++import warnings
+ 
+ from collections import namedtuple
+ 
+ from ansible import constants as C
+ from ansible.errors import AnsibleError, AnsibleAssertionError
+-from ansible.module_utils.six import text_type
+ from ansible.module_utils.common.text.converters import to_text, to_bytes
+ from ansible.utils.display import Display
+ 
+ PASSLIB_E = None
+ PASSLIB_AVAILABLE = False
++
+ try:
+-    import passlib
+-    import passlib.hash
+-    from passlib.utils.handlers import HasRawSalt, PrefixWrapper
+-    try:
+-        from passlib.utils.binary import bcrypt64
+-    except ImportError:
+-        from passlib.utils import bcrypt64
++    # deprecated: description='warning suppression only required for Python 3.12 and earlier' python_version='3.12'
++    with warnings.catch_warnings():
++        warnings.filterwarnings('ignore', message="'crypt' is deprecated and slated for removal in Python 3.13", category=DeprecationWarning)
++
++        import passlib
++        import passlib.hash
++        from passlib.utils.handlers import HasRawSalt, PrefixWrapper
++        try:
++            from passlib.utils.binary import bcrypt64
++        except ImportError:
++            from passlib.utils import bcrypt64
++
+     PASSLIB_AVAILABLE = True
+ except Exception as e:
+     PASSLIB_E = e

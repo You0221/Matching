@@ -1,0 +1,28 @@
+diff --git a/django/template/library.py b/django/template/library.py
+index 16db79e4cd88..d181caa83294 100644
+--- a/django/template/library.py
++++ b/django/template/library.py
+@@ -243,6 +327,23 @@ def render(self, context):
+         return output
+ 
+ 
++class SimpleBlockNode(SimpleNode):
++    def __init__(self, nodelist, *args, **kwargs):
++        super().__init__(*args, **kwargs)
++        self.nodelist = nodelist
++
++    def get_resolved_arguments(self, context):
++        resolved_args, resolved_kwargs = super().get_resolved_arguments(context)
++
++        # Restore the "content" argument.
++        # It will move depending on whether takes_context was passed.
++        resolved_args.insert(
++            1 if self.takes_context else 0, self.nodelist.render(context)
++        )
++
++        return resolved_args, resolved_kwargs
++
++
+ class InclusionNode(TagHelperNode):
+     def __init__(self, func, takes_context, args, kwargs, filename):
+         super().__init__(func, takes_context, args, kwargs)

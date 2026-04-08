@@ -1,0 +1,16 @@
+diff --git a/pandas/core/arrays/categorical.py b/pandas/core/arrays/categorical.py
+index 6107388bfe78b..0fe69f6d1ebc2 100644
+--- a/pandas/core/arrays/categorical.py
++++ b/pandas/core/arrays/categorical.py
+@@ -2441,11 +2499,6 @@ def unique(self):
+         # pylint: disable=useless-parent-delegation
+         return super().unique()
+ 
+-    def _cast_quantile_result(self, res_values: np.ndarray) -> np.ndarray:
+-        # make sure we have correct itemsize for resulting codes
+-        assert res_values.dtype == self._ndarray.dtype
+-        return res_values
+-
+     def equals(self, other: object) -> bool:
+         """
+         Returns True if categorical arrays are equal.

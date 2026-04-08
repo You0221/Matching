@@ -1,0 +1,49 @@
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 00197a150fb97..9c8dc2054106a 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -212,13 +339,17 @@ def __from_arrow__(
+         Construct StringArray from pyarrow Array/ChunkedArray.
+         """
+         if self.storage == "pyarrow":
+-            from pandas.core.arrays.string_arrow import ArrowStringArray
++            if self._na_value is libmissing.NA:
++                from pandas.core.arrays.string_arrow import ArrowStringArray
+ 
+-            return ArrowStringArray(array)
+-        elif self.storage == "pyarrow_numpy":
+-            from pandas.core.arrays.string_arrow import ArrowStringArrayNumpySemantics
++                return ArrowStringArray(array)
++            else:
++                from pandas.core.arrays.string_arrow import (
++                    ArrowStringArrayNumpySemantics,
++                )
++
++                return ArrowStringArrayNumpySemantics(array)
+ 
+-            return ArrowStringArrayNumpySemantics(array)
+         else:
+             import pyarrow
+ 
+@@ -233,7 +364,7 @@ def __from_arrow__(
+                 # convert chunk by chunk to numpy and concatenate then, to avoid
+                 # overflow for large string data when concatenating the pyarrow arrays
+                 arr = arr.to_numpy(zero_copy_only=False)
+-                arr = ensure_string_array(arr, na_value=libmissing.NA)
++                arr = ensure_string_array(arr, na_value=self.na_value)
+                 results.append(arr)
+ 
+         if len(chunks) == 0:
+@@ -243,11 +374,7 @@ def __from_arrow__(
+ 
+         # Bypass validation inside StringArray constructor, see GH#47781
+         new_string_array = StringArray.__new__(StringArray)
+-        NDArrayBacked.__init__(
+-            new_string_array,
+-            arr,
+-            StringDtype(storage="python"),
+-        )
++        NDArrayBacked.__init__(new_string_array, arr, self)
+         return new_string_array
+ 
+ 

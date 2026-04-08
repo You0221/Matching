@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/config/manager.py b/lib/ansible/config/manager.py
+index aaa8e545c0f8d0..c4b0ffbc3624f9 100644
+--- a/lib/ansible/config/manager.py
++++ b/lib/ansible/config/manager.py
+@@ -313,7 +419,7 @@ def _read_config_yaml_file(self, yml_file):
+             "Missing base YAML definition file (bad install?): %s" % to_native(yml_file))
+ 
+     def _parse_config_file(self, cfile=None):
+-        ''' return flat configuration settings from file(s) '''
++        """ return flat configuration settings from file(s) """
+         # TODO: take list of files with merge/nomerge
+ 
+         if cfile is None:

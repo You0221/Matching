@@ -1,0 +1,17 @@
+diff --git a/django/contrib/admin/helpers.py b/django/contrib/admin/helpers.py
+index 90ca7affc8c8..51450d1d9e09 100644
+--- a/django/contrib/admin/helpers.py
++++ b/django/contrib/admin/helpers.py
+@@ -438,6 +443,12 @@ def inline_formset_data(self):
+     def forms(self):
+         return self.formset.forms
+ 
++    @cached_property
++    def is_collapsible(self):
++        if any(self.formset.errors):
++            return False
++        return "collapse" in self.classes
++
+     def non_form_errors(self):
+         return self.formset.non_form_errors()
+ 

@@ -1,0 +1,22 @@
+diff --git a/django/utils/encoding.py b/django/utils/encoding.py
+index 5986993759b6..e57e2a2ba140 100644
+--- a/django/utils/encoding.py
++++ b/django/utils/encoding.py
+@@ -9,15 +9,11 @@
+ 
+ 
+ class DjangoUnicodeDecodeError(UnicodeDecodeError):
+-    def __init__(self, obj, *args):
+-        self.obj = obj
+-        super().__init__(*args)
+-
+     def __str__(self):
+         return "%s. You passed in %r (%s)" % (
+             super().__str__(),
+-            self.obj,
+-            type(self.obj),
++            self.object,
++            type(self.object),
+         )
+ 
+ 

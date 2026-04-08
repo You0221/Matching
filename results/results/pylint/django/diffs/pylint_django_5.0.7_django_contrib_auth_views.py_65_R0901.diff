@@ -1,0 +1,12 @@
+diff --git a/django/contrib/auth/views.py b/django/contrib/auth/views.py
+index 0d1610465593..cd810a1edc72 100644
+--- a/django/contrib/auth/views.py
++++ b/django/contrib/auth/views.py
+@@ -62,6 +62,7 @@ def get_default_redirect_url(self):
+         raise ImproperlyConfigured("No URL to redirect to. Provide a next_page.")
+ 
+ 
++@method_decorator(login_not_required, name="dispatch")
+ class LoginView(RedirectURLMixin, FormView):
+     """
+     Display the login form and handle the login action.

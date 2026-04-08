@@ -1,0 +1,33 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index bf5d4d9ffc7..704af79e78a 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1219,28 +1319,6 @@ def _apply_field_title_generator_to_field_info(
+     def _common_field_schema(  # C901
+         self, name: str, field_info: FieldInfo, decorators: DecoratorInfos
+     ) -> _CommonField:
+-        # Update FieldInfo annotation if appropriate:
+-        FieldInfo = import_cached_field_info()
+-        if has_instance_in_type(field_info.annotation, (ForwardRef, str)):
+-            # TODO Can we use field_info.apply_typevars_map here? Shouldn't we use lenient=False?
+-            evaluated = _typing_extra.eval_type(field_info.annotation, *self._types_namespace, lenient=True)
+-            evaluated = replace_types(evaluated, self._typevars_map)
+-            if evaluated is not field_info.annotation and not has_instance_in_type(evaluated, PydanticRecursiveRef):
+-                new_field_info = FieldInfo.from_annotation(evaluated)
+-                field_info.annotation = new_field_info.annotation
+-
+-                # Handle any field info attributes that may have been obtained from now-resolved annotations
+-                for k, v in new_field_info._attributes_set.items():
+-                    # If an attribute is already set, it means it was set by assigning to a call to Field (or just a
+-                    # default value), and that should take the highest priority. So don't overwrite existing attributes.
+-                    # We skip over "attributes" that are present in the metadata_lookup dict because these won't
+-                    # actually end up as attributes of the `FieldInfo` instance.
+-                    if k not in field_info._attributes_set and k not in field_info.metadata_lookup:
+-                        setattr(field_info, k, v)
+-
+-                # Finally, ensure the field info also reflects all the `_attributes_set` that are actually metadata.
+-                field_info.metadata = [*new_field_info.metadata, *field_info.metadata]
+-
+         source_type, annotations = field_info.annotation, field_info.metadata
+ 
+         def set_discriminator(schema: CoreSchema) -> CoreSchema:

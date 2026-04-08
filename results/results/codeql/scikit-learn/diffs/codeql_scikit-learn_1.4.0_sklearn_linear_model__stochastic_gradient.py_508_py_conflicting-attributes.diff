@@ -1,0 +1,79 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index aeec7b5588add..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -510,10 +503,10 @@ class BaseSGDClassifier(LinearClassifierMixin, BaseSGD, metaclass=ABCMeta):
+         "hinge": (Hinge, 1.0),
+         "squared_hinge": (SquaredHinge, 1.0),
+         "perceptron": (Hinge, 0.0),
+-        "log_loss": (Log,),
++        "log_loss": (CyHalfBinomialLoss,),
+         "modified_huber": (ModifiedHuber,),
+-        "squared_error": (SquaredLoss,),
+-        "huber": (Huber, DEFAULT_EPSILON),
++        "squared_error": (CyHalfSquaredError,),
++        "huber": (CyHuberLoss, DEFAULT_EPSILON),
+         "epsilon_insensitive": (EpsilonInsensitive, DEFAULT_EPSILON),
+         "squared_epsilon_insensitive": (SquaredEpsilonInsensitive, DEFAULT_EPSILON),
+     }
+@@ -593,7 +586,8 @@ def _partial_fit(
+         intercept_init,
+     ):
+         first_call = not hasattr(self, "classes_")
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse="csr",
+@@ -603,6 +597,17 @@ def _partial_fit(
+             reset=first_call,
+         )
+ 
++        if first_call:
++            # TODO(1.7) remove 0 from average parameter constraint
++            if not isinstance(self.average, (bool, np.bool_)) and self.average == 0:
++                warnings.warn(
++                    (
++                        "Passing average=0 to disable averaging is deprecated and will"
++                        " be removed in 1.7. Please use average=False instead."
++                    ),
++                    FutureWarning,
++                )
++
+         n_samples, n_features = X.shape
+ 
+         _check_partial_fit_first_call(self, classes)
+@@ -678,9 +683,19 @@ def _fit(
+             # delete the attribute otherwise _partial_fit thinks it's not the first call
+             delattr(self, "classes_")
+ 
++        # TODO(1.7) remove 0 from average parameter constraint
++        if not isinstance(self.average, (bool, np.bool_)) and self.average == 0:
++            warnings.warn(
++                (
++                    "Passing average=0 to disable averaging is deprecated and will be "
++                    "removed in 1.7. Please use average=False instead."
++                ),
++                FutureWarning,
++            )
++
+         # labels can be encoded as float, int, or string literals
+         # np.unique sorts in asc order; largest class id is positive class
+-        y = self._validate_data(y=y)
++        y = validate_data(self, y=y)
+         classes = np.unique(y)
+ 
+         if self.warm_start and hasattr(self, "coef_"):
+@@ -926,6 +941,11 @@ def fit(self, X, y, coef_init=None, intercept_init=None, sample_weight=None):
+             sample_weight=sample_weight,
+         )
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class SGDClassifier(BaseSGDClassifier):
+     """Linear classifiers (SVM, logistic regression, etc.) with SGD training.

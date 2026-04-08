@@ -1,0 +1,13 @@
+diff --git a/pandas/core/frame.py b/pandas/core/frame.py
+index 4908b535bcb1c..734756cb8f7c8 100644
+--- a/pandas/core/frame.py
++++ b/pandas/core/frame.py
+@@ -3215,7 +3343,7 @@ def to_html(
+         ... </table>'''
+         >>> assert html_string == df.to_html()
+         """
+-        if justify is not None and justify not in fmt._VALID_JUSTIFY_PARAMETERS:
++        if justify is not None and justify not in fmt.VALID_JUSTIFY_PARAMETERS:
+             raise ValueError("Invalid value for justify parameter")
+ 
+         formatter = fmt.DataFrameFormatter(

@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/geom.py b/django/contrib/gis/geos/prototypes/geom.py
+index a456acd0c185..399654403377 100644
+--- a/django/contrib/gis/geos/prototypes/geom.py
++++ b/django/contrib/gis/geos/prototypes/geom.py
+@@ -38,6 +40,7 @@ class IntFromGeom(GEOSFuncFactory):
+ 
+ class StringFromGeom(GEOSFuncFactory):
+     "Argument is a Geometry, return type is a string."
++
+     argtypes = [GEOM_PTR]
+     restype = geos_char_p
+     errcheck = staticmethod(check_string)

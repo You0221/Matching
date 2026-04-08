@@ -1,0 +1,26 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index cb5c63c0d17c..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -200,12 +203,15 @@ def __iter__(self):
+         query = queryset.query
+         compiler = query.get_compiler(queryset.db)
+ 
+-        # extra(select=...) cols are always at the start of the row.
+-        names = [
+-            *query.extra_select,
+-            *query.values_select,
+-            *query.annotation_select,
+-        ]
++        if query.selected:
++            names = list(query.selected)
++        else:
++            # extra(select=...) cols are always at the start of the row.
++            names = [
++                *query.extra_select,
++                *query.values_select,
++                *query.annotation_select,
++            ]
+         indexes = range(len(names))
+         for row in compiler.results_iter(
+             chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size

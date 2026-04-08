@@ -1,0 +1,27 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..64c659e8d22 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -412,18 +415,15 @@ def generate(self, schema: CoreSchema, mode: JsonSchemaMode = 'validation') -> J
+         json_schema: JsonSchemaValue = self.generate_inner(schema)
+         json_ref_counts = self.get_json_ref_counts(json_schema)
+ 
+-        # Remove the top-level $ref if present; note that the _generate method already ensures there are no sibling keys
+         ref = cast(JsonRef, json_schema.get('$ref'))
+         while ref is not None:  # may need to unpack multiple levels
+             ref_json_schema = self.get_schema_from_definitions(ref)
+-            if json_ref_counts[ref] > 1 or ref_json_schema is None:
+-                # Keep the ref, but use an allOf to remove the top level $ref
+-                json_schema = {'allOf': [{'$ref': ref}]}
+-            else:
+-                # "Unpack" the ref since this is the only reference
++            if json_ref_counts[ref] == 1 and ref_json_schema is not None and len(json_schema) == 1:
++                # "Unpack" the ref since this is the only reference and there are no sibling keys
+                 json_schema = ref_json_schema.copy()  # copy to prevent recursive dict reference
+                 json_ref_counts[ref] -= 1
+-            ref = cast(JsonRef, json_schema.get('$ref'))
++                ref = cast(JsonRef, json_schema.get('$ref'))
++            ref = None
+ 
+         self._garbage_collect_definitions(json_schema)
+         definitions_remapping = self._build_definitions_remapping()

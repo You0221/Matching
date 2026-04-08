@@ -1,0 +1,21 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/predictor.py b/sklearn/ensemble/_hist_gradient_boosting/predictor.py
+index 600e55e43467f..799c25aadcec3 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/predictor.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/predictor.py
+@@ -1,6 +1,7 @@
+ """
+ This module contains the TreePredictor class which is used for prediction.
+ """
++
+ # Author: Nicolas Hug
+ 
+ import numpy as np
+@@ -10,7 +11,7 @@
+     _predict_from_binned_data,
+     _predict_from_raw_data,
+ )
+-from .common import Y_DTYPE
++from .common import PREDICTOR_RECORD_DTYPE, Y_DTYPE
+ 
+ 
+ class TreePredictor:

@@ -1,0 +1,16 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -1954,6 +2002,11 @@ def _constraint_names(
+                     result.append(name)
+         return result
+ 
++    def _pk_constraint_sql(self, columns):
++        return self.sql_pk_constraint % {
++            "columns": ", ".join(self.quote_name(column) for column in columns)
++        }
++
+     def _delete_primary_key(self, model, strict=False):
+         constraint_names = self._constraint_names(model, primary_key=True)
+         if strict and len(constraint_names) != 1:

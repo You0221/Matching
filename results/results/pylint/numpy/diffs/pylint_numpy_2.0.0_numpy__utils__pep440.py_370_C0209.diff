@@ -1,0 +1,13 @@
+diff --git a/numpy/_utils/_pep440.py b/numpy/_utils/_pep440.py
+index 73d0afb5e95f..035a0695e5ee 100644
+--- a/numpy/_utils/_pep440.py
++++ b/numpy/_utils/_pep440.py
+@@ -367,7 +366,7 @@ def base_version(self):
+ 
+         # Epoch
+         if self._version.epoch != 0:
+-            parts.append("{0}!".format(self._version.epoch))
++            parts.append(f"{self._version.epoch}!")
+ 
+         # Release segment
+         parts.append(".".join(str(x) for x in self._version.release))

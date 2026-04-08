@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 3b676e3c25..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -2772,7 +2840,7 @@ def compute_etag(self) -> Optional[str]:
+         version_hash = self._get_cached_version(self.absolute_path)
+         if not version_hash:
+             return None
+-        return '"%s"' % (version_hash,)
++        return f'"{version_hash}"'
+ 
+     def set_headers(self) -> None:
+         """Sets the content and caching headers on the response.

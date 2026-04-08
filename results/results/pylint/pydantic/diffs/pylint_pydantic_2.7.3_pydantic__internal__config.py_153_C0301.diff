@@ -1,0 +1,92 @@
+diff --git a/pydantic/_internal/_config.py b/pydantic/_internal/_config.py
+index ec00b380330..6d491c29027 100644
+--- a/pydantic/_internal/_config.py
++++ b/pydantic/_internal/_config.py
+@@ -149,50 +154,53 @@ def __getattr__(self, name: str) -> Any:
+                 except KeyError:
+                     raise AttributeError(f'Config has no attribute {name!r}') from None
+ 
+-    def core_config(self, obj: Any) -> core_schema.CoreConfig:
+-        """Create a pydantic-core config, `obj` is just used to populate `title` if not set in config.
+-
+-        Pass `obj=None` if you do not want to attempt to infer the `title`.
++    def core_config(self, title: str | None) -> core_schema.CoreConfig:
++        """Create a pydantic-core config.
+ 
+         We don't use getattr here since we don't want to populate with defaults.
+ 
+         Args:
+-            obj: An object used to populate `title` if not set in config.
++            title: The title to use if not set in config.
+ 
+         Returns:
+             A `CoreConfig` object created from config.
+         """
++        config = self.config_dict
+ 
+-        def dict_not_none(**kwargs: Any) -> Any:
+-            return {k: v for k, v in kwargs.items() if v is not None}
+-
+-        core_config = core_schema.CoreConfig(
+-            **dict_not_none(
+-                title=self.config_dict.get('title') or (obj and obj.__name__),
+-                extra_fields_behavior=self.config_dict.get('extra'),
+-                allow_inf_nan=self.config_dict.get('allow_inf_nan'),
+-                populate_by_name=self.config_dict.get('populate_by_name'),
+-                str_strip_whitespace=self.config_dict.get('str_strip_whitespace'),
+-                str_to_lower=self.config_dict.get('str_to_lower'),
+-                str_to_upper=self.config_dict.get('str_to_upper'),
+-                strict=self.config_dict.get('strict'),
+-                ser_json_timedelta=self.config_dict.get('ser_json_timedelta'),
+-                ser_json_bytes=self.config_dict.get('ser_json_bytes'),
+-                ser_json_inf_nan=self.config_dict.get('ser_json_inf_nan'),
+-                from_attributes=self.config_dict.get('from_attributes'),
+-                loc_by_alias=self.config_dict.get('loc_by_alias'),
+-                revalidate_instances=self.config_dict.get('revalidate_instances'),
+-                validate_default=self.config_dict.get('validate_default'),
+-                str_max_length=self.config_dict.get('str_max_length'),
+-                str_min_length=self.config_dict.get('str_min_length'),
+-                hide_input_in_errors=self.config_dict.get('hide_input_in_errors'),
+-                coerce_numbers_to_str=self.config_dict.get('coerce_numbers_to_str'),
+-                regex_engine=self.config_dict.get('regex_engine'),
+-                validation_error_cause=self.config_dict.get('validation_error_cause'),
+-                cache_strings=self.config_dict.get('cache_strings'),
++        if config.get('schema_generator') is not None:
++            warnings.warn(
++                'The `schema_generator` setting has been deprecated since v2.10. This setting no longer has any effect.',
++                PydanticDeprecatedSince210,
++                stacklevel=2,
+             )
+-        )
+-        return core_config
++
++        core_config_values = {
++            'title': config.get('title') or title or None,
++            'extra_fields_behavior': config.get('extra'),
++            'allow_inf_nan': config.get('allow_inf_nan'),
++            'populate_by_name': config.get('populate_by_name'),
++            'str_strip_whitespace': config.get('str_strip_whitespace'),
++            'str_to_lower': config.get('str_to_lower'),
++            'str_to_upper': config.get('str_to_upper'),
++            'strict': config.get('strict'),
++            'ser_json_timedelta': config.get('ser_json_timedelta'),
++            'ser_json_bytes': config.get('ser_json_bytes'),
++            'val_json_bytes': config.get('val_json_bytes'),
++            'ser_json_inf_nan': config.get('ser_json_inf_nan'),
++            'from_attributes': config.get('from_attributes'),
++            'loc_by_alias': config.get('loc_by_alias'),
++            'revalidate_instances': config.get('revalidate_instances'),
++            'validate_default': config.get('validate_default'),
++            'str_max_length': config.get('str_max_length'),
++            'str_min_length': config.get('str_min_length'),
++            'hide_input_in_errors': config.get('hide_input_in_errors'),
++            'coerce_numbers_to_str': config.get('coerce_numbers_to_str'),
++            'regex_engine': config.get('regex_engine'),
++            'validation_error_cause': config.get('validation_error_cause'),
++            'cache_strings': config.get('cache_strings'),
++        }
++
++        return core_schema.CoreConfig(**{k: v for k, v in core_config_values.items() if v is not None})
+ 
+     def __repr__(self):
+         c = ', '.join(f'{k}={v!r}' for k, v in self.config_dict.items())

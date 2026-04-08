@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..40ac2ddbdd9 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2161,7 +2448,7 @@ def _extract_get_pydantic_json_schema(tp: Any, schema: CoreSchema) -> GetJsonSch
+             )
+ 
+     # handle GenericAlias' but ignore Annotated which "lies" about its origin (in this case it would be `int`)
+-    if hasattr(tp, '__origin__') and not isinstance(tp, type(Annotated[int, 'placeholder'])):
++    if hasattr(tp, '__origin__') and not is_annotated(tp):
+         return _extract_get_pydantic_json_schema(tp.__origin__, schema)
+ 
+     if js_modify_function is None:

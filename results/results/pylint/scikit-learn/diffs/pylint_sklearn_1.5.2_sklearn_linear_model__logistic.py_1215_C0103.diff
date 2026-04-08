@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1220,7 +1219,8 @@ def fit(self, X, y, sample_weight=None):
+         else:
+             _dtype = [np.float64, np.float32]
+ 
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse="csr",

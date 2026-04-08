@@ -1,0 +1,32 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index 3619fdff3c7..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -131,26 +65,9 @@ def _type_has_config(type_: Any) -> bool:
+         return False
+ 
+ 
+-# This is keeping track of the frame depth for the TypeAdapter functions. This is required for _parent_depth used for
+-# ForwardRef resolution. We may enter the TypeAdapter schema building via different TypeAdapter functions. Hence, we
+-# need to keep track of the frame depth relative to the originally provided _parent_depth.
+-def _frame_depth(
+-    depth: int,
+-) -> Callable[[Callable[Concatenate[TypeAdapterT, P], R]], Callable[Concatenate[TypeAdapterT, P], R]]:
+-    def wrapper(func: Callable[Concatenate[TypeAdapterT, P], R]) -> Callable[Concatenate[TypeAdapterT, P], R]:
+-        @wraps(func)
+-        def wrapped(self: TypeAdapterT, *args: P.args, **kwargs: P.kwargs) -> R:
+-            with self._with_frame_depth(depth + 1):  # depth + 1 for the wrapper function
+-                return func(self, *args, **kwargs)
+-
+-        return wrapped
+-
+-    return wrapper
+-
+-
+ @final
+ class TypeAdapter(Generic[T]):
+-    """Usage docs: https://docs.pydantic.dev/2.9/concepts/type_adapter/
++    """Usage docs: https://docs.pydantic.dev/2.10/concepts/type_adapter/
+ 
+     Type adapters provide a flexible way to perform validation and serialization based on a Python type.
+ 

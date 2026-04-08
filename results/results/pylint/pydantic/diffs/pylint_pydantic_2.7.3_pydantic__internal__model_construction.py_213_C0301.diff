@@ -1,0 +1,22 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -204,13 +228,15 @@ def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
+                 cls_name,
+                 config_wrapper,
+                 raise_errors=False,
+-                types_namespace=types_namespace,
++                ns_resolver=ns_resolver,
+                 create_model_module=_create_model_module,
+             )
+ 
+             # If this is placed before the complete_model_class call above,
+             # the generic computed fields return type is set to PydanticUndefined
+-            cls.model_computed_fields = {k: v.info for k, v in cls.__pydantic_decorators__.computed_fields.items()}
++            cls.__pydantic_computed_fields__ = {
++                k: v.info for k, v in cls.__pydantic_decorators__.computed_fields.items()
++            }
+ 
+             set_deprecated_descriptors(cls)
+ 

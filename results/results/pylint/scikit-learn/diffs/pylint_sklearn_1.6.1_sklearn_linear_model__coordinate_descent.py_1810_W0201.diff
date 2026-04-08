@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 2dbb83c82fbaa..62096133ada2f 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -1804,7 +1849,7 @@ def fit(self, X, y, sample_weight=None, **params):
+ 
+         self.l1_ratio_ = best_l1_ratio
+         self.alpha_ = best_alpha
+-        if self.alphas is None:
++        if isinstance(self._alphas, Integral):
+             self.alphas_ = np.asarray(alphas)
+             if n_l1_ratio == 1:
+                 self.alphas_ = self.alphas_[0]

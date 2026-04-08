@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..40ac2ddbdd9 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1345,7 +1576,7 @@ def _generate_parameter_schema(
+         mode: Literal['positional_only', 'positional_or_keyword', 'keyword_only'] | None = None,
+     ) -> core_schema.ArgumentsParameter:
+         """Prepare a ArgumentsParameter to represent a field in a namedtuple or function signature."""
+-        from ..fields import FieldInfo
++        FieldInfo = import_cached_field_info()
+ 
+         if default is Parameter.empty:
+             field = FieldInfo.from_annotation(annotation)

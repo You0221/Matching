@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/plugins/action/fetch.py b/lib/ansible/plugins/action/fetch.py
+index 4c62382ba7d892..133d3315eebc9e 100644
+--- a/lib/ansible/plugins/action/fetch.py
++++ b/lib/ansible/plugins/action/fetch.py
+@@ -174,9 +178,8 @@ def run(self, tmp=None, task_vars=None):
+                     self._connection.fetch_file(source, dest)
+                 else:
+                     try:
+-                        f = open(to_bytes(dest, errors='surrogate_or_strict'), 'wb')
+-                        f.write(remote_data)
+-                        f.close()
++                        with open(to_bytes(dest, errors='surrogate_or_strict'), 'wb') as f:
++                            f.write(remote_data)
+                     except (IOError, OSError) as e:
+                         raise AnsibleActionFail("Failed to fetch the file: %s" % e)
+                 new_checksum = secure_hash(dest)

@@ -1,0 +1,32 @@
+diff --git a/lib/ansible/executor/interpreter_discovery.py b/lib/ansible/executor/interpreter_discovery.py
+index 6d105817b039dd..bf168f922e2485 100644
+--- a/lib/ansible/executor/interpreter_discovery.py
++++ b/lib/ansible/executor/interpreter_discovery.py
+@@ -3,25 +3,17 @@
+ 
+ from __future__ import annotations
+ 
+-import bisect
+-import json
+-import pkgutil
+ import re
+ 
+ from ansible import constants as C
+ from ansible.errors import AnsibleError
+-from ansible.module_utils.common.text.converters import to_native, to_text
+-from ansible.module_utils.distro import LinuxDistribution
+ from ansible.utils.display import Display
+ from ansible.utils.plugin_docs import get_versioned_doclink
+-from ansible.module_utils.compat.version import LooseVersion
+-from ansible.module_utils.facts.system.distribution import Distribution
+-from traceback import format_exc
+ 
+-OS_FAMILY_LOWER = {k.lower(): v.lower() for k, v in Distribution.OS_FAMILY.items()}
++_FALLBACK_INTERPRETER = '/usr/bin/python3'
+ 
+ display = Display()
+-foundre = re.compile(r'(?s)PLATFORM[\r\n]+(.*)FOUND(.*)ENDFOUND')
++foundre = re.compile(r'FOUND(.*)ENDFOUND', flags=re.DOTALL)
+ 
+ 
+ class InterpreterDiscoveryRequiredError(Exception):

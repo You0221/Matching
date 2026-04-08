@@ -1,0 +1,18 @@
+diff --git a/pydantic/mypy.py b/pydantic/mypy.py
+index 0ce0a258d96..9ad3a3ff179 100644
+--- a/pydantic/mypy.py
++++ b/pydantic/mypy.py
+@@ -46,13 +46,11 @@
+ from mypy.plugin import (
+     CheckerPluginInterface,
+     ClassDefContext,
+-    FunctionContext,
+     MethodContext,
+     Plugin,
+     ReportConfigContext,
+     SemanticAnalyzerPluginInterface,
+ )
+-from mypy.plugins import dataclasses
+ from mypy.plugins.common import (
+     deserialize_and_fixup_type,
+ )

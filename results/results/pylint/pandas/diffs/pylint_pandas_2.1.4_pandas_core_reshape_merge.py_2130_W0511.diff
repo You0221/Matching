@@ -1,0 +1,39 @@
+diff --git a/pandas/core/reshape/merge.py b/pandas/core/reshape/merge.py
+index 6987a0ac7bf6b..410301b7697f2 100644
+--- a/pandas/core/reshape/merge.py
++++ b/pandas/core/reshape/merge.py
+@@ -2099,34 +2202,6 @@ def _convert_values_for_libjoin(
+     def _get_join_indexers(self) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]]:
+         """return the join indexers"""
+ 
+-        def flip(xs: list[ArrayLike]) -> np.ndarray:
+-            """unlike np.transpose, this returns an array of tuples"""
+-
+-            def injection(obj: ArrayLike):
+-                if not isinstance(obj.dtype, ExtensionDtype):
+-                    # ndarray
+-                    return obj
+-                obj = extract_array(obj)
+-                if isinstance(obj, NDArrayBackedExtensionArray):
+-                    # fastpath for e.g. dt64tz, categorical
+-                    return obj._ndarray
+-                # FIXME: returning obj._values_for_argsort() here doesn't
+-                #  break in any existing test cases, but i (@jbrockmendel)
+-                #  am pretty sure it should!
+-                #  e.g.
+-                #  arr = pd.array([0, pd.NA, 255], dtype="UInt8")
+-                #  will have values_for_argsort (before GH#45434)
+-                #  np.array([0, 255, 255], dtype=np.uint8)
+-                #  and the non-injectivity should make a difference somehow
+-                #  shouldn't it?
+-                return np.asarray(obj)
+-
+-            xs = [injection(x) for x in xs]
+-            labels = list(string.ascii_lowercase[: len(xs)])
+-            dtypes = [x.dtype for x in xs]
+-            labeled_dtypes = list(zip(labels, dtypes))
+-            return np.array(list(zip(*xs)), labeled_dtypes)
+-
+         # values to compare
+         left_values = (
+             self.left.index._values if self.left_index else self.left_join_keys[-1]

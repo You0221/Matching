@@ -1,0 +1,94 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index aeec7b5588add..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -1366,21 +1387,11 @@ def predict_log_proba(self, X):
+         """
+         return np.log(self.predict_proba(X))
+ 
+-    def _more_tags(self):
+-        return {
+-            "_xfail_checks": {
+-                "check_sample_weights_invariance": (
+-                    "zero sample_weight is not equivalent to removing samples"
+-                ),
+-            },
+-            "preserves_dtype": [np.float64, np.float32],
+-        }
+-
+ 
+ class BaseSGDRegressor(RegressorMixin, BaseSGD):
+     loss_functions = {
+-        "squared_error": (SquaredLoss,),
+-        "huber": (Huber, DEFAULT_EPSILON),
++        "squared_error": (CyHalfSquaredError,),
++        "huber": (CyHuberLoss, DEFAULT_EPSILON),
+         "epsilon_insensitive": (EpsilonInsensitive, DEFAULT_EPSILON),
+         "squared_epsilon_insensitive": (SquaredEpsilonInsensitive, DEFAULT_EPSILON),
+     }
+@@ -1453,7 +1464,8 @@ def _partial_fit(
+         intercept_init,
+     ):
+         first_call = getattr(self, "coef_", None) is None
+-        X, y = self._validate_data(
++        X, y = validate_data(
++            self,
+             X,
+             y,
+             accept_sparse="csr",
+@@ -1465,6 +1477,17 @@ def _partial_fit(
+         )
+         y = y.astype(X.dtype, copy=False)
+ 
++        if first_call:
++            # TODO(1.7) remove 0 from average parameter constraint
++            if not isinstance(self.average, (bool, np.bool_)) and self.average == 0:
++                warnings.warn(
++                    (
++                        "Passing average=0 to disable averaging is deprecated and will"
++                        " be removed in 1.7. Please use average=False instead."
++                    ),
++                    FutureWarning,
++                )
++
+         n_samples, n_features = X.shape
+ 
+         sample_weight = _check_sample_weight(sample_weight, X, dtype=X.dtype)
+@@ -1542,6 +1565,16 @@ def _fit(
+         intercept_init=None,
+         sample_weight=None,
+     ):
++        # TODO(1.7) remove 0 from average parameter constraint
++        if not isinstance(self.average, (bool, np.bool_)) and self.average == 0:
++            warnings.warn(
++                (
++                    "Passing average=0 to disable averaging is deprecated and will be "
++                    "removed in 1.7. Please use average=False instead."
++                ),
++                FutureWarning,
++            )
++
+         if self.warm_start and getattr(self, "coef_", None) is not None:
+             if coef_init is None:
+                 coef_init = self.coef_
+@@ -1637,7 +1670,7 @@ def _decision_function(self, X):
+         """
+         check_is_fitted(self)
+ 
+-        X = self._validate_data(X, accept_sparse="csr", reset=False)
++        X = validate_data(self, X, accept_sparse="csr", reset=False)
+ 
+         scores = safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_
+         return scores.ravel()
+@@ -1744,6 +1777,11 @@ def _fit_regressor(
+         else:
+             self.intercept_ = np.atleast_1d(intercept)
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class SGDRegressor(BaseSGDRegressor):
+     """Linear model fitted by minimizing a regularized empirical loss with SGD.

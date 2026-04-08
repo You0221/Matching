@@ -1,0 +1,9 @@
+diff --git a/django/contrib/auth/apps.py b/django/contrib/auth/apps.py
+index 4882a27c4216..ad6f81680909 100644
+--- a/django/contrib/auth/apps.py
++++ b/django/contrib/auth/apps.py
+@@ -28,3 +28,4 @@ def ready(self):
+             user_logged_in.connect(update_last_login, dispatch_uid="update_last_login")
+         checks.register(check_user_model, checks.Tags.models)
+         checks.register(check_models_permissions, checks.Tags.models)
++        checks.register(check_middleware)

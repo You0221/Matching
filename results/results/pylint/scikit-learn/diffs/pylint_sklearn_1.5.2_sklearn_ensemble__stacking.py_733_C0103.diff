@@ -1,0 +1,17 @@
+diff --git a/sklearn/ensemble/_stacking.py b/sklearn/ensemble/_stacking.py
+index a18803d507ffa..bf5ff39c13165 100644
+--- a/sklearn/ensemble/_stacking.py
++++ b/sklearn/ensemble/_stacking.py
+@@ -729,7 +799,11 @@ def predict_proba(self, X):
+             y_pred = np.array([preds[:, 0] for preds in y_pred]).T
+         return y_pred
+ 
+-    @available_if(_estimator_has("decision_function"))
++    @available_if(
++        _estimator_has(
++            "decision_function", delegates=("final_estimator_", "final_estimator")
++        )
++    )
+     def decision_function(self, X):
+         """Decision function for samples in `X` using the final estimator.
+ 

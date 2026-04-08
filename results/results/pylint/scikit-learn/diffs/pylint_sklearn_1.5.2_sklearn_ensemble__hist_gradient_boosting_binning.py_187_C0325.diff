@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/binning.py b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+index d23f6e7b00a82..c428c742af883 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/binning.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+@@ -192,7 +194,7 @@ def fit(self, X, y=None):
+                 )
+             )
+ 
+-        X = check_array(X, dtype=[X_DTYPE], force_all_finite=False)
++        X = check_array(X, dtype=[X_DTYPE], ensure_all_finite=False)
+         max_bins = self.n_bins - 1
+ 
+         rng = check_random_state(self.random_state)

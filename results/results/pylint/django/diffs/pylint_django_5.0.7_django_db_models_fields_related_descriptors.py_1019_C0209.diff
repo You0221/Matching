@@ -1,0 +1,13 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -1017,7 +1025,7 @@ def _get_set_deprecation_msg_params(self):
+         return (
+             "%s side of a many-to-many set"
+             % ("reverse" if self.reverse else "forward"),
+-            self.rel.get_accessor_name() if self.reverse else self.field.name,
++            self.rel.accessor_name if self.reverse else self.field.name,
+         )
+ 
+ 

@@ -1,0 +1,20 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -1943,13 +2001,10 @@ def resolve_through_model(_, model, field):
+     def contribute_to_related_class(self, cls, related):
+         # Internal M2Ms (i.e., those with a related name ending with '+')
+         # and swapped models don't get a related descriptor.
+-        if (
+-            not self.remote_field.is_hidden()
+-            and not related.related_model._meta.swapped
+-        ):
++        if not self.remote_field.hidden and not related.related_model._meta.swapped:
+             setattr(
+                 cls,
+-                related.get_accessor_name(),
++                related.accessor_name,
+                 ManyToManyDescriptor(self.remote_field, reverse=True),
+             )
+ 

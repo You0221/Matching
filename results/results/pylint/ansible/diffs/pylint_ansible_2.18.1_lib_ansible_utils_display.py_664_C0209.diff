@@ -1,0 +1,71 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e514155e16ddeb..82d47d5beb1ce3 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -654,17 +858,56 @@ def banner_cowsay(self, msg: str, color: str | None = None) -> None:
+         (out, err) = cmd.communicate()
+         self.display(u"%s\n" % to_text(out), color=color)
+ 
+-    @_proxy
+-    def error(self, msg: str, wrap_text: bool = True) -> None:
+-        if wrap_text:
+-            new_msg = u"\n[ERROR]: %s" % msg
+-            wrapped = textwrap.wrap(new_msg, self.columns)
+-            new_msg = u"\n".join(wrapped) + u"\n"
++    def error_as_warning(self, msg: str | None, exception: BaseException) -> None:
++        """Display an exception as a warning."""
++
++        error = _utils._create_error_summary(exception, _traceback.TracebackEvent.WARNING)
++
++        if msg:
++            error = dataclasses.replace(error, details=(Detail(msg=msg),) + error.details)
++
++        warning = WarningSummary(
++            details=error.details,
++            formatted_traceback=error.formatted_traceback,
++        )
++
++        if warning_ctx := _DeferredWarningContext.current(optional=True):
++            warning_ctx.capture(warning)
++            return
++
++        self._warning(warning, wrap_text=False)
++
++    def error(self, msg: str | BaseException, wrap_text: bool = True, stderr: bool = True) -> None:
++        """Display an error message."""
++
++        # This is the pre-proxy half of the `error` implementation.
++        # Any logic that must occur on workers needs to be implemented here.
++
++        if isinstance(msg, BaseException):
++            error = _utils._create_error_summary(msg, _traceback.TracebackEvent.ERROR)
++            wrap_text = False
+         else:
+-            new_msg = u"ERROR! %s" % msg
+-        if new_msg not in self._errors:
+-            self.display(new_msg, color=C.COLOR_ERROR, stderr=True, caplevel=-1)
+-            self._errors[new_msg] = 1
++            error = ErrorSummary(details=(Detail(msg=msg),), formatted_traceback=_traceback.maybe_capture_traceback(_traceback.TracebackEvent.ERROR))
++
++        self._error(error, wrap_text=wrap_text, stderr=stderr)
++
++    @_proxy
++    def _error(self, error: ErrorSummary, wrap_text: bool, stderr: bool) -> None:
++        """Internal implementation detail, use `error` instead."""
++
++        # This is the post-proxy half of the `error` implementation.
++        # Any logic that must occur in the primary controller process needs to be implemented here.
++
++        msg = format_message(error)
++        msg = f'[ERROR]: {msg}'
++
++        if self._deduplicate(msg, self._errors):
++            return
++
++        # DTFIX-RELEASE: what should we do with wrap_message?
++        msg = self._wrap_message(msg=msg, wrap_text=wrap_text)
++
++        self.display(msg, color=C.config.get_config_value('COLOR_ERROR'), stderr=stderr, caplevel=-1)
+ 
+     @staticmethod
+     def prompt(msg: str, private: bool = False) -> str:

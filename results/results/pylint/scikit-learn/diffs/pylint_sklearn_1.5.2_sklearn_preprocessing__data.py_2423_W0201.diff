@@ -1,0 +1,20 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..f0d1defe61ca9 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2427,8 +2484,13 @@ def transform(self, K, copy=True):
+ 
+         xp, _ = get_namespace(K)
+ 
+-        K = self._validate_data(
+-            K, copy=copy, dtype=_array_api.supported_float_dtypes(xp), reset=False
++        K = validate_data(
++            self,
++            K,
++            copy=copy,
++            force_writeable=True,
++            dtype=_array_api.supported_float_dtypes(xp),
++            reset=False,
+         )
+ 
+         K_pred_cols = (xp.sum(K, axis=1) / self.K_fit_rows_.shape[0])[:, None]

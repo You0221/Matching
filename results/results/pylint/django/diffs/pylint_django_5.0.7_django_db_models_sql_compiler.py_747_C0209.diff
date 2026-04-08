@@ -1,0 +1,13 @@
+diff --git a/django/db/models/sql/compiler.py b/django/db/models/sql/compiler.py
+index b28dc925ba37..0b6cfbfc377c 100644
+--- a/django/db/models/sql/compiler.py
++++ b/django/db/models/sql/compiler.py
+@@ -877,6 +906,8 @@ def as_sql(self, with_limits=True, with_col_aliases=False):
+                     if self._meta_ordering:
+                         order_by = None
+                 if having:
++                    if not grouping:
++                        result.extend(self.connection.ops.force_group_by())
+                     result.append("HAVING %s" % having)
+                     params.extend(h_params)
+ 

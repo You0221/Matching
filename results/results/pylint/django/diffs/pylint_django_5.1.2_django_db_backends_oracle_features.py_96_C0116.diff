@@ -1,0 +1,38 @@
+diff --git a/django/db/backends/oracle/features.py b/django/db/backends/oracle/features.py
+index aa657b3ba459..7ebe69c6ddf2 100644
+--- a/django/db/backends/oracle/features.py
++++ b/django/db/backends/oracle/features.py
+@@ -116,6 +117,7 @@ def django_test_skips(self):
+             "Oracle requires ORDER BY in row_number, ANSI:SQL doesn't.": {
+                 "expressions_window.tests.WindowFunctionTests."
+                 "test_row_number_no_ordering",
++                "prefetch_related.tests.PrefetchLimitTests.test_empty_order",
+             },
+             "Oracle doesn't support changing collations on indexed columns (#33671).": {
+                 "migrations.test_operations.OperationTests."
+@@ -138,6 +140,25 @@ def django_test_skips(self):
+                     },
+                 }
+             )
++        if self.connection.is_pool:
++            skips.update(
++                {
++                    "Pooling does not support persistent connections": {
++                        "backends.base.test_base.ConnectionHealthChecksTests."
++                        "test_health_checks_enabled",
++                        "backends.base.test_base.ConnectionHealthChecksTests."
++                        "test_health_checks_enabled_errors_occurred",
++                        "backends.base.test_base.ConnectionHealthChecksTests."
++                        "test_health_checks_disabled",
++                        "backends.base.test_base.ConnectionHealthChecksTests."
++                        "test_set_autocommit_health_checks_enabled",
++                        "servers.tests.LiveServerTestCloseConnectionTest."
++                        "test_closes_connections",
++                        "backends.oracle.tests.TransactionalTests."
++                        "test_password_with_at_sign",
++                    },
++                }
++            )
+         if is_oracledb and self.connection.oracledb_version >= (2, 1, 2):
+             skips.update(
+                 {

@@ -1,0 +1,13 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -914,7 +921,7 @@ def get_db_converters(self, connection):
+             return [self.from_db_value]
+         return []
+ 
+-    @property
++    @cached_property
+     def unique(self):
+         return self._unique or self.primary_key
+ 

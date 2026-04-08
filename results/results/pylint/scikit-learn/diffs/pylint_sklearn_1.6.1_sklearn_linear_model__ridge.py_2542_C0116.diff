@@ -1,0 +1,24 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index 56bb9fbc50570..0a55291a70ace 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2542,15 +2506,10 @@ def _get_scorer(self):
+             scorer.set_score_request(sample_weight=True)
+         return scorer
+ 
+-    # TODO(1.7): Remove
+-    # mypy error: Decorated property not supported
+-    @deprecated(  # type: ignore
+-        "Attribute `cv_values_` is deprecated in version 1.5 and will be removed "
+-        "in 1.7. Use `cv_results_` instead."
+-    )
+-    @property
+-    def cv_values_(self):
+-        return self.cv_results_
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
+ 
+ 
+ class RidgeCV(MultiOutputMixin, RegressorMixin, _BaseRidgeCV):

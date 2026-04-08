@@ -1,0 +1,17 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 58b7899645f..5ba60605e54 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2381,9 +2497,11 @@ def __get_pydantic_json_schema__(
+         return field_schema
+ 
+     def __get_pydantic_core_schema__(self, source: type[Any], handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
++        schema = handler(source)
++        _check_annotated_type(schema['type'], 'bytes', self.__class__.__name__)
+         return core_schema.with_info_after_validator_function(
+             function=self.decode,
+-            schema=core_schema.bytes_schema(),
++            schema=schema,
+             serialization=core_schema.plain_serializer_function_ser_schema(function=self.encode),
+         )
+ 

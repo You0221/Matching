@@ -1,0 +1,80 @@
+diff --git a/pydantic/_internal/_mock_val_ser.py b/pydantic/_internal/_mock_val_ser.py
+index b303fed21dc..9125ab32e53 100644
+--- a/pydantic/_internal/_mock_val_ser.py
++++ b/pydantic/_internal/_mock_val_ser.py
+@@ -1,18 +1,71 @@
+ from __future__ import annotations
+ 
+-from typing import TYPE_CHECKING, Callable, Generic, TypeVar
++from collections.abc import Iterator, Mapping
++from typing import TYPE_CHECKING, Any, Callable, Generic, Literal, TypeVar, Union
+ 
+-from pydantic_core import SchemaSerializer, SchemaValidator
+-from typing_extensions import Literal
++from pydantic_core import CoreSchema, SchemaSerializer, SchemaValidator
+ 
+ from ..errors import PydanticErrorCodes, PydanticUserError
++from ..plugin._schema_validator import PluggableSchemaValidator
+ 
+ if TYPE_CHECKING:
+     from ..dataclasses import PydanticDataclass
+     from ..main import BaseModel
++    from ..type_adapter import TypeAdapter
+ 
+ 
+-ValSer = TypeVar('ValSer', SchemaValidator, SchemaSerializer)
++ValSer = TypeVar('ValSer', bound=Union[SchemaValidator, PluggableSchemaValidator, SchemaSerializer])
++T = TypeVar('T')
++
++
++class MockCoreSchema(Mapping[str, Any]):
++    """Mocker for `pydantic_core.CoreSchema` which optionally attempts to
++    rebuild the thing it's mocking when one of its methods is accessed and raises an error if that fails.
++    """
++
++    __slots__ = '_error_message', '_code', '_attempt_rebuild', '_built_memo'
++
++    def __init__(
++        self,
++        error_message: str,
++        *,
++        code: PydanticErrorCodes,
++        attempt_rebuild: Callable[[], CoreSchema | None] | None = None,
++    ) -> None:
++        self._error_message = error_message
++        self._code: PydanticErrorCodes = code
++        self._attempt_rebuild = attempt_rebuild
++        self._built_memo: CoreSchema | None = None
++
++    def __getitem__(self, key: str) -> Any:
++        return self._get_built().__getitem__(key)
++
++    def __len__(self) -> int:
++        return self._get_built().__len__()
++
++    def __iter__(self) -> Iterator[str]:
++        return self._get_built().__iter__()
++
++    def _get_built(self) -> CoreSchema:
++        if self._built_memo is not None:
++            return self._built_memo
++
++        if self._attempt_rebuild:
++            schema = self._attempt_rebuild()
++            if schema is not None:
++                self._built_memo = schema
++                return schema
++        raise PydanticUserError(self._error_message, code=self._code)
++
++    def rebuild(self) -> CoreSchema | None:
++        self._built_memo = None
++        if self._attempt_rebuild:
++            schema = self._attempt_rebuild()
++            if schema is not None:
++                return schema
++            else:
++                raise PydanticUserError(self._error_message, code=self._code)
++        return None
+ 
+ 
+ class MockValSer(Generic[ValSer]):

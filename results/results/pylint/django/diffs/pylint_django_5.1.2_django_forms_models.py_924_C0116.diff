@@ -1,0 +1,13 @@
+diff --git a/django/forms/models.py b/django/forms/models.py
+index 4cda4e534e42..be59dbe4a0a5 100644
+--- a/django/forms/models.py
++++ b/django/forms/models.py
+@@ -933,7 +935,7 @@ def save_existing_objects(self, commit=True):
+             # 1. The object is an unexpected empty model, created by invalid
+             #    POST data such as an object outside the formset's queryset.
+             # 2. The object was already deleted from the database.
+-            if obj.pk is None:
++            if not obj._is_pk_set():
+                 continue
+             if form in forms_to_delete:
+                 self.deleted_objects.append(obj)

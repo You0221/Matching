@@ -1,0 +1,19 @@
+diff --git a/maint/benchmark/benchmark.py b/maint/benchmark/benchmark.py
+index d1f32d33ef..845c3ff2e8 100755
+--- a/maint/benchmark/benchmark.py
++++ b/maint/benchmark/benchmark.py
+@@ -82,11 +65,9 @@ def run():
+         # just stops the progress messages printed to stderr
+         args.append("-q")
+     args.append("http://127.0.0.1:%d/" % port)
+-    subprocess.Popen(args)
+-    io_loop.start()
+-    io_loop.close()
+-    io_loop.clear_current()
++    proc = await asyncio.create_subprocess_exec(*args)
++    await proc.wait()
+ 
+ 
+-if __name__ == '__main__':
++if __name__ == "__main__":
+     main()

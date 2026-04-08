@@ -1,0 +1,13 @@
+diff --git a/django/db/migrations/operations/fields.py b/django/db/migrations/operations/fields.py
+index fc5640bea99f..34b441a24724 100644
+--- a/django/db/migrations/operations/fields.py
++++ b/django/db/migrations/operations/fields.py
+@@ -2,7 +2,7 @@
+ from django.db.models import NOT_PROVIDED
+ from django.utils.functional import cached_property
+ 
+-from .base import Operation
++from .base import Operation, OperationCategory
+ 
+ 
+ class FieldOperation(Operation):

@@ -1,0 +1,28 @@
+diff --git a/pandas/core/arrays/arrow/array.py b/pandas/core/arrays/arrow/array.py
+index f2b8aa75ca5bf..5b2d3b7c065a8 100644
+--- a/pandas/core/arrays/arrow/array.py
++++ b/pandas/core/arrays/arrow/array.py
+@@ -660,7 +664,22 @@ def __array__(
+         self, dtype: NpDtype | None = None, copy: bool | None = None
+     ) -> np.ndarray:
+         """Correctly construct numpy arrays when passed to `np.asarray()`."""
+-        return self.to_numpy(dtype=dtype)
++        if copy is False:
++            warnings.warn(
++                "Starting with NumPy 2.0, the behavior of the 'copy' keyword has "
++                "changed and passing 'copy=False' raises an error when returning "
++                "a zero-copy NumPy array is not possible. pandas will follow "
++                "this behavior starting with pandas 3.0.\nThis conversion to "
++                "NumPy requires a copy, but 'copy=False' was passed. Consider "
++                "using 'np.asarray(..)' instead.",
++                FutureWarning,
++                stacklevel=find_stack_level(),
++            )
++        elif copy is None:
++            # `to_numpy(copy=False)` has the meaning of NumPy `copy=None`.
++            copy = False
++
++        return self.to_numpy(dtype=dtype, copy=copy)
+ 
+     def __invert__(self) -> Self:
+         # This is a bit wise op for integer types

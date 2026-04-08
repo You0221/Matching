@@ -1,0 +1,39 @@
+diff --git a/sklearn/utils/_array_api.py b/sklearn/utils/_array_api.py
+index 0c386a843bffb..7c3fd12ad4dee 100644
+--- a/sklearn/utils/_array_api.py
++++ b/sklearn/utils/_array_api.py
+@@ -9,24 +10,23 @@
+ from .._config import get_config
+ from .fixes import parse_version
+ 
++_NUMPY_NAMESPACE_NAMES = {"numpy", "array_api_compat.numpy"}
+ 
+-def yield_namespace_device_dtype_combinations():
+-    """Yield supported namespace, device, dtype tuples for testing.
+ 
+-    Use this to test that an estimator works with all combinations.
++def yield_namespaces(include_numpy_namespaces=True):
++    """Yield supported namespace.
++
++    This is meant to be used for testing purposes only.
++
++    Parameters
++    ----------
++    include_numpy_namespaces : bool, default=True
++        If True, also yield numpy namespaces.
+ 
+     Returns
+     -------
+     array_namespace : str
+         The name of the Array API namespace.
+-
+-    device : str
+-        The name of the device on which to allocate the arrays. Can be None to
+-        indicate that the default value should be used.
+-
+-    dtype_name : str
+-        The name of the data type to use for arrays. Can be None to indicate
+-        that the default value should be used.
+     """
+     for array_namespace in [
+         # The following is used to test the array_api_compat wrapper when

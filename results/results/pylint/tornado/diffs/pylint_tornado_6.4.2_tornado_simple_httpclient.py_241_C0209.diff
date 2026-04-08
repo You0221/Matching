@@ -1,0 +1,13 @@
+diff --git a/tornado/simple_httpclient.py b/tornado/simple_httpclient.py
+index 5b2d4dcd98..cc16376133 100644
+--- a/tornado/simple_httpclient.py
++++ b/tornado/simple_httpclient.py
+@@ -238,7 +238,7 @@ def _on_timeout(self, key: object, info: Optional[str] = None) -> None:
+         request, callback, timeout_handle = self.waiting[key]
+         self.queue.remove((key, request, callback))
+ 
+-        error_message = "Timeout {0}".format(info) if info else "Timeout"
++        error_message = f"Timeout {info}" if info else "Timeout"
+         timeout_response = HTTPResponse(
+             request,
+             599,

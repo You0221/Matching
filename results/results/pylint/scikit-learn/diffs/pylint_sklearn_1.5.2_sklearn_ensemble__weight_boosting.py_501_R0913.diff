@@ -1,0 +1,37 @@
+diff --git a/sklearn/ensemble/_weight_boosting.py b/sklearn/ensemble/_weight_boosting.py
+index 0461a397983be..8503c4fdb8ae7 100644
+--- a/sklearn/ensemble/_weight_boosting.py
++++ b/sklearn/ensemble/_weight_boosting.py
+@@ -482,25 +481,25 @@ class AdaBoostClassifier(
+     For a detailed example of using AdaBoost to fit a sequence of DecisionTrees
+     as weaklearners, please refer to
+     :ref:`sphx_glr_auto_examples_ensemble_plot_adaboost_multiclass.py`.
++
++    For a detailed example of using AdaBoost to fit a non-linearly seperable
++    classification dataset composed of two Gaussian quantiles clusters, please
++    refer to :ref:`sphx_glr_auto_examples_ensemble_plot_adaboost_twoclass.py`.
+     """
+ 
+-    # TODO(1.6): Modify _parameter_constraints for "algorithm" to only check
+-    # for "SAMME"
++    # TODO(1.8): remove "algorithm" entry
+     _parameter_constraints: dict = {
+         **BaseWeightBoosting._parameter_constraints,
+-        "algorithm": [
+-            StrOptions({"SAMME", "SAMME.R"}),
+-        ],
++        "algorithm": [StrOptions({"SAMME"}), Hidden(StrOptions({"deprecated"}))],
+     }
+ 
+-    # TODO(1.6): Change default "algorithm" value to "SAMME"
+     def __init__(
+         self,
+         estimator=None,
+         *,
+         n_estimators=50,
+         learning_rate=1.0,
+-        algorithm="SAMME.R",
++        algorithm="deprecated",
+         random_state=None,
+     ):
+         super().__init__(

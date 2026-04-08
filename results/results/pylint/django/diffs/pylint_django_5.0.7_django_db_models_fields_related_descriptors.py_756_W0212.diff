@@ -1,0 +1,21 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -746,14 +753,14 @@ def get_queryset(self):
+             # Even if this relation is not to pk, we require still pk value.
+             # The wish is that the instance has been already saved to DB,
+             # although having a pk value isn't a guarantee of that.
+-            if self.instance.pk is None:
++            if not self.instance._is_pk_set():
+                 raise ValueError(
+                     f"{self.instance.__class__.__name__!r} instance needs to have a "
+                     f"primary key value before this relationship can be used."
+                 )
+             try:
+                 return self.instance._prefetched_objects_cache[
+-                    self.field.remote_field.get_cache_name()
++                    self.field.remote_field.cache_name
+                 ]
+             except (AttributeError, KeyError):
+                 queryset = super().get_queryset()

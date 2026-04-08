@@ -1,0 +1,19 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ea179ecde56..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -394,10 +416,13 @@ def relabeled_clone(self, change_map):
+         return clone
+ 
+     def replace_expressions(self, replacements):
++        if not replacements:
++            return self
+         if replacement := replacements.get(self):
+             return replacement
++        if not (source_expressions := self.get_source_expressions()):
++            return self
+         clone = self.copy()
+-        source_expressions = clone.get_source_expressions()
+         clone.set_source_expressions(
+             [
+                 expr.replace_expressions(replacements) if expr else None

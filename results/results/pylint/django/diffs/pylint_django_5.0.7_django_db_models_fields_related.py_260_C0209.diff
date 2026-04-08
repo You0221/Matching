@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -253,8 +255,8 @@ def _check_clashes(self):
+         # If the field doesn't install a backward relation on the target model
+         # (so `is_hidden` returns True), then there are no clashes to check
+         # and we can skip these fields.
+-        rel_is_hidden = self.remote_field.is_hidden()
+-        rel_name = self.remote_field.get_accessor_name()  # i. e. "model_set"
++        rel_is_hidden = self.remote_field.hidden
++        rel_name = self.remote_field.accessor_name  # i. e. "model_set"
+         rel_query_name = self.related_query_name()  # i. e. "model"
+         # i.e. "app_label.Model.field".
+         field_name = "%s.%s" % (opts.label, self.name)

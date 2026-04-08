@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_glm/glm.py b/sklearn/linear_model/_glm/glm.py
+index 4cac889a4da51..fc31f9825d2e5 100644
+--- a/sklearn/linear_model/_glm/glm.py
++++ b/sklearn/linear_model/_glm/glm.py
+@@ -686,11 +690,11 @@ class GammaRegressor(_GeneralizedLinearRegressor):
+     >>> clf.fit(X, y)
+     GammaRegressor()
+     >>> clf.score(X, y)
+-    0.773...
++    np.float64(0.773...)
+     >>> clf.coef_
+     array([0.072..., 0.066...])
+     >>> clf.intercept_
+-    2.896...
++    np.float64(2.896...)
+     >>> clf.predict([[1, 0], [2, 8]])
+     array([19.483..., 35.795...])
+     """

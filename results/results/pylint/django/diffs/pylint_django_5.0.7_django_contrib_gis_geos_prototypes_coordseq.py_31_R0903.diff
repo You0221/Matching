@@ -1,0 +1,12 @@
+diff --git a/django/contrib/gis/geos/prototypes/coordseq.py b/django/contrib/gis/geos/prototypes/coordseq.py
+index ed05de99f4e4..cfc242c00dd1 100644
+--- a/django/contrib/gis/geos/prototypes/coordseq.py
++++ b/django/contrib/gis/geos/prototypes/coordseq.py
+@@ -30,6 +31,7 @@ class CsInt(GEOSFuncFactory):
+ 
+ class CsOperation(GEOSFuncFactory):
+     "For coordinate sequence operations."
++
+     restype = c_int
+ 
+     def __init__(self, *args, ordinate=False, get=False, **kwargs):

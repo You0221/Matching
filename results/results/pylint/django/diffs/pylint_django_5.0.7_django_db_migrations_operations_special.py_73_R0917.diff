@@ -1,0 +1,12 @@
+diff --git a/django/db/migrations/operations/special.py b/django/db/migrations/operations/special.py
+index 94a6ec72de9a..196f24fcd671 100644
+--- a/django/db/migrations/operations/special.py
++++ b/django/db/migrations/operations/special.py
+@@ -68,6 +69,7 @@ class RunSQL(Operation):
+     by this SQL change, in case it's custom column/table creation/deletion.
+     """
+ 
++    category = OperationCategory.SQL
+     noop = ""
+ 
+     def __init__(

@@ -1,0 +1,16 @@
+diff --git a/django/http/response.py b/django/http/response.py
+index eecd972cd688..4a0ea6701375 100644
+--- a/django/http/response.py
++++ b/django/http/response.py
+@@ -408,6 +409,11 @@ def content(self, value):
+             content = self.make_bytes(value)
+         # Create a list of properly encoded bytestrings to support write().
+         self._container = [content]
++        self.__dict__.pop("text", None)
++
++    @cached_property
++    def text(self):
++        return self.content.decode(self.charset or "utf-8")
+ 
+     def __iter__(self):
+         return iter(self._container)

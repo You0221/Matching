@@ -1,0 +1,25 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -677,15 +663,19 @@ def create(self, **kwargs):
+         obj.save(force_insert=True, using=self.db)
+         return obj
+ 
++    create.alters_data = True
++
+     async def acreate(self, **kwargs):
+         return await sync_to_async(self.create)(**kwargs)
+ 
++    acreate.alters_data = True
++
+     def _prepare_for_bulk_create(self, objs):
+         from django.db.models.expressions import DatabaseDefault
+ 
+         connection = connections[self.db]
+         for obj in objs:
+-            if obj.pk is None:
++            if not obj._is_pk_set():
+                 # Populate new PK values.
+                 obj.pk = obj._meta.pk.get_pk_value_on_save(obj)
+             if not connection.features.supports_default_keyword_in_bulk_insert:

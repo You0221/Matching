@@ -1,0 +1,16 @@
+diff --git a/django/db/models/aggregates.py b/django/db/models/aggregates.py
+index bf94decab7a8..ea16cc440c46 100644
+--- a/django/db/models/aggregates.py
++++ b/django/db/models/aggregates.py
+@@ -3,9 +3,9 @@
+ """
+ 
+ from django.core.exceptions import FieldError, FullResultSet
+-from django.db.models.expressions import Case, Func, Star, Value, When
++from django.db.models.expressions import Case, ColPairs, Func, Star, Value, When
+ from django.db.models.fields import IntegerField
+-from django.db.models.functions.comparison import Coalesce
++from django.db.models.functions import Coalesce
+ from django.db.models.functions.mixins import (
+     FixDurationInputMixin,
+     NumericOutputFieldMixin,

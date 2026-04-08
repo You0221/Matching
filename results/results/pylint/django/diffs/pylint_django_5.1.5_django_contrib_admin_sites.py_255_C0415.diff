@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/sites.py b/django/contrib/admin/sites.py
+index dc67262afc50..201f28ef3744 100644
+--- a/django/contrib/admin/sites.py
++++ b/django/contrib/admin/sites.py
+@@ -282,7 +287,7 @@ def wrapper(*args, **kwargs):
+             path("autocomplete/", wrap(self.autocomplete_view), name="autocomplete"),
+             path("jsi18n/", wrap(self.i18n_javascript, cacheable=True), name="jsi18n"),
+             path(
+-                "r/<int:content_type_id>/<path:object_id>/",
++                "r/<path:content_type_id>/<path:object_id>/",
+                 wrap(contenttype_views.shortcut),
+                 name="view_on_site",
+             ),

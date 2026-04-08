@@ -1,0 +1,19 @@
+diff --git a/numpy/_core/_methods.py b/numpy/_core/_methods.py
+index f214ff957370..21ad7900016b 100644
+--- a/numpy/_core/_methods.py
++++ b/numpy/_core/_methods.py
+@@ -8,12 +8,11 @@
+ import warnings
+ from contextlib import nullcontext
+ 
++import numpy as np
+ from numpy._core import multiarray as mu
++from numpy._core import numerictypes as nt
+ from numpy._core import umath as um
+ from numpy._core.multiarray import asanyarray
+-from numpy._core import numerictypes as nt
+-from numpy._core import _exceptions
+-from numpy._core._ufunc_config import _no_nep50_warning
+ from numpy._globals import _NoValue
+ 
+ # save those O(100) nanoseconds!

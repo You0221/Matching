@@ -1,0 +1,22 @@
+diff --git a/django/contrib/sessions/backends/base.py b/django/contrib/sessions/backends/base.py
+index 050e7387bef2..69f756a22876 100644
+--- a/django/contrib/sessions/backends/base.py
++++ b/django/contrib/sessions/backends/base.py
+@@ -192,6 +249,17 @@ def _get_session(self, no_load=False):
+                 self._session_cache = self.load()
+         return self._session_cache
+ 
++    async def _aget_session(self, no_load=False):
++        self.accessed = True
++        try:
++            return self._session_cache
++        except AttributeError:
++            if self.session_key is None or no_load:
++                self._session_cache = {}
++            else:
++                self._session_cache = await self.aload()
++        return self._session_cache
++
+     _session = property(_get_session)
+ 
+     def get_session_cookie_age(self):

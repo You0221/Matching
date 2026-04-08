@@ -1,0 +1,13 @@
+diff --git a/django/contrib/contenttypes/forms.py b/django/contrib/contenttypes/forms.py
+index 741824e2fc67..34a88f655fa7 100644
+--- a/django/contrib/contenttypes/forms.py
++++ b/django/contrib/contenttypes/forms.py
+@@ -31,7 +31,7 @@ def __init__(
+             + self.ct_fk_field.name
+         )
+         self.save_as_new = save_as_new
+-        if self.instance is None or self.instance.pk is None:
++        if self.instance is None or not self.instance._is_pk_set():
+             qs = self.model._default_manager.none()
+         else:
+             if queryset is None:

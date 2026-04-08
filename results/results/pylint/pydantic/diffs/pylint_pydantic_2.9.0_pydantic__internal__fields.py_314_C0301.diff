@@ -1,0 +1,105 @@
+diff --git a/pydantic/_internal/_fields.py b/pydantic/_internal/_fields.py
+index 170464016f7..5c760abc292 100644
+--- a/pydantic/_internal/_fields.py
++++ b/pydantic/_internal/_fields.py
+@@ -274,50 +301,66 @@ def collect_dataclass_fields(
+     FieldInfo_ = import_cached_field_info()
+ 
+     fields: dict[str, FieldInfo] = {}
+-    dataclass_fields: dict[str, dataclasses.Field] = cls.__dataclass_fields__
+-    cls_localns = dict(vars(cls))  # this matches get_cls_type_hints_lenient, but all tests pass with `= None` instead
++    ns_resolver = ns_resolver or NsResolver()
++    dataclass_fields = cls.__dataclass_fields__
++
++    # The logic here is similar to `_typing_extra.get_cls_type_hints`,
++    # although we do it manually as stdlib dataclasses already have annotations
++    # collected in each class:
++    for base in reversed(cls.__mro__):
++        if not dataclasses.is_dataclass(base):
++            continue
+ 
+-    source_module = sys.modules.get(cls.__module__)
+-    if source_module is not None:
+-        types_namespace = {**source_module.__dict__, **(types_namespace or {})}
++        with ns_resolver.push(base):
++            for ann_name, dataclass_field in dataclass_fields.items():
++                if ann_name not in base.__dict__.get('__annotations__', {}):
++                    # `__dataclass_fields__`contains every field, even the ones from base classes.
++                    # Only collect the ones defined on `base`.
++                    continue
+ 
+-    for ann_name, dataclass_field in dataclass_fields.items():
+-        ann_type = _typing_extra.eval_type_lenient(dataclass_field.type, types_namespace, cls_localns)
+-        if is_classvar(ann_type):
+-            continue
++                globalns, localns = ns_resolver.types_namespace
++                ann_type, _ = _typing_extra.try_eval_type(dataclass_field.type, globalns, localns)
+ 
+-        if (
+-            not dataclass_field.init
+-            and dataclass_field.default == dataclasses.MISSING
+-            and dataclass_field.default_factory == dataclasses.MISSING
+-        ):
+-            # TODO: We should probably do something with this so that validate_assignment behaves properly
+-            #   Issue: https://github.com/pydantic/pydantic/issues/5470
+-            continue
++                if _typing_extra.is_classvar_annotation(ann_type):
++                    continue
+ 
+-        if isinstance(dataclass_field.default, FieldInfo_):
+-            if dataclass_field.default.init_var:
+-                if dataclass_field.default.init is False:
+-                    raise PydanticUserError(
+-                        f'Dataclass field {ann_name} has init=False and init_var=True, but these are mutually exclusive.',
+-                        code='clashing-init-and-init-var',
+-                    )
++                if (
++                    not dataclass_field.init
++                    and dataclass_field.default is dataclasses.MISSING
++                    and dataclass_field.default_factory is dataclasses.MISSING
++                ):
++                    # TODO: We should probably do something with this so that validate_assignment behaves properly
++                    #   Issue: https://github.com/pydantic/pydantic/issues/5470
++                    continue
+ 
+-                # TODO: same note as above re validate_assignment
+-                continue
+-            field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field.default)
+-        else:
+-            field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field)
++                if isinstance(dataclass_field.default, FieldInfo_):
++                    if dataclass_field.default.init_var:
++                        if dataclass_field.default.init is False:
++                            raise PydanticUserError(
++                                f'Dataclass field {ann_name} has init=False and init_var=True, but these are mutually exclusive.',
++                                code='clashing-init-and-init-var',
++                            )
+ 
+-        fields[ann_name] = field_info
++                        # TODO: same note as above re validate_assignment
++                        continue
++                    field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field.default)
++                else:
++                    field_info = FieldInfo_.from_annotated_attribute(ann_type, dataclass_field)
+ 
+-        if field_info.default is not PydanticUndefined and isinstance(getattr(cls, ann_name, field_info), FieldInfo_):
+-            # We need this to fix the default when the "default" from __dataclass_fields__ is a pydantic.FieldInfo
+-            setattr(cls, ann_name, field_info.default)
++                fields[ann_name] = field_info
++
++                if field_info.default is not PydanticUndefined and isinstance(
++                    getattr(cls, ann_name, field_info), FieldInfo_
++                ):
++                    # We need this to fix the default when the "default" from __dataclass_fields__ is a pydantic.FieldInfo
++                    setattr(cls, ann_name, field_info.default)
+ 
+     if typevars_map:
+         for field in fields.values():
+-            field.apply_typevars_map(typevars_map, types_namespace)
++            # We don't pass any ns, as `field.annotation`
++            # was already evaluated. TODO: is this method relevant?
++            # Can't we juste use `_generics.replace_types`?
++            field.apply_typevars_map(typevars_map)
+ 
+     if config_wrapper is not None:
+         _update_fields_from_docstrings(cls, fields, config_wrapper)

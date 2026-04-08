@@ -1,0 +1,25 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 708cda7fd6c2a7..36e9402a94dafb 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -69,16 +96,12 @@ class VariableManager:
+     _ALLOWED = frozenset(['plugins_by_group', 'groups_plugins_play', 'groups_plugins_inventory', 'groups_inventory',
+                           'all_plugins_play', 'all_plugins_inventory', 'all_inventory'])
+ 
+-    def __init__(self, loader=None, inventory=None, version_info=None):
+-        self._nonpersistent_fact_cache = defaultdict(dict)
+-        self._vars_cache = defaultdict(dict)
+-        self._extra_vars = defaultdict(dict)
+-        self._host_vars_files = defaultdict(dict)
+-        self._group_vars_files = defaultdict(dict)
++    def __init__(self, loader: DataLoader | None = None, inventory: InventoryManager | None = None, version_info: dict[str, str] | None = None) -> None:
++        self._nonpersistent_fact_cache: defaultdict[str, dict] = defaultdict(dict)
++        self._vars_cache: defaultdict[str, dict] = defaultdict(dict)
+         self._inventory = inventory
+         self._loader = loader
+-        self._hostvars = None
+-        self._omit_token = '__omit_place_holder__%s' % sha1(os.urandom(64)).hexdigest()
++        self._hostvars: HostVars | None = None
+ 
+         self._options_vars = load_options_vars(version_info)
+ 

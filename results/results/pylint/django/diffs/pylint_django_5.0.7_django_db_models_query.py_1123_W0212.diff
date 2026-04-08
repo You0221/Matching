@@ -1,0 +1,13 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index 112530293332..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -1118,6 +1127,8 @@ def in_bulk(self, id_list=None, *, field_name="pk"):
+         """
+         if self.query.is_sliced:
+             raise TypeError("Cannot use 'limit' or 'offset' with in_bulk().")
++        if not issubclass(self._iterable_class, ModelIterable):
++            raise TypeError("in_bulk() cannot be used with values() or values_list().")
+         opts = self.model._meta
+         unique_fields = [
+             constraint.fields[0]

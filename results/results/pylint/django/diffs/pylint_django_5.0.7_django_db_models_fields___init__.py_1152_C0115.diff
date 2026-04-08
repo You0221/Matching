@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1150,6 +1151,10 @@ def value_from_object(self, obj):
+         """Return the value of this field in the given model instance."""
+         return getattr(obj, self.attname)
+ 
++    def slice_expression(self, expression, start, length):
++        """Return a slice of this field."""
++        raise NotSupportedError("This field does not support slicing.")
++
+ 
+ class BooleanField(Field):
+     empty_strings_allowed = False

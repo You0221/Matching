@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index e39af10053c34..b336565cff1f6 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -834,6 +912,8 @@ def __init__(
+         self.random_state = random_state
+ 
+     def fit(self, X, y, sample_weight=None):
++        xp, is_array_api_compliant = get_namespace(X, y, sample_weight)
++
+         if self.solver == "lbfgs" and not self.positive:
+             raise ValueError(
+                 "'lbfgs' solver can be used only when positive=True. "

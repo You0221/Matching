@@ -1,0 +1,33 @@
+diff --git a/pydantic/json_schema.py b/pydantic/json_schema.py
+index 4b0e0132636..301332e9ba7 100644
+--- a/pydantic/json_schema.py
++++ b/pydantic/json_schema.py
+@@ -2308,27 +2443,9 @@ def _make_json_hashable(value: JsonValue) -> _HashableJsonValue:
+         return value
+ 
+ 
+-def _sort_json_schema(value: JsonSchemaValue, parent_key: str | None = None) -> JsonSchemaValue:
+-    if isinstance(value, dict):
+-        sorted_dict: dict[str, JsonSchemaValue] = {}
+-        keys = value.keys()
+-        if (parent_key != 'properties') and (parent_key != 'default'):
+-            keys = sorted(keys)
+-        for key in keys:
+-            sorted_dict[key] = _sort_json_schema(value[key], parent_key=key)
+-        return sorted_dict
+-    elif isinstance(value, list):
+-        sorted_list: list[JsonSchemaValue] = []
+-        for item in value:  # type: ignore
+-            sorted_list.append(_sort_json_schema(item, parent_key))
+-        return sorted_list  # type: ignore
+-    else:
+-        return value
+-
+-
+ @dataclasses.dataclass(**_internal_dataclass.slots_true)
+ class WithJsonSchema:
+-    """Usage docs: https://docs.pydantic.dev/2.7/concepts/json_schema/#withjsonschema-annotation
++    """Usage docs: https://docs.pydantic.dev/2.10/concepts/json_schema/#withjsonschema-annotation
+ 
+     Add this as an annotation on a field to override the (base) JSON schema that would be generated for that field.
+     This provides a way to set a JSON schema for types that would otherwise raise errors when producing a JSON schema,

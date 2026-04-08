@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -36,7 +36,7 @@
+ from ...utils import check_random_state, compute_sample_weight, resample
+ from ...utils._missing import is_scalar_nan
+ from ...utils._openmp_helpers import _openmp_effective_n_threads
+-from ...utils._param_validation import Hidden, Interval, RealNotInt, StrOptions
++from ...utils._param_validation import Interval, RealNotInt, StrOptions
+ from ...utils.multiclass import check_classification_targets
+ from ...utils.validation import (
+     _check_monotonic_cst,

@@ -1,0 +1,13 @@
+diff --git a/django/forms/models.py b/django/forms/models.py
+index 4cda4e534e42..be59dbe4a0a5 100644
+--- a/django/forms/models.py
++++ b/django/forms/models.py
+@@ -1101,7 +1103,7 @@ def __init__(
+         self.save_as_new = save_as_new
+         if queryset is None:
+             queryset = self.model._default_manager
+-        if self.instance.pk is not None:
++        if self.instance._is_pk_set():
+             qs = queryset.filter(**{self.fk.name: self.instance})
+         else:
+             qs = queryset.none()

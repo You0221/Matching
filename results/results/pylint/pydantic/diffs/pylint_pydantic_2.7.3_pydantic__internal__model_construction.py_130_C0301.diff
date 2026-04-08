@@ -1,0 +1,15 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 74766293ce1..db87d66acb9 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -127,7 +148,9 @@ def wrapped_model_post_init(self: BaseModel, __context: Any) -> None:
+                 )
+ 
+             cls.__pydantic_custom_init__ = not getattr(cls.__init__, '__pydantic_base_init__', False)
+-            cls.__pydantic_post_init__ = None if cls.model_post_init is BaseModel.model_post_init else 'model_post_init'
++            cls.__pydantic_post_init__ = (
++                None if cls.model_post_init is BaseModel_.model_post_init else 'model_post_init'
++            )
+ 
+             cls.__pydantic_decorators__ = DecoratorInfos.build(cls)
+ 

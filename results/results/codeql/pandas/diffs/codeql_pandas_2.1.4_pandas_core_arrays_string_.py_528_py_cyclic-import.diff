@@ -1,0 +1,36 @@
+diff --git a/pandas/core/arrays/string_.py b/pandas/core/arrays/string_.py
+index 25f1c2ec6ce4f..9c8dc2054106a 100644
+--- a/pandas/core/arrays/string_.py
++++ b/pandas/core/arrays/string_.py
+@@ -523,7 +1021,30 @@ def searchsorted(
+         return super().searchsorted(value=value, side=side, sorter=sorter)
+ 
+     def _cmp_method(self, other, op):
+-        from pandas.arrays import BooleanArray
++        from pandas.arrays import (
++            ArrowExtensionArray,
++            BooleanArray,
++        )
++
++        if (
++            isinstance(other, BaseStringArray)
++            and self.dtype.na_value is not libmissing.NA
++            and other.dtype.na_value is libmissing.NA
++        ):
++            # NA has priority of NaN semantics
++            return NotImplemented
++
++        if isinstance(other, ArrowExtensionArray):
++            if isinstance(other, BaseStringArray):
++                # pyarrow storage has priority over python storage
++                # (except if we have NA semantics and other not)
++                if not (
++                    self.dtype.na_value is libmissing.NA
++                    and other.dtype.na_value is not libmissing.NA
++                ):
++                    return NotImplemented
++            else:
++                return NotImplemented
+ 
+         if isinstance(other, StringArray):
+             other = other._ndarray

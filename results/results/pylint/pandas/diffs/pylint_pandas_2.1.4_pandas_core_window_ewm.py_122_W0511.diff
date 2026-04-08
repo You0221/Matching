@@ -1,0 +1,18 @@
+diff --git a/pandas/core/window/ewm.py b/pandas/core/window/ewm.py
+index 775f3cd428677..9ebf32d3e536e 100644
+--- a/pandas/core/window/ewm.py
++++ b/pandas/core/window/ewm.py
+@@ -118,9 +122,11 @@ def _calculate_deltas(
+     np.ndarray
+         Diff of the times divided by the half-life
+     """
++    unit = dtype_to_unit(times.dtype)
++    if isinstance(times, ABCSeries):
++        times = times._values
+     _times = np.asarray(times.view(np.int64), dtype=np.float64)
+-    # TODO: generalize to non-nano?
+-    _halflife = float(Timedelta(halflife).as_unit("ns")._value)
++    _halflife = float(Timedelta(halflife).as_unit(unit)._value)
+     return np.diff(_times) / _halflife
+ 
+ 

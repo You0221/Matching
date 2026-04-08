@@ -1,0 +1,16 @@
+diff --git a/tornado/concurrent.py b/tornado/concurrent.py
+index 86bbd703c1..e98093f215 100644
+--- a/tornado/concurrent.py
++++ b/tornado/concurrent.py
+@@ -144,7 +145,10 @@ def wrapper(self: Any, *args: Any, **kwargs: Any) -> Future:
+ _NO_RESULT = object()
+ 
+ 
+-def chain_future(a: "Future[_T]", b: "Future[_T]") -> None:
++def chain_future(
++    a: Union["Future[_T]", "futures.Future[_T]"],
++    b: Union["Future[_T]", "futures.Future[_T]"],
++) -> None:
+     """Chain two futures together so that when one completes, so does the other.
+ 
+     The result (success or failure) of ``a`` will be copied to ``b``, unless

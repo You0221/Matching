@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/sqlite3/creation.py b/django/db/backends/sqlite3/creation.py
+index a9fd520b2d75..802e8b83576e 100644
+--- a/django/db/backends/sqlite3/creation.py
++++ b/django/db/backends/sqlite3/creation.py
+@@ -143,7 +143,7 @@ def setup_worker_connection(self, _worker_id):
+                 f"file:memorydb_{alias}_{_worker_id}?mode=memory&cache=shared"
+             )
+             source_db = self.connection.Database.connect(
+-                f"file:{alias}_{_worker_id}.sqlite3", uri=True
++                f"file:{alias}_{_worker_id}.sqlite3?mode=ro", uri=True
+             )
+             target_db = sqlite3.connect(connection_str, uri=True)
+             source_db.backup(target_db)

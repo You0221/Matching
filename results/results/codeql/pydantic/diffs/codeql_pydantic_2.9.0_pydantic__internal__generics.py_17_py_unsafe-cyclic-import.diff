@@ -1,0 +1,21 @@
+diff --git a/pydantic/_internal/_generics.py b/pydantic/_internal/_generics.py
+index fad5f9479b2..d6fea96cb76 100644
+--- a/pydantic/_internal/_generics.py
++++ b/pydantic/_internal/_generics.py
+@@ -7,14 +7,14 @@
+ from contextlib import contextmanager
+ from contextvars import ContextVar
+ from types import prepare_class
+-from typing import TYPE_CHECKING, Any, Iterator, List, Mapping, MutableMapping, Tuple, TypeVar
++from typing import TYPE_CHECKING, Any, Iterator, Mapping, MutableMapping, Tuple, TypeVar
+ from weakref import WeakValueDictionary
+ 
+ import typing_extensions
+ 
++from . import _typing_extra
+ from ._core_utils import get_type_ref
+ from ._forward_ref import PydanticRecursiveRef
+-from ._typing_extra import TypeVarType, typing_base
+ from ._utils import all_identical, is_model_class
+ 
+ if sys.version_info >= (3, 10):

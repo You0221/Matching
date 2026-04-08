@@ -1,0 +1,19 @@
+diff --git a/django/db/models/aggregates.py b/django/db/models/aggregates.py
+index a778cd413b3e..ea16cc440c46 100644
+--- a/django/db/models/aggregates.py
++++ b/django/db/models/aggregates.py
+@@ -49,12 +50,10 @@ def get_source_fields(self):
+ 
+     def get_source_expressions(self):
+         source_expressions = super().get_source_expressions()
+-        if self.filter:
+-            return source_expressions + [self.filter]
+-        return source_expressions
++        return source_expressions + [self.filter]
+ 
+     def set_source_expressions(self, exprs):
+-        self.filter = self.filter and exprs.pop()
++        *exprs, self.filter = exprs
+         return super().set_source_expressions(exprs)
+ 
+     def resolve_expression(

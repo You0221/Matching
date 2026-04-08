@@ -1,0 +1,12 @@
+diff --git a/lib/ansible/playbook/block.py b/lib/ansible/playbook/block.py
+index 9c82ed27900e9a..a47bdc31e451c7 100644
+--- a/lib/ansible/playbook/block.py
++++ b/lib/ansible/playbook/block.py
+@@ -28,7 +29,6 @@
+ from ansible.playbook.notifiable import Notifiable
+ from ansible.playbook.role import Role
+ from ansible.playbook.taggable import Taggable
+-from ansible.utils.sentinel import Sentinel
+ 
+ 
+ class Block(Base, Conditional, CollectionSearch, Taggable, Notifiable, Delegatable):

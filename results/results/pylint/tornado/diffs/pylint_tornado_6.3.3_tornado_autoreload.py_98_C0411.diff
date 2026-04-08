@@ -1,0 +1,24 @@
+diff --git a/tornado/autoreload.py b/tornado/autoreload.py
+index 0ac4496651..c6a6e82da0 100644
+--- a/tornado/autoreload.py
++++ b/tornado/autoreload.py
+@@ -87,18 +87,13 @@
+ from tornado import ioloop
+ from tornado.log import gen_log
+ from tornado import process
+-from tornado.util import exec_in
+ 
+ try:
+     import signal
+ except ImportError:
+     signal = None  # type: ignore
+ 
+-import typing
+-from typing import Callable, Dict
+-
+-if typing.TYPE_CHECKING:
+-    from typing import List, Optional, Union  # noqa: F401
++from typing import Callable, Dict, Optional, List, Union
+ 
+ # os.execv is broken on Windows and can't properly parse command line
+ # arguments and executable name if they contain whitespaces. subprocess

@@ -1,0 +1,11 @@
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index b18ef553695e..266a3efadcc4 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -1,5 +1,5 @@
+ from django.db import models
+-from django.db.migrations.operations.base import Operation
++from django.db.migrations.operations.base import Operation, OperationCategory
+ from django.db.migrations.state import ModelState
+ from django.db.migrations.utils import field_references, resolve_relation
+ from django.db.models.options import normalize_together

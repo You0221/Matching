@@ -1,0 +1,46 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 188204ce815ad..055ccc1c6a202 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1209,7 +1231,40 @@ def fit(self, X, y, sample_weight=None):
+         check_classification_targets(y)
+         self.classes_ = np.unique(y)
+ 
+-        multi_class = _check_multi_class(self.multi_class, solver, len(self.classes_))
++        # TODO(1.7) remove multi_class
++        multi_class = self.multi_class
++        if self.multi_class == "multinomial" and len(self.classes_) == 2:
++            warnings.warn(
++                (
++                    "'multi_class' was deprecated in version 1.5 and will be removed in"
++                    " 1.7. From then on, binary problems will be fit as proper binary "
++                    " logistic regression models (as if multi_class='ovr' were set)."
++                    " Leave it to its default value to avoid this warning."
++                ),
++                FutureWarning,
++            )
++        elif self.multi_class in ("multinomial", "auto"):
++            warnings.warn(
++                (
++                    "'multi_class' was deprecated in version 1.5 and will be removed in"
++                    " 1.7. From then on, it will always use 'multinomial'."
++                    " Leave it to its default value to avoid this warning."
++                ),
++                FutureWarning,
++            )
++        elif self.multi_class == "ovr":
++            warnings.warn(
++                (
++                    "'multi_class' was deprecated in version 1.5 and will be removed in"
++                    " 1.7. Use OneVsRestClassifier(LogisticRegression(..)) instead."
++                    " Leave it to its default value to avoid this warning."
++                ),
++                FutureWarning,
++            )
++        else:
++            # Set to old default value.
++            multi_class = "auto"
++        multi_class = _check_multi_class(multi_class, solver, len(self.classes_))
+ 
+         if solver == "liblinear":
+             if effective_n_jobs(self.n_jobs) != 1:

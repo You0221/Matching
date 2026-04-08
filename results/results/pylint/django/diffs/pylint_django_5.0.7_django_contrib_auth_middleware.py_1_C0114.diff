@@ -1,0 +1,21 @@
+diff --git a/django/contrib/auth/middleware.py b/django/contrib/auth/middleware.py
+index 6b8dd4340e9f..880563bc5b77 100644
+--- a/django/contrib/auth/middleware.py
++++ b/django/contrib/auth/middleware.py
+@@ -1,9 +1,15 @@
+ from functools import partial
++from urllib.parse import urlsplit
+ 
++from asgiref.sync import iscoroutinefunction, markcoroutinefunction
++
++from django.conf import settings
+ from django.contrib import auth
+-from django.contrib.auth import load_backend
++from django.contrib.auth import REDIRECT_FIELD_NAME, load_backend
+ from django.contrib.auth.backends import RemoteUserBackend
++from django.contrib.auth.views import redirect_to_login
+ from django.core.exceptions import ImproperlyConfigured
++from django.shortcuts import resolve_url
+ from django.utils.deprecation import MiddlewareMixin
+ from django.utils.functional import SimpleLazyObject
+ 

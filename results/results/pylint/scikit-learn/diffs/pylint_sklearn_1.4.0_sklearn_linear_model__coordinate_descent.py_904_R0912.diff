@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index d1293bb62f262..45cdb8bdf2ebb 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -906,9 +925,12 @@ def fit(self, X, y, sample_weight=None, check_input=True):
+ 
+         Parameters
+         ----------
+-        X : {ndarray, sparse matrix} of (n_samples, n_features)
++        X : {ndarray, sparse matrix, sparse array} of (n_samples, n_features)
+             Data.
+ 
++            Note that large sparse matrices and arrays requiring `int64`
++            indices are not accepted.
++
+         y : ndarray of shape (n_samples,) or (n_samples, n_targets)
+             Target. Will be cast to X's dtype if necessary.
+ 

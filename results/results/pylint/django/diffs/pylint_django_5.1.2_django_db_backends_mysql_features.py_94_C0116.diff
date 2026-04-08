@@ -1,0 +1,15 @@
+diff --git a/django/db/backends/mysql/features.py b/django/db/backends/mysql/features.py
+index 21088544acfc..414f552d94c0 100644
+--- a/django/db/backends/mysql/features.py
++++ b/django/db/backends/mysql/features.py
+@@ -99,10 +89,6 @@ def django_test_skips(self):
+                 "db_functions.comparison.test_least.LeastTests."
+                 "test_coalesce_workaround",
+             },
+-            "Running on MySQL requires utf8mb4 encoding (#18392).": {
+-                "model_fields.test_textfield.TextFieldTests.test_emoji",
+-                "model_fields.test_charfield.TestCharField.test_emoji",
+-            },
+             "MySQL doesn't support functional indexes on a function that "
+             "returns JSON": {
+                 "schema.tests.SchemaTests.test_func_index_json_key_transform",

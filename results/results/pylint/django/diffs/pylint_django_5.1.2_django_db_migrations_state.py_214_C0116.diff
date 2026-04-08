@@ -1,0 +1,19 @@
+diff --git a/django/db/migrations/state.py b/django/db/migrations/state.py
+index 42a2c80a5e21..92716aa5d6f5 100644
+--- a/django/db/migrations/state.py
++++ b/django/db/migrations/state.py
+@@ -211,6 +211,14 @@ def _remove_option(self, app_label, model_name, option_name, obj_name):
+         model_state.options[option_name] = [obj for obj in objs if obj.name != obj_name]
+         self.reload_model(app_label, model_name, delay=True)
+ 
++    def _alter_option(self, app_label, model_name, option_name, obj_name, alt_obj):
++        model_state = self.models[app_label, model_name]
++        objs = model_state.options[option_name]
++        model_state.options[option_name] = [
++            obj if obj.name != obj_name else alt_obj for obj in objs
++        ]
++        self.reload_model(app_label, model_name, delay=True)
++
+     def add_index(self, app_label, model_name, index):
+         self._append_option(app_label, model_name, "indexes", index)
+ 

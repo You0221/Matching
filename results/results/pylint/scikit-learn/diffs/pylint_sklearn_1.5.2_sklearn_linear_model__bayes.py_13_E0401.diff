@@ -1,0 +1,24 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index a572c82e6e158..b6527d4f22b1f 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -2,8 +2,8 @@
+ Various bayesian regression
+ """
+ 
+-# Authors: V. Michel, F. Pedregosa, A. Gramfort
+-# License: BSD 3 clause
++# Authors: The scikit-learn developers
++# SPDX-License-Identifier: BSD-3-Clause
+ 
+ from math import log
+ from numbers import Integral, Real
+@@ -16,7 +16,7 @@
+ from ..utils import _safe_indexing
+ from ..utils._param_validation import Interval
+ from ..utils.extmath import fast_logdet
+-from ..utils.validation import _check_sample_weight
++from ..utils.validation import _check_sample_weight, validate_data
+ from ._base import LinearModel, _preprocess_data, _rescale_data
+ 
+ ###############################################################################

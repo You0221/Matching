@@ -1,0 +1,42 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -1015,20 +1016,27 @@ def view(self, cls=None):
+                 dtype = pandas_dtype(cls)
+ 
+             if needs_i8_conversion(dtype):
+-                if dtype.kind == "m" and dtype != "m8[ns]":
+-                    # e.g. m8[s]
+-                    return self._data.view(cls)
+-
+                 idx_cls = self._dtype_to_subclass(dtype)
+-                # NB: we only get here for subclasses that override
+-                #  _data_cls such that it is a type and not a tuple
+-                #  of types.
+-                arr_cls = idx_cls._data_cls
+-                arr = arr_cls(self._data.view("i8"), dtype=dtype)
+-                return idx_cls._simple_new(arr, name=self.name, refs=self._references)
++                arr = self.array.view(dtype)
++                if isinstance(arr, ExtensionArray):
++                    # here we exclude non-supported dt64/td64 dtypes
++                    return idx_cls._simple_new(
++                        arr, name=self.name, refs=self._references
++                    )
++                return arr
+ 
+             result = self._data.view(cls)
+         else:
++            if cls is not None:
++                warnings.warn(
++                    # GH#55709
++                    f"Passing a type in {type(self).__name__}.view is deprecated "
++                    "and will raise in a future version. "
++                    "Call view without any argument to retain the old behavior.",
++                    FutureWarning,
++                    stacklevel=find_stack_level(),
++                )
++
+             result = self._view()
+         if isinstance(result, Index):
+             result._id = self._id

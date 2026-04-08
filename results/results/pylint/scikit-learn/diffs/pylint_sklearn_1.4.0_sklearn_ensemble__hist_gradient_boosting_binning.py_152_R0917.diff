@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/binning.py b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+index 8786e866d7be3..d23f6e7b00a82 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/binning.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/binning.py
+@@ -144,7 +146,7 @@ class _BinMapper(TransformerMixin, BaseEstimator):
+     missing_values_bin_idx_ : np.uint8
+         The index of the bin where missing values are mapped. This is a
+         constant across all features. This corresponds to the last bin, and
+-        it is always equal to ``n_bins - 1``. Note that if ``n_bins_missing_``
++        it is always equal to ``n_bins - 1``. Note that if ``n_bins_non_missing_``
+         is less than ``n_bins - 1`` for a given feature, then there are
+         empty (and unused) bins.
+     """

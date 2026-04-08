@@ -1,0 +1,64 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index db87d66acb9..4fe223c97c6 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -2,51 +2,46 @@
+ 
+ from __future__ import annotations as _annotations
+ 
+-import builtins
+ import operator
+ import sys
+ import typing
+ import warnings
+ import weakref
+ from abc import ABCMeta
+-from functools import lru_cache, partial
++from functools import cache, partial, wraps
+ from types import FunctionType
+-from typing import Any, Callable, Generic, Literal, NoReturn, TypeVar, cast
++from typing import TYPE_CHECKING, Any, Callable, Generic, Literal, NoReturn, TypeVar, cast
+ 
+ from pydantic_core import PydanticUndefined, SchemaSerializer
+-from typing_extensions import TypeAliasType, dataclass_transform, deprecated, get_args
++from typing_extensions import TypeAliasType, dataclass_transform, deprecated, get_args, get_origin
++from typing_inspection import typing_objects
+ 
+ from ..errors import PydanticUndefinedAnnotation, PydanticUserError
+ from ..plugin._schema_validator import create_schema_validator
+ from ..warnings import GenericBeforeBaseModelWarning, PydanticDeprecatedSince20
+ from ._config import ConfigWrapper
+ from ._decorators import DecoratorInfos, PydanticDescriptorProxy, get_attribute_from_bases, unwrap_wrapped_function
+-from ._fields import collect_model_fields, is_valid_field_name, is_valid_privateattr_name
+-from ._generate_schema import GenerateSchema
++from ._fields import collect_model_fields, is_valid_field_name, is_valid_privateattr_name, rebuild_model_fields
++from ._generate_schema import GenerateSchema, InvalidSchemaError
+ from ._generics import PydanticGenericMetadata, get_model_typevars_map
+ from ._import_utils import import_cached_base_model, import_cached_field_info
+ from ._mock_val_ser import set_model_mocks
+ from ._namespace_utils import NsResolver
+-from ._schema_generation_shared import CallbackGetCoreSchemaHandler
+ from ._signature import generate_pydantic_signature
+ from ._typing_extra import (
+     _make_forward_ref,
+     eval_type_backport,
+-    is_annotated,
+     is_classvar_annotation,
+     parent_frame_namespace,
+ )
+ from ._utils import LazyClassAttribute, SafeGetItemProxy
+ 
+-if typing.TYPE_CHECKING:
+-    from ..fields import ComputedFieldInfo, FieldInfo, ModelPrivateAttr
++if TYPE_CHECKING:
+     from ..fields import Field as PydanticModelField
++    from ..fields import FieldInfo, ModelPrivateAttr
+     from ..fields import PrivateAttr as PydanticModelPrivateAttr
+     from ..main import BaseModel
+ else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
+     PydanticModelField = object()
+     PydanticModelPrivateAttr = object()
+ 

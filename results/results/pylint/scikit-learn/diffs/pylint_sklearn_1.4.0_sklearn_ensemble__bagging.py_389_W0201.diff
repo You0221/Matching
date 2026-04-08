@@ -1,0 +1,32 @@
+diff --git a/sklearn/ensemble/_bagging.py b/sklearn/ensemble/_bagging.py
+index da340ceec6fe4..7f278cb06f2ba 100644
+--- a/sklearn/ensemble/_bagging.py
++++ b/sklearn/ensemble/_bagging.py
+@@ -381,16 +450,23 @@ def _fit(
+         """
+         random_state = check_random_state(self.random_state)
+ 
+-        if sample_weight is not None:
+-            sample_weight = _check_sample_weight(sample_weight, X, dtype=None)
+-
+         # Remap output
+         n_samples = X.shape[0]
+         self._n_samples = n_samples
+         y = self._validate_y(y)
+ 
+         # Check parameters
+-        self._validate_estimator()
++        self._validate_estimator(self._get_estimator())
++
++        if _routing_enabled():
++            routed_params = process_routing(self, "fit", **fit_params)
++        else:
++            routed_params = Bunch()
++            routed_params.estimator = Bunch(fit=fit_params)
++            if "sample_weight" in fit_params:
++                routed_params.estimator.fit["sample_weight"] = fit_params[
++                    "sample_weight"
++                ]
+ 
+         if max_depth is not None:
+             self.estimator_.max_depth = max_depth

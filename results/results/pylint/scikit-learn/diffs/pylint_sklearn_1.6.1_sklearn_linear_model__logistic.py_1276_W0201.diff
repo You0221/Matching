@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index fe5ee918066fa..f0c97268c612d 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1267,6 +1284,15 @@ def fit(self, X, y, sample_weight=None):
+         multi_class = _check_multi_class(multi_class, solver, len(self.classes_))
+ 
+         if solver == "liblinear":
++            if len(self.classes_) > 2:
++                warnings.warn(
++                    "Using the 'liblinear' solver for multiclass classification is "
++                    "deprecated. An error will be raised in 1.8. Either use another "
++                    "solver which supports the multinomial loss or wrap the estimator "
++                    "in a OneVsRestClassifier to keep applying a one-versus-rest "
++                    "scheme.",
++                    FutureWarning,
++                )
+             if effective_n_jobs(self.n_jobs) != 1:
+                 warnings.warn(
+                     "'n_jobs' > 1 does not have any effect when"

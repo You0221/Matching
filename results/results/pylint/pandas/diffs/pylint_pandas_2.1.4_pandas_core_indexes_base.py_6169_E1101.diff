@@ -1,0 +1,24 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 288fd35892fd0..88a08dd55f739 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -6159,19 +6244,7 @@ def _raise_if_missing(self, key, indexer, axis_name: str_t) -> None:
+         nmissing = missing_mask.sum()
+ 
+         if nmissing:
+-            # TODO: remove special-case; this is just to keep exception
+-            #  message tests from raising while debugging
+-            use_interval_msg = isinstance(self.dtype, IntervalDtype) or (
+-                isinstance(self.dtype, CategoricalDtype)
+-                # "Index" has no attribute "categories"  [attr-defined]
+-                and isinstance(
+-                    self.categories.dtype, IntervalDtype  # type: ignore[attr-defined]
+-                )
+-            )
+-
+             if nmissing == len(indexer):
+-                if use_interval_msg:
+-                    key = list(key)
+                 raise KeyError(f"None of [{key}] are in the [{axis_name}]")
+ 
+             not_found = list(ensure_index(key)[missing_mask.nonzero()[0]].unique())

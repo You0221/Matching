@@ -1,0 +1,13 @@
+diff --git a/django/db/models/fields/generated.py b/django/db/models/fields/generated.py
+index deb5875638ce..5b6b188df077 100644
+--- a/django/db/models/fields/generated.py
++++ b/django/db/models/fields/generated.py
+@@ -40,7 +39,7 @@ def cached_col(self):
+         return Col(self.model._meta.db_table, self, self.output_field)
+ 
+     def get_col(self, alias, output_field=None):
+-        if alias != self.model._meta.db_table and output_field is None:
++        if alias != self.model._meta.db_table and output_field in (None, self):
+             output_field = self.output_field
+         return super().get_col(alias, output_field)
+ 

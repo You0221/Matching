@@ -1,0 +1,22 @@
+diff --git a/pandas/core/reshape/merge.py b/pandas/core/reshape/merge.py
+index 6987a0ac7bf6b..410301b7697f2 100644
+--- a/pandas/core/reshape/merge.py
++++ b/pandas/core/reshape/merge.py
+@@ -97,12 +96,16 @@
+ )
+ from pandas.core.frame import _merge_doc
+ from pandas.core.indexes.api import default_index
+-from pandas.core.sorting import is_int64_overflow_possible
++from pandas.core.sorting import (
++    get_group_index,
++    is_int64_overflow_possible,
++)
+ 
+ if TYPE_CHECKING:
+     from pandas import DataFrame
+     from pandas.core import groupby
+     from pandas.core.arrays import DatetimeArray
++    from pandas.core.indexes.frozen import FrozenList
+ 
+ _factorizers = {
+     np.int64: libhashtable.Int64Factorizer,

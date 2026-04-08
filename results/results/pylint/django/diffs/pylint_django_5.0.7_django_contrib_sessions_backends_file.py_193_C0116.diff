@@ -1,0 +1,15 @@
+diff --git a/django/contrib/sessions/backends/file.py b/django/contrib/sessions/backends/file.py
+index d3ba8b11dddd..e15b3f0141ec 100644
+--- a/django/contrib/sessions/backends/file.py
++++ b/django/contrib/sessions/backends/file.py
+@@ -190,8 +202,8 @@ def delete(self, session_key=None):
+         except OSError:
+             pass
+ 
+-    def clean(self):
+-        pass
++    async def adelete(self, session_key=None):
++        return self.delete(session_key=session_key)
+ 
+     @classmethod
+     def clear_expired(cls):

@@ -1,0 +1,14 @@
+diff --git a/pandas/io/formats/printing.py b/pandas/io/formats/printing.py
+index b57797b7ec717..2cc9368f8846a 100644
+--- a/pandas/io/formats/printing.py
++++ b/pandas/io/formats/printing.py
+@@ -314,9 +317,6 @@ def format_object_summary(
+     -------
+     summary string
+     """
+-    from pandas.io.formats.console import get_console_size
+-    from pandas.io.formats.format import get_adjustment
+-
+     display_width, _ = get_console_size()
+     if display_width is None:
+         display_width = get_option("display.width") or 80

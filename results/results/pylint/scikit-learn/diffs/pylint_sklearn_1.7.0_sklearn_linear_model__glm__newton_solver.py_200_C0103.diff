@@ -1,0 +1,15 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index c5c940bed6c39..cfef023692d68 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -187,9 +188,9 @@ def fallback_lbfgs_solve(self, X, y, sample_weight):
+             options={
+                 "maxiter": max_iter,
+                 "maxls": 50,  # default is 20
+-                "iprint": self.verbose - 1,
+                 "gtol": self.tol,
+                 "ftol": 64 * np.finfo(np.float64).eps,
++                **_get_additional_lbfgs_options_dict("iprint", self.verbose - 1),
+             },
+             args=(X, y, sample_weight, self.l2_reg_strength, self.n_threads),
+         )

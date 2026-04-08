@@ -1,0 +1,34 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index 85660b41d743b1..dfd7a67a546588 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -445,20 +417,16 @@ def _get_finder(self, fullname):
+             # out what we *shouldn't* be loading with the limited info it has. So we'll just delegate to the
+             # normal path-based loader as best we can to service it. This also allows us to take advantage of Python's
+             # built-in FS caching and byte-compilation for most things.
+-            if PY3:
+-                # create or consult our cached file finder for this path
+-                if not self._file_finder:
+-                    try:
+-                        self._file_finder = _AnsiblePathHookFinder._filefinder_path_hook(self._pathctx)
+-                    except ImportError:
+-                        # FUTURE: log at a high logging level? This is normal for things like python36.zip on the path, but
+-                        # might not be in some other situation...
+-                        return None
+-
+-                return self._file_finder
++            # create or consult our cached file finder for this path
++            if not self._file_finder:
++                try:
++                    self._file_finder = _AnsiblePathHookFinder._filefinder_path_hook(self._pathctx)
++                except ImportError:
++                    # FUTURE: log at a high logging level? This is normal for things like python36.zip on the path, but
++                    # might not be in some other situation...
++                    return None
+ 
+-            # call py2's internal loader
+-            return pkgutil.ImpImporter(self._pathctx)
++            return self._file_finder
+ 
+     def find_module(self, fullname, path=None):
+         # we ignore the passed in path here- use what we got from the path hook init

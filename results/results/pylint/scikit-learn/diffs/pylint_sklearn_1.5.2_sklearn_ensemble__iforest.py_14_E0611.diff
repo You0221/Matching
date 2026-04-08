@@ -1,0 +1,44 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -19,12 +19,38 @@
+ )
+ from ..utils._chunking import get_chunk_n_rows
+ from ..utils._param_validation import Interval, RealNotInt, StrOptions
+-from ..utils.validation import _num_samples, check_is_fitted
++from ..utils.parallel import Parallel, delayed
++from ..utils.validation import _num_samples, check_is_fitted, validate_data
+ from ._bagging import BaseBagging
+ 
+ __all__ = ["IsolationForest"]
+ 
+ 
++def _parallel_compute_tree_depths(
++    tree,
++    X,
++    features,
++    tree_decision_path_lengths,
++    tree_avg_path_lengths,
++    depths,
++    lock,
++):
++    """Parallel computation of isolation tree depth."""
++    if features is None:
++        X_subset = X
++    else:
++        X_subset = X[:, features]
++
++    leaves_index = tree.apply(X_subset, check_input=False)
++
++    with lock:
++        depths += (
++            tree_decision_path_lengths[leaves_index]
++            + tree_avg_path_lengths[leaves_index]
++            - 1.0
++        )
++
++
+ class IsolationForest(OutlierMixin, BaseBagging):
+     """
+     Isolation Forest Algorithm.

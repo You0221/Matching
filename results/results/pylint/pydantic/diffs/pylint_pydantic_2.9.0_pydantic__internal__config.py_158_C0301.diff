@@ -1,0 +1,39 @@
+diff --git a/pydantic/_internal/_config.py b/pydantic/_internal/_config.py
+index 2634fcd8809..6d491c29027 100644
+--- a/pydantic/_internal/_config.py
++++ b/pydantic/_internal/_config.py
+@@ -154,23 +154,28 @@ def __getattr__(self, name: str) -> Any:
+                 except KeyError:
+                     raise AttributeError(f'Config has no attribute {name!r}') from None
+ 
+-    def core_config(self, obj: Any) -> core_schema.CoreConfig:
+-        """Create a pydantic-core config, `obj` is just used to populate `title` if not set in config.
+-
+-        Pass `obj=None` if you do not want to attempt to infer the `title`.
++    def core_config(self, title: str | None) -> core_schema.CoreConfig:
++        """Create a pydantic-core config.
+ 
+         We don't use getattr here since we don't want to populate with defaults.
+ 
+         Args:
+-            obj: An object used to populate `title` if not set in config.
++            title: The title to use if not set in config.
+ 
+         Returns:
+             A `CoreConfig` object created from config.
+         """
+         config = self.config_dict
+ 
++        if config.get('schema_generator') is not None:
++            warnings.warn(
++                'The `schema_generator` setting has been deprecated since v2.10. This setting no longer has any effect.',
++                PydanticDeprecatedSince210,
++                stacklevel=2,
++            )
++
+         core_config_values = {
+-            'title': config.get('title') or (obj and obj.__name__),
++            'title': config.get('title') or title or None,
+             'extra_fields_behavior': config.get('extra'),
+             'allow_inf_nan': config.get('allow_inf_nan'),
+             'populate_by_name': config.get('populate_by_name'),

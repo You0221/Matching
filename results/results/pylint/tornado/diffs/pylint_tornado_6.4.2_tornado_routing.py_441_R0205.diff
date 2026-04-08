@@ -1,0 +1,31 @@
+diff --git a/tornado/routing.py b/tornado/routing.py
+index a145d71916..245070c797 100644
+--- a/tornado/routing.py
++++ b/tornado/routing.py
+@@ -438,7 +449,7 @@ def reverse_url(self, name: str, *args: Any) -> Optional[str]:
+         return None
+ 
+ 
+-class Rule(object):
++class Rule:
+     """A routing rule."""
+ 
+     def __init__(
+@@ -478,7 +489,7 @@ def reverse(self, *args: Any) -> Optional[str]:
+         return self.matcher.reverse(*args)
+ 
+     def __repr__(self) -> str:
+-        return "%s(%r, %s, kwargs=%r, name=%r)" % (
++        return "{}({!r}, {}, kwargs={!r}, name={!r})".format(
+             self.__class__.__name__,
+             self.matcher,
+             self.target,
+@@ -487,7 +498,7 @@ def __repr__(self) -> str:
+         )
+ 
+ 
+-class Matcher(object):
++class Matcher:
+     """Represents a matcher for request features."""
+ 
+     def match(self, request: httputil.HTTPServerRequest) -> Optional[Dict[str, Any]]:

@@ -1,0 +1,13 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -391,7 +425,7 @@ def _sort_migrations(self):
+                     # Resolve intra-app dependencies to handle circular
+                     # references involving a swappable model.
+                     dep = self._resolve_dependency(dep)[0]
+-                    if dep[0] != app_label:
++                    if dep.app_label != app_label:
+                         continue
+                     ts.add(op, *(x for x in ops if self.check_dependency(x, dep)))
+             self.generated_operations[app_label] = list(ts.static_order())

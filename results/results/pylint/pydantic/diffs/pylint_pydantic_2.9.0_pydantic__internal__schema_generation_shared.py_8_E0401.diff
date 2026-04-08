@@ -1,0 +1,16 @@
+diff --git a/pydantic/_internal/_schema_generation_shared.py b/pydantic/_internal/_schema_generation_shared.py
+index f35c665d26d..b231a82e196 100644
+--- a/pydantic/_internal/_schema_generation_shared.py
++++ b/pydantic/_internal/_schema_generation_shared.py
+@@ -2,10 +2,9 @@
+ 
+ from __future__ import annotations
+ 
+-from typing import TYPE_CHECKING, Any, Callable
++from typing import TYPE_CHECKING, Any, Callable, Literal
+ 
+ from pydantic_core import core_schema
+-from typing_extensions import Literal
+ 
+ from ..annotated_handlers import GetCoreSchemaHandler, GetJsonSchemaHandler
+ 

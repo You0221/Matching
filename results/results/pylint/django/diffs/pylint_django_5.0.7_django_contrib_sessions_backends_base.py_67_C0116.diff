@@ -1,0 +1,59 @@
+diff --git a/django/contrib/sessions/backends/base.py b/django/contrib/sessions/backends/base.py
+index 050e7387bef2..69f756a22876 100644
+--- a/django/contrib/sessions/backends/base.py
++++ b/django/contrib/sessions/backends/base.py
+@@ -67,28 +73,52 @@ def key_salt(self):
+     def get(self, key, default=None):
+         return self._session.get(key, default)
+ 
++    async def aget(self, key, default=None):
++        return (await self._aget_session()).get(key, default)
++
+     def pop(self, key, default=__not_given):
+         self.modified = self.modified or key in self._session
+         args = () if default is self.__not_given else (default,)
+         return self._session.pop(key, *args)
+ 
++    async def apop(self, key, default=__not_given):
++        self.modified = self.modified or key in (await self._aget_session())
++        args = () if default is self.__not_given else (default,)
++        return (await self._aget_session()).pop(key, *args)
++
+     def setdefault(self, key, value):
+         if key in self._session:
+             return self._session[key]
+         else:
+-            self.modified = True
+-            self._session[key] = value
++            self[key] = value
++            return value
++
++    async def asetdefault(self, key, value):
++        session = await self._aget_session()
++        if key in session:
++            return session[key]
++        else:
++            await self.aset(key, value)
+             return value
+ 
+     def set_test_cookie(self):
+         self[self.TEST_COOKIE_NAME] = self.TEST_COOKIE_VALUE
+ 
++    async def aset_test_cookie(self):
++        await self.aset(self.TEST_COOKIE_NAME, self.TEST_COOKIE_VALUE)
++
+     def test_cookie_worked(self):
+         return self.get(self.TEST_COOKIE_NAME) == self.TEST_COOKIE_VALUE
+ 
++    async def atest_cookie_worked(self):
++        return (await self.aget(self.TEST_COOKIE_NAME)) == self.TEST_COOKIE_VALUE
++
+     def delete_test_cookie(self):
+         del self[self.TEST_COOKIE_NAME]
+ 
++    async def adelete_test_cookie(self):
++        del (await self._aget_session())[self.TEST_COOKIE_NAME]
++
+     def encode(self, session_dict):
+         "Return the given session dictionary serialized and encoded as a string."
+         return signing.dumps(

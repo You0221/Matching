@@ -1,0 +1,31 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -549,20 +592,17 @@ def fit(self, X, y, sample_weight=None):
+                 )
+ 
+         # estimate final model using all inliers
+-        if sample_weight is None:
+-            estimator.fit(X_inlier_best, y_inlier_best)
+-        else:
+-            estimator.fit(
+-                X_inlier_best,
+-                y_inlier_best,
+-                sample_weight=sample_weight[inlier_best_idxs_subset],
+-            )
++        fit_params_best_idxs_subset = _check_method_params(
++            X, params=routed_params.estimator.fit, indices=inlier_best_idxs_subset
++        )
++
++        estimator.fit(X_inlier_best, y_inlier_best, **fit_params_best_idxs_subset)
+ 
+         self.estimator_ = estimator
+         self.inlier_mask_ = inlier_mask_best
+         return self
+ 
+-    def predict(self, X):
++    def predict(self, X, **params):
+         """Predict using the estimated model.
+ 
+         This is a wrapper for `estimator_.predict(X)`.

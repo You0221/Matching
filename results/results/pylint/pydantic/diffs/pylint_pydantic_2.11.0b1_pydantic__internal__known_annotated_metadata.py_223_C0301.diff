@@ -1,0 +1,16 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index 463d8a7bc3f..c127e27ac16 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -220,10 +219,7 @@ def apply_known_metadata(annotation: Any, schema: CoreSchema) -> CoreSchema | No
+             if constraint == 'union_mode' and schema_type == 'union':
+                 schema['mode'] = value  # type: ignore  # schema is UnionSchema
+             else:
+-                if schema_type == 'decimal' and constraint in {'multiple_of', 'le', 'ge', 'lt', 'gt'}:
+-                    schema[constraint] = Decimal(value)
+-                else:
+-                    schema[constraint] = value
++                schema[constraint] = value
+             continue
+ 
+         #  else, apply a function after validator to the schema to enforce the corresponding constraint

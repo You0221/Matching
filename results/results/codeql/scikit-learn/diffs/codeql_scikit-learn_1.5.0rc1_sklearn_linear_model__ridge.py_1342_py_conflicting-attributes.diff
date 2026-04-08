@@ -1,0 +1,31 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -1335,8 +1341,10 @@ def classes_(self):
+         """Classes labels."""
+         return self._label_binarizer.classes_
+ 
+-    def _more_tags(self):
+-        return {"multilabel": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.classifier_tags.multi_label = True
++        return tags
+ 
+ 
+ class RidgeClassifier(_RidgeClassifierMixin, _BaseRidge):
+@@ -1563,6 +1571,13 @@ def fit(self, X, y, sample_weight=None):
+         super().fit(X, Y, sample_weight=sample_weight)
+         return self
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = (self.solver != "svd") and (
++            self.solver != "cholesky" or not self.fit_intercept
++        )
++        return tags
++
+ 
+ def _check_gcv_mode(X, gcv_mode):
+     if gcv_mode in ["eigen", "svd"]:

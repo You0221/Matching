@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/module_utils/api.py b/lib/ansible/module_utils/api.py
+index 8f08772278ea72..2415c38a839e65 100644
+--- a/lib/ansible/module_utils/api.py
++++ b/lib/ansible/module_utils/api.py
+@@ -131,7 +131,7 @@ def generate_jittered_backoff(retries=10, delay_base=3, delay_threshold=60):
+     :param delay_threshold: The maximum time in seconds for any delay.
+     """
+     for retry in range(0, retries):
+-        yield random.randint(0, min(delay_threshold, delay_base * 2 ** retry))
++        yield secrets.randbelow(min(delay_threshold, delay_base * 2 ** retry))
+ 
+ 
+ def retry_never(exception_or_result):

@@ -1,0 +1,11 @@
+diff --git a/django/db/backends/oracle/features.py b/django/db/backends/oracle/features.py
+index 9b894d0df679..7ebe69c6ddf2 100644
+--- a/django/db/backends/oracle/features.py
++++ b/django/db/backends/oracle/features.py
+@@ -1,5 +1,6 @@
+ from django.db import DatabaseError, InterfaceError
+ from django.db.backends.base.features import BaseDatabaseFeatures
++from django.db.backends.oracle.oracledb_any import is_oracledb
+ from django.utils.functional import cached_property
+ 
+ 

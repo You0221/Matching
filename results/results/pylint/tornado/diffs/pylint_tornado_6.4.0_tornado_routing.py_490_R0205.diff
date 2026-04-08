@@ -1,0 +1,13 @@
+diff --git a/tornado/routing.py b/tornado/routing.py
+index a145d71916..245070c797 100644
+--- a/tornado/routing.py
++++ b/tornado/routing.py
+@@ -487,7 +498,7 @@ def __repr__(self) -> str:
+         )
+ 
+ 
+-class Matcher(object):
++class Matcher:
+     """Represents a matcher for request features."""
+ 
+     def match(self, request: httputil.HTTPServerRequest) -> Optional[Dict[str, Any]]:

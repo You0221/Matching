@@ -1,0 +1,16 @@
+diff --git a/numpy/f2py/auxfuncs.py b/numpy/f2py/auxfuncs.py
+index 13a1074b447e..095e2600f317 100644
+--- a/numpy/f2py/auxfuncs.py
++++ b/numpy/f2py/auxfuncs.py
+@@ -13,10 +13,10 @@
+ import re
+ import types
+ from functools import reduce
+-from copy import deepcopy
+ 
+ from . import __version__
+ from . import cfuncs
++from .cfuncs import errmess
+ 
+ __all__ = [
+     'applyrules', 'debugcapi', 'dictappend', 'errmess', 'gentitle',

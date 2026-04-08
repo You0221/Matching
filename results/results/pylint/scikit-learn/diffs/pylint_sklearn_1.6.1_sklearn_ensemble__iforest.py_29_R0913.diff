@@ -1,0 +1,12 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 89ae067a43dbb..4e5287af7f699 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -22,7 +22,6 @@
+ from ..utils.parallel import Parallel, delayed
+ from ..utils.validation import _num_samples, check_is_fitted, validate_data
+ from ._bagging import BaseBagging
+-from ._base import _partition_estimators
+ 
+ __all__ = ["IsolationForest"]
+ 

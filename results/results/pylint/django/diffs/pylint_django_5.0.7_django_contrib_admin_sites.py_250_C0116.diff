@@ -1,0 +1,22 @@
+diff --git a/django/contrib/admin/sites.py b/django/contrib/admin/sites.py
+index bb02cb08ace7..201f28ef3744 100644
+--- a/django/contrib/admin/sites.py
++++ b/django/contrib/admin/sites.py
+@@ -259,6 +265,8 @@ def wrapper(*args, **kwargs):
+                 return self.admin_view(view, cacheable)(*args, **kwargs)
+ 
+             wrapper.admin_site = self
++            # Used by LoginRequiredMiddleware.
++            wrapper.login_url = reverse_lazy("admin:login", current_app=self.name)
+             return update_wrapper(wrapper, view)
+ 
+         # Admin-site-wide views.
+@@ -279,7 +287,7 @@ def wrapper(*args, **kwargs):
+             path("autocomplete/", wrap(self.autocomplete_view), name="autocomplete"),
+             path("jsi18n/", wrap(self.i18n_javascript, cacheable=True), name="jsi18n"),
+             path(
+-                "r/<int:content_type_id>/<path:object_id>/",
++                "r/<path:content_type_id>/<path:object_id>/",
+                 wrap(contenttype_views.shortcut),
+                 name="view_on_site",
+             ),

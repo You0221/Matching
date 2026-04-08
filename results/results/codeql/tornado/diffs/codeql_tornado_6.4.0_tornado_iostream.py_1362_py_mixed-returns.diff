@@ -1,0 +1,28 @@
+diff --git a/tornado/iostream.py b/tornado/iostream.py
+index bd001aeeb1..dd2111e3b8 100644
+--- a/tornado/iostream.py
++++ b/tornado/iostream.py
+@@ -1374,7 +1370,7 @@ def _do_ssl_handshake(self) -> None:
+                 return
+             elif err.args[0] in (ssl.SSL_ERROR_EOF, ssl.SSL_ERROR_ZERO_RETURN):
+                 return self.close(exc_info=err)
+-            elif err.args[0] == ssl.SSL_ERROR_SSL:
++            elif err.args[0] in (ssl.SSL_ERROR_SSL, ssl.SSL_ERROR_SYSCALL):
+                 try:
+                     peer = self.socket.getpeername()
+                 except Exception:
+@@ -1384,13 +1380,7 @@ def _do_ssl_handshake(self) -> None:
+                 )
+                 return self.close(exc_info=err)
+             raise
+-        except ssl.CertificateError as err:
+-            # CertificateError can happen during handshake (hostname
+-            # verification) and should be passed to user. Starting
+-            # in Python 3.7, this error is a subclass of SSLError
+-            # and will be handled by the previous block instead.
+-            return self.close(exc_info=err)
+-        except socket.error as err:
++        except OSError as err:
+             # Some port scans (e.g. nmap in -sT mode) have been known
+             # to cause do_handshake to raise EBADF and ENOTCONN, so make
+             # those errors quiet as well.

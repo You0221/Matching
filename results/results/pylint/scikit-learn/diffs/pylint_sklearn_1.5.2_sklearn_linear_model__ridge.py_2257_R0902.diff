@@ -1,0 +1,27 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2242,15 +2286,16 @@ def _score(self, *, predictions, y, n_y, scorer, score_params):
+                     ]
+                 )
+             else:
+-                _score = scorer(
+-                    identity_estimator,
+-                    predictions.ravel(),
+-                    y.ravel(),
+-                    **score_params,
+-                )
++                _score = scorer(identity_estimator, predictions, y, **score_params)
+ 
+         return _score
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        # Required since this is neither a RegressorMixin nor a ClassifierMixin
++        tags.target_tags.required = True
++        return tags
++
+ 
+ class _BaseRidgeCV(LinearModel):
+     _parameter_constraints: dict = {

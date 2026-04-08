@@ -1,0 +1,19 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 6dad8dc1c8c21..0d57f7d69f827 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -2287,7 +2298,13 @@ def transform(self, X, copy=None):
+         copy = copy if copy is not None else self.copy
+         # TODO: This should be refactored because binarize also calls
+         # check_array
+-        X = self._validate_data(X, accept_sparse=["csr", "csc"], copy=copy, reset=False)
++        X = self._validate_data(
++            X,
++            accept_sparse=["csr", "csc"],
++            force_writeable=True,
++            copy=copy,
++            reset=False,
++        )
+         return binarize(X, threshold=self.threshold, copy=False)
+ 
+     def _more_tags(self):

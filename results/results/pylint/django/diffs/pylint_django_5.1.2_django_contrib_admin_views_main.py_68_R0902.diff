@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/views/main.py b/django/contrib/admin/views/main.py
+index 70b6590811f1..ada8ce39fc38 100644
+--- a/django/contrib/admin/views/main.py
++++ b/django/contrib/admin/views/main.py
+@@ -395,7 +395,7 @@ def get_ordering(self, request, queryset):
+         ordering = list(
+             self.model_admin.get_ordering(request) or self._get_default_ordering()
+         )
+-        if ORDER_VAR in params:
++        if params.get(ORDER_VAR):
+             # Clear ordering and used params
+             ordering = []
+             order_params = params[ORDER_VAR].split(".")

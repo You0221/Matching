@@ -1,0 +1,31 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -766,26 +720,6 @@ def _model_schema(self, cls: type[BaseModel]) -> core_schema.CoreSchema:
+                 self.defs.definitions[model_ref] = schema
+                 return core_schema.definition_reference_schema(model_ref)
+ 
+-    @staticmethod
+-    def _get_model_title_from_config(
+-        model: type[BaseModel | StandardDataclass], config_wrapper: ConfigWrapper | None = None
+-    ) -> str | None:
+-        """Get the title of a model if `model_title_generator` or `title` are set in the config, else return None"""
+-        if config_wrapper is None:
+-            return None
+-
+-        if config_wrapper.title:
+-            return config_wrapper.title
+-
+-        model_title_generator = config_wrapper.model_title_generator
+-        if model_title_generator:
+-            title = model_title_generator(model)
+-            if not isinstance(title, str):
+-                raise TypeError(f'model_title_generator {model_title_generator} must return str, not {title.__class__}')
+-            return title
+-
+-        return None
+-
+     def _unpack_refs_defs(self, schema: CoreSchema) -> CoreSchema:
+         """Unpack all 'definitions' schemas into `GenerateSchema.defs.definitions`
+         and return the inner schema.

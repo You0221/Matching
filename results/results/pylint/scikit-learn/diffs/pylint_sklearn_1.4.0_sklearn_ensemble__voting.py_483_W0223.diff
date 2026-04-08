@@ -1,0 +1,13 @@
+diff --git a/sklearn/ensemble/_voting.py b/sklearn/ensemble/_voting.py
+index 300eb95e079de..7c54be40dc013 100644
+--- a/sklearn/ensemble/_voting.py
++++ b/sklearn/ensemble/_voting.py
+@@ -480,7 +552,7 @@ def get_feature_names_out(self, input_features=None):
+         return np.asarray(names_out, dtype=object)
+ 
+ 
+-class VotingRegressor(_RoutingNotSupportedMixin, RegressorMixin, _BaseVoting):
++class VotingRegressor(RegressorMixin, _BaseVoting):
+     """Prediction voting regressor for unfitted estimators.
+ 
+     A voting regressor is an ensemble meta-estimator that fits several base

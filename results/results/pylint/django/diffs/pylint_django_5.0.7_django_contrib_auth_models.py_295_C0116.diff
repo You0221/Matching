@@ -1,0 +1,21 @@
+diff --git a/django/contrib/auth/models.py b/django/contrib/auth/models.py
+index 85330e2c0e6f..623b1698010f 100644
+--- a/django/contrib/auth/models.py
++++ b/django/contrib/auth/models.py
+@@ -292,9 +371,16 @@ def get_group_permissions(self, obj=None):
+         """
+         return _user_get_permissions(self, obj, "group")
+ 
++    async def aget_group_permissions(self, obj=None):
++        """See get_group_permissions()"""
++        return await _auser_get_permissions(self, obj, "group")
++
+     def get_all_permissions(self, obj=None):
+         return _user_get_permissions(self, obj, "all")
+ 
++    async def aget_all_permissions(self, obj=None):
++        return await _auser_get_permissions(self, obj, "all")
++
+     def has_perm(self, perm, obj=None):
+         """
+         Return True if the user has the specified permission. Query all

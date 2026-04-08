@@ -1,0 +1,17 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -335,9 +331,9 @@ def _logistic_regression_path(
+             sample_weight *= class_weight_[le.fit_transform(y_bin)]
+ 
+     else:
+-        if solver in ["sag", "saga", "lbfgs", "newton-cg"]:
+-            # SAG, lbfgs and newton-cg multinomial solvers need LabelEncoder,
+-            # not LabelBinarizer, i.e. y as a 1d-array of integers.
++        if solver in ["sag", "saga", "lbfgs", "newton-cg", "newton-cholesky"]:
++            # SAG, lbfgs, newton-cg and newton-cg multinomial solvers need
++            # LabelEncoder, not LabelBinarizer, i.e. y as a 1d-array of integers.
+             # LabelEncoder also saves memory compared to LabelBinarizer, especially
+             # when n_classes is large.
+             le = LabelEncoder()

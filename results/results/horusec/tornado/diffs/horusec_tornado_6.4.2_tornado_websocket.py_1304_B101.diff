@@ -1,0 +1,108 @@
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index 8f0e0aefe8..b719547bdf 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -1284,60 +1309,69 @@ def is_closing(self) -> bool:
+         """
+         return self.stream.closed() or self.client_terminated or self.server_terminated
+ 
++    def set_nodelay(self, x: bool) -> None:
++        self.stream.set_nodelay(x)
++
+     @property
+-    def ping_interval(self) -> Optional[float]:
++    def ping_interval(self) -> float:
+         interval = self.params.ping_interval
+         if interval is not None:
+             return interval
+         return 0
+ 
+     @property
+-    def ping_timeout(self) -> Optional[float]:
++    def ping_timeout(self) -> float:
+         timeout = self.params.ping_timeout
+         if timeout is not None:
++            if self.ping_interval and timeout > self.ping_interval:
++                de_dupe_gen_log(
++                    # Note: using de_dupe_gen_log to prevent this message from
++                    # being duplicated for each connection
++                    logging.WARNING,
++                    f"The websocket_ping_timeout ({timeout}) cannot be longer"
++                    f" than the websocket_ping_interval ({self.ping_interval})."
++                    f"\nSetting websocket_ping_timeout={self.ping_interval}",
++                )
++                return self.ping_interval
+             return timeout
+-        assert self.ping_interval is not None
+-        return max(3 * self.ping_interval, 30)
++        return self.ping_interval
+ 
+     def start_pinging(self) -> None:
+         """Start sending periodic pings to keep the connection alive"""
+-        assert self.ping_interval is not None
+-        if self.ping_interval > 0:
+-            self.last_ping = self.last_pong = IOLoop.current().time()
+-            self.ping_callback = PeriodicCallback(
+-                self.periodic_ping, self.ping_interval * 1000
+-            )
+-            self.ping_callback.start()
++        if (
++            # prevent multiple ping coroutines being run in parallel
++            not self._ping_coroutine
++            # only run the ping coroutine if a ping interval is configured
++            and self.ping_interval > 0
++        ):
++            self._ping_coroutine = asyncio.create_task(self.periodic_ping())
+ 
+-    def periodic_ping(self) -> None:
+-        """Send a ping to keep the websocket alive
++    async def periodic_ping(self) -> None:
++        """Send a ping and wait for a pong if ping_timeout is configured.
+ 
+         Called periodically if the websocket_ping_interval is set and non-zero.
+         """
+-        if self.is_closing() and self.ping_callback is not None:
+-            self.ping_callback.stop()
+-            return
++        interval = self.ping_interval
++        timeout = self.ping_timeout
+ 
+-        # Check for timeout on pong. Make sure that we really have
+-        # sent a recent ping in case the machine with both server and
+-        # client has been suspended since the last ping.
+-        now = IOLoop.current().time()
+-        since_last_pong = now - self.last_pong
+-        since_last_ping = now - self.last_ping
+-        assert self.ping_interval is not None
+-        assert self.ping_timeout is not None
+-        if (
+-            since_last_ping < 2 * self.ping_interval
+-            and since_last_pong > self.ping_timeout
+-        ):
+-            self.close()
+-            return
++        await asyncio.sleep(interval)
+ 
+-        self.write_ping(b"")
+-        self.last_ping = now
++        while True:
++            # send a ping
++            self._received_pong = False
++            ping_time = IOLoop.current().time()
++            self.write_ping(b"")
+ 
+-    def set_nodelay(self, x: bool) -> None:
+-        self.stream.set_nodelay(x)
++            # wait until the ping timeout
++            await asyncio.sleep(timeout)
++
++            # make sure we received a pong within the timeout
++            if timeout > 0 and not self._received_pong:
++                self.close(reason="ping timed out")
++                return
++
++            # wait until the next scheduled ping
++            await asyncio.sleep(IOLoop.current().time() - ping_time + interval)
+ 
+ 
+ class WebSocketClientConnection(simple_httpclient._HTTPConnection):

@@ -1,0 +1,30 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e425a867dc9e03..82d47d5beb1ce3 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -310,20 +340,17 @@ def __init__(self, verbosity: int = 0) -> None:
+ 
+         codecs.register_error('_replacing_warning_handler', self._replacing_warning_handler)
+         try:
+-            sys.stdout.reconfigure(errors='_replacing_warning_handler')
+-            sys.stderr.reconfigure(errors='_replacing_warning_handler')
++            sys.stdout.reconfigure(errors='_replacing_warning_handler')  # type: ignore[union-attr]
++            sys.stderr.reconfigure(errors='_replacing_warning_handler')  # type: ignore[union-attr]
+         except Exception as ex:
+             self.warning(f"failed to reconfigure stdout/stderr with custom encoding error handler: {ex}")
+ 
+         self.setup_curses = False
+ 
+     def _replacing_warning_handler(self, exception: UnicodeError) -> tuple[str | bytes, int]:
+-        # TODO: This should probably be deferred until after the current display is completed
+-        #       this will require some amount of new functionality
+-        self.deprecated(
+-            'Non UTF-8 encoded data replaced with "?" while displaying text to stdout/stderr, this is temporary and will become an error',
+-            version='2.18',
+-        )
++        # This can't be removed as long as we have the possibility of encountering un-renderable strings
++        # created with `surrogateescape`; the alternative of having display methods hard fail is untenable.
++        self.warning('Non UTF-8 encoded data replaced with "?" while displaying text to stdout/stderr.')
+         return '?', exception.end
+ 
+     def set_queue(self, queue: FinalQueue) -> None:

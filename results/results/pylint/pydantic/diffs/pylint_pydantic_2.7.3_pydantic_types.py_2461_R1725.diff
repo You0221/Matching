@@ -1,0 +1,13 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index f1025a5102a..5ba60605e54 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -2458,7 +2624,7 @@ def encode_str(self, value: str) -> str:
+         Returns:
+             The encoded data.
+         """
+-        return super(EncodedStr, self).encode(value=value.encode()).decode()  # noqa: UP008
++        return self.encoder.encode(value.encode()).decode()  # noqa: UP008
+ 
+     def __hash__(self) -> int:
+         return hash(self.encoder)

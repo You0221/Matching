@@ -1,0 +1,13 @@
+diff --git a/tornado/web.py b/tornado/web.py
+index 3b676e3c25..0303f547ec 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -2718,7 +2786,7 @@ async def get(self, path: str, include_body: bool = True) -> None:
+                 # and less than the first-byte-pos.
+                 self.set_status(416)  # Range Not Satisfiable
+                 self.set_header("Content-Type", "text/plain")
+-                self.set_header("Content-Range", "bytes */%s" % (size,))
++                self.set_header("Content-Range", f"bytes */{size}")
+                 return
+             if end is not None and end > size:
+                 # Clients sometimes blindly use a large range to limit their

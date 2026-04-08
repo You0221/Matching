@@ -1,0 +1,15 @@
+diff --git a/maint_tools/check_pxd_in_installation.py b/maint_tools/check_pxd_in_installation.py
+index 996d45d64d42a..380edbd6350b6 100644
+--- a/maint_tools/check_pxd_in_installation.py
++++ b/maint_tools/check_pxd_in_installation.py
+@@ -47,7 +49,9 @@
+                                     include_dirs=[numpy.get_include()])]
+ 
+             setup(ext_modules=cythonize(extensions))
+-            """))
++            """
++            )
++        )
+ 
+     subprocess.run(
+         ["python", "setup_tst.py", "build_ext", "-i"], check=True, cwd=tmpdir

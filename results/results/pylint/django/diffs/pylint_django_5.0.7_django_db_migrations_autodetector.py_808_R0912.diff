@@ -1,0 +1,69 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 3a0ee511ff45..353b99225884 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -832,8 +922,6 @@ def generate_deleted_models(self):
+                         related_fields[field_name] = field
+             # Generate option removal first
+             unique_together = model_state.options.pop("unique_together", None)
+-            # RemovedInDjango51Warning.
+-            index_together = model_state.options.pop("index_together", None)
+             if unique_together:
+                 self.add_operation(
+                     app_label,
+@@ -842,15 +930,6 @@ def generate_deleted_models(self):
+                         unique_together=None,
+                     ),
+                 )
+-            # RemovedInDjango51Warning.
+-            if index_together:
+-                self.add_operation(
+-                    app_label,
+-                    operations.AlterIndexTogether(
+-                        name=model_name,
+-                        index_together=None,
+-                    ),
+-                )
+             # Then remove each related field
+             for name in sorted(related_fields):
+                 self.add_operation(
+@@ -872,25 +951,34 @@ def generate_deleted_models(self):
+             ), relation_related_fields in relations[app_label, model_name].items():
+                 for field_name, field in relation_related_fields.items():
+                     dependencies.append(
+-                        (related_object_app_label, object_name, field_name, False),
++                        OperationDependency(
++                            related_object_app_label,
++                            object_name,
++                            field_name,
++                            OperationDependency.Type.REMOVE,
++                        ),
+                     )
+                     if not field.many_to_many:
+                         dependencies.append(
+-                            (
++                            OperationDependency(
+                                 related_object_app_label,
+                                 object_name,
+                                 field_name,
+-                                "alter",
++                                OperationDependency.Type.ALTER,
+                             ),
+                         )
+ 
+             for name in sorted(related_fields):
+-                dependencies.append((app_label, model_name, name, False))
++                dependencies.append(
++                    OperationDependency(
++                        app_label, model_name, name, OperationDependency.Type.REMOVE
++                    )
++                )
+             # We're referenced in another field's through=
+             through_user = self.through_users.get((app_label, model_state.name_lower))
+             if through_user:
+                 dependencies.append(
+-                    (through_user[0], through_user[1], through_user[2], False)
++                    OperationDependency(*through_user, OperationDependency.Type.REMOVE),
+                 )
+             # Finally, make the operation, deduping any dependencies
+             self.add_operation(

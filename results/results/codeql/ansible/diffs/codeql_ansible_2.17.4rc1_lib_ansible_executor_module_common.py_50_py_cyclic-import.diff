@@ -1,0 +1,89 @@
+diff --git a/lib/ansible/executor/module_common.py b/lib/ansible/executor/module_common.py
+index 717a39833cef5f..d98c70ee5986a7 100644
+--- a/lib/ansible/executor/module_common.py
++++ b/lib/ansible/executor/module_common.py
+@@ -20,42 +20,76 @@
+ 
+ import ast
+ import base64
++import dataclasses
+ import datetime
+ import json
+ import os
++import pathlib
++import pickle
+ import shlex
+-import time
+ import zipfile
+ import re
+ import pkgutil
++import types
++import typing as t
+ 
+ from ast import AST, Import, ImportFrom
+ from io import BytesIO
+ 
++from ansible._internal import _locking
++from ansible._internal._datatag import _utils
++from ansible.module_utils._internal import _dataclass_validation
++from ansible.module_utils.common.messages import PluginInfo
++from ansible.module_utils.common.yaml import yaml_load
++from ansible._internal._datatag._tags import Origin
++from ansible.module_utils.common.json import Direction, get_module_encoder
+ from ansible.release import __version__, __author__
+ from ansible import constants as C
+ from ansible.errors import AnsibleError
+ from ansible.executor.interpreter_discovery import InterpreterDiscoveryRequiredError
+ from ansible.executor.powershell import module_manifest as ps_manifest
+-from ansible.module_utils.common.json import AnsibleJSONEncoder
+ from ansible.module_utils.common.text.converters import to_bytes, to_text, to_native
++from ansible.plugins.become import BecomeBase
+ from ansible.plugins.loader import module_utils_loader
++from ansible._internal._templating._engine import TemplateOptions, TemplateEngine
++from ansible.template import Templar
+ from ansible.utils.collection_loader._collection_finder import _get_collection_metadata, _nested_dict_get
++from ansible.module_utils._internal import _json, _ansiballz
++from ansible.module_utils import basic as _basic
+ 
+-# Must import strategy and use write_locks from there
+-# If we import write_locks directly then we end up binding a
+-# variable to the object and then it never gets updated.
+-from ansible.executor import action_write_locks
++if t.TYPE_CHECKING:
++    from ansible import template as _template
++    from ansible.playbook.task import Task
+ 
+ from ansible.utils.display import Display
+-from collections import namedtuple
+ 
+ import importlib.util
+ import importlib.machinery
+ 
+ display = Display()
+ 
+-ModuleUtilsProcessEntry = namedtuple('ModuleUtilsProcessEntry', ['name_parts', 'is_ambiguous', 'has_redirected_child', 'is_optional'])
++
++@dataclasses.dataclass(frozen=True, order=True)
++class _ModuleUtilsProcessEntry:
++    """Represents a module/module_utils item awaiting import analysis."""
++    name_parts: tuple[str, ...]
++    is_ambiguous: bool = False
++    child_is_redirected: bool = False
++    is_optional: bool = False
++
++    @classmethod
++    def from_module(cls, module: types.ModuleType, append: str | None = None) -> t.Self:
++        name = module.__name__
++
++        if append:
++            name += '.' + append
++
++        return cls.from_module_name(name)
++
++    @classmethod
++    def from_module_name(cls, module_name: str) -> t.Self:
++        return cls(tuple(module_name.split('.')))
++
+ 
+ REPLACER = b"#<<INCLUDE_ANSIBLE_MODULE_COMMON>>"
+ REPLACER_VERSION = b"\"<<ANSIBLE_VERSION>>\""

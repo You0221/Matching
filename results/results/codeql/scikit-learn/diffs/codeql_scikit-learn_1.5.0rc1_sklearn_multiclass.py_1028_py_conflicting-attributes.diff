@@ -1,0 +1,22 @@
+diff --git a/sklearn/multiclass.py b/sklearn/multiclass.py
+index d8c7904b81cdf..1ddb36ca4fa8f 100644
+--- a/sklearn/multiclass.py
++++ b/sklearn/multiclass.py
+@@ -1178,7 +1189,7 @@ def fit(self, X, y, **fit_params):
+             **fit_params,
+         )
+ 
+-        y = self._validate_data(X="no_validation", y=y)
++        y = validate_data(self, X="no_validation", y=y)
+ 
+         random_state = check_random_state(self.random_state)
+         check_classification_targets(y)
+@@ -1267,3 +1278,8 @@ def get_metadata_routing(self):
+             method_mapping=MethodMapping().add(caller="fit", callee="fit"),
+         )
+         return router
++
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = get_tags(self.estimator).input_tags.sparse
++        return tags

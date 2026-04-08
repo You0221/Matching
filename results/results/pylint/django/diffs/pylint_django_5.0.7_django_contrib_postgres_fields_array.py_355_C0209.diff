@@ -1,0 +1,19 @@
+diff --git a/django/contrib/postgres/fields/array.py b/django/contrib/postgres/fields/array.py
+index c8e8e132e01d..4171af82f9d2 100644
+--- a/django/contrib/postgres/fields/array.py
++++ b/django/contrib/postgres/fields/array.py
+@@ -351,9 +357,11 @@ def __init__(self, start, end, *args, **kwargs):
+ 
+     def as_sql(self, compiler, connection):
+         lhs, params = compiler.compile(self.lhs)
+-        if not lhs.endswith("]"):
+-            lhs = "(%s)" % lhs
+-        return "%s[%%s:%%s]" % lhs, (*params, self.start, self.end)
++        # self.start is set to 1 if slice start is not provided.
++        if self.end is None:
++            return f"({lhs})[%s:]", (*params, self.start)
++        else:
++            return f"({lhs})[%s:%s]", (*params, self.start, self.end)
+ 
+ 
+ class SliceTransformFactory:

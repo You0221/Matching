@@ -1,0 +1,13 @@
+diff --git a/django/forms/models.py b/django/forms/models.py
+index ff4b83fe5960..be59dbe4a0a5 100644
+--- a/django/forms/models.py
++++ b/django/forms/models.py
+@@ -1136,7 +1142,7 @@ def _construct_form(self, i, **kwargs):
+         if self.fk.remote_field.field_name != self.fk.remote_field.model._meta.pk.name:
+             fk_value = getattr(self.instance, self.fk.remote_field.field_name)
+             fk_value = getattr(fk_value, "pk", fk_value)
+-        setattr(form.instance, self.fk.get_attname(), fk_value)
++        setattr(form.instance, self.fk.attname, fk_value)
+         return form
+ 
+     @classmethod

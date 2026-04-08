@@ -1,0 +1,137 @@
+diff --git a/scripts/manage_translations.py b/scripts/manage_translations.py
+index bc569fbd0a2e..302a4f6473e0 100644
+--- a/scripts/manage_translations.py
++++ b/scripts/manage_translations.py
+@@ -50,54 +57,87 @@ def list_resources_with_updates(date_since, date_skip=None, verbose=False):
+         api_token = parser.get("https://www.transifex.com", "token")
+ 
+     assert api_token, "Please define the TRANSIFEX_API_TOKEN env var."
+-    headers = {"Authorization": f"Bearer {api_token}"}
+-    base_url = "https://rest.api.transifex.com"
+-    base_params = {"filter[project]": "o:django:p:django"}
+-
+-    resources_url = base_url + "/resources"
+-    resource_stats_url = base_url + "/resource_language_stats"
+-
+-    response = requests.get(resources_url, headers=headers, params=base_params)
+-    assert response.ok, response.content
+-    data = response.json()["data"]
+-
+-    for item in data:
+-        if item["type"] != "resources":
+-            continue
+-        resource_id = item["id"]
+-        resource_name = item["attributes"]["name"]
+-        params = base_params.copy()
+-        params.update({"filter[resource]": resource_id})
+-        stats = requests.get(resource_stats_url, headers=headers, params=params)
+-        stats_data = stats.json()["data"]
+-        for lang_data in stats_data:
+-            lang_id = lang_data["id"].split(":")[-1]
+-            lang_attributes = lang_data["attributes"]
+-            last_update = lang_attributes["last_translation_update"]
+-            if verbose:
+-                print(
+-                    f"CHECKING {resource_name} for {lang_id=} updated on {last_update}"
+-                )
+-            if last_update is None:
+-                resource_lang_unchanged[resource_name].append(lang_id)
+-                continue
++    return api_token
+ 
+-            last_update = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%SZ")
+-            if last_update > date_since and (
+-                date_skip is None or last_update.date() != date_skip.date()
+-            ):
+-                if verbose:
+-                    print(f"=> CHANGED {lang_attributes=} {date_skip=}")
+-                resource_lang_changed[resource_name].append(lang_id)
+-            else:
+-                resource_lang_unchanged[resource_name].append(lang_id)
+ 
+-    if verbose:
+-        unchanged = "\n".join(
+-            f"\n * resource {res} languages {' '.join(sorted(langs))}"
+-            for res, langs in resource_lang_unchanged.items()
++def get_api_response(endpoint, api_token=None, params=None, verbosity=0):
++    if api_token is None:
++        api_token = get_api_token()
++    headers = {
++        "Authorization": f"Bearer {api_token}",
++        "Accept": "application/vnd.api+json",
++        "Content-Type": "application/json",
++    }
++    endpoint = endpoint.strip("/")
++    url = f"https://rest.api.transifex.com/{endpoint}"
++    if verbosity > 2:
++        print(f"\n>>> GET {url=} {params=}")
++    response = requests.get(url, headers=headers, params=params)
++    if verbosity > 2:
++        print(f">>>> GET {response=}\n")
++    response.raise_for_status()
++    return response.json()["data"]
++
++
++def list_resources_with_updates(
++    date_since, resources=None, languages=None, verbosity=0
++):
++    api_token = get_api_token()
++    project = "o:django:p:django"
++    date_since_iso = date_since.isoformat().strip("Z") + "Z"
++    if verbosity:
++        print(f"\n== Starting list_resources_with_updates at {date_since_iso=}")
++
++    if not languages:
++        languages = [  # List languages using Transifex projects API.
++            d["attributes"]["code"]
++            for d in get_api_response(
++                f"projects/{project}/languages", api_token, verbosity=verbosity
++            )
++        ]
++    if verbosity > 1:
++        print(f"\n=== Languages to process: {languages=}")
++
++    if not resources:
++        resources = [  # List resources using Transifex resources API.
++            d["attributes"]["slug"]
++            for d in get_api_response(
++                "resources",
++                api_token,
++                params={"filter[project]": project},
++                verbosity=verbosity,
++            )
++        ]
++    else:
++        resources = [_tx_resource_slug_for_name(r) for r in resources]
++    if verbosity > 1:
++        print(f"\n=== Resources to process: {resources=}")
++
++    resource_lang_changed = defaultdict(list)
++    for lang, resource in product(languages, resources):
++        if verbosity:
++            print(f"\n=== Getting data for: {lang=} {resource=} {date_since_iso=}")
++        data = get_api_response(
++            "resource_translations",
++            api_token,
++            params={
++                "filter[resource]": f"{project}:r:{resource}",
++                "filter[language]": f"l:{lang}",
++                "filter[date_translated][gt]": date_since_iso,
++            },
++            verbosity=verbosity,
+         )
+-        print(f"== SUMMARY for unchanged resources ==\n{unchanged}")
++        local_resource = resource.replace("contrib-", "", 1)
++        local_lang = lang  # XXX: LANG_OVERRIDES.get(lang, lang)
++        if data:
++            resource_lang_changed[local_resource].append(local_lang)
++            if verbosity > 2:
++                fname = f"{local_resource}-{local_lang}.json"
++                with open(fname, "w") as f:
++                    f.write(json.dumps(data, sort_keys=True, indent=2))
++                print(f"==== Stored full data JSON in: {fname}")
++        if verbosity > 1:
++            print(f"==== Result for {local_resource=} {local_lang=}: {len(data)=}")
+ 
+     return resource_lang_changed
+ 

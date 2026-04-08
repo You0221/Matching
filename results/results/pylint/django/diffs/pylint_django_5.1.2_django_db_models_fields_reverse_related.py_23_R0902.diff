@@ -1,0 +1,12 @@
+diff --git a/django/db/models/fields/reverse_related.py b/django/db/models/fields/reverse_related.py
+index a39bfd07daaa..85378431a78f 100644
+--- a/django/db/models/fields/reverse_related.py
++++ b/django/db/models/fields/reverse_related.py
+@@ -197,6 +197,7 @@ def get_joining_columns(self):
+             "ForeignObjectRel.get_joining_columns() is deprecated. Use "
+             "get_joining_fields() instead.",
+             RemovedInDjango60Warning,
++            stacklevel=2,
+         )
+         return self.field.get_reverse_joining_columns()
+ 

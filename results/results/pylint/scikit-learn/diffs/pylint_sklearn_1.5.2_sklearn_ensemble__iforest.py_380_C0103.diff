@@ -1,0 +1,28 @@
+diff --git a/sklearn/ensemble/_iforest.py b/sklearn/ensemble/_iforest.py
+index 480d1f2d3e4ef..15ab0d6b382eb 100644
+--- a/sklearn/ensemble/_iforest.py
++++ b/sklearn/ensemble/_iforest.py
+@@ -370,6 +398,23 @@ def predict(self, X):
+         is_inlier : ndarray of shape (n_samples,)
+             For each observation, tells whether or not (+1 or -1) it should
+             be considered as an inlier according to the fitted model.
++
++        Notes
++        -----
++        The predict method can be parallelized by setting a joblib context. This
++        inherently does NOT use the ``n_jobs`` parameter initialized in the class,
++        which is used during ``fit``. This is because, predict may actually be faster
++        without parallelization for a small number of samples,
++        such as for 1000 samples or less. The user can set the
++        number of jobs in the joblib context to control the number of parallel jobs.
++
++        .. code-block:: python
++
++            from joblib import parallel_backend
++
++            # Note, we use threading here as the predict method is not CPU bound.
++            with parallel_backend("threading", n_jobs=4):
++                model.predict(X)
+         """
+         check_is_fitted(self)
+         decision_func = self.decision_function(X)

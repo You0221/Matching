@@ -1,0 +1,20 @@
+diff --git a/sklearn/preprocessing/_data.py b/sklearn/preprocessing/_data.py
+index 74ea7431a5d72..fe138cda73803 100644
+--- a/sklearn/preprocessing/_data.py
++++ b/sklearn/preprocessing/_data.py
+@@ -1092,12 +1105,13 @@ def inverse_transform(self, X, copy=None):
+         ----------
+         X : {array-like, sparse matrix} of shape (n_samples, n_features)
+             The data used to scale along the features axis.
++
+         copy : bool, default=None
+-            Copy the input X or not.
++            Copy the input `X` or not.
+ 
+         Returns
+         -------
+-        X_tr : {ndarray, sparse matrix} of shape (n_samples, n_features)
++        X_original : {ndarray, sparse matrix} of shape (n_samples, n_features)
+             Transformed array.
+         """
+         check_is_fitted(self)

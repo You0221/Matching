@@ -1,0 +1,13 @@
+diff --git a/pandas/core/arrays/datetimes.py b/pandas/core/arrays/datetimes.py
+index 8ad51e4a90027..02656b655a0c6 100644
+--- a/pandas/core/arrays/datetimes.py
++++ b/pandas/core/arrays/datetimes.py
+@@ -540,7 +552,7 @@ def _box_func(self, x: np.datetime64) -> Timestamp | NaTType:
+     # error: Return type "Union[dtype, DatetimeTZDtype]" of "dtype"
+     # incompatible with return type "ExtensionDtype" in supertype
+     # "ExtensionArray"
+-    def dtype(self) -> np.dtype[np.datetime64] | DatetimeTZDtype:  # type: ignore[override]  # noqa: E501
++    def dtype(self) -> np.dtype[np.datetime64] | DatetimeTZDtype:  # type: ignore[override]
+         """
+         The dtype for the DatetimeArray.
+ 

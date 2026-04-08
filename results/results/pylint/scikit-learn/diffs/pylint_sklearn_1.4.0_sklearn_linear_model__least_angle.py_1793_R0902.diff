@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index f5766ac0d6154..81e8abb8bc5d6 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -1785,7 +1821,7 @@ def get_metadata_routing(self):
+         """
+         router = MetadataRouter(owner=self.__class__.__name__).add(
+             splitter=check_cv(self.cv),
+-            method_mapping=MethodMapping().add(callee="split", caller="fit"),
++            method_mapping=MethodMapping().add(caller="fit", callee="split"),
+         )
+         return router
+ 

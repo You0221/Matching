@@ -1,0 +1,33 @@
+diff --git a/django/contrib/auth/checks.py b/django/contrib/auth/checks.py
+index ee8082524d52..f2f9a74a6c83 100644
+--- a/django/contrib/auth/checks.py
++++ b/django/contrib/auth/checks.py
+@@ -218,3 +235,28 @@ def check_models_permissions(app_configs=None, **kwargs):
+             codenames.add(codename)
+ 
+     return errors
++
++
++def check_middleware(app_configs, **kwargs):
++    errors = []
++
++    login_required_index = _subclass_index(
++        "django.contrib.auth.middleware.LoginRequiredMiddleware",
++        settings.MIDDLEWARE,
++    )
++
++    if login_required_index != -1:
++        auth_index = _subclass_index(
++            "django.contrib.auth.middleware.AuthenticationMiddleware",
++            settings.MIDDLEWARE,
++        )
++        if auth_index == -1 or auth_index > login_required_index:
++            errors.append(
++                checks.Error(
++                    "In order to use django.contrib.auth.middleware."
++                    "LoginRequiredMiddleware, django.contrib.auth.middleware."
++                    "AuthenticationMiddleware must be defined before it in MIDDLEWARE.",
++                    id="auth.E013",
++                )
++            )
++    return errors

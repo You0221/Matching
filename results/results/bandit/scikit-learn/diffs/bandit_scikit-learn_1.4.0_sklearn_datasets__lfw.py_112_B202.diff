@@ -1,0 +1,28 @@
+diff --git a/sklearn/datasets/_lfw.py b/sklearn/datasets/_lfw.py
+index d06d29f21d0a5..06420c41ed246 100644
+--- a/sklearn/datasets/_lfw.py
++++ b/sklearn/datasets/_lfw.py
+@@ -102,14 +107,21 @@ def _check_fetch_lfw(data_home=None, funneled=True, download_if_missing=True):
+         if not exists(archive_path):
+             if download_if_missing:
+                 logger.info("Downloading LFW data (~200MB): %s", archive.url)
+-                _fetch_remote(archive, dirname=lfw_home)
++                _fetch_remote(
++                    archive, dirname=lfw_home, n_retries=n_retries, delay=delay
++                )
+             else:
+                 raise OSError("%s is missing" % archive_path)
+ 
+         import tarfile
+ 
+         logger.debug("Decompressing the data archive to %s", data_folder_path)
+-        tarfile.open(archive_path, "r:gz").extractall(path=lfw_home)
++        with tarfile.open(archive_path, "r:gz") as fp:
++            # Use filter="data" to prevent the most dangerous security issues.
++            # For more details, see
++            # https://docs.python.org/3.9/library/tarfile.html#tarfile.TarFile.extractall
++            fp.extractall(path=lfw_home, filter="data")
++
+         remove(archive_path)
+ 
+     return lfw_home, data_folder_path

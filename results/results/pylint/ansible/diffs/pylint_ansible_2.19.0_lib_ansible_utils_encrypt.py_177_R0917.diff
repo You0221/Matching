@@ -1,0 +1,16 @@
+diff --git a/lib/ansible/utils/encrypt.py b/lib/ansible/utils/encrypt.py
+index 9f44394403a4d8..b40342764045e0 100644
+--- a/lib/ansible/utils/encrypt.py
++++ b/lib/ansible/utils/encrypt.py
+@@ -174,11 +176,6 @@ def _hash(self, secret, salt, salt_size, rounds, ident):
+         return to_text(result, errors='strict')
+ 
+ 
+-def passlib_or_crypt(secret, algorithm, salt=None, salt_size=None, rounds=None, ident=None):
+-    display.deprecated("passlib_or_crypt API is deprecated in favor of do_encrypt", version='2.20')
+-    return do_encrypt(secret, algorithm, salt=salt, salt_size=salt_size, rounds=rounds, ident=ident)
+-
+-
+ def do_encrypt(result, encrypt, salt_size=None, salt=None, ident=None, rounds=None):
+     if PASSLIB_AVAILABLE:
+         return PasslibHash(encrypt).hash(result, salt=salt, salt_size=salt_size, rounds=rounds, ident=ident)

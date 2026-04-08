@@ -1,0 +1,24 @@
+diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+index 353b99225884..934dab20f028 100644
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -1450,6 +1449,19 @@ def generate_renamed_indexes(self):
+                     ),
+                 )
+ 
++    def _constraint_should_be_dropped_and_recreated(
++        self, old_constraint, new_constraint
++    ):
++        old_path, old_args, old_kwargs = old_constraint.deconstruct()
++        new_path, new_args, new_kwargs = new_constraint.deconstruct()
++
++        for attr in old_constraint.non_db_attrs:
++            old_kwargs.pop(attr, None)
++        for attr in new_constraint.non_db_attrs:
++            new_kwargs.pop(attr, None)
++
++        return (old_path, old_args, old_kwargs) != (new_path, new_args, new_kwargs)
++
+     def create_altered_constraints(self):
+         option_name = operations.AddConstraint.option_name
+         for app_label, model_name in sorted(self.kept_model_keys):

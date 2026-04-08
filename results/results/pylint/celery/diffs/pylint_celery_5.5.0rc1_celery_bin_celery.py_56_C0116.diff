@@ -1,0 +1,39 @@
+diff --git a/celery/bin/celery.py b/celery/bin/celery.py
+index 4aeed42597f..4ddf9c7fc7a 100644
+--- a/celery/bin/celery.py
++++ b/celery/bin/celery.py
+@@ -48,34 +47,6 @@
+ {0}""")
+ 
+ 
+-class App(ParamType):
+-    """Application option."""
+-
+-    name = "application"
+-
+-    def convert(self, value, param, ctx):
+-        try:
+-            return find_app(value)
+-        except ModuleNotFoundError as e:
+-            if e.name != value:
+-                exc = traceback.format_exc()
+-                self.fail(
+-                    UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(value, exc)
+-                )
+-            self.fail(UNABLE_TO_LOAD_APP_MODULE_NOT_FOUND.format(e.name))
+-        except AttributeError as e:
+-            attribute_name = e.args[0].capitalize()
+-            self.fail(UNABLE_TO_LOAD_APP_APP_MISSING.format(attribute_name))
+-        except Exception:
+-            exc = traceback.format_exc()
+-            self.fail(
+-                UNABLE_TO_LOAD_APP_ERROR_OCCURRED.format(value, exc)
+-            )
+-
+-
+-APP = App()
+-
+-
+ if sys.version_info >= (3, 10):
+     _PLUGINS = entry_points(group='celery.commands')
+ else:

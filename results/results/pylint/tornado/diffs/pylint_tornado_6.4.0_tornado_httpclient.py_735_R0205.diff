@@ -1,0 +1,13 @@
+diff --git a/tornado/httpclient.py b/tornado/httpclient.py
+index 3011c371b8..3a45ffd041 100644
+--- a/tornado/httpclient.py
++++ b/tornado/httpclient.py
+@@ -732,7 +732,7 @@ def __str__(self) -> str:
+ HTTPError = HTTPClientError
+ 
+ 
+-class _RequestProxy(object):
++class _RequestProxy:
+     """Combines an object with a dictionary of defaults.
+ 
+     Used internally by AsyncHTTPClient implementations.

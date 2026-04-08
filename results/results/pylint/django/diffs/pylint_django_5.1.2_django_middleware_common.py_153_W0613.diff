@@ -1,0 +1,13 @@
+diff --git a/django/middleware/common.py b/django/middleware/common.py
+index 9f71b9d27885..bf22d00f0128 100644
+--- a/django/middleware/common.py
++++ b/django/middleware/common.py
+@@ -171,7 +171,7 @@ def is_ignorable_request(self, request, uri, domain, referer):
+ 
+         # The referer is equal to the current URL, ignoring the scheme (assumed
+         # to be a poorly implemented bot).
+-        parsed_referer = urlparse(referer)
++        parsed_referer = urlsplit(referer)
+         if parsed_referer.netloc in ["", domain] and parsed_referer.path == uri:
+             return True
+ 

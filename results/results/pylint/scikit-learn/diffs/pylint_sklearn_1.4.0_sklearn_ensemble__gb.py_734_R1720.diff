@@ -1,0 +1,14 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index f478d94a5828f..960e469a090cd 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -733,8 +740,7 @@ def fit(self, X, y, sample_weight=None, monitor=None):
+                         if (
+                             "pass parameters to specific steps of "
+                             "your pipeline using the "
+-                            "stepname__parameter"
+-                            in str(e)
++                            "stepname__parameter" in str(e)
+                         ):  # pipeline
+                             raise ValueError(msg) from e
+                         else:  # regular estimator whose input checking failed

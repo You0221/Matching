@@ -1,0 +1,344 @@
+diff --git a/sklearn/utils/__init__.py b/sklearn/utils/__init__.py
+index 2c7eb1390c128..af02393966cc2 100644
+--- a/sklearn/utils/__init__.py
++++ b/sklearn/utils/__init__.py
+@@ -930,339 +120,3 @@ def tosequence(x):
+         return x
+     else:
+         return list(x)
+-
+-
+-def _to_object_array(sequence):
+-    """Convert sequence to a 1-D NumPy array of object dtype.
+-
+-    numpy.array constructor has a similar use but it's output
+-    is ambiguous. It can be 1-D NumPy array of object dtype if
+-    the input is a ragged array, but if the input is a list of
+-    equal length arrays, then the output is a 2D numpy.array.
+-    _to_object_array solves this ambiguity by guarantying that
+-    the output is a 1-D NumPy array of objects for any input.
+-
+-    Parameters
+-    ----------
+-    sequence : array-like of shape (n_elements,)
+-        The sequence to be converted.
+-
+-    Returns
+-    -------
+-    out : ndarray of shape (n_elements,), dtype=object
+-        The converted sequence into a 1-D NumPy array of object dtype.
+-
+-    Examples
+-    --------
+-    >>> import numpy as np
+-    >>> from sklearn.utils import _to_object_array
+-    >>> _to_object_array([np.array([0]), np.array([1])])
+-    array([array([0]), array([1])], dtype=object)
+-    >>> _to_object_array([np.array([0]), np.array([1, 2])])
+-    array([array([0]), array([1, 2])], dtype=object)
+-    >>> _to_object_array([np.array([0]), np.array([1, 2])])
+-    array([array([0]), array([1, 2])], dtype=object)
+-    """
+-    out = np.empty(len(sequence), dtype=object)
+-    out[:] = sequence
+-    return out
+-
+-
+-def indices_to_mask(indices, mask_length):
+-    """Convert list of indices to boolean mask.
+-
+-    Parameters
+-    ----------
+-    indices : list-like
+-        List of integers treated as indices.
+-    mask_length : int
+-        Length of boolean mask to be generated.
+-        This parameter must be greater than max(indices).
+-
+-    Returns
+-    -------
+-    mask : 1d boolean nd-array
+-        Boolean array that is True where indices are present, else False.
+-
+-    Examples
+-    --------
+-    >>> from sklearn.utils import indices_to_mask
+-    >>> indices = [1, 2 , 3, 4]
+-    >>> indices_to_mask(indices, 5)
+-    array([False,  True,  True,  True,  True])
+-    """
+-    if mask_length <= np.max(indices):
+-        raise ValueError("mask_length must be greater than max(indices)")
+-
+-    mask = np.zeros(mask_length, dtype=bool)
+-    mask[indices] = True
+-
+-    return mask
+-
+-
+-def _message_with_time(source, message, time):
+-    """Create one line message for logging purposes.
+-
+-    Parameters
+-    ----------
+-    source : str
+-        String indicating the source or the reference of the message.
+-
+-    message : str
+-        Short message.
+-
+-    time : int
+-        Time in seconds.
+-    """
+-    start_message = "[%s] " % source
+-
+-    # adapted from joblib.logger.short_format_time without the Windows -.1s
+-    # adjustment
+-    if time > 60:
+-        time_str = "%4.1fmin" % (time / 60)
+-    else:
+-        time_str = " %5.1fs" % time
+-    end_message = " %s, total=%s" % (message, time_str)
+-    dots_len = 70 - len(start_message) - len(end_message)
+-    return "%s%s%s" % (start_message, dots_len * ".", end_message)
+-
+-
+-@contextmanager
+-def _print_elapsed_time(source, message=None):
+-    """Log elapsed time to stdout when the context is exited.
+-
+-    Parameters
+-    ----------
+-    source : str
+-        String indicating the source or the reference of the message.
+-
+-    message : str, default=None
+-        Short message. If None, nothing will be printed.
+-
+-    Returns
+-    -------
+-    context_manager
+-        Prints elapsed time upon exit if verbose.
+-    """
+-    if message is None:
+-        yield
+-    else:
+-        start = timeit.default_timer()
+-        yield
+-        print(_message_with_time(source, message, timeit.default_timer() - start))
+-
+-
+-def get_chunk_n_rows(row_bytes, *, max_n_rows=None, working_memory=None):
+-    """Calculate how many rows can be processed within `working_memory`.
+-
+-    Parameters
+-    ----------
+-    row_bytes : int
+-        The expected number of bytes of memory that will be consumed
+-        during the processing of each row.
+-    max_n_rows : int, default=None
+-        The maximum return value.
+-    working_memory : int or float, default=None
+-        The number of rows to fit inside this number of MiB will be
+-        returned. When None (default), the value of
+-        ``sklearn.get_config()['working_memory']`` is used.
+-
+-    Returns
+-    -------
+-    int
+-        The number of rows which can be processed within `working_memory`.
+-
+-    Warns
+-    -----
+-    Issues a UserWarning if `row_bytes exceeds `working_memory` MiB.
+-    """
+-
+-    if working_memory is None:
+-        working_memory = get_config()["working_memory"]
+-
+-    chunk_n_rows = int(working_memory * (2**20) // row_bytes)
+-    if max_n_rows is not None:
+-        chunk_n_rows = min(chunk_n_rows, max_n_rows)
+-    if chunk_n_rows < 1:
+-        warnings.warn(
+-            "Could not adhere to working_memory config. "
+-            "Currently %.0fMiB, %.0fMiB required."
+-            % (working_memory, np.ceil(row_bytes * 2**-20))
+-        )
+-        chunk_n_rows = 1
+-    return chunk_n_rows
+-
+-
+-def _is_pandas_na(x):
+-    """Test if x is pandas.NA.
+-
+-    We intentionally do not use this function to return `True` for `pd.NA` in
+-    `is_scalar_nan`, because estimators that support `pd.NA` are the exception
+-    rather than the rule at the moment. When `pd.NA` is more universally
+-    supported, we may reconsider this decision.
+-
+-    Parameters
+-    ----------
+-    x : any type
+-
+-    Returns
+-    -------
+-    boolean
+-    """
+-    with suppress(ImportError):
+-        from pandas import NA
+-
+-        return x is NA
+-
+-    return False
+-
+-
+-def is_scalar_nan(x):
+-    """Test if x is NaN.
+-
+-    This function is meant to overcome the issue that np.isnan does not allow
+-    non-numerical types as input, and that np.nan is not float('nan').
+-
+-    Parameters
+-    ----------
+-    x : any type
+-        Any scalar value.
+-
+-    Returns
+-    -------
+-    bool
+-        Returns true if x is NaN, and false otherwise.
+-
+-    Examples
+-    --------
+-    >>> import numpy as np
+-    >>> from sklearn.utils import is_scalar_nan
+-    >>> is_scalar_nan(np.nan)
+-    True
+-    >>> is_scalar_nan(float("nan"))
+-    True
+-    >>> is_scalar_nan(None)
+-    False
+-    >>> is_scalar_nan("")
+-    False
+-    >>> is_scalar_nan([np.nan])
+-    False
+-    """
+-    return (
+-        not isinstance(x, numbers.Integral)
+-        and isinstance(x, numbers.Real)
+-        and math.isnan(x)
+-    )
+-
+-
+-def _approximate_mode(class_counts, n_draws, rng):
+-    """Computes approximate mode of multivariate hypergeometric.
+-
+-    This is an approximation to the mode of the multivariate
+-    hypergeometric given by class_counts and n_draws.
+-    It shouldn't be off by more than one.
+-
+-    It is the mostly likely outcome of drawing n_draws many
+-    samples from the population given by class_counts.
+-
+-    Parameters
+-    ----------
+-    class_counts : ndarray of int
+-        Population per class.
+-    n_draws : int
+-        Number of draws (samples to draw) from the overall population.
+-    rng : random state
+-        Used to break ties.
+-
+-    Returns
+-    -------
+-    sampled_classes : ndarray of int
+-        Number of samples drawn from each class.
+-        np.sum(sampled_classes) == n_draws
+-
+-    Examples
+-    --------
+-    >>> import numpy as np
+-    >>> from sklearn.utils import _approximate_mode
+-    >>> _approximate_mode(class_counts=np.array([4, 2]), n_draws=3, rng=0)
+-    array([2, 1])
+-    >>> _approximate_mode(class_counts=np.array([5, 2]), n_draws=4, rng=0)
+-    array([3, 1])
+-    >>> _approximate_mode(class_counts=np.array([2, 2, 2, 1]),
+-    ...                   n_draws=2, rng=0)
+-    array([0, 1, 1, 0])
+-    >>> _approximate_mode(class_counts=np.array([2, 2, 2, 1]),
+-    ...                   n_draws=2, rng=42)
+-    array([1, 1, 0, 0])
+-    """
+-    rng = check_random_state(rng)
+-    # this computes a bad approximation to the mode of the
+-    # multivariate hypergeometric given by class_counts and n_draws
+-    continuous = class_counts / class_counts.sum() * n_draws
+-    # floored means we don't overshoot n_samples, but probably undershoot
+-    floored = np.floor(continuous)
+-    # we add samples according to how much "left over" probability
+-    # they had, until we arrive at n_samples
+-    need_to_add = int(n_draws - floored.sum())
+-    if need_to_add > 0:
+-        remainder = continuous - floored
+-        values = np.sort(np.unique(remainder))[::-1]
+-        # add according to remainder, but break ties
+-        # randomly to avoid biases
+-        for value in values:
+-            (inds,) = np.where(remainder == value)
+-            # if we need_to_add less than what's in inds
+-            # we draw randomly from them.
+-            # if we need to add more, we add them all and
+-            # go to the next value
+-            add_now = min(len(inds), need_to_add)
+-            inds = rng.choice(inds, size=add_now, replace=False)
+-            floored[inds] += 1
+-            need_to_add -= add_now
+-            if need_to_add == 0:
+-                break
+-    return floored.astype(int)
+-
+-
+-def check_matplotlib_support(caller_name):
+-    """Raise ImportError with detailed error message if mpl is not installed.
+-
+-    Plot utilities like any of the Display's plotting functions should lazily import
+-    matplotlib and call this helper before any computation.
+-
+-    Parameters
+-    ----------
+-    caller_name : str
+-        The name of the caller that requires matplotlib.
+-    """
+-    try:
+-        import matplotlib  # noqa
+-    except ImportError as e:
+-        raise ImportError(
+-            "{} requires matplotlib. You can install matplotlib with "
+-            "`pip install matplotlib`".format(caller_name)
+-        ) from e
+-
+-
+-def check_pandas_support(caller_name):
+-    """Raise ImportError with detailed error message if pandas is not installed.
+-
+-    Plot utilities like :func:`fetch_openml` should lazily import
+-    pandas and call this helper before any computation.
+-
+-    Parameters
+-    ----------
+-    caller_name : str
+-        The name of the caller that requires pandas.
+-
+-    Returns
+-    -------
+-    pandas
+-        The pandas package.
+-    """
+-    try:
+-        import pandas  # noqa
+-
+-        return pandas
+-    except ImportError as e:
+-        raise ImportError("{} requires pandas.".format(caller_name)) from e

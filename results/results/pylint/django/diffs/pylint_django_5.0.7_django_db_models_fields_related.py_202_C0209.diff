@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index 2c0527d2b742..e873e5ca86f8 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -187,7 +187,9 @@ def _check_related_query_name_is_valid(self):
+         return errors
+ 
+     def _check_relation_model_exists(self):
+-        rel_is_missing = self.remote_field.model not in self.opts.apps.get_models()
++        rel_is_missing = self.remote_field.model not in self.opts.apps.get_models(
++            include_auto_created=True
++        )
+         rel_is_string = isinstance(self.remote_field.model, str)
+         model_name = (
+             self.remote_field.model

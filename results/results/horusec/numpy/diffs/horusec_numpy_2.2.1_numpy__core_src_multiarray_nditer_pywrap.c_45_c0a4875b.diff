@@ -1,0 +1,14 @@
+diff --git a/numpy/_core/src/multiarray/nditer_pywrap.c b/numpy/_core/src/multiarray/nditer_pywrap.c
+index ad20194f308f..27c392db8720 100644
+--- a/numpy/_core/src/multiarray/nditer_pywrap.c
++++ b/numpy/_core/src/multiarray/nditer_pywrap.c
+@@ -42,8 +42,7 @@ struct NewNpyArrayIterObject_tag {
+     PyArray_Descr **dtypes;
+     PyArrayObject **operands;
+     npy_intp *innerstrides, *innerloopsizeptr;
+-    char readflags[NPY_MAXARGS];
+-    char writeflags[NPY_MAXARGS];
++    char *writeflags;  /* could inline allocation with variable sized object */
+ };
+ 
+ static int npyiter_cache_values(NewNpyArrayIterObject *self)

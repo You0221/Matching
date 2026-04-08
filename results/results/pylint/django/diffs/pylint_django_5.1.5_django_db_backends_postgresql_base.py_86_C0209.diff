@@ -1,0 +1,29 @@
+diff --git a/django/db/backends/postgresql/base.py b/django/db/backends/postgresql/base.py
+index e97ab6aa899c..c864cab57a2e 100644
+--- a/django/db/backends/postgresql/base.py
++++ b/django/db/backends/postgresql/base.py
+@@ -86,24 +86,6 @@ def _get_varchar_column(data):
+     return "varchar(%(max_length)s)" % data
+ 
+ 
+-def ensure_timezone(connection, ops, timezone_name):
+-    conn_timezone_name = connection.info.parameter_status("TimeZone")
+-    if timezone_name and conn_timezone_name != timezone_name:
+-        with connection.cursor() as cursor:
+-            cursor.execute(ops.set_time_zone_sql(), [timezone_name])
+-        return True
+-    return False
+-
+-
+-def ensure_role(connection, ops, role_name):
+-    if role_name:
+-        with connection.cursor() as cursor:
+-            sql = ops.compose_sql("SET ROLE %s", [role_name])
+-            cursor.execute(sql)
+-        return True
+-    return False
+-
+-
+ class DatabaseWrapper(BaseDatabaseWrapper):
+     vendor = "postgresql"
+     display_name = "PostgreSQL"

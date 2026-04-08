@@ -1,0 +1,12 @@
+diff --git a/django/utils/http.py b/django/utils/http.py
+index 78dfee7feecf..65b8eb7990e2 100644
+--- a/django/utils/http.py
++++ b/django/utils/http.py
+@@ -37,6 +37,7 @@
+ 
+ RFC3986_GENDELIMS = ":/?#[]@"
+ RFC3986_SUBDELIMS = "!$&'()*+,;="
++MAX_URL_LENGTH = 2048
+ 
+ 
+ def urlencode(query, doseq=False):

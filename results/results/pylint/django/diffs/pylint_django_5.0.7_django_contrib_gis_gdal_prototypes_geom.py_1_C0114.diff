@@ -1,0 +1,16 @@
+diff --git a/django/contrib/gis/gdal/prototypes/geom.py b/django/contrib/gis/gdal/prototypes/geom.py
+index 06c2a75f3a5f..9066dbd423c9 100644
+--- a/django/contrib/gis/gdal/prototypes/geom.py
++++ b/django/contrib/gis/gdal/prototypes/geom.py
+@@ -1,9 +1,10 @@
+ from ctypes import POINTER, c_char_p, c_double, c_int, c_void_p
+ 
+ from django.contrib.gis.gdal.envelope import OGREnvelope
+-from django.contrib.gis.gdal.libgdal import lgdal
++from django.contrib.gis.gdal.libgdal import GDAL_VERSION, lgdal
+ from django.contrib.gis.gdal.prototypes.errcheck import check_envelope
+ from django.contrib.gis.gdal.prototypes.generation import (
++    bool_output,
+     const_string_output,
+     double_output,
+     geom_output,

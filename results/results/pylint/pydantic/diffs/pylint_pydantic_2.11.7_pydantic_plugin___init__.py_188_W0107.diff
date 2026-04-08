@@ -1,0 +1,14 @@
+diff --git a/pydantic/plugin/__init__.py b/pydantic/plugin/__init__.py
+index 362030584fc..840d20a09ef 100644
+--- a/pydantic/plugin/__init__.py
++++ b/pydantic/plugin/__init__.py
+@@ -181,8 +186,8 @@ def on_enter(
+         Args:
+             input: The string data to be validated.
+             strict: Whether to validate the object in strict mode.
++            extra: Whether to ignore, allow, or forbid extra data during model validation.
+             context: The context to use for validation, this is passed to functional validators.
+             by_alias: Whether to use the field's alias to match the input data to an attribute.
+             by_name: Whether to use the field's name to match the input data to an attribute.
+         """
+-        pass

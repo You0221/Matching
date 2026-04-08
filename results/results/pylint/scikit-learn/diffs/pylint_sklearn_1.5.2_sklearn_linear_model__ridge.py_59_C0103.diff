@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -51,7 +50,7 @@
+     process_routing,
+ )
+ from ..utils.sparsefuncs import mean_variance_axis
+-from ..utils.validation import _check_sample_weight, check_is_fitted
++from ..utils.validation import _check_sample_weight, check_is_fitted, validate_data
+ from ._base import LinearClassifierMixin, LinearModel, _preprocess_data, _rescale_data
+ from ._sag import sag_solver
+ 

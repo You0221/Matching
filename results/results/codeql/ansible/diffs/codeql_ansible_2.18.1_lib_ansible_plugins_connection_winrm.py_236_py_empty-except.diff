@@ -1,0 +1,24 @@
+diff --git a/lib/ansible/plugins/connection/winrm.py b/lib/ansible/plugins/connection/winrm.py
+index 1d50ad891dad28..ffa9b6279eb565 100644
+--- a/lib/ansible/plugins/connection/winrm.py
++++ b/lib/ansible/plugins/connection/winrm.py
+@@ -223,19 +220,6 @@ class WSManFaultError(Exception):  # type: ignore[no-redef]
+     HAS_XMLTODICT = False
+     XMLTODICT_IMPORT_ERR = e
+ 
+-HAS_PEXPECT = False
+-try:
+-    import pexpect
+-    # echo was added in pexpect 3.3+ which is newer than the RHEL package
+-    # we can only use pexpect for kerb auth if echo is a valid kwarg
+-    # https://github.com/ansible/ansible/issues/43462
+-    if hasattr(pexpect, 'spawn'):
+-        argspec = getfullargspec(pexpect.spawn.__init__)
+-        if 'echo' in argspec.args:
+-            HAS_PEXPECT = True
+-except ImportError as e:
+-    pass
+-
+ # used to try and parse the hostname and detect if IPv6 is being used
+ try:
+     import ipaddress

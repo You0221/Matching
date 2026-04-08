@@ -1,0 +1,59 @@
+diff --git a/django/db/models/fields/related_descriptors.py b/django/db/models/fields/related_descriptors.py
+index 46a5823647da..f0b93e136622 100644
+--- a/django/db/models/fields/related_descriptors.py
++++ b/django/db/models/fields/related_descriptors.py
+@@ -1153,7 +1167,7 @@ def get_prefetch_querysets(self, instances, querysets=None):
+             queryset._add_hints(instance=instances[0])
+             queryset = queryset.using(queryset._db or self._db)
+             queryset = _filter_prefetch_queryset(
+-                queryset._next_is_sticky(), self.query_field_name, instances
++                queryset, self.query_field_name, instances
+             )
+ 
+             # M2M: need to annotate the query in order to get the primary model
+@@ -1193,6 +1207,45 @@ def get_prefetch_querysets(self, instances, querysets=None):
+                 False,
+             )
+ 
++        @property
++        def constrained_target(self):
++            # If the through relation's target field's foreign integrity is
++            # enforced, the query can be performed solely against the through
++            # table as the INNER JOIN'ing against target table is unnecessary.
++            if not self.target_field.db_constraint:
++                return None
++            db = router.db_for_read(self.through, instance=self.instance)
++            if not connections[db].features.supports_foreign_keys:
++                return None
++            hints = {"instance": self.instance}
++            manager = self.through._base_manager.db_manager(db, hints=hints)
++            filters = {self.source_field_name: self.related_val[0]}
++            # Nullable target rows must be excluded as well as they would have
++            # been filtered out from an INNER JOIN.
++            if self.target_field.null:
++                filters["%s__isnull" % self.target_field_name] = False
++            return manager.filter(**filters)
++
++        def exists(self):
++            if (
++                superclass is Manager
++                and self.get_prefetch_cache() is None
++                and (constrained_target := self.constrained_target) is not None
++            ):
++                return constrained_target.exists()
++            else:
++                return super().exists()
++
++        def count(self):
++            if (
++                superclass is Manager
++                and self.get_prefetch_cache() is None
++                and (constrained_target := self.constrained_target) is not None
++            ):
++                return constrained_target.count()
++            else:
++                return super().count()
++
+         def add(self, *objs, through_defaults=None):
+             self._remove_prefetched_objects()
+             db = router.db_for_write(self.through, instance=self.instance)

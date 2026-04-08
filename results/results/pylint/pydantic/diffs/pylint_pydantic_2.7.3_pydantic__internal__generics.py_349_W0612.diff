@@ -1,0 +1,44 @@
+diff --git a/pydantic/_internal/_generics.py b/pydantic/_internal/_generics.py
+index a24763a07ba..d6fea96cb76 100644
+--- a/pydantic/_internal/_generics.py
++++ b/pydantic/_internal/_generics.py
+@@ -341,24 +354,29 @@ def has_instance_in_type(type_: Any, isinstance_target: Any) -> bool:
+     """
+     if isinstance(type_, isinstance_target):
+         return True
++    if _typing_extra.is_annotated(type_):
++        return has_instance_in_type(type_.__origin__, isinstance_target)
++    if _typing_extra.is_literal(type_):
++        return False
+ 
+     type_args = get_args(type_)
+-    origin_type = get_origin(type_)
+-
+-    if origin_type is typing_extensions.Annotated:
+-        annotated_type, *annotations = type_args
+-        return has_instance_in_type(annotated_type, isinstance_target)
+ 
+     # Having type args is a good indicator that this is a typing module
+     # class instantiation or a generic alias of some sort.
+-    if any(has_instance_in_type(a, isinstance_target) for a in type_args):
+-        return True
++    for arg in type_args:
++        if has_instance_in_type(arg, isinstance_target):
++            return True
+ 
+     # Handle special case for typehints that can have lists as arguments.
+     # `typing.Callable[[int, str], int]` is an example for this.
+-    if isinstance(type_, (List, list)) and not isinstance(type_, typing_extensions.ParamSpec):
+-        if any(has_instance_in_type(element, isinstance_target) for element in type_):
+-            return True
++    if (
++        isinstance(type_, list)
++        # On Python < 3.10, typing_extensions implements `ParamSpec` as a subclass of `list`:
++        and not isinstance(type_, typing_extensions.ParamSpec)
++    ):
++        for element in type_:
++            if has_instance_in_type(element, isinstance_target):
++                return True
+ 
+     return False
+ 

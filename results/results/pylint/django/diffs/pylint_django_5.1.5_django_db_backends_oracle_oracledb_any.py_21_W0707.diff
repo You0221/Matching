@@ -1,0 +1,10 @@
+diff --git a/django/db/backends/oracle/oracledb_any.py b/django/db/backends/oracle/oracledb_any.py
+index 65d9f1d67d17..22a9b78be81e 100644
+--- a/django/db/backends/oracle/oracledb_any.py
++++ b/django/db/backends/oracle/oracledb_any.py
+@@ -18,4 +17,4 @@
+         )
+         is_oracledb = False
+     except ImportError:
+-        raise ImproperlyConfigured(f"Error loading oracledb module: {e}")
++        raise e from None

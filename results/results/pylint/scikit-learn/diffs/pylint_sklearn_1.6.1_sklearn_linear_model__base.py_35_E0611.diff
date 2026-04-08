@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index 3bb3b8b7626d8..c059e3fa84310 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -32,6 +32,7 @@
+     indexing_dtype,
+     supported_float_dtypes,
+ )
++from ..utils._param_validation import Interval
+ from ..utils._seq_dataset import (
+     ArrayDataset32,
+     ArrayDataset64,

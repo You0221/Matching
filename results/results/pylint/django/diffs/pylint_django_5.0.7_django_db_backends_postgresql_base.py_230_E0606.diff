@@ -1,0 +1,27 @@
+diff --git a/django/db/backends/postgresql/base.py b/django/db/backends/postgresql/base.py
+index d92ad587102c..c864cab57a2e 100644
+--- a/django/db/backends/postgresql/base.py
++++ b/django/db/backends/postgresql/base.py
+@@ -223,12 +268,19 @@ def get_connection_params(self):
+ 
+         conn_params.pop("assume_role", None)
+         conn_params.pop("isolation_level", None)
++
++        pool_options = conn_params.pop("pool", None)
++        if pool_options and not is_psycopg3:
++            raise ImproperlyConfigured("Database pooling requires psycopg >= 3")
++
+         server_side_binding = conn_params.pop("server_side_binding", None)
+         conn_params.setdefault(
+             "cursor_factory",
+-            ServerBindingCursor
+-            if is_psycopg3 and server_side_binding is True
+-            else Cursor,
++            (
++                ServerBindingCursor
++                if is_psycopg3 and server_side_binding is True
++                else Cursor
++            ),
+         )
+         if settings_dict["USER"]:
+             conn_params["user"] = settings_dict["USER"]

@@ -1,0 +1,60 @@
+diff --git a/django/db/models/fields/related_lookups.py b/django/db/models/fields/related_lookups.py
+index 07a06e16862d..9fc7db7c3492 100644
+--- a/django/db/models/fields/related_lookups.py
++++ b/django/db/models/fields/related_lookups.py
+@@ -98,49 +83,20 @@ def get_prep_lookup(self):
+         return super().get_prep_lookup()
+ 
+     def as_sql(self, compiler, connection):
+-        if isinstance(self.lhs, MultiColSource):
+-            # For multicolumn lookups we need to build a multicolumn where clause.
+-            # This clause is either a SubqueryConstraint (for values that need
+-            # to be compiled to SQL) or an OR-combined list of
+-            # (col1 = val1 AND col2 = val2 AND ...) clauses.
+-            from django.db.models.sql.where import (
+-                AND,
+-                OR,
+-                SubqueryConstraint,
+-                WhereNode,
+-            )
+-
+-            root_constraint = WhereNode(connector=OR)
++        if isinstance(self.lhs, ColPairs):
+             if self.rhs_is_direct_value():
+                 values = [get_normalized_value(value, self.lhs) for value in self.rhs]
+-                for value in values:
+-                    value_constraint = WhereNode()
+-                    for source, target, val in zip(
+-                        self.lhs.sources, self.lhs.targets, value
+-                    ):
+-                        lookup_class = target.get_lookup("exact")
+-                        lookup = lookup_class(
+-                            target.get_col(self.lhs.alias, source), val
+-                        )
+-                        value_constraint.add(lookup, AND)
+-                    root_constraint.add(value_constraint, OR)
++                lookup = TupleIn(self.lhs, values)
+             else:
+-                root_constraint.add(
+-                    SubqueryConstraint(
+-                        self.lhs.alias,
+-                        [target.column for target in self.lhs.targets],
+-                        [source.name for source in self.lhs.sources],
+-                        self.rhs,
+-                    ),
+-                    AND,
+-                )
+-            return root_constraint.as_sql(compiler, connection)
++                lookup = TupleIn(self.lhs, self.rhs)
++            return compiler.compile(lookup)
++
+         return super().as_sql(compiler, connection)
+ 
+ 
+ class RelatedLookupMixin:
+     def get_prep_lookup(self):
+-        if not isinstance(self.lhs, MultiColSource) and not hasattr(
++        if not isinstance(self.lhs, ColPairs) and not hasattr(
+             self.rhs, "resolve_expression"
+         ):
+             # If we get here, we are dealing with single-column relations.

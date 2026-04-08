@@ -1,0 +1,43 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -376,7 +372,6 @@ def _check_categorical_features(self, X):
+         if _is_pandas_df(X):
+             X_is_dataframe = True
+             categorical_columns_mask = np.asarray(X.dtypes == "category")
+-            X_has_categorical_columns = categorical_columns_mask.any()
+         elif hasattr(X, "__dataframe__"):
+             X_is_dataframe = True
+             categorical_columns_mask = np.asarray(
+@@ -385,29 +380,11 @@ def _check_categorical_features(self, X):
+                     for c in X.__dataframe__().get_columns()
+                 ]
+             )
+-            X_has_categorical_columns = categorical_columns_mask.any()
+         else:
+             X_is_dataframe = False
+             categorical_columns_mask = None
+-            X_has_categorical_columns = False
+ 
+-        # TODO(1.6): Remove warning and change default to "from_dtype" in v1.6
+-        if (
+-            isinstance(self.categorical_features, str)
+-            and self.categorical_features == "warn"
+-        ):
+-            if X_has_categorical_columns:
+-                warnings.warn(
+-                    (
+-                        "The categorical_features parameter will change to 'from_dtype'"
+-                        " in v1.6. The 'from_dtype' option automatically treats"
+-                        " categorical dtypes in a DataFrame as categorical features."
+-                    ),
+-                    FutureWarning,
+-                )
+-            categorical_features = None
+-        else:
+-            categorical_features = self.categorical_features
++        categorical_features = self.categorical_features
+ 
+         categorical_by_dtype = (
+             isinstance(categorical_features, str)

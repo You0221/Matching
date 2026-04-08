@@ -1,0 +1,13 @@
+diff --git a/bandit/cli/baseline.py b/bandit/cli/baseline.py
+index b9bce8916..252ceb105 100644
+--- a/bandit/cli/baseline.py
++++ b/bandit/cli/baseline.py
+@@ -101,7 +104,7 @@ def main():
+             bandit_command = ["bandit"] + step["args"]
+ 
+             try:
+-                output = subprocess.check_output(bandit_command)
++                output = subprocess.check_output(bandit_command)  # nosec: B603
+             except subprocess.CalledProcessError as e:
+                 output = e.output
+                 return_code = e.returncode

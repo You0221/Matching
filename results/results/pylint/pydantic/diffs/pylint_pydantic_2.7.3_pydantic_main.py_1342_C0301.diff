@@ -1,0 +1,18 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..ca5a4529e9e 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1337,9 +1451,11 @@ def schema_json(  # noqa: D102
+ 
+     @classmethod
+     @typing_extensions.deprecated('The `validate` method is deprecated; use `model_validate` instead.', category=None)
+-    def validate(cls: type[Model], value: Any) -> Model:  # noqa: D102
++    def validate(cls, value: Any) -> Self:  # noqa: D102
+         warnings.warn(
+-            'The `validate` method is deprecated; use `model_validate` instead.', category=PydanticDeprecatedSince20
++            'The `validate` method is deprecated; use `model_validate` instead.',
++            category=PydanticDeprecatedSince20,
++            stacklevel=2,
+         )
+         return cls.model_validate(value)
+ 

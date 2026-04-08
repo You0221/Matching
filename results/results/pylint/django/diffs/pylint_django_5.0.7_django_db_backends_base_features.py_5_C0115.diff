@@ -1,0 +1,39 @@
+diff --git a/django/db/backends/base/features.py b/django/db/backends/base/features.py
+index b1f0b9d491e9..0f8e6f41a67a 100644
+--- a/django/db/backends/base/features.py
++++ b/django/db/backends/base/features.py
+@@ -263,6 +263,7 @@ class BaseDatabaseFeatures:
+     # Does the backend support window expressions (expression OVER (...))?
+     supports_over_clause = False
+     supports_frame_range_fixed_distance = False
++    supports_frame_exclusion = False
+     only_supports_unbounded_with_preceding_and_following = False
+ 
+     # Does the backend support CAST with precision?
+@@ -367,12 +368,16 @@ class BaseDatabaseFeatures:
+     # Does the backend support unlimited character columns?
+     supports_unlimited_charfield = False
+ 
++    # Does the backend support native tuple lookups (=, >, <, IN)?
++    supports_tuple_lookups = True
++
+     # Collation names for use by the Django test suite.
+     test_collations = {
+         "ci": None,  # Case-insensitive.
+         "cs": None,  # Case-sensitive.
+         "non_default": None,  # Non-default.
+         "swedish_ci": None,  # Swedish case-insensitive.
++        "virtual": None,  # A collation that can be used for virtual columns.
+     }
+     # SQL template override for tests.aggregation.tests.NowUTC
+     test_now_utc_template = None
+@@ -380,6 +385,9 @@ class BaseDatabaseFeatures:
+     # SQL to create a model instance using the database defaults.
+     insert_test_table_with_defaults = None
+ 
++    # Does the Round() database function round to even?
++    rounds_to_even = False
++
+     # A set of dotted paths to tests in Django's test suite that are expected
+     # to fail on this database.
+     django_test_expected_failures = set()

@@ -1,0 +1,15 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 796c4d23c458..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1044,9 +1048,7 @@ def _get_default(self):
+     @cached_property
+     def _db_default_expression(self):
+         db_default = self.db_default
+-        if db_default is not NOT_PROVIDED and not hasattr(
+-            db_default, "resolve_expression"
+-        ):
++        if self.has_db_default() and not hasattr(db_default, "resolve_expression"):
+             from django.db.models.expressions import Value
+ 
+             db_default = Value(db_default, self)

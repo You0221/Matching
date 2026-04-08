@@ -1,0 +1,30 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index 86c9bf05fe4..4fe223c97c6 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -264,12 +292,20 @@ def __getattr__(self, item: str) -> Any:
+     def __prepare__(cls, *args: Any, **kwargs: Any) -> dict[str, object]:
+         return _ModelNamespaceDict()
+ 
+-    def __instancecheck__(self, instance: Any) -> bool:
+-        """Avoid calling ABC _abc_subclasscheck unless we're pretty sure.
++    # Due to performance and memory issues, in the ABCMeta.__subclasscheck__ implementation, we don't support
++    # registered virtual subclasses. See https://github.com/python/cpython/issues/92810#issuecomment-2762454345.
++    # This may change once the CPython gets fixed (possibly in 3.15), in which case we should conditionally
++    # define `register()`.
++    def register(self, subclass: type[_T]) -> type[_T]:
++        warnings.warn(
++            f"For performance reasons, virtual subclasses registered using '{self.__qualname__}.register()' "
++            "are not supported in 'isinstance()' and 'issubclass()' checks.",
++            stacklevel=2,
++        )
++        return super().register(subclass)
+ 
+-        See #3829 and python/cpython#92810
+-        """
+-        return hasattr(instance, '__pydantic_validator__') and super().__instancecheck__(instance)
++    __instancecheck__ = type.__instancecheck__  # pyright: ignore[reportAssignmentType]
++    __subclasscheck__ = type.__subclasscheck__  # pyright: ignore[reportAssignmentType]
+ 
+     @staticmethod
+     def _collect_bases_data(bases: tuple[type[Any], ...]) -> tuple[set[str], set[str], dict[str, ModelPrivateAttr]]:

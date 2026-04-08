@@ -1,0 +1,32 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index db87d66acb9..fd5d68b37f7 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -22,25 +23,23 @@
+ from ._config import ConfigWrapper
+ from ._decorators import DecoratorInfos, PydanticDescriptorProxy, get_attribute_from_bases, unwrap_wrapped_function
+ from ._fields import collect_model_fields, is_valid_field_name, is_valid_privateattr_name
+-from ._generate_schema import GenerateSchema
++from ._generate_schema import GenerateSchema, InvalidSchemaError
+ from ._generics import PydanticGenericMetadata, get_model_typevars_map
+ from ._import_utils import import_cached_base_model, import_cached_field_info
+ from ._mock_val_ser import set_model_mocks
+ from ._namespace_utils import NsResolver
+-from ._schema_generation_shared import CallbackGetCoreSchemaHandler
+ from ._signature import generate_pydantic_signature
+ from ._typing_extra import (
+     _make_forward_ref,
+     eval_type_backport,
+-    is_annotated,
+     is_classvar_annotation,
+     parent_frame_namespace,
+ )
+ from ._utils import LazyClassAttribute, SafeGetItemProxy
+ 
+ if typing.TYPE_CHECKING:
+-    from ..fields import ComputedFieldInfo, FieldInfo, ModelPrivateAttr
+     from ..fields import Field as PydanticModelField
++    from ..fields import FieldInfo, ModelPrivateAttr
+     from ..fields import PrivateAttr as PydanticModelPrivateAttr
+     from ..main import BaseModel
+ else:

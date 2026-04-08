@@ -1,0 +1,13 @@
+diff --git a/pydantic/experimental/pipeline.py b/pydantic/experimental/pipeline.py
+index bd63d98c1a3..633fb00a991 100644
+--- a/pydantic/experimental/pipeline.py
++++ b/pydantic/experimental/pipeline.py
+@@ -375,8 +373,6 @@ def handler(v: Any) -> Any:
+ 
+ 
+ def _apply_step(step: _Step, s: cs.CoreSchema | None, handler: GetCoreSchemaHandler, source_type: Any) -> cs.CoreSchema:
+-    from pydantic_core import core_schema as cs
+-
+     if isinstance(step, _ValidateAs):
+         s = _apply_parse(s, step.tp, step.strict, handler, source_type)
+     elif isinstance(step, _ValidateAsDefer):

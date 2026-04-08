@@ -1,0 +1,36 @@
+diff --git a/lib/ansible/utils/collection_loader/_collection_finder.py b/lib/ansible/utils/collection_loader/_collection_finder.py
+index dfd7a67a546588..ece6fd7d44e028 100644
+--- a/lib/ansible/utils/collection_loader/_collection_finder.py
++++ b/lib/ansible/utils/collection_loader/_collection_finder.py
+@@ -47,31 +41,12 @@ def import_module(name):  # type: ignore[misc]
+     # deprecated: description='TraversableResources fallback' python_version='3.8'
+     TraversableResources = object  # type: ignore[assignment,misc]
+ 
+-try:
+-    from importlib.util import find_spec, spec_from_loader
+-except ImportError:
+-    pass
+-
+-try:
+-    from importlib.machinery import FileFinder
+-except ImportError:
+-    HAS_FILE_FINDER = False
+-else:
+-    HAS_FILE_FINDER = True
+-
+-try:
+-    import pathlib
+-except ImportError:
+-    pass
+-
+ # NB: this supports import sanity test providing a different impl
+ try:
+     from ._collection_meta import _meta_yml_to_dict
+ except ImportError:
+     _meta_yml_to_dict = None
+ 
+-is_python_identifier = str.isidentifier  # type: ignore[attr-defined]
+-
+ PB_EXTENSIONS = ('.yml', '.yaml')
+ SYNTHETIC_PACKAGE_NAME = '<ansible_synthetic_collection_package>'
+ 

@@ -1,0 +1,29 @@
+diff --git a/lib/ansible/utils/unsafe_proxy.py b/lib/ansible/utils/unsafe_proxy.py
+index ac92d6e7bc7133..07695a6cc9b755 100644
+--- a/lib/ansible/utils/unsafe_proxy.py
++++ b/lib/ansible/utils/unsafe_proxy.py
+@@ -2,22 +2,18 @@
+ # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+ 
+ # deprecated: description="deprecate unsafe_proxy module" core_version="2.23"
+-# DTFIX-RELEASE: add full unit test coverage
++# DTFIX5: add full unit test coverage
+ from __future__ import annotations
+ 
+ from collections.abc import Mapping, Set
+ 
++from ansible.module_utils._internal import _no_six
+ from ansible.module_utils.common.text.converters import to_bytes, to_text
+ from ansible.module_utils.common.collections import is_sequence
+ from ansible._internal._datatag._tags import TrustedAsTemplate
+-from ansible.module_utils.six import binary_type, text_type
+-
+-import typing as t
+ 
+ __all__ = ['AnsibleUnsafe', 'wrap_var']
+ 
+-T = t.TypeVar('T')
+-
+ 
+ class AnsibleUnsafe:
+     def __new__(cls, value):

@@ -1,0 +1,32 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index 20df35e6b48c2..2967b91225fdb 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -442,11 +450,23 @@ class NewtonCholeskySolver(NewtonSolver):
+ 
+     def setup(self, X, y, sample_weight):
+         super().setup(X=X, y=y, sample_weight=sample_weight)
+-        n_dof = X.shape[1]
+-        if self.linear_loss.fit_intercept:
+-            n_dof += 1
++        if self.linear_loss.base_loss.is_multiclass:
++            # Easier with ravelled arrays, e.g., for scipy.linalg.solve.
++            # As with LinearModelLoss, we always are contiguous in n_classes.
++            self.coef = self.coef.ravel(order="F")
++        # Note that the computation of gradient in LinearModelLoss follows the shape of
++        # coef.
+         self.gradient = np.empty_like(self.coef)
+-        self.hessian = np.empty_like(self.coef, shape=(n_dof, n_dof))
++        # But the hessian is always 2d.
++        n = self.coef.size
++        self.hessian = np.empty_like(self.coef, shape=(n, n))
++        # To help case distinctions.
++        self.is_multinomial_with_intercept = (
++            self.linear_loss.base_loss.is_multiclass and self.linear_loss.fit_intercept
++        )
++        self.is_multinomial_no_penalty = (
++            self.linear_loss.base_loss.is_multiclass and self.l2_reg_strength == 0
++        )
+ 
+     def update_gradient_hessian(self, X, y, sample_weight):
+         _, _, self.hessian_warning = self.linear_loss.gradient_hessian(

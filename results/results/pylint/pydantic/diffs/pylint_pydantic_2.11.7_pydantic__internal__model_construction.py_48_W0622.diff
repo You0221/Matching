@@ -1,0 +1,21 @@
+diff --git a/pydantic/_internal/_model_construction.py b/pydantic/_internal/_model_construction.py
+index fd5d68b37f7..4fe223c97c6 100644
+--- a/pydantic/_internal/_model_construction.py
++++ b/pydantic/_internal/_model_construction.py
+@@ -37,15 +36,12 @@
+ )
+ from ._utils import LazyClassAttribute, SafeGetItemProxy
+ 
+-if typing.TYPE_CHECKING:
++if TYPE_CHECKING:
+     from ..fields import Field as PydanticModelField
+     from ..fields import FieldInfo, ModelPrivateAttr
+     from ..fields import PrivateAttr as PydanticModelPrivateAttr
+     from ..main import BaseModel
+ else:
+-    # See PyCharm issues https://youtrack.jetbrains.com/issue/PY-21915
+-    # and https://youtrack.jetbrains.com/issue/PY-51428
+-    DeprecationWarning = PydanticDeprecatedSince20
+     PydanticModelField = object()
+     PydanticModelPrivateAttr = object()
+ 

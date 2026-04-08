@@ -1,0 +1,28 @@
+diff --git a/pydantic/_internal/_signature.py b/pydantic/_internal/_signature.py
+index 0e3c8af814d..2273577ccb2 100644
+--- a/pydantic/_internal/_signature.py
++++ b/pydantic/_internal/_signature.py
+@@ -6,13 +6,22 @@
+ 
+ from pydantic_core import PydanticUndefined
+ 
+-from ._config import ConfigWrapper
+ from ._utils import is_valid_identifier
+ 
+ if TYPE_CHECKING:
++    from ..config import ExtraValues
+     from ..fields import FieldInfo
+ 
+ 
++# Copied over from stdlib dataclasses
++class _HAS_DEFAULT_FACTORY_CLASS:
++    def __repr__(self):
++        return '<factory>'
++
++
++_HAS_DEFAULT_FACTORY = _HAS_DEFAULT_FACTORY_CLASS()
++
++
+ def _field_name_for_signature(field_name: str, field_info: FieldInfo) -> str:
+     """Extract the correct name to use for the field when generating a signature.
+ 

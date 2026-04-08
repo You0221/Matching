@@ -1,0 +1,26 @@
+diff --git a/sklearn/ensemble/_weight_boosting.py b/sklearn/ensemble/_weight_boosting.py
+index 0461a397983be..8503c4fdb8ae7 100644
+--- a/sklearn/ensemble/_weight_boosting.py
++++ b/sklearn/ensemble/_weight_boosting.py
+@@ -16,19 +16,14 @@
+   (AdaBoost.R2) for regression problems.
+ """
+ 
+-# Authors: Noel Dawe <noel@dawe.me>
+-#          Gilles Louppe <g.louppe@gmail.com>
+-#          Hamzeh Alsalhi <ha258@cornell.edu>
+-#          Arnaud Joly <arnaud.v.joly@gmail.com>
+-#
+-# License: BSD 3 clause
++# Authors: The scikit-learn developers
++# SPDX-License-Identifier: BSD-3-Clause
+ 
+ import warnings
+ from abc import ABCMeta, abstractmethod
+ from numbers import Integral, Real
+ 
+ import numpy as np
+-from scipy.special import xlogy
+ 
+ from ..base import (
+     ClassifierMixin,

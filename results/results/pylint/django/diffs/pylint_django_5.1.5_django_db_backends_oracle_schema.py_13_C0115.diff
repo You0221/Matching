@@ -1,0 +1,13 @@
+diff --git a/django/db/backends/oracle/schema.py b/django/db/backends/oracle/schema.py
+index 0d70522a2afa..ba3c4778d30d 100644
+--- a/django/db/backends/oracle/schema.py
++++ b/django/db/backends/oracle/schema.py
+@@ -211,6 +211,8 @@ def _field_should_be_indexed(self, model, field):
+         return create_index
+ 
+     def _is_identity_column(self, table_name, column_name):
++        if not column_name:
++            return False
+         with self.connection.cursor() as cursor:
+             cursor.execute(
+                 """

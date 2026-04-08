@@ -1,0 +1,58 @@
+diff --git a/django/utils/feedgenerator.py b/django/utils/feedgenerator.py
+index 3bd456ca687a..fae327143086 100644
+--- a/django/utils/feedgenerator.py
++++ b/django/utils/feedgenerator.py
+@@ -57,6 +58,53 @@ def get_tag_uri(url, date):
+     return "tag:%s%s:%s/%s" % (bits.hostname, d, bits.path, bits.fragment)
+ 
+ 
++def _guess_stylesheet_mimetype(url):
++    """
++    Return the given stylesheet's mimetype tuple, using a slightly custom
++    version of Python's mimetypes.guess_type().
++    """
++    mimetypedb = mimetypes.MimeTypes()
++
++    # The official mimetype for XSLT files is technically `application/xslt+xml`
++    # but as of 2024 almost no browser supports that (they all expect text/xsl).
++    # On top of that, windows seems to assume that the type for xsl is text/xml.
++    mimetypedb.readfp(StringIO("text/xsl\txsl\ntext/xsl\txslt"))
++
++    return mimetypedb.guess_type(url)
++
++
++class Stylesheet:
++    """An RSS stylesheet"""
++
++    def __init__(self, url, mimetype="", media="screen"):
++        self._url = url
++        self._mimetype = mimetype
++        self.media = media
++
++    # Using a property to delay the evaluation of self._url as late as possible
++    # in case of a lazy object (like reverse_lazy(...) for example).
++    @property
++    def url(self):
++        return iri_to_uri(self._url)
++
++    @property
++    def mimetype(self):
++        if self._mimetype == "":
++            return _guess_stylesheet_mimetype(self.url)[0]
++        return self._mimetype
++
++    def __str__(self):
++        data = [f'href="{self.url}"']
++        if self.mimetype is not None:
++            data.append(f'type="{self.mimetype}"')
++        if self.media is not None:
++            data.append(f'media="{self.media}"')
++        return " ".join(data)
++
++    def __repr__(self):
++        return repr((self.url, self.mimetype, self.media))
++
++
+ class SyndicationFeed:
+     "Base class for all syndication feeds. Subclasses should provide write()"
+ 

@@ -1,0 +1,28 @@
+diff --git a/pydantic/_internal/_typing_extra.py b/pydantic/_internal/_typing_extra.py
+index 50566e5a24a..399c8c46114 100644
+--- a/pydantic/_internal/_typing_extra.py
++++ b/pydantic/_internal/_typing_extra.py
+@@ -346,10 +681,20 @@ def is_backport_fixable_error(e: TypeError) -> bool:
+ 
+ 
+ def get_function_type_hints(
+-    function: Callable[..., Any], *, include_keys: set[str] | None = None, types_namespace: dict[str, Any] | None = None
++    function: Callable[..., Any],
++    *,
++    include_keys: set[str] | None = None,
++    globalns: GlobalsNamespace | None = None,
++    localns: MappingNamespace | None = None,
+ ) -> dict[str, Any]:
+-    """Like `typing.get_type_hints`, but doesn't convert `X` to `Optional[X]` if the default value is `None`, also
+-    copes with `partial`.
++    """Return type hints for a function.
++
++    This is similar to the `typing.get_type_hints` function, with a few differences:
++    - Support `functools.partial` by using the underlying `func` attribute.
++    - If `function` happens to be a built-in type (e.g. `int`), assume it doesn't have annotations
++      but specify the `return` key as being the actual type.
++    - Do not wrap type annotation of a parameter with `Optional` if it has a default value of `None`
++      (related bug: https://github.com/python/cpython/issues/90353, only fixed in 3.11+).
+     """
+     try:
+         if isinstance(function, partial):

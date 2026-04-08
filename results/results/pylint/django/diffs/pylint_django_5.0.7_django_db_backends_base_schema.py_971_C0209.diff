@@ -1,0 +1,54 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -1072,15 +1108,15 @@ def _alter_field(
+             actions.append(fragment)
+             post_actions.extend(other_actions)
+ 
+-        if new_field.db_default is not NOT_PROVIDED:
++        if new_field.has_db_default():
+             if (
+-                old_field.db_default is NOT_PROVIDED
++                not old_field.has_db_default()
+                 or new_field.db_default != old_field.db_default
+             ):
+                 actions.append(
+                     self._alter_column_database_default_sql(model, old_field, new_field)
+                 )
+-        elif old_field.db_default is not NOT_PROVIDED:
++        elif old_field.has_db_default():
+             actions.append(
+                 self._alter_column_database_default_sql(
+                     model, old_field, new_field, drop=True
+@@ -1094,11 +1130,7 @@ def _alter_field(
+         #  4. Drop the default again.
+         # Default change?
+         needs_database_default = False
+-        if (
+-            old_field.null
+-            and not new_field.null
+-            and new_field.db_default is NOT_PROVIDED
+-        ):
++        if old_field.null and not new_field.null and not new_field.has_db_default():
+             old_default = self.effective_default(old_field)
+             new_default = self.effective_default(new_field)
+             if (
+@@ -1117,7 +1149,7 @@ def _alter_field(
+                 null_actions.append(fragment)
+         # Only if we have a default and there is a change from NULL to NOT NULL
+         four_way_default_alteration = (
+-            new_field.has_default() or new_field.db_default is not NOT_PROVIDED
++            new_field.has_default() or new_field.has_db_default()
+         ) and (old_field.null and not new_field.null)
+         if actions or null_actions:
+             if not four_way_default_alteration:
+@@ -1139,7 +1171,7 @@ def _alter_field(
+                     params,
+                 )
+             if four_way_default_alteration:
+-                if new_field.db_default is NOT_PROVIDED:
++                if not new_field.has_db_default():
+                     default_sql = "%s"
+                     params = [new_default]
+                 else:

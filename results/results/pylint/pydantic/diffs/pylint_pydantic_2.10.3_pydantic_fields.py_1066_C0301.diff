@@ -1,0 +1,12 @@
+diff --git a/pydantic/fields.py b/pydantic/fields.py
+index 0f35d166c68..b091710a861 100644
+--- a/pydantic/fields.py
++++ b/pydantic/fields.py
+@@ -1061,6 +1365,7 @@ def Field(  # noqa: C901
+         description=description,
+         examples=examples,
+         exclude=exclude,
++        exclude_if=exclude_if,
+         discriminator=discriminator,
+         deprecated=deprecated,
+         json_schema_extra=json_schema_extra,

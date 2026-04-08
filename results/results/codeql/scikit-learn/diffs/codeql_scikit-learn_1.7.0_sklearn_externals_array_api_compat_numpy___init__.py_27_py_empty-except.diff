@@ -1,0 +1,27 @@
+diff --git a/sklearn/externals/array_api_compat/numpy/__init__.py b/sklearn/externals/array_api_compat/numpy/__init__.py
+index 02c55d28a01e8..3e138f53db006 100644
+--- a/sklearn/externals/array_api_compat/numpy/__init__.py
++++ b/sklearn/externals/array_api_compat/numpy/__init__.py
+@@ -13,18 +19,10 @@
+ #
+ # It doesn't overwrite np.linalg from above. The import is generated
+ # dynamically so that the library can be vendored.
+-__import__(__package__ + '.linalg')
+-
+-__import__(__package__ + '.fft')
+-
+-from .linalg import matrix_transpose, vecdot # noqa: F401
++__import__(__package__ + ".linalg")
+ 
+-from ..common._helpers import * # noqa: F403
++__import__(__package__ + ".fft")
+ 
+-try:
+-    # Used in asarray(). Not present in older versions.
+-    from numpy import _CopyMode # noqa: F401
+-except ImportError:
+-    pass
++from .linalg import matrix_transpose, vecdot  # type: ignore[no-redef]  # noqa: F401
+ 
+-__array_api_version__ = '2024.12'
++__array_api_version__: Final = "2024.12"

@@ -1,0 +1,24 @@
+diff --git a/sklearn/linear_model/_glm/_newton_solver.py b/sklearn/linear_model/_glm/_newton_solver.py
+index c5c940bed6c39..cfef023692d68 100644
+--- a/sklearn/linear_model/_glm/_newton_solver.py
++++ b/sklearn/linear_model/_glm/_newton_solver.py
+@@ -468,6 +469,19 @@ def setup(self, X, y, sample_weight):
+         self.is_multinomial_no_penalty = (
+             self.linear_loss.base_loss.is_multiclass and self.l2_reg_strength == 0
+         )
++        if self.is_multinomial_no_penalty:
++            # See inner_solve. The provided coef might not adhere to the convention
++            # that the last class is set to zero.
++            # This is done by the usual freedom of a (overparametrized) multinomial to
++            # add a constant to all classes which doesn't change predictions.
++            n_classes = self.linear_loss.base_loss.n_classes
++            coef = self.coef.reshape(n_classes, -1, order="F")  # easier as 2d
++            coef -= coef[-1, :]  # coef -= coef of last class
++        elif self.is_multinomial_with_intercept:
++            # See inner_solve. Same as above, but only for the intercept.
++            n_classes = self.linear_loss.base_loss.n_classes
++            # intercept -= intercept of last class
++            self.coef[-n_classes:] -= self.coef[-1]
+ 
+     def update_gradient_hessian(self, X, y, sample_weight):
+         _, _, self.hessian_warning = self.linear_loss.gradient_hessian(

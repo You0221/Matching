@@ -1,0 +1,19 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index e425a867dc9e03..e514155e16ddeb 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -508,10 +522,10 @@ def _verbose_log(self, msg: str, host: str | None = None, caplevel: int = 2) ->
+     @_meets_debug
+     @_proxy
+     def debug(self, msg: str, host: str | None = None) -> None:
+-        if host is None:
+-            self.display("%6d %0.5f: %s" % (os.getpid(), time.time(), msg), color=C.COLOR_DEBUG)
+-        else:
+-            self.display("%6d %0.5f [%s]: %s" % (os.getpid(), time.time(), host, msg), color=C.COLOR_DEBUG)
++        prefix = "%6d %0.5f" % (os.getpid(), time.time())
++        if host is not None:
++            prefix += f" [{host}]"
++        self.display(f"{prefix}: {msg}", color=C.COLOR_DEBUG, caplevel=-3)
+ 
+     def get_deprecation_message(
+         self,

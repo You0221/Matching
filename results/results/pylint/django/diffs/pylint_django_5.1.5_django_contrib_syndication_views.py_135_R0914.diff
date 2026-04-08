@@ -1,0 +1,12 @@
+diff --git a/django/contrib/syndication/views.py b/django/contrib/syndication/views.py
+index 2378a14874d2..0947ab212ce4 100644
+--- a/django/contrib/syndication/views.py
++++ b/django/contrib/syndication/views.py
+@@ -160,6 +160,7 @@ def get_feed(self, obj, request):
+             feed_copyright=self._get_dynamic_attr("feed_copyright", obj),
+             feed_guid=self._get_dynamic_attr("feed_guid", obj),
+             ttl=self._get_dynamic_attr("ttl", obj),
++            stylesheets=self._get_dynamic_attr("stylesheets", obj),
+             **self.feed_extra_kwargs(obj),
+         )
+ 

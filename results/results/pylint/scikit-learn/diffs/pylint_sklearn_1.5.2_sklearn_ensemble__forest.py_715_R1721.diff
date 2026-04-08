@@ -1,0 +1,20 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index 6b1b842f5367b..5c2152f34e93d 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -714,11 +712,13 @@ def estimators_samples_(self):
+         """
+         return [sample_indices for sample_indices in self._get_estimators_indices()]
+ 
+-    def _more_tags(self):
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
+         # Only the criterion is required to determine if the tree supports
+         # missing values
+         estimator = type(self.estimator)(criterion=self.criterion)
+-        return {"allow_nan": _safe_tags(estimator, key="allow_nan")}
++        tags.input_tags.allow_nan = get_tags(estimator).input_tags.allow_nan
++        return tags
+ 
+ 
+ def _accumulate_prediction(predict, X, out, lock):

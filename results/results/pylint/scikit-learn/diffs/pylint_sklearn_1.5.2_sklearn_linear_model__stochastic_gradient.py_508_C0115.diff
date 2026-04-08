@@ -1,0 +1,18 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -510,10 +503,10 @@ class BaseSGDClassifier(LinearClassifierMixin, BaseSGD, metaclass=ABCMeta):
+         "hinge": (Hinge, 1.0),
+         "squared_hinge": (SquaredHinge, 1.0),
+         "perceptron": (Hinge, 0.0),
+-        "log_loss": (Log,),
++        "log_loss": (CyHalfBinomialLoss,),
+         "modified_huber": (ModifiedHuber,),
+-        "squared_error": (SquaredLoss,),
+-        "huber": (Huber, DEFAULT_EPSILON),
++        "squared_error": (CyHalfSquaredError,),
++        "huber": (CyHuberLoss, DEFAULT_EPSILON),
+         "epsilon_insensitive": (EpsilonInsensitive, DEFAULT_EPSILON),
+         "squared_epsilon_insensitive": (SquaredEpsilonInsensitive, DEFAULT_EPSILON),
+     }

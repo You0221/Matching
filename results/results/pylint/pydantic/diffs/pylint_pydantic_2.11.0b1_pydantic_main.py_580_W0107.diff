@@ -1,0 +1,12 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 03cb511eb30..1cc4c24f9ef 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -577,7 +613,6 @@ def model_post_init(self, context: Any, /) -> None:
+         """Override this method to perform additional initialization after `__init__` and `model_construct`.
+         This is useful if you want to do some validation that requires the entire model to be initialized.
+         """
+-        pass
+ 
+     @classmethod
+     def model_rebuild(

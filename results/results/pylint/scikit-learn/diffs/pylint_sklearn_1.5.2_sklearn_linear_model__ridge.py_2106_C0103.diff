@@ -1,0 +1,12 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2101,6 +2139,7 @@ def fit(self, X, y, sample_weight=None, score_params=None):
+ 
+         self.alphas = np.asarray(self.alphas)
+ 
++        unscaled_y = y
+         X, y, X_offset, y_offset, X_scale = _preprocess_data(
+             X,
+             y,

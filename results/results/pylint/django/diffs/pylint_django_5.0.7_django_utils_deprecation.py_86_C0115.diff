@@ -1,0 +1,21 @@
+diff --git a/django/utils/deprecation.py b/django/utils/deprecation.py
+index 836cfa564cf3..d690dc5d5682 100644
+--- a/django/utils/deprecation.py
++++ b/django/utils/deprecation.py
+@@ -83,16 +83,6 @@ def __new__(cls, name, bases, attrs):
+         return new_class
+ 
+ 
+-class DeprecationInstanceCheck(type):
+-    def __instancecheck__(self, instance):
+-        warnings.warn(
+-            "`%s` is deprecated, use `%s` instead." % (self.__name__, self.alternative),
+-            self.deprecation_warning,
+-            2,
+-        )
+-        return super().__instancecheck__(instance)
+-
+-
+ class MiddlewareMixin:
+     sync_capable = True
+     async_capable = True

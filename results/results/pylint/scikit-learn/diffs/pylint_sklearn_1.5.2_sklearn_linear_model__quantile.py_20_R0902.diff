@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_quantile.py b/sklearn/linear_model/_quantile.py
+index 33451d8640bff..446d232958e8d 100644
+--- a/sklearn/linear_model/_quantile.py
++++ b/sklearn/linear_model/_quantile.py
+@@ -13,7 +13,7 @@
+ from ..utils import _safe_indexing
+ from ..utils._param_validation import Interval, StrOptions
+ from ..utils.fixes import parse_version, sp_version
+-from ..utils.validation import _check_sample_weight
++from ..utils.validation import _check_sample_weight, validate_data
+ from ._base import LinearModel
+ 
+ 

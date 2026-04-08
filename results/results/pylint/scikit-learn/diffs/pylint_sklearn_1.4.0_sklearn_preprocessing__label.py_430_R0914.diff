@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_label.py b/sklearn/preprocessing/_label.py
+index 41494f2649a01..301dc19bb1985 100644
+--- a/sklearn/preprocessing/_label.py
++++ b/sklearn/preprocessing/_label.py
+@@ -419,7 +419,7 @@ def _more_tags(self):
+ 
+ @validate_params(
+     {
+-        "y": ["array-like"],
++        "y": ["array-like", "sparse matrix"],
+         "classes": ["array-like"],
+         "neg_label": [Interval(Integral, None, None, closed="neither")],
+         "pos_label": [Interval(Integral, None, None, closed="neither")],

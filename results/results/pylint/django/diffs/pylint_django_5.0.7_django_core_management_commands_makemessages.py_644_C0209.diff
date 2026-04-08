@@ -1,0 +1,18 @@
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index 1d4947fb308c..23ad424c5c31 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -635,12 +622,11 @@ def process_locale_dir(self, locale_dir, files):
+             build_files.append(build_file)
+ 
+         if self.domain == "djangojs":
+-            is_templatized = build_file.is_templatized
+             args = [
+                 "xgettext",
+                 "-d",
+                 self.domain,
+-                "--language=%s" % ("C" if is_templatized else "JavaScript",),
++                "--language=JavaScript",
+                 "--keyword=gettext_noop",
+                 "--keyword=gettext_lazy",
+                 "--keyword=ngettext_lazy:1,2",

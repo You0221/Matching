@@ -1,0 +1,13 @@
+diff --git a/sklearn/preprocessing/_target_encoder.py b/sklearn/preprocessing/_target_encoder.py
+index b3b7c3d5e7bd9..dc328dc5cf5db 100644
+--- a/sklearn/preprocessing/_target_encoder.py
++++ b/sklearn/preprocessing/_target_encoder.py
+@@ -353,7 +356,7 @@ def _fit_encodings_all(self, X, y):
+         )
+ 
+         check_consistent_length(X, y)
+-        self._fit(X, handle_unknown="ignore", force_all_finite="allow-nan")
++        self._fit(X, handle_unknown="ignore", ensure_all_finite="allow-nan")
+ 
+         if self.target_type == "auto":
+             accepted_target_types = ("binary", "multiclass", "continuous")

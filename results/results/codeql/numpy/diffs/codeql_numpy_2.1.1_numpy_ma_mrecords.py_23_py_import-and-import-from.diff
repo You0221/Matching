@@ -1,0 +1,25 @@
+diff --git a/numpy/ma/mrecords.py b/numpy/ma/mrecords.py
+index 4eb92b6bd7b0..10e9e834cb88 100644
+--- a/numpy/ma/mrecords.py
++++ b/numpy/ma/mrecords.py
+@@ -13,19 +13,11 @@
+ #  first place, and then rename the invalid fields with a trailing
+ #  underscore. Maybe we could just overload the parser function ?
+ 
+-from numpy.ma import (
+-    MAError, MaskedArray, masked, nomask, masked_array, getdata,
+-    getmaskarray, filled
+-)
+-import numpy.ma as ma
+ import warnings
+ 
+ import numpy as np
+-from numpy import dtype, ndarray, array as narray
++import numpy.ma as ma
+ 
+-from numpy._core.records import (
+-    recarray, fromarrays as recfromarrays, fromrecords as recfromrecords
+-)
+ 
+ _byteorderconv = np._core.records._byteorderconv
+ 

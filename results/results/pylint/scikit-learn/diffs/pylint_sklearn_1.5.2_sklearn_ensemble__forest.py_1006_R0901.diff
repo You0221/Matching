@@ -1,0 +1,18 @@
+diff --git a/sklearn/ensemble/_forest.py b/sklearn/ensemble/_forest.py
+index 6b1b842f5367b..5c2152f34e93d 100644
+--- a/sklearn/ensemble/_forest.py
++++ b/sklearn/ensemble/_forest.py
+@@ -999,8 +999,11 @@ def predict_log_proba(self, X):
+ 
+             return proba
+ 
+-    def _more_tags(self):
+-        return {"multilabel": True}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.classifier_tags.multi_label = True
++        tags.input_tags.sparse = True
++        return tags
+ 
+ 
+ class ForestRegressor(RegressorMixin, BaseForest, metaclass=ABCMeta):

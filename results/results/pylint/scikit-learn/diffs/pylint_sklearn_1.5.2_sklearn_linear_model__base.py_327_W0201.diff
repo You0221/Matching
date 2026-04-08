@@ -1,0 +1,14 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index eac754f3f88b4..bb71cbe9ed550 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -326,9 +317,6 @@ def _set_intercept(self, X_offset, y_offset, X_scale):
+         else:
+             self.intercept_ = 0.0
+ 
+-    def _more_tags(self):
+-        return {"requires_y": True}
+-
+ 
+ # XXX Should this derive from LinearModel? It should be a mixin, not an ABC.
+ # Maybe the n_features checking can be moved to LinearModel.

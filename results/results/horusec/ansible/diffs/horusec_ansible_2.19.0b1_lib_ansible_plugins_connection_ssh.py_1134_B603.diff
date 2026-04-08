@@ -1,0 +1,15 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 3e854a612b591f..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -1134,8 +1146,8 @@ def _bare_run(self, cmd: list[bytes], in_data: bytes | None, sudoable: bool = Tr
+                 p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE, **popen_kwargs)
+                 stdin = p.stdin  # type: ignore[assignment] # stdin will be set and not None due to the calls above
+-            except (OSError, IOError) as e:
+-                raise AnsibleError('Unable to execute ssh command line on a controller due to: %s' % to_native(e))
++            except OSError as ex:
++                raise AnsibleError('Unable to execute ssh command line on a controller.') from ex
+ 
+         if password_mechanism == 'sshpass' and conn_password:
+             os.close(self.sshpass_pipe[0])

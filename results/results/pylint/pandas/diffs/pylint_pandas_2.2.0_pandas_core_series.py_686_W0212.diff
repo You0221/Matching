@@ -1,0 +1,32 @@
+diff --git a/pandas/core/series.py b/pandas/core/series.py
+index 83eb545b9b681..6fd019656d207 100644
+--- a/pandas/core/series.py
++++ b/pandas/core/series.py
+@@ -680,18 +684,19 @@ def _constructor_expanddim(self) -> Callable[..., DataFrame]:
+ 
+         return DataFrame
+ 
+-    def _expanddim_from_mgr(self, mgr, axes) -> DataFrame:
++    def _constructor_expanddim_from_mgr(self, mgr, axes):
+         from pandas.core.frame import DataFrame
+ 
+-        return DataFrame._from_mgr(mgr, axes=mgr.axes)
++        df = DataFrame._from_mgr(mgr, axes=mgr.axes)
+ 
+-    def _constructor_expanddim_from_mgr(self, mgr, axes):
+-        from pandas.core.frame import DataFrame
++        if type(self) is Series:
++            # This would also work `if self._constructor_expanddim is DataFrame`,
++            #  but this check is slightly faster, benefiting the most-common case.
++            return df
+ 
+-        if self._constructor_expanddim is DataFrame:
+-            return self._expanddim_from_mgr(mgr, axes)
+-        assert axes is mgr.axes
+-        return self._constructor_expanddim(mgr)
++        # We assume that the subclass __init__ knows how to handle a
++        #  pd.DataFrame object.
++        return self._constructor_expanddim(df)
+ 
+     # types
+     @property

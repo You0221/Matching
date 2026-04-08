@@ -1,0 +1,13 @@
+diff --git a/lib/ansible/utils/vars.py b/lib/ansible/utils/vars.py
+index 373fc706a03233..59b8cacc7ce546 100644
+--- a/lib/ansible/utils/vars.py
++++ b/lib/ansible/utils/vars.py
+@@ -207,7 +205,7 @@ def load_extra_vars(loader):
+             else:
+                 raise AnsibleOptionsError("Invalid extra vars data supplied. '%s' could not be made into a dictionary" % extra_vars_opt)
+ 
+-        setattr(load_extra_vars, 'extra_vars', extra_vars)
++        load_extra_vars.extra_vars = extra_vars
+ 
+     return load_extra_vars.extra_vars
+ 

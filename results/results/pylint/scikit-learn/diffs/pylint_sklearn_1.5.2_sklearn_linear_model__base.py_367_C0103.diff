@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_base.py b/sklearn/linear_model/_base.py
+index eac754f3f88b4..bb71cbe9ed550 100644
+--- a/sklearn/linear_model/_base.py
++++ b/sklearn/linear_model/_base.py
+@@ -360,9 +348,13 @@ def decision_function(self, X):
+         check_is_fitted(self)
+         xp, _ = get_namespace(X)
+ 
+-        X = self._validate_data(X, accept_sparse="csr", reset=False)
++        X = validate_data(self, X, accept_sparse="csr", reset=False)
+         scores = safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_
+-        return xp.reshape(scores, (-1,)) if scores.shape[1] == 1 else scores
++        return (
++            xp.reshape(scores, (-1,))
++            if (scores.ndim > 1 and scores.shape[1] == 1)
++            else scores
++        )
+ 
+     def predict(self, X):
+         """

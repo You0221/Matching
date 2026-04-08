@@ -1,0 +1,26 @@
+diff --git a/django/template/loader_tags.py b/django/template/loader_tags.py
+index 1874d8c52881..36703b47823a 100644
+--- a/django/template/loader_tags.py
++++ b/django/template/loader_tags.py
+@@ -242,7 +242,11 @@ def do_block(parser, token):
+     return BlockNode(block_name, nodelist)
+ 
+ 
+-def construct_relative_path(current_template_name, relative_name):
++def construct_relative_path(
++    current_template_name,
++    relative_name,
++    allow_recursion=False,
++):
+     """
+     Convert a relative path (starting with './' or '../') to the full template
+     name based on the current_template_name.
+@@ -264,7 +268,7 @@ def construct_relative_path(current_template_name, relative_name):
+             "The relative path '%s' points outside the file hierarchy that "
+             "template '%s' is in." % (relative_name, current_template_name)
+         )
+-    if current_template_name.lstrip("/") == new_name:
++    if not allow_recursion and current_template_name.lstrip("/") == new_name:
+         raise TemplateSyntaxError(
+             "The relative path '%s' was translated to template name '%s', the "
+             "same template in which the tag appears."

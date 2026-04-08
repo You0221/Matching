@@ -1,0 +1,31 @@
+diff --git a/sklearn/utils/fixes.py b/sklearn/utils/fixes.py
+index 2769e99b8619c..56f18c98f44d1 100644
+--- a/sklearn/utils/fixes.py
++++ b/sklearn/utils/fixes.py
+@@ -249,21 +227,17 @@ def _sparse_nan_min_max(X, axis):
+     from numpy import ComplexWarning, VisibleDeprecationWarning  # type: ignore  # noqa
+ 
+ 
+-# TODO: Remove when Scipy 1.6 is the minimum supported version
+-try:
+-    from scipy.integrate import trapezoid  # type: ignore  # noqa
+-except ImportError:
+-    from scipy.integrate import trapz as trapezoid  # type: ignore  # noqa
+-
+-
+-# TODO: Remove when Pandas > 2.2 is the minimum supported version
++# TODO: Adapt when Pandas > 2.2 is the minimum supported version
+ def pd_fillna(pd, frame):
+     pd_version = parse_version(pd.__version__).base_version
+     if parse_version(pd_version) < parse_version("2.2"):
+         frame = frame.fillna(value=np.nan)
+     else:
++        infer_objects_kwargs = (
++            {} if parse_version(pd_version) >= parse_version("3") else {"copy": False}
++        )
+         with pd.option_context("future.no_silent_downcasting", True):
+-            frame = frame.fillna(value=np.nan).infer_objects(copy=False)
++            frame = frame.fillna(value=np.nan).infer_objects(**infer_objects_kwargs)
+     return frame
+ 
+ 

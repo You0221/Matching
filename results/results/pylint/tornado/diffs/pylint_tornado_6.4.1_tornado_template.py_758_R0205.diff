@@ -1,0 +1,13 @@
+diff --git a/tornado/template.py b/tornado/template.py
+index d53e977c5e..0064c6fbd1 100644
+--- a/tornado/template.py
++++ b/tornado/template.py
+@@ -755,7 +755,7 @@ def include(self, template: Template, line: int) -> "ContextManager":
+         self.include_stack.append((self.current_template, line))
+         self.current_template = template
+ 
+-        class IncludeTemplate(object):
++        class IncludeTemplate:
+             def __enter__(_) -> "_CodeWriter":
+                 return self
+ 

@@ -1,0 +1,29 @@
+diff --git a/pydantic/main.py b/pydantic/main.py
+index 5d87f7c917a..4b3d8eff730 100644
+--- a/pydantic/main.py
++++ b/pydantic/main.py
+@@ -1514,7 +1560,7 @@ def create_model(  # noqa: C901
+             (f_annotation, f_value, *_) = typing_extensions.get_args(
+                 f_def
+             )  # first two input are expected from Annotated, refer to https://docs.python.org/3/library/typing.html#typing.Annotated
+-            from .fields import FieldInfo
++            FieldInfo = _import_utils.import_cached_field_info()
+ 
+             if not isinstance(f_value, FieldInfo):
+                 raise PydanticUserError(
+@@ -1542,13 +1588,13 @@ def create_model(  # noqa: C901
+     if __config__:
+         namespace['model_config'] = _config.ConfigWrapper(__config__).config_dict
+     resolved_bases = types.resolve_bases(__base__)
+-    meta, ns, kwds = types.prepare_class(__model_name, resolved_bases, kwds=__cls_kwargs__)
++    meta, ns, kwds = types.prepare_class(model_name, resolved_bases, kwds=__cls_kwargs__)
+     if resolved_bases is not __base__:
+         ns['__orig_bases__'] = __base__
+     namespace.update(ns)
+ 
+     return meta(
+-        __model_name,
++        model_name,
+         resolved_bases,
+         namespace,
+         __pydantic_reset_parent_namespace__=False,

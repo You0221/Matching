@@ -1,0 +1,13 @@
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index fbfd700887..b719547bdf 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -115,7 +120,7 @@ class _DecompressTooLargeError(Exception):
+     pass
+ 
+ 
+-class _WebSocketParams(object):
++class _WebSocketParams:
+     def __init__(
+         self,
+         ping_interval: Optional[float] = None,

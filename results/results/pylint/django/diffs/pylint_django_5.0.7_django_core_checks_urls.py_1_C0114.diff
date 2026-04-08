@@ -1,0 +1,13 @@
+diff --git a/django/core/checks/urls.py b/django/core/checks/urls.py
+index 34eff9671de9..aef2bfebb012 100644
+--- a/django/core/checks/urls.py
++++ b/django/core/checks/urls.py
+@@ -1,6 +1,8 @@
++import inspect
+ from collections import Counter
+ 
+ from django.conf import settings
++from django.core.exceptions import ViewDoesNotExist
+ 
+ from . import Error, Tags, Warning, register
+ 

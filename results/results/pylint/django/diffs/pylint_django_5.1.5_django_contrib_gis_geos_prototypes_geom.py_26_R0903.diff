@@ -1,0 +1,19 @@
+diff --git a/django/contrib/gis/geos/prototypes/geom.py b/django/contrib/gis/geos/prototypes/geom.py
+index a456acd0c185..399654403377 100644
+--- a/django/contrib/gis/geos/prototypes/geom.py
++++ b/django/contrib/gis/geos/prototypes/geom.py
+@@ -25,12 +25,14 @@ class geos_char_p(c_char_p):
+ # ### ctypes factory classes ###
+ class GeomOutput(GEOSFuncFactory):
+     "For GEOS routines that return a geometry."
++
+     restype = GEOM_PTR
+     errcheck = staticmethod(check_geom)
+ 
+ 
+ class IntFromGeom(GEOSFuncFactory):
+     "Argument is a geometry, return type is an integer."
++
+     argtypes = [GEOM_PTR]
+     restype = c_int
+     errcheck = staticmethod(check_minus_one)

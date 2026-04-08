@@ -1,0 +1,22 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -682,15 +639,10 @@ def _model_schema(self, cls: type[BaseModel]) -> core_schema.CoreSchema:
+                 {*fields.keys(), *computed_fields.keys()},
+             )
+             config_wrapper = ConfigWrapper(cls.model_config, check=False)
+-            core_config = config_wrapper.core_config(cls)
+-            title = self._get_model_title_from_config(cls, config_wrapper)
+-            metadata = build_metadata_dict(js_functions=[partial(modify_model_json_schema, cls=cls, title=title)])
+-
++            core_config = config_wrapper.core_config(title=cls.__name__)
+             model_validators = decorators.model_validators.values()
+ 
+-            with self._config_wrapper_stack.push(config_wrapper), self._types_namespace_stack.push(cls):
+-                self = self._current_generate_schema
+-
++            with self._config_wrapper_stack.push(config_wrapper), self._ns_resolver.push(cls):
+                 extras_schema = None
+                 if core_config.get('extra_fields_behavior') == 'allow':
+                     assert cls.__mro__[0] is cls

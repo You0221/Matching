@@ -1,0 +1,23 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -484,8 +518,17 @@ def fit(self, X, y, sample_weight=None):
+             X_inlier_subset = X[inlier_idxs_subset]
+             y_inlier_subset = y[inlier_idxs_subset]
+ 
++            # cut `fit_params` down to `inlier_idxs_subset`
++            score_params_inlier_subset = _check_method_params(
++                X, params=routed_params.estimator.score, indices=inlier_idxs_subset
++            )
++
+             # score of inlier data set
+-            score_subset = estimator.score(X_inlier_subset, y_inlier_subset)
++            score_subset = estimator.score(
++                X_inlier_subset,
++                y_inlier_subset,
++                **score_params_inlier_subset,
++            )
+ 
+             # same number of inliers but worse score -> skip current random
+             # sample

@@ -1,0 +1,17 @@
+diff --git a/sklearn/preprocessing/_label.py b/sklearn/preprocessing/_label.py
+index 345d55556459b..dd721b35a3521 100644
+--- a/sklearn/preprocessing/_label.py
++++ b/sklearn/preprocessing/_label.py
+@@ -153,9 +153,9 @@ def inverse_transform(self, y):
+         if _num_samples(y) == 0:
+             return xp.asarray([])
+ 
+-        diff = _setdiff1d(
+-            ar1=y,
+-            ar2=xp.arange(self.classes_.shape[0], device=device(y)),
++        diff = xpx.setdiff1d(
++            y,
++            xp.arange(self.classes_.shape[0], device=device(y)),
+             xp=xp,
+         )
+         if diff.shape[0]:

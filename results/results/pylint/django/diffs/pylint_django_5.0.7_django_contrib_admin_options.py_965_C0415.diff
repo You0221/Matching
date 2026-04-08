@@ -1,0 +1,21 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 61ec0a638d30..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -960,13 +966,12 @@ def log_change(self, request, obj, message):
+         """
+         from django.contrib.admin.models import CHANGE, LogEntry
+ 
+-        return LogEntry.objects.log_action(
++        return LogEntry.objects.log_actions(
+             user_id=request.user.pk,
+-            content_type_id=get_content_type_for_model(obj).pk,
+-            object_id=obj.pk,
+-            object_repr=str(obj),
++            queryset=[obj],
+             action_flag=CHANGE,
+             change_message=message,
++            single_object=True,
+         )
+ 
+     def log_deletion(self, request, obj, object_repr):

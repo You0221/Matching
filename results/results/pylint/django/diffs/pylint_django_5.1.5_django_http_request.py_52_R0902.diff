@@ -1,0 +1,58 @@
+diff --git a/django/http/request.py b/django/http/request.py
+index 4c27d576ba4b..986d4eee8904 100644
+--- a/django/http/request.py
++++ b/django/http/request.py
+@@ -89,14 +90,48 @@ def headers(self):
+ 
+     @cached_property
+     def accepted_types(self):
+-        """Return a list of MediaType instances."""
+-        return parse_accept_header(self.headers.get("Accept", "*/*"))
++        """Return a list of MediaType instances, in order of preference."""
++        header_value = self.headers.get("Accept", "*/*")
++        return sorted(
++            (MediaType(token) for token in header_value.split(",") if token.strip()),
++            key=operator.attrgetter("quality", "specificity"),
++            reverse=True,
++        )
+ 
+-    def accepts(self, media_type):
+-        return any(
+-            accepted_type.match(media_type) for accepted_type in self.accepted_types
++    def accepted_type(self, media_type):
++        """
++        Return the preferred MediaType instance which matches the given media type.
++        """
++        return next(
++            (
++                accepted_type
++                for accepted_type in self.accepted_types
++                if accepted_type.match(media_type)
++            ),
++            None,
+         )
+ 
++    def get_preferred_type(self, media_types):
++        """Select the preferred media type from the provided options."""
++        if not media_types or not self.accepted_types:
++            return None
++
++        desired_types = [
++            (accepted_type, media_type)
++            for media_type in media_types
++            if (accepted_type := self.accepted_type(media_type)) is not None
++        ]
++
++        if not desired_types:
++            return None
++
++        # Of the desired media types, select the one which is most desirable.
++        return min(desired_types, key=lambda t: self.accepted_types.index(t[0]))[1]
++
++    def accepts(self, media_type):
++        """Does the client accept a response in the given media type?"""
++        return self.accepted_type(media_type) is not None
++
+     def _set_content_type_params(self, meta):
+         """Set content_type, content_params, and encoding."""
+         self.content_type, self.content_params = parse_header_parameters(

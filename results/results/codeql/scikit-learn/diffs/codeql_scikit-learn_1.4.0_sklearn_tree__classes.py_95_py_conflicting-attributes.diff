@@ -1,0 +1,81 @@
+diff --git a/sklearn/tree/_classes.py b/sklearn/tree/_classes.py
+index 00d61f184731d..646aa7fb034c4 100644
+--- a/sklearn/tree/_classes.py
++++ b/sklearn/tree/_classes.py
+@@ -99,6 +95,10 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
+     Use derived classes instead.
+     """
+ 
++    # "check_input" is used for optimisation and isn't something to be passed
++    # around in a pipeline.
++    __metadata_request__predict = {"check_input": metadata_routing.UNUSED}
++
+     _parameter_constraints: dict = {
+         "splitter": [StrOptions({"best", "random"})],
+         "max_depth": [Interval(Integral, 1, None, closed="left"), None],
+@@ -184,7 +184,7 @@ def get_n_leaves(self):
+     def _support_missing_values(self, X):
+         return (
+             not issparse(X)
+-            and self._get_tags()["allow_nan"]
++            and self.__sklearn_tags__().input_tags.allow_nan
+             and self.monotonic_cst is None
+         )
+ 
+@@ -246,11 +246,11 @@ def _fit(
+             # _compute_missing_values_in_feature_mask will check for finite values and
+             # compute the missing mask if the tree supports missing values
+             check_X_params = dict(
+-                dtype=DTYPE, accept_sparse="csc", force_all_finite=False
++                dtype=DTYPE, accept_sparse="csc", ensure_all_finite=False
+             )
+             check_y_params = dict(ensure_2d=False, dtype=None)
+-            X, y = self._validate_data(
+-                X, y, validate_separately=(check_X_params, check_y_params)
++            X, y = validate_data(
++                self, X, y, validate_separately=(check_X_params, check_y_params)
+             )
+ 
+             missing_values_in_feature_mask = (
+@@ -483,15 +483,16 @@ def _validate_X_predict(self, X, check_input):
+         """Validate the training data on predict (probabilities)."""
+         if check_input:
+             if self._support_missing_values(X):
+-                force_all_finite = "allow-nan"
++                ensure_all_finite = "allow-nan"
+             else:
+-                force_all_finite = True
+-            X = self._validate_data(
++                ensure_all_finite = True
++            X = validate_data(
++                self,
+                 X,
+                 dtype=DTYPE,
+                 accept_sparse="csr",
+                 reset=False,
+-                force_all_finite=force_all_finite,
++                ensure_all_finite=ensure_all_finite,
+             )
+             if issparse(X) and (
+                 X.indices.dtype != np.intc or X.indptr.dtype != np.intc
+@@ -499,7 +500,7 @@ def _validate_X_predict(self, X, check_input):
+                 raise ValueError("No support for np.int64 index based sparse matrices")
+         else:
+             # The number of features is checked regardless of `check_input`
+-            self._check_n_features(X, reset=False)
++            _check_n_features(self, X, reset=False)
+         return X
+ 
+     def predict(self, X, check_input=True):
+@@ -689,6 +690,11 @@ def feature_importances_(self):
+ 
+         return self.tree_.compute_feature_importances()
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ # =============================================================================
+ # Public estimators

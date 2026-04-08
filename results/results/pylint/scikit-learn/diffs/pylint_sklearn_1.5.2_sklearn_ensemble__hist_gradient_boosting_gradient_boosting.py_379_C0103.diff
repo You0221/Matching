@@ -1,0 +1,12 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index 78f8456e969de..38ff9a7ba3ba2 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -376,7 +372,6 @@ def _check_categorical_features(self, X):
+         if _is_pandas_df(X):
+             X_is_dataframe = True
+             categorical_columns_mask = np.asarray(X.dtypes == "category")
+-            X_has_categorical_columns = categorical_columns_mask.any()
+         elif hasattr(X, "__dataframe__"):
+             X_is_dataframe = True
+             categorical_columns_mask = np.asarray(

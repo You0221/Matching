@@ -1,0 +1,24 @@
+diff --git a/lib/ansible/modules/git.py b/lib/ansible/modules/git.py
+index 26d4c59f924b1f..f7b5ae9752ffd5 100644
+--- a/lib/ansible/modules/git.py
++++ b/lib/ansible/modules/git.py
+@@ -366,16 +370,15 @@ def relocate_repo(module, result, repo_dir, old_repo_dir, worktree_dir):
+ 
+ 
+ def head_splitter(headfile, remote, module=None, fail_on_error=False):
+-    '''Extract the head reference'''
++    """Extract the head reference"""
+     # https://github.com/ansible/ansible-modules-core/pull/907
+ 
+     res = None
+     if os.path.exists(headfile):
+         rawdata = None
+         try:
+-            f = open(headfile, 'r')
+-            rawdata = f.readline()
+-            f.close()
++            with open(headfile, 'r') as f:
++                rawdata = f.readline()
+         except Exception:
+             if fail_on_error and module:
+                 module.fail_json(msg="Unable to read %s" % headfile)

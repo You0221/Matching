@@ -1,0 +1,15 @@
+diff --git a/tornado/httputil.py b/tornado/httputil.py
+index 9c341d47cc..7044aca02b 100644
+--- a/tornado/httputil.py
++++ b/tornado/httputil.py
+@@ -462,8 +587,8 @@ def _parse_body(self) -> None:
+ 
+     def __repr__(self) -> str:
+         attrs = ("protocol", "host", "method", "uri", "version", "remote_ip")
+-        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+-        return "%s(%s)" % (self.__class__.__name__, args)
++        args = ", ".join([f"{n}={getattr(self, n)!r}" for n in attrs])
++        return f"{self.__class__.__name__}({args})"
+ 
+ 
+ class HTTPInputError(Exception):

@@ -1,0 +1,38 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2143,22 +2180,30 @@ def fit(self, X, y, sample_weight=None, score_params=None):
+ 
+         for i, alpha in enumerate(np.atleast_1d(self.alphas)):
+             G_inverse_diag, c = solve(float(alpha), y, sqrt_sw, X_mean, *decomposition)
+-            if scorer is None:
++            if self.scoring is None:
+                 squared_errors = (c / G_inverse_diag) ** 2
+                 alpha_score = self._score_without_scorer(squared_errors=squared_errors)
+                 if self.store_cv_results:
+                     self.cv_results_[:, i] = squared_errors.ravel()
+             else:
+                 predictions = y - (c / G_inverse_diag)
++                # Rescale predictions back to original scale
++                if sample_weight is not None:  # avoid the unecessary division by ones
++                    if predictions.ndim > 1:
++                        predictions /= sqrt_sw[:, None]
++                    else:
++                        predictions /= sqrt_sw
++                predictions += y_offset
++
+                 if self.store_cv_results:
+                     self.cv_results_[:, i] = predictions.ravel()
+ 
+                 score_params = score_params or {}
+                 alpha_score = self._score(
+                     predictions=predictions,
+-                    y=y,
++                    y=unscaled_y,
+                     n_y=n_y,
+-                    scorer=scorer,
++                    scorer=self.scoring,
+                     score_params=score_params,
+                 )
+ 

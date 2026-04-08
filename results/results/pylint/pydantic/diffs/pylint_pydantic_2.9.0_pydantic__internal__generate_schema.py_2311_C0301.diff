@@ -1,0 +1,38 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 40ac2ddbdd9..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -2293,24 +2476,16 @@ def _apply_model_serializers(
+ 
+ _VALIDATOR_F_MATCH: Mapping[
+     tuple[FieldValidatorModes, Literal['no-info', 'with-info']],
+-    Callable[[Callable[..., Any], core_schema.CoreSchema, str | None], core_schema.CoreSchema],
++    Callable[[Callable[..., Any], core_schema.CoreSchema], core_schema.CoreSchema],
+ ] = {
+-    ('before', 'no-info'): lambda f, schema, _: core_schema.no_info_before_validator_function(f, schema),
+-    ('after', 'no-info'): lambda f, schema, _: core_schema.no_info_after_validator_function(f, schema),
+-    ('plain', 'no-info'): lambda f, _1, _2: core_schema.no_info_plain_validator_function(f),
+-    ('wrap', 'no-info'): lambda f, schema, _: core_schema.no_info_wrap_validator_function(f, schema),
+-    ('before', 'with-info'): lambda f, schema, field_name: core_schema.with_info_before_validator_function(
+-        f, schema, field_name=field_name
+-    ),
+-    ('after', 'with-info'): lambda f, schema, field_name: core_schema.with_info_after_validator_function(
+-        f, schema, field_name=field_name
+-    ),
+-    ('plain', 'with-info'): lambda f, _, field_name: core_schema.with_info_plain_validator_function(
+-        f, field_name=field_name
+-    ),
+-    ('wrap', 'with-info'): lambda f, schema, field_name: core_schema.with_info_wrap_validator_function(
+-        f, schema, field_name=field_name
+-    ),
++    ('before', 'no-info'): lambda f, schema: core_schema.no_info_before_validator_function(f, schema),
++    ('after', 'no-info'): lambda f, schema: core_schema.no_info_after_validator_function(f, schema),
++    ('plain', 'no-info'): lambda f, _: core_schema.no_info_plain_validator_function(f),
++    ('wrap', 'no-info'): lambda f, schema: core_schema.no_info_wrap_validator_function(f, schema),
++    ('before', 'with-info'): lambda f, schema: core_schema.with_info_before_validator_function(f, schema),
++    ('after', 'with-info'): lambda f, schema: core_schema.with_info_after_validator_function(f, schema),
++    ('plain', 'with-info'): lambda f, _: core_schema.with_info_plain_validator_function(f),
++    ('wrap', 'with-info'): lambda f, schema: core_schema.with_info_wrap_validator_function(f, schema),
+ }
+ 
+ 

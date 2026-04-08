@@ -1,0 +1,72 @@
+diff --git a/django/contrib/sessions/backends/signed_cookies.py b/django/contrib/sessions/backends/signed_cookies.py
+index dc41c6f12b0d..604cb99808f4 100644
+--- a/django/contrib/sessions/backends/signed_cookies.py
++++ b/django/contrib/sessions/backends/signed_cookies.py
+@@ -23,6 +23,9 @@ def load(self):
+             self.create()
+         return {}
+ 
++    async def aload(self):
++        return self.load()
++
+     def create(self):
+         """
+         To create a new key, set the modified flag so that the cookie is set
+@@ -30,6 +33,9 @@ def create(self):
+         """
+         self.modified = True
+ 
++    async def acreate(self):
++        return self.create()
++
+     def save(self, must_create=False):
+         """
+         To save, get the session key as a securely signed string and then set
+@@ -39,6 +45,9 @@ def save(self, must_create=False):
+         self._session_key = self._get_session_key()
+         self.modified = True
+ 
++    async def asave(self, must_create=False):
++        return self.save(must_create=must_create)
++
+     def exists(self, session_key=None):
+         """
+         This method makes sense when you're talking to a shared resource, but
+@@ -47,6 +56,9 @@ def exists(self, session_key=None):
+         """
+         return False
+ 
++    async def aexists(self, session_key=None):
++        return self.exists(session_key=session_key)
++
+     def delete(self, session_key=None):
+         """
+         To delete, clear the session key and the underlying data structure
+@@ -57,6 +69,9 @@ def delete(self, session_key=None):
+         self._session_cache = {}
+         self.modified = True
+ 
++    async def adelete(self, session_key=None):
++        return self.delete(session_key=session_key)
++
+     def cycle_key(self):
+         """
+         Keep the same data but with a new key. Call save() and it will
+@@ -64,6 +79,9 @@ def cycle_key(self):
+         """
+         self.save()
+ 
++    async def acycle_key(self):
++        return self.cycle_key()
++
+     def _get_session_key(self):
+         """
+         Instead of generating a random string, generate a secure url-safe
+@@ -79,3 +97,7 @@ def _get_session_key(self):
+     @classmethod
+     def clear_expired(cls):
+         pass
++
++    @classmethod
++    async def aclear_expired(cls):
++        pass

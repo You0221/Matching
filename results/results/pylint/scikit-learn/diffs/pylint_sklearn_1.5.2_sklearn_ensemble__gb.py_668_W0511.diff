@@ -1,0 +1,20 @@
+diff --git a/sklearn/ensemble/_gb.py b/sklearn/ensemble/_gb.py
+index 960e469a090cd..fded8a535413d 100644
+--- a/sklearn/ensemble/_gb.py
++++ b/sklearn/ensemble/_gb.py
+@@ -656,8 +655,13 @@ def fit(self, X, y, sample_weight=None, monitor=None):
+         # Since check_array converts both X and y to the same dtype, but the
+         # trees use different types for X and y, checking them separately.
+ 
+-        X, y = self._validate_data(
+-            X, y, accept_sparse=["csr", "csc", "coo"], dtype=DTYPE, multi_output=True
++        X, y = validate_data(
++            self,
++            X,
++            y,
++            accept_sparse=["csr", "csc", "coo"],
++            dtype=DTYPE,
++            multi_output=True,
+         )
+         sample_weight_is_none = sample_weight is None
+         sample_weight = _check_sample_weight(sample_weight, X)

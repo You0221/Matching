@@ -1,0 +1,106 @@
+diff --git a/lib/ansible/utils/display.py b/lib/ansible/utils/display.py
+index 82d47d5beb1ce3..717703b840a0d0 100644
+--- a/lib/ansible/utils/display.py
++++ b/lib/ansible/utils/display.py
+@@ -858,55 +823,84 @@ def banner_cowsay(self, msg: str, color: str | None = None) -> None:
+         (out, err) = cmd.communicate()
+         self.display(u"%s\n" % to_text(out), color=color)
+ 
+-    def error_as_warning(self, msg: str | None, exception: BaseException) -> None:
++    def error_as_warning(
++        self,
++        msg: str | None,
++        exception: BaseException,
++        *,
++        help_text: str | None = None,
++        obj: t.Any = None,
++    ) -> None:
+         """Display an exception as a warning."""
++        _skip_stackwalk = True
+ 
+-        error = _utils._create_error_summary(exception, _traceback.TracebackEvent.WARNING)
++        event = _error_factory.ControllerEventFactory.from_exception(exception, _traceback.is_traceback_enabled(_traceback.TracebackEvent.WARNING))
+ 
+         if msg:
+-            error = dataclasses.replace(error, details=(Detail(msg=msg),) + error.details)
++            if source_context := _error_utils.SourceContext.from_value(obj):
++                formatted_source_context = str(source_context)
++            else:
++                formatted_source_context = None
+ 
+-        warning = WarningSummary(
+-            details=error.details,
+-            formatted_traceback=error.formatted_traceback,
++            event = _messages.Event(
++                msg=msg,
++                help_text=help_text,
++                formatted_source_context=formatted_source_context,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.WARNING),
++                chain=_messages.EventChain(
++                    msg_reason=_errors.MSG_REASON_DIRECT_CAUSE,
++                    traceback_reason=_errors.TRACEBACK_REASON_EXCEPTION_DIRECT_WARNING,
++                    event=event,
++                ),
++            )
++
++        warning = _messages.WarningSummary(
++            event=event,
+         )
+ 
+-        if warning_ctx := _DeferredWarningContext.current(optional=True):
++        if warning_ctx := _display_utils.DeferredWarningContext.current(optional=True):
+             warning_ctx.capture(warning)
+             return
+ 
+-        self._warning(warning, wrap_text=False)
++        self._warning(warning)
+ 
+     def error(self, msg: str | BaseException, wrap_text: bool = True, stderr: bool = True) -> None:
+         """Display an error message."""
++        _skip_stackwalk = True
++
++        # deprecated: description='The wrap_text argument has no effect.' core_version='2.23'
++        # deprecated: description='The stderr argument has no effect.' core_version='2.23'
+ 
+         # This is the pre-proxy half of the `error` implementation.
+         # Any logic that must occur on workers needs to be implemented here.
+ 
+         if isinstance(msg, BaseException):
+-            error = _utils._create_error_summary(msg, _traceback.TracebackEvent.ERROR)
+-            wrap_text = False
++            event = _error_factory.ControllerEventFactory.from_exception(msg, _traceback.is_traceback_enabled(_traceback.TracebackEvent.ERROR))
+         else:
+-            error = ErrorSummary(details=(Detail(msg=msg),), formatted_traceback=_traceback.maybe_capture_traceback(_traceback.TracebackEvent.ERROR))
++            event = _messages.Event(
++                msg=msg,
++                formatted_traceback=_traceback.maybe_capture_traceback(msg, _traceback.TracebackEvent.ERROR),
++            )
+ 
+-        self._error(error, wrap_text=wrap_text, stderr=stderr)
++        error = _messages.ErrorSummary(
++            event=event,
++        )
++
++        self._error(error, stderr=True)
+ 
+     @_proxy
+-    def _error(self, error: ErrorSummary, wrap_text: bool, stderr: bool) -> None:
++    def _error(self, error: _messages.ErrorSummary, stderr: bool) -> None:
+         """Internal implementation detail, use `error` instead."""
+ 
+         # This is the post-proxy half of the `error` implementation.
+         # Any logic that must occur in the primary controller process needs to be implemented here.
+ 
+-        msg = format_message(error)
++        msg = _display_utils.format_message(error, _traceback.is_traceback_enabled(_traceback.TracebackEvent.ERROR))
+         msg = f'[ERROR]: {msg}'
+ 
+         if self._deduplicate(msg, self._errors):
+             return
+ 
+-        # DTFIX-RELEASE: what should we do with wrap_message?
+-        msg = self._wrap_message(msg=msg, wrap_text=wrap_text)
+-
+         self.display(msg, color=C.config.get_config_value('COLOR_ERROR'), stderr=stderr, caplevel=-1)
+ 
+     @staticmethod

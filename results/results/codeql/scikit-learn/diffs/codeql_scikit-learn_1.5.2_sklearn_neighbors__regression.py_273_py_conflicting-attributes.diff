@@ -1,0 +1,17 @@
+diff --git a/sklearn/neighbors/_regression.py b/sklearn/neighbors/_regression.py
+index 2897c1ce409e8..0ee0a340b8153 100644
+--- a/sklearn/neighbors/_regression.py
++++ b/sklearn/neighbors/_regression.py
+@@ -458,8 +459,10 @@ def predict(self, X):
+         Parameters
+         ----------
+         X : {array-like, sparse matrix} of shape (n_queries, n_features), \
+-                or (n_queries, n_indexed) if metric == 'precomputed'
+-            Test samples.
++                or (n_queries, n_indexed) if metric == 'precomputed', or None
++            Test samples. If `None`, predictions for all indexed points are
++            returned; in this case, points are not considered their own
++            neighbors.
+ 
+         Returns
+         -------

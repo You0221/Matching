@@ -1,0 +1,16 @@
+diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py
+index 055ccc1c6a202..291c3972eb3e5 100644
+--- a/sklearn/linear_model/_logistic.py
++++ b/sklearn/linear_model/_logistic.py
+@@ -1422,10 +1422,7 @@ def predict_proba(self, X):
+ 
+         ovr = self.multi_class in ["ovr", "warn"] or (
+             self.multi_class in ["auto", "deprecated"]
+-            and (
+-                self.classes_.size <= 2
+-                or self.solver in ("liblinear", "newton-cholesky")
+-            )
++            and (self.classes_.size <= 2 or self.solver == "liblinear")
+         )
+         if ovr:
+             return super()._predict_proba_lr(X)

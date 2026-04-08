@@ -1,0 +1,44 @@
+diff --git a/pydantic/type_adapter.py b/pydantic/type_adapter.py
+index 3619fdff3c7..b32c05cd3c4 100644
+--- a/pydantic/type_adapter.py
++++ b/pydantic/type_adapter.py
+@@ -203,39 +201,6 @@ def __init__(
+         _parent_depth: int = 2,
+         module: str | None = None,
+     ) -> None:
+-        """Initializes the TypeAdapter object.
+-
+-        Args:
+-            type: The type associated with the `TypeAdapter`.
+-            config: Configuration for the `TypeAdapter`, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+-            _parent_depth: depth at which to search the parent namespace to construct the local namespace.
+-            module: The module that passes to plugin if provided.
+-
+-        !!! note
+-            You cannot use the `config` argument when instantiating a `TypeAdapter` if the type you're using has its own
+-            config that cannot be overridden (ex: `BaseModel`, `TypedDict`, and `dataclass`). A
+-            [`type-adapter-config-unused`](../errors/usage_errors.md#type-adapter-config-unused) error will be raised in this case.
+-
+-        !!! note
+-            The `_parent_depth` argument is named with an underscore to suggest its private nature and discourage use.
+-            It may be deprecated in a minor version, so we only recommend using it if you're
+-            comfortable with potential change in behavior / support.
+-
+-        ??? tip "Compatibility with `mypy`"
+-            Depending on the type used, `mypy` might raise an error when instantiating a `TypeAdapter`. As a workaround, you can explicitly
+-            annotate your variable:
+-
+-            ```py
+-            from typing import Union
+-
+-            from pydantic import TypeAdapter
+-
+-            ta: TypeAdapter[Union[str, int]] = TypeAdapter(Union[str, int])  # type: ignore[arg-type]
+-            ```
+-
+-        Returns:
+-            A type adapter configured for the specified `type`.
+-        """
+         if _type_has_config(type) and config is not None:
+             raise PydanticUserError(
+                 'Cannot use `config` when the type is a BaseModel, dataclass or TypedDict.'

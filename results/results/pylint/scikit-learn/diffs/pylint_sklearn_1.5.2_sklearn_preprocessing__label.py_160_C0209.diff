@@ -1,0 +1,40 @@
+diff --git a/sklearn/preprocessing/_label.py b/sklearn/preprocessing/_label.py
+index 301dc19bb1985..345d55556459b 100644
+--- a/sklearn/preprocessing/_label.py
++++ b/sklearn/preprocessing/_label.py
+@@ -150,19 +147,28 @@ def inverse_transform(self, y):
+             Original encoding.
+         """
+         check_is_fitted(self)
++        xp, _ = get_namespace(y)
+         y = column_or_1d(y, warn=True)
+         # inverse transform of empty array is empty array
+         if _num_samples(y) == 0:
+-            return np.array([])
++            return xp.asarray([])
+ 
+-        diff = np.setdiff1d(y, np.arange(len(self.classes_)))
+-        if len(diff):
++        diff = _setdiff1d(
++            ar1=y,
++            ar2=xp.arange(self.classes_.shape[0], device=device(y)),
++            xp=xp,
++        )
++        if diff.shape[0]:
+             raise ValueError("y contains previously unseen labels: %s" % str(diff))
+-        y = np.asarray(y)
+-        return self.classes_[y]
++        y = xp.asarray(y)
++        return xp.take(self.classes_, y, axis=0)
+ 
+-    def _more_tags(self):
+-        return {"X_types": ["1dlabels"]}
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.array_api_support = True
++        tags.input_tags.two_d_array = False
++        tags.target_tags.one_d_labels = True
++        return tags
+ 
+ 
+ class LabelBinarizer(TransformerMixin, BaseEstimator, auto_wrap_output_keys=None):

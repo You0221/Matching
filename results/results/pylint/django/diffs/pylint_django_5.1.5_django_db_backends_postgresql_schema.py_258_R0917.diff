@@ -1,0 +1,21 @@
+diff --git a/django/db/backends/postgresql/schema.py b/django/db/backends/postgresql/schema.py
+index 0c8548a5d663..964009988cbb 100644
+--- a/django/db/backends/postgresql/schema.py
++++ b/django/db/backends/postgresql/schema.py
+@@ -277,8 +282,14 @@ def _alter_field(
+             strict,
+         )
+         # Added an index? Create any PostgreSQL-specific indexes.
+-        if (not (old_field.db_index or old_field.unique) and new_field.db_index) or (
+-            not old_field.unique and new_field.unique
++        if (
++            (not (old_field.db_index or old_field.unique) and new_field.db_index)
++            or (not old_field.unique and new_field.unique)
++            or (
++                self._is_changing_type_of_indexed_text_column(
++                    old_field, old_type, new_type
++                )
++            )
+         ):
+             like_index_statement = self._create_like_index_sql(model, new_field)
+             if like_index_statement is not None:

@@ -1,0 +1,22 @@
+diff --git a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+index a83b1dbd0f4b9..78f8456e969de 100644
+--- a/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
++++ b/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py
+@@ -580,6 +583,17 @@ def fit(self, X, y, sample_weight=None):
+ 
+         self._validate_parameters()
+         monotonic_cst = _check_monotonic_cst(self, self.monotonic_cst)
++        # _preprocess_X places the categorical features at the beginning,
++        # change the order of monotonic_cst accordingly
++        if self.is_categorical_ is not None:
++            monotonic_cst_remapped = np.concatenate(
++                (
++                    monotonic_cst[self.is_categorical_],
++                    monotonic_cst[~self.is_categorical_],
++                )
++            )
++        else:
++            monotonic_cst_remapped = monotonic_cst
+ 
+         # used for validation in predict
+         n_samples, self._n_features = X.shape

@@ -1,0 +1,14 @@
+diff --git a/django/db/backends/base/base.py b/django/db/backends/base/base.py
+index 7a1dfd30d13b..aa9cdb574879 100644
+--- a/django/db/backends/base/base.py
++++ b/django/db/backends/base/base.py
+@@ -175,7 +175,8 @@ def queries(self):
+         if len(self.queries_log) == self.queries_log.maxlen:
+             warnings.warn(
+                 "Limit for query logging exceeded, only the last {} queries "
+-                "will be returned.".format(self.queries_log.maxlen)
++                "will be returned.".format(self.queries_log.maxlen),
++                stacklevel=2,
+             )
+         return list(self.queries_log)
+ 

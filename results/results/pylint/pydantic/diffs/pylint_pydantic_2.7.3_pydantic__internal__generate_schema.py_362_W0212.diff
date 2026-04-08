@@ -1,0 +1,219 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -319,76 +332,173 @@ class GenerateSchema:
+     def __init__(
+         self,
+         config_wrapper: ConfigWrapper,
+-        types_namespace: dict[str, Any] | None,
++        ns_resolver: NsResolver | None = None,
+         typevars_map: dict[Any, Any] | None = None,
+     ) -> None:
+-        # we need a stack for recursing into child models
++        # we need a stack for recursing into nested models
+         self._config_wrapper_stack = ConfigWrapperStack(config_wrapper)
+-        self._types_namespace_stack = TypesNamespaceStack(types_namespace)
++        self._ns_resolver = ns_resolver or NsResolver()
+         self._typevars_map = typevars_map
+         self.field_name_stack = _FieldNameStack()
+         self.model_type_stack = _ModelTypeStack()
+         self.defs = _Definitions()
+ 
+-    @classmethod
+-    def __from_parent(
+-        cls,
+-        config_wrapper_stack: ConfigWrapperStack,
+-        types_namespace_stack: TypesNamespaceStack,
+-        model_type_stack: _ModelTypeStack,
+-        typevars_map: dict[Any, Any] | None,
+-        defs: _Definitions,
+-    ) -> GenerateSchema:
+-        obj = cls.__new__(cls)
+-        obj._config_wrapper_stack = config_wrapper_stack
+-        obj._types_namespace_stack = types_namespace_stack
+-        obj.model_type_stack = model_type_stack
+-        obj._typevars_map = typevars_map
+-        obj.field_name_stack = _FieldNameStack()
+-        obj.defs = defs
+-        return obj
++    def __init_subclass__(cls) -> None:
++        super().__init_subclass__()
++        warnings.warn(
++            'Subclassing `GenerateSchema` is not supported. The API is highly subject to change in minor versions.',
++            UserWarning,
++            stacklevel=2,
++        )
+ 
+     @property
+     def _config_wrapper(self) -> ConfigWrapper:
+         return self._config_wrapper_stack.tail
+ 
+     @property
+-    def _types_namespace(self) -> dict[str, Any] | None:
+-        return self._types_namespace_stack.tail
+-
+-    @property
+-    def _current_generate_schema(self) -> GenerateSchema:
+-        cls = self._config_wrapper.schema_generator or GenerateSchema
+-        return cls.__from_parent(
+-            self._config_wrapper_stack,
+-            self._types_namespace_stack,
+-            self.model_type_stack,
+-            self._typevars_map,
+-            self.defs,
+-        )
++    def _types_namespace(self) -> NamespacesTuple:
++        return self._ns_resolver.types_namespace
+ 
+     @property
+     def _arbitrary_types(self) -> bool:
+         return self._config_wrapper.arbitrary_types_allowed
+ 
+-    def str_schema(self) -> CoreSchema:
+-        """Generate a CoreSchema for `str`"""
+-        return core_schema.str_schema()
+-
+     # the following methods can be overridden but should be considered
+     # unstable / private APIs
+-    def _list_schema(self, tp: Any, items_type: Any) -> CoreSchema:
++    def _list_schema(self, items_type: Any) -> CoreSchema:
+         return core_schema.list_schema(self.generate_schema(items_type))
+ 
+-    def _dict_schema(self, tp: Any, keys_type: Any, values_type: Any) -> CoreSchema:
++    def _dict_schema(self, keys_type: Any, values_type: Any) -> CoreSchema:
+         return core_schema.dict_schema(self.generate_schema(keys_type), self.generate_schema(values_type))
+ 
+-    def _set_schema(self, tp: Any, items_type: Any) -> CoreSchema:
++    def _set_schema(self, items_type: Any) -> CoreSchema:
+         return core_schema.set_schema(self.generate_schema(items_type))
+ 
+-    def _frozenset_schema(self, tp: Any, items_type: Any) -> CoreSchema:
++    def _frozenset_schema(self, items_type: Any) -> CoreSchema:
+         return core_schema.frozenset_schema(self.generate_schema(items_type))
+ 
++    def _enum_schema(self, enum_type: type[Enum]) -> CoreSchema:
++        cases: list[Any] = list(enum_type.__members__.values())
++
++        enum_ref = get_type_ref(enum_type)
++        description = None if not enum_type.__doc__ else inspect.cleandoc(enum_type.__doc__)
++        if (
++            description == 'An enumeration.'
++        ):  # This is the default value provided by enum.EnumMeta.__new__; don't use it
++            description = None
++        js_updates = {'title': enum_type.__name__, 'description': description}
++        js_updates = {k: v for k, v in js_updates.items() if v is not None}
++
++        sub_type: Literal['str', 'int', 'float'] | None = None
++        if issubclass(enum_type, int):
++            sub_type = 'int'
++            value_ser_type: core_schema.SerSchema = core_schema.simple_ser_schema('int')
++        elif issubclass(enum_type, str):
++            # this handles `StrEnum` (3.11 only), and also `Foobar(str, Enum)`
++            sub_type = 'str'
++            value_ser_type = core_schema.simple_ser_schema('str')
++        elif issubclass(enum_type, float):
++            sub_type = 'float'
++            value_ser_type = core_schema.simple_ser_schema('float')
++        else:
++            # TODO this is an ugly hack, how do we trigger an Any schema for serialization?
++            value_ser_type = core_schema.plain_serializer_function_ser_schema(lambda x: x)
++
++        if cases:
++
++            def get_json_schema(schema: CoreSchema, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
++                json_schema = handler(schema)
++                original_schema = handler.resolve_ref_schema(json_schema)
++                original_schema.update(js_updates)
++                return json_schema
++
++            # we don't want to add the missing to the schema if it's the default one
++            default_missing = getattr(enum_type._missing_, '__func__', None) is Enum._missing_.__func__  # pyright: ignore[reportFunctionMemberAccess]
++            enum_schema = core_schema.enum_schema(
++                enum_type,
++                cases,
++                sub_type=sub_type,
++                missing=None if default_missing else enum_type._missing_,
++                ref=enum_ref,
++                metadata={'pydantic_js_functions': [get_json_schema]},
++            )
++
++            if self._config_wrapper.use_enum_values:
++                enum_schema = core_schema.no_info_after_validator_function(
++                    attrgetter('value'), enum_schema, serialization=value_ser_type
++                )
++
++            return enum_schema
++
++        else:
++
++            def get_json_schema_no_cases(_, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
++                json_schema = handler(core_schema.enum_schema(enum_type, cases, sub_type=sub_type, ref=enum_ref))
++                original_schema = handler.resolve_ref_schema(json_schema)
++                original_schema.update(js_updates)
++                return json_schema
++
++            # Use an isinstance check for enums with no cases.
++            # The most important use case for this is creating TypeVar bounds for generics that should
++            # be restricted to enums. This is more consistent than it might seem at first, since you can only
++            # subclass enum.Enum (or subclasses of enum.Enum) if all parent classes have no cases.
++            # We use the get_json_schema function when an Enum subclass has been declared with no cases
++            # so that we can still generate a valid json schema.
++            return core_schema.is_instance_schema(
++                enum_type,
++                metadata={'pydantic_js_functions': [get_json_schema_no_cases]},
++            )
++
++    def _ip_schema(self, tp: Any) -> CoreSchema:
++        from ._validators import IP_VALIDATOR_LOOKUP, IpType
++
++        ip_type_json_schema_format: dict[type[IpType], str] = {
++            IPv4Address: 'ipv4',
++            IPv4Network: 'ipv4network',
++            IPv4Interface: 'ipv4interface',
++            IPv6Address: 'ipv6',
++            IPv6Network: 'ipv6network',
++            IPv6Interface: 'ipv6interface',
++        }
++
++        def ser_ip(ip: Any, info: core_schema.SerializationInfo) -> str | IpType:
++            if not isinstance(ip, (tp, str)):
++                raise PydanticSerializationUnexpectedValue(
++                    f"Expected `{tp}` but got `{type(ip)}` with value `'{ip}'` - serialized value may not be as expected."
++                )
++            if info.mode == 'python':
++                return ip
++            return str(ip)
++
++        return core_schema.lax_or_strict_schema(
++            lax_schema=core_schema.no_info_plain_validator_function(IP_VALIDATOR_LOOKUP[tp]),
++            strict_schema=core_schema.json_or_python_schema(
++                json_schema=core_schema.no_info_after_validator_function(tp, core_schema.str_schema()),
++                python_schema=core_schema.is_instance_schema(tp),
++            ),
++            serialization=core_schema.plain_serializer_function_ser_schema(ser_ip, info_arg=True, when_used='always'),
++            metadata={
++                'pydantic_js_functions': [lambda _1, _2: {'type': 'string', 'format': ip_type_json_schema_format[tp]}]
++            },
++        )
++
++    def _fraction_schema(self) -> CoreSchema:
++        """Support for [`fractions.Fraction`][fractions.Fraction]."""
++        from ._validators import fraction_validator
++
++        # TODO: note, this is a fairly common pattern, re lax / strict for attempted type coercion,
++        # can we use a helper function to reduce boilerplate?
++        return core_schema.lax_or_strict_schema(
++            lax_schema=core_schema.no_info_plain_validator_function(fraction_validator),
++            strict_schema=core_schema.json_or_python_schema(
++                json_schema=core_schema.no_info_plain_validator_function(fraction_validator),
++                python_schema=core_schema.is_instance_schema(Fraction),
++            ),
++            # use str serialization to guarantee round trip behavior
++            serialization=core_schema.to_string_ser_schema(when_used='always'),
++            metadata={'pydantic_js_functions': [lambda _1, _2: {'type': 'string', 'format': 'fraction'}]},
++        )
++
+     def _arbitrary_type_schema(self, tp: Any) -> CoreSchema:
+         if not isinstance(tp, type):
+             warn(

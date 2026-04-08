@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_ridge.py b/sklearn/linear_model/_ridge.py
+index b336565cff1f6..9a94ba1caec1c 100644
+--- a/sklearn/linear_model/_ridge.py
++++ b/sklearn/linear_model/_ridge.py
+@@ -2131,8 +2170,6 @@ def fit(self, X, y, sample_weight=None, score_params=None):
+ 
+         X_mean, *decomposition = decompose(X, y, sqrt_sw)
+ 
+-        scorer = self._get_scorer()
+-
+         n_y = 1 if len(y.shape) == 1 else y.shape[1]
+         n_alphas = 1 if np.ndim(self.alphas) == 0 else len(self.alphas)
+ 

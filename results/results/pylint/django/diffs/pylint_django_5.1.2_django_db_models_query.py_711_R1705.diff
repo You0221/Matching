@@ -1,0 +1,13 @@
+diff --git a/django/db/models/query.py b/django/db/models/query.py
+index cb5c63c0d17c..b898f3ec1af4 100644
+--- a/django/db/models/query.py
++++ b/django/db/models/query.py
+@@ -740,7 +728,7 @@ def _check_bulk_create_options(
+                     "bulk_create() can only be used with concrete fields in "
+                     "update_fields."
+                 )
+-            if any(f.primary_key for f in update_fields):
++            if any(f in self.model._meta.pk_fields for f in update_fields):
+                 raise ValueError(
+                     "bulk_create() cannot be used with primary keys in "
+                     "update_fields."

@@ -1,0 +1,27 @@
+diff --git a/django/conf/__init__.py b/django/conf/__init__.py
+index 22f1eaba0677..5568d7cc83cf 100644
+--- a/django/conf/__init__.py
++++ b/django/conf/__init__.py
+@@ -155,22 +152,6 @@ def _show_deprecation_warning(self, message, category):
+         if not filename.startswith(os.path.dirname(django.__file__)):
+             warnings.warn(message, category, stacklevel=2)
+ 
+-    # RemovedInDjango51Warning.
+-    @property
+-    def DEFAULT_FILE_STORAGE(self):
+-        self._show_deprecation_warning(
+-            DEFAULT_FILE_STORAGE_DEPRECATED_MSG, RemovedInDjango51Warning
+-        )
+-        return self.__getattr__("DEFAULT_FILE_STORAGE")
+-
+-    # RemovedInDjango51Warning.
+-    @property
+-    def STATICFILES_STORAGE(self):
+-        self._show_deprecation_warning(
+-            STATICFILES_STORAGE_DEPRECATED_MSG, RemovedInDjango51Warning
+-        )
+-        return self.__getattr__("STATICFILES_STORAGE")
+-
+ 
+ class Settings:
+     def __init__(self, settings_module):

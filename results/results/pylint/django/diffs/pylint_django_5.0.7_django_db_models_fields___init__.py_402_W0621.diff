@@ -1,0 +1,13 @@
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 5f8f59d69f12..66d79626fdb4 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -400,7 +405,7 @@ def _check_db_default(self, databases=None, **kwargs):
+                 continue
+             connection = connections[db]
+ 
+-            if not getattr(self.db_default, "allowed_default", False) and (
++            if not getattr(self._db_default_expression, "allowed_default", False) and (
+                 connection.features.supports_expression_defaults
+             ):
+                 msg = f"{self.db_default} cannot be used in db_default."

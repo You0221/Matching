@@ -1,0 +1,23 @@
+diff --git a/django/forms/fields.py b/django/forms/fields.py
+index 4ec7b7aee74f..4bd9c352f270 100644
+--- a/django/forms/fields.py
++++ b/django/forms/fields.py
+@@ -1303,6 +1310,7 @@ def __init__(self, *, protocol="both", unpack_ipv4=False, **kwargs):
+         self.default_validators = validators.ip_address_validators(
+             protocol, unpack_ipv4
+         )
++        kwargs.setdefault("max_length", MAX_IPV6_ADDRESS_LENGTH)
+         super().__init__(**kwargs)
+ 
+     def to_python(self, value):
+@@ -1310,7 +1318,9 @@ def to_python(self, value):
+             return ""
+         value = value.strip()
+         if value and ":" in value:
+-            return clean_ipv6_address(value, self.unpack_ipv4)
++            return clean_ipv6_address(
++                value, self.unpack_ipv4, max_length=self.max_length
++            )
+         return value
+ 
+ 

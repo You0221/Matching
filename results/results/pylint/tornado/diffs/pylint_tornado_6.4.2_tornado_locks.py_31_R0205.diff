@@ -1,0 +1,13 @@
+diff --git a/tornado/locks.py b/tornado/locks.py
+index 1bcec1b3af..9ee1f2f0f3 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -28,7 +28,7 @@
+ __all__ = ["Condition", "Event", "Semaphore", "BoundedSemaphore", "Lock"]
+ 
+ 
+-class _TimeoutGarbageCollector(object):
++class _TimeoutGarbageCollector:
+     """Base class for objects that periodically clean up timed-out waiters.
+ 
+     Avoids memory leak in a common pattern like:

@@ -1,0 +1,37 @@
+diff --git a/django/db/backends/base/schema.py b/django/db/backends/base/schema.py
+index 493a47548a56..630324812720 100644
+--- a/django/db/backends/base/schema.py
++++ b/django/db/backends/base/schema.py
+@@ -297,7 +318,7 @@ def _iter_column_sql(
+         # Work out nullability.
+         null = field.null
+         # Add database default.
+-        if field.db_default is not NOT_PROVIDED:
++        if field.has_db_default():
+             default_sql, default_params = self.db_default_sql(field)
+             yield f"DEFAULT {default_sql}"
+             params.extend(default_params)
+@@ -317,9 +338,9 @@ def _iter_column_sql(
+             if default_value is not None:
+                 column_default = "DEFAULT " + self._column_default_sql(field)
+                 if self.connection.features.requires_literal_defaults:
+-                    # Some databases can't take defaults as a parameter (Oracle).
+-                    # If this is the case, the individual schema backend should
+-                    # implement prepare_default().
++                    # Some databases can't take defaults as a parameter
++                    # (Oracle, SQLite). If this is the case, the individual
++                    # schema backend should implement prepare_default().
+                     yield column_default % self.prepare_default(default_value)
+                 else:
+                     yield column_default
+@@ -333,7 +354,9 @@ def _iter_column_sql(
+         ):
+             null = True
+         if field.generated:
+-            yield self._column_generated_sql(field)
++            generated_sql, generated_params = self._column_generated_sql(field)
++            params.extend(generated_params)
++            yield generated_sql
+         elif not null:
+             yield "NOT NULL"
+         elif not self.connection.features.implied_column_null:

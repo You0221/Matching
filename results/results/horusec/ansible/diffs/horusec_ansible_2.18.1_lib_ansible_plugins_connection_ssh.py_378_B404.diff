@@ -1,0 +1,82 @@
+diff --git a/lib/ansible/plugins/connection/ssh.py b/lib/ansible/plugins/connection/ssh.py
+index 83ff03631e6e86..36b4fdcc377b39 100644
+--- a/lib/ansible/plugins/connection/ssh.py
++++ b/lib/ansible/plugins/connection/ssh.py
+@@ -357,45 +393,70 @@
+         type: string
+         description:
+           - "PKCS11 SmartCard provider such as opensc, example: /usr/local/lib/opensc-pkcs11.so"
+-          - Requires sshpass version 1.06+, sshpass must support the -P option.
+         env: [{name: ANSIBLE_PKCS11_PROVIDER}]
+         ini:
+           - {key: pkcs11_provider, section: ssh_connection}
+         vars:
+           - name: ansible_ssh_pkcs11_provider
+-'''
++      verbosity:
++        version_added: '2.19'
++        default: 0
++        type: int
++        description:
++          - Requested verbosity level for the SSH CLI.
++        env: [{name: ANSIBLE_SSH_VERBOSITY}]
++        ini:
++          - {key: verbosity, section: ssh_connection}
++        vars:
++          - name: ansible_ssh_verbosity
++"""
+ 
+ import collections.abc as c
++import argparse
+ import errno
++import contextlib
+ import fcntl
+ import hashlib
+ import io
++import json
+ import os
++import pathlib
+ import pty
+ import re
+ import selectors
+ import shlex
++import shutil
+ import subprocess
++import sys
++import tempfile
+ import time
+ import typing as t
+-
+ from functools import wraps
++from multiprocessing.shared_memory import SharedMemory
++
++from ansible import constants as C
+ from ansible.errors import (
+     AnsibleAuthenticationFailure,
+     AnsibleConnectionFailure,
+     AnsibleError,
+     AnsibleFileNotFound,
+ )
+-from ansible.module_utils.six import PY3, text_type, binary_type
+ from ansible.module_utils.common.text.converters import to_bytes, to_native, to_text
+ from ansible.plugins.connection import ConnectionBase, BUFSIZE
+-from ansible.plugins.shell.powershell import _parse_clixml
++from ansible.plugins.shell.powershell import _replace_stderr_clixml
+ from ansible.utils.display import Display
+ from ansible.utils.path import unfrackpath, makedirs_safe
++from ansible._internal._ssh import _ssh_agent
+ 
+-display = Display()
++try:
++    from cryptography.hazmat.primitives import serialization
++except ImportError:
++    HAS_CRYPTOGRAPHY = False
++else:
++    HAS_CRYPTOGRAPHY = True
+ 
+-P = t.ParamSpec('P')
++
++display = Display()
+ 
+ # error messages that indicate 255 return code is not from ssh itself.
+ b_NOT_SSH_ERRORS = (b'Traceback (most recent call last):',  # Python-2.6 when there's an exception

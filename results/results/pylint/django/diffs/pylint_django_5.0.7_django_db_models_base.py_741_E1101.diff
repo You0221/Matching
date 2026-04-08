@@ -1,0 +1,47 @@
+diff --git a/django/db/models/base.py b/django/db/models/base.py
+index 80503d118af0..d7d207901b90 100644
+--- a/django/db/models/base.py
++++ b/django/db/models/base.py
+@@ -728,24 +741,33 @@ def refresh_from_db(self, using=None, fields=None):
+                 # This field wasn't refreshed - skip ahead.
+                 continue
+             setattr(self, field.attname, getattr(db_instance, field.attname))
+-            # Clear cached foreign keys.
+-            if field.is_relation and field.is_cached(self):
+-                field.delete_cached_value(self)
++            # Clear or copy cached foreign keys.
++            if field.is_relation:
++                if field.is_cached(db_instance):
++                    field.set_cached_value(self, field.get_cached_value(db_instance))
++                elif field.is_cached(self):
++                    field.delete_cached_value(self)
+ 
+         # Clear cached relations.
+-        for field in self._meta.related_objects:
+-            if field.is_cached(self):
+-                field.delete_cached_value(self)
++        for rel in self._meta.related_objects:
++            if (fields is None or rel.name in fields) and rel.is_cached(self):
++                rel.delete_cached_value(self)
+ 
+         # Clear cached private relations.
+         for field in self._meta.private_fields:
+-            if field.is_relation and field.is_cached(self):
++            if (
++                (fields is None or field.name in fields)
++                and field.is_relation
++                and field.is_cached(self)
++            ):
+                 field.delete_cached_value(self)
+ 
+         self._state.db = db_instance._state.db
+ 
+-    async def arefresh_from_db(self, using=None, fields=None):
+-        return await sync_to_async(self.refresh_from_db)(using=using, fields=fields)
++    async def arefresh_from_db(self, using=None, fields=None, from_queryset=None):
++        return await sync_to_async(self.refresh_from_db)(
++            using=using, fields=fields, from_queryset=from_queryset
++        )
+ 
+     def serializable_value(self, field_name):
+         """

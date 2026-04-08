@@ -1,0 +1,13 @@
+diff --git a/django/db/migrations/operations/models.py b/django/db/migrations/operations/models.py
+index b18ef553695e..266a3efadcc4 100644
+--- a/django/db/migrations/operations/models.py
++++ b/django/db/migrations/operations/models.py
+@@ -876,6 +934,8 @@ def model_name_lower(self):
+ class AddIndex(IndexOperation):
+     """Add an index on a model."""
+ 
++    category = OperationCategory.ADDITION
++
+     def __init__(self, model_name, index):
+         self.model_name = model_name
+         if not index.name:

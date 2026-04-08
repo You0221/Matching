@@ -1,0 +1,16 @@
+diff --git a/django/db/migrations/state.py b/django/db/migrations/state.py
+index 42a2c80a5e21..92716aa5d6f5 100644
+--- a/django/db/migrations/state.py
++++ b/django/db/migrations/state.py
+@@ -237,6 +245,11 @@ def add_constraint(self, app_label, model_name, constraint):
+     def remove_constraint(self, app_label, model_name, constraint_name):
+         self._remove_option(app_label, model_name, "constraints", constraint_name)
+ 
++    def alter_constraint(self, app_label, model_name, constraint_name, constraint):
++        self._alter_option(
++            app_label, model_name, "constraints", constraint_name, constraint
++        )
++
+     def add_field(self, app_label, model_name, name, field, preserve_default):
+         # If preserve default is off, don't use the default for future state.
+         if not preserve_default:

@@ -1,0 +1,15 @@
+diff --git a/pydantic/_internal/_utils.py b/pydantic/_internal/_utils.py
+index abe89c83449..f33464987bc 100644
+--- a/pydantic/_internal/_utils.py
++++ b/pydantic/_internal/_utils.py
+@@ -420,8 +421,9 @@ def __get__(self, instance: None, objtype: type[_ModelT]) -> _RT: ...
+     def __get__(self, instance: _ModelT, objtype: type[_ModelT]) -> _RT: ...
+     def __get__(self, instance: _ModelT | None, objtype: type[_ModelT]) -> _RT:
+         if instance is not None:
++            attr_name = self.fget.__name__ if sys.version_info >= (3, 10) else self.fget.__func__.__name__
+             warnings.warn(
+-                'Accessing this attribute on the instance is deprecated, and will be removed in Pydantic V3. '
++                f'Accessing the {attr_name!r} attribute on the instance is deprecated. '
+                 'Instead, you should access this attribute from the model class.',
+                 category=PydanticDeprecatedSince211,
+                 stacklevel=2,

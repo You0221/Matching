@@ -1,0 +1,20 @@
+diff --git a/pydantic/functional_validators.py b/pydantic/functional_validators.py
+index be96df045a8..2eed4ef8fc5 100644
+--- a/pydantic/functional_validators.py
++++ b/pydantic/functional_validators.py
+@@ -143,11 +137,13 @@ def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaH
+                 func,
+                 schema=schema,
+                 field_name=handler.field_name,
+-                metadata=metadata,
++                json_schema_input_schema=input_schema,
+             )
+         else:
+             func = cast(core_schema.NoInfoValidatorFunction, self.func)
+-            return core_schema.no_info_before_validator_function(func, schema=schema, metadata=metadata)
++            return core_schema.no_info_before_validator_function(
++                func, schema=schema, json_schema_input_schema=input_schema
++            )
+ 
+     @classmethod
+     def _from_decorator(cls, decorator: _decorators.Decorator[_decorators.FieldValidatorDecoratorInfo]) -> Self:

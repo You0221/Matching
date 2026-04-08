@@ -1,0 +1,13 @@
+diff --git a/benchmarks/benchmarks/bench_array_coercion.py b/benchmarks/benchmarks/bench_array_coercion.py
+index ca1f3cc83a3f..ae9c040970d8 100644
+--- a/benchmarks/benchmarks/bench_array_coercion.py
++++ b/benchmarks/benchmarks/bench_array_coercion.py
+@@ -38,7 +38,7 @@ def time_asarray(self, array_like):
+     def time_asarray_dtype(self, array_like):
+         np.asarray(array_like, dtype=self.int64)
+ 
+-    def time_asarray_dtype(self, array_like):
++    def time_asarray_dtype_order(self, array_like):
+         np.asarray(array_like, dtype=self.int64, order="F")
+ 
+     def time_asanyarray(self, array_like):

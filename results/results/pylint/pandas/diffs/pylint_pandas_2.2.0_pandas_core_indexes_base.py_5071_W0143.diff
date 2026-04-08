@@ -1,0 +1,16 @@
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index 88a08dd55f739..ab3eaac852f7a 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -5068,7 +5079,10 @@ def _can_use_libjoin(self) -> bool:
+             return (
+                 isinstance(self.dtype, np.dtype)
+                 or isinstance(self._values, (ArrowExtensionArray, BaseMaskedArray))
+-                or self.dtype == "string[python]"
++                or (
++                    isinstance(self.dtype, StringDtype)
++                    and self.dtype.storage == "python"
++                )
+             )
+         # Exclude index types where the conversion to numpy converts to object dtype,
+         #  which negates the performance benefit of libjoin

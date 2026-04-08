@@ -1,0 +1,13 @@
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index 12467de74da4..69b0cc037325 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1384,7 +1406,7 @@ def render_change_form(
+         )
+ 
+     def _get_preserved_qsl(self, request, preserved_filters):
+-        query_string = urlparse(request.build_absolute_uri()).query
++        query_string = urlsplit(request.build_absolute_uri()).query
+         return parse_qsl(query_string.replace(preserved_filters, ""))
+ 
+     def response_add(self, request, obj, post_url_continue=None):

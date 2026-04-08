@@ -1,0 +1,17 @@
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index dc3d4026e269..23ad424c5c31 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -99,11 +96,7 @@ def work_path(self):
+         """
+         if not self.is_templatized:
+             return self.path
+-        extension = {
+-            "djangojs": "c",
+-            "django": "py",
+-        }.get(self.domain)
+-        filename = "%s.%s" % (self.translatable.file, extension)
++        filename = f"{self.translatable.file}.py"
+         return os.path.join(self.translatable.dirpath, filename)
+ 
+     def preprocess(self):

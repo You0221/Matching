@@ -1,0 +1,13 @@
+diff --git a/sklearn/linear_model/_least_angle.py b/sklearn/linear_model/_least_angle.py
+index 25f956e5fadda..4bffe5f6e8c0d 100644
+--- a/sklearn/linear_model/_least_angle.py
++++ b/sklearn/linear_model/_least_angle.py
+@@ -554,7 +554,7 @@ def _lars_path_solver(
+         Gram = None
+         if X is None:
+             raise ValueError("X and Gram cannot both be unspecified.")
+-    elif isinstance(Gram, str) and Gram == "auto" or Gram is True:
++    elif (isinstance(Gram, str) and Gram == "auto") or Gram is True:
+         if Gram is True or X.shape[0] > X.shape[1]:
+             Gram = np.dot(X.T, X)
+         else:

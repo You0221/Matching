@@ -1,0 +1,16 @@
+diff --git a/sklearn/preprocessing/_polynomial.py b/sklearn/preprocessing/_polynomial.py
+index f4c9fb032cfb0..de0308cda3b06 100644
+--- a/sklearn/preprocessing/_polynomial.py
++++ b/sklearn/preprocessing/_polynomial.py
+@@ -576,6 +585,11 @@ def transform(self, X):
+                 XP = Xout
+         return XP
+ 
++    def __sklearn_tags__(self):
++        tags = super().__sklearn_tags__()
++        tags.input_tags.sparse = True
++        return tags
++
+ 
+ class SplineTransformer(TransformerMixin, BaseEstimator):
+     """Generate univariate B-spline bases for features.

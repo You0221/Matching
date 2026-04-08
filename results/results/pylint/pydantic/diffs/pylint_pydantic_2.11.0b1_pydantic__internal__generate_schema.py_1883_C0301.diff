@@ -1,0 +1,13 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index 704af79e78a..839764cefb2 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -1880,7 +1911,7 @@ def _dataclass_schema(
+                     collect_init_only=has_post_init,
+                 )
+ 
+-                inner_schema = apply_validators(args_schema, decorators.root_validators.values(), None)
++                inner_schema = apply_validators(args_schema, decorators.root_validators.values())
+ 
+                 model_validators = decorators.model_validators.values()
+                 inner_schema = apply_model_validators(inner_schema, model_validators, 'inner')

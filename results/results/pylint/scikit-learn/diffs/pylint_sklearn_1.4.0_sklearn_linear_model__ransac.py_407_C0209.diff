@@ -1,0 +1,29 @@
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index b2c25607f91c0..b6bf7b082fc5e 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -404,12 +428,22 @@ def fit(self, X, y, sample_weight=None):
+         estimator_name = type(estimator).__name__
+         if sample_weight is not None and not estimator_fit_has_sample_weight:
+             raise ValueError(
+-                "%s does not support sample_weight. Samples"
++                "%s does not support sample_weight. Sample"
+                 " weights are only used for the calibration"
+                 " itself." % estimator_name
+             )
++
+         if sample_weight is not None:
+-            sample_weight = _check_sample_weight(sample_weight, X)
++            fit_params["sample_weight"] = sample_weight
++
++        if _routing_enabled():
++            routed_params = process_routing(self, "fit", **fit_params)
++        else:
++            routed_params = Bunch()
++            routed_params.estimator = Bunch(fit={}, predict={}, score={})
++            if sample_weight is not None:
++                sample_weight = _check_sample_weight(sample_weight, X)
++                routed_params.estimator.fit = {"sample_weight": sample_weight}
+ 
+         n_inliers_best = 1
+         score_best = -np.inf

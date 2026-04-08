@@ -1,0 +1,31 @@
+diff --git a/pydantic/_internal/_generate_schema.py b/pydantic/_internal/_generate_schema.py
+index b88dd8b2b19..ee26d080f62 100644
+--- a/pydantic/_internal/_generate_schema.py
++++ b/pydantic/_internal/_generate_schema.py
+@@ -702,17 +826,21 @@ def _resolve_forward_ref(self, obj: Any) -> Any:
+         return obj
+ 
+     @overload
+-    def _get_args_resolving_forward_refs(self, obj: Any, required: Literal[True]) -> tuple[Any, ...]:
+-        ...
++    def _get_args_resolving_forward_refs(self, obj: Any, required: Literal[True]) -> tuple[Any, ...]: ...
+ 
+     @overload
+-    def _get_args_resolving_forward_refs(self, obj: Any) -> tuple[Any, ...] | None:
+-        ...
++    def _get_args_resolving_forward_refs(self, obj: Any) -> tuple[Any, ...] | None: ...
+ 
+     def _get_args_resolving_forward_refs(self, obj: Any, required: bool = False) -> tuple[Any, ...] | None:
+         args = get_args(obj)
+         if args:
+-            args = tuple([self._resolve_forward_ref(a) if isinstance(a, ForwardRef) else a for a in args])
++            if sys.version_info >= (3, 9):
++                from types import GenericAlias
++
++                if isinstance(obj, GenericAlias):
++                    # PEP 585 generic aliases don't convert args to ForwardRefs, unlike `typing.List/Dict` etc.
++                    args = (_typing_extra._make_forward_ref(a) if isinstance(a, str) else a for a in args)
++            args = tuple(self._resolve_forward_ref(a) if isinstance(a, ForwardRef) else a for a in args)
+         elif required:  # pragma: no cover
+             raise TypeError(f'Expected {obj} to have generic parameters but it had none')
+         return args

@@ -1,0 +1,20 @@
+diff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py
+index 555b4ec13df69..adf515d44d1d9 100644
+--- a/sklearn/linear_model/_bayes.py
++++ b/sklearn/linear_model/_bayes.py
+@@ -244,9 +244,15 @@ def fit(self, X, y, sample_weight=None):
+             y_numeric=True,
+         )
+         dtype = X.dtype
++        n_samples, n_features = X.shape
+ 
++        sw_sum = n_samples
++        y_var = y.var()
+         if sample_weight is not None:
+             sample_weight = _check_sample_weight(sample_weight, X, dtype=dtype)
++            sw_sum = sample_weight.sum()
++            y_mean = np.average(y, weights=sample_weight)
++            y_var = np.average((y - y_mean) ** 2, weights=sample_weight)
+ 
+         X, y, X_offset_, y_offset_, X_scale_ = _preprocess_data(
+             X,

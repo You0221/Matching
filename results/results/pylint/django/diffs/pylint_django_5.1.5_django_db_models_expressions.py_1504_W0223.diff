@@ -1,0 +1,25 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 4ee22420d964..444e2fab7b41 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -1504,20 +1592,6 @@ def get_source_fields(self):
+         # We're only interested in the fields of the result expressions.
+         return [self.result._output_field_or_none]
+ 
+-    def resolve_expression(
+-        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+-    ):
+-        c = self.copy()
+-        c.is_summary = summarize
+-        if hasattr(c.condition, "resolve_expression"):
+-            c.condition = c.condition.resolve_expression(
+-                query, allow_joins, reuse, summarize, False
+-            )
+-        c.result = c.result.resolve_expression(
+-            query, allow_joins, reuse, summarize, for_save
+-        )
+-        return c
+-
+     def as_sql(self, compiler, connection, template=None, **extra_context):
+         connection.ops.check_expression_support(self)
+         template_params = extra_context

@@ -1,0 +1,28 @@
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index e0fad5d8be8b8..d4c196a6fc8ca 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -1386,21 +1387,11 @@ def predict_log_proba(self, X):
+         """
+         return np.log(self.predict_proba(X))
+ 
+-    def _more_tags(self):
+-        return {
+-            "_xfail_checks": {
+-                "check_sample_weights_invariance": (
+-                    "zero sample_weight is not equivalent to removing samples"
+-                ),
+-            },
+-            "preserves_dtype": [np.float64, np.float32],
+-        }
+-
+ 
+ class BaseSGDRegressor(RegressorMixin, BaseSGD):
+     loss_functions = {
+-        "squared_error": (SquaredLoss,),
+-        "huber": (Huber, DEFAULT_EPSILON),
++        "squared_error": (CyHalfSquaredError,),
++        "huber": (CyHuberLoss, DEFAULT_EPSILON),
+         "epsilon_insensitive": (EpsilonInsensitive, DEFAULT_EPSILON),
+         "squared_epsilon_insensitive": (SquaredEpsilonInsensitive, DEFAULT_EPSILON),
+     }

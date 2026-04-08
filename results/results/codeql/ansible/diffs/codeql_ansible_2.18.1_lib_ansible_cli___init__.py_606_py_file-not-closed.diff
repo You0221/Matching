@@ -1,0 +1,22 @@
+diff --git a/lib/ansible/cli/__init__.py b/lib/ansible/cli/__init__.py
+index 8b12aec17f4bfe..462393868e01af 100644
+--- a/lib/ansible/cli/__init__.py
++++ b/lib/ansible/cli/__init__.py
+@@ -598,14 +695,13 @@ def get_password_from_file(pwd_file):
+ 
+             stdout, stderr = p.communicate()
+             if p.returncode != 0:
+-                raise AnsibleError("The password script %s returned an error (rc=%s): %s" % (pwd_file, p.returncode, stderr))
++                raise AnsibleError("The password script %s returned an error (rc=%s): %s" % (pwd_file, p.returncode, to_text(stderr)))
+             secret = stdout
+ 
+         else:
+             try:
+-                f = open(b_pwd_file, "rb")
+-                secret = f.read().strip()
+-                f.close()
++                with open(b_pwd_file, "rb") as password_file:
++                    secret = password_file.read().strip()
+             except (OSError, IOError) as e:
+                 raise AnsibleError("Could not read password file %s: %s" % (pwd_file, e))
+ 
