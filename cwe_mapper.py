@@ -30,7 +30,7 @@ class CWEMapper:
             },
             'pylint': {
                 'file': 'merged_pylint_report.xlsx',
-                'rule_col': 'symbol',
+                'rule_col': 'message-id',
                 'cwe_col': 'CWE'
             },
             'semgrep': {
