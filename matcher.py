@@ -444,12 +444,16 @@ class FixMatcher(Matcher):
                         pass
 
                 simplified = {
+                    "id": warning.get('original_id'),
+                    "tool": warning.get('tool'),
                     "project_name": warning.get('project_name'),
                     "version": version_name,
                     "commit_id": commit_id,
+                    "rule_id": warning.get('test_id'),
+                    "rule_name": warning.get('test_name'),
+                    "message": warning.get('issue_text'),
                     "origin_version": tracking.get('origin_version', version_name),
                     "disappeared_version": tracking.get('disappeared_version'),
-                    "tool": warning.get('tool'),
                     "cwe": warning.get('cwe'),
                     "path": warning.get('filename'),
                     "line_number": warning.get('line_number'),
@@ -517,20 +521,18 @@ class FixMatcher(Matcher):
 def main():
     base_path = r"D:\大创参考文献阅读\匹配代码"
     tools = ["bandit",
-             "codeql",
-             "horusec",
-             "pylint",
-             "semgrep"
-
-
+            "codeql",
+            "horusec",
+            "pylint",
+            "semgrep"
              ]
     projects = [
-         "ansible", "bandit"
-        , "celery",
+        "ansible", "bandit",
+        "celery",
         "django",
-         "flask",
-         "numpy", "pandas",
-         "pydantic", "scikit-learn", "tornado"
+        "flask",
+        "numpy", "pandas",
+        "pydantic", "scikit-learn", "tornado"
     ]
     cwe_mapping_dir = base_path
 

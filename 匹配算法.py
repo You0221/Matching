@@ -99,6 +99,7 @@ class Matcher:
                 'col_offset': extra.get('col_offset', 0),
                 'end_col_offset': extra.get('end_col_offset', 0),
                 'cwe': cwe,  # 新增字段
+                'original_id': item.get('id')
             }
             warning[
                 'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
@@ -136,6 +137,7 @@ class Matcher:
                 'col_offset': extra.get('startColumn', 0),
                 'end_col_offset': extra.get('endColumn', 0),
                 'cwe': cwe,
+                'original_id': item.get('id')
             }
             warning[
                 'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
@@ -180,6 +182,7 @@ class Matcher:
                 'col_offset': 0,
                 'end_col_offset': 0,
                 'cwe': cwe,
+                'original_id': item.get('id')
             }
             warning[
                 'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
@@ -219,6 +222,7 @@ class Matcher:
                 'col_offset': extra.get('column', 0),
                 'end_col_offset': extra.get('endColumn', 0),
                 'cwe': cwe,
+                'original_id': item.get('id')
             }
             warning[
                 'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
@@ -259,6 +263,7 @@ class Matcher:
                 'col_offset': extra.get('start_col', 0),
                 'end_col_offset': extra.get('end_col', 0),
                 'cwe': cwe,
+                'original_id': item.get('id')
             }
             warning[
                 'unique_id'] = f"{warning['tool']}:{warning['project_name']}:{warning['project_version']}:{warning['filename']}:{warning['line_number']}:{warning['test_id']}"
